@@ -360,16 +360,20 @@
             <nina:SequenceBlockView.SequenceItemContent>
                 <ninactrl:DetachingExpander>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock
-                                MinHeight="30"
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                MinHeight="20"
                                 HorizontalAlignment="Left"
                                 Margin="0,10,0,-20"
                                 VerticalAlignment="Center"
                                 Opacity="0.4"
+                                MinWidth="400"
                                 Text="Instructions to execute when your gear becomes 'unsafe':" />
-                        <Button
-                                Height="25"
-                                Margin="5"
+                            <Button
+                                MinHeight="20"
+                                Margin="5,20,0,0"
+                                Width="100"
+                                VerticalAlignment="Bottom"
                                 HorizontalAlignment="Stretch"
                                 Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
                                 Command="{Binding StopInstructions}">
@@ -377,7 +381,8 @@
                                     Foreground="{StaticResource ButtonForegroundBrush}"
                                     Text="Stop"
                                     TextWrapping="Wrap" />
-                        </Button>
+                            </Button>
+                        </StackPanel>
                         <Border
                         MinHeight="35"
                         Margin="0,20,0,0"

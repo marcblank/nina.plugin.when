@@ -261,6 +261,7 @@ namespace WhenPlugin.When {
         private void PerformStopInstructions() {
             if (InFlight && cts != null) {
                 cts.Cancel();
+                InFlight = false;
             }
         }
     }
