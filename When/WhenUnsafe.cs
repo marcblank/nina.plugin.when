@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using GalaSoft.MvvmLight.Command;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using NINA.Core.Utility;
@@ -39,6 +40,7 @@ using System.Reflection;
 using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
+using System.Windows.Input;
 
 namespace WhenPlugin.When {
 
@@ -80,7 +82,16 @@ namespace WhenPlugin.When {
             }
         }
 
-        public static bool InFlight = false;
+        public static bool inFlight = false;
+
+        public bool InFlight {
+            get => inFlight;
+            protected set {
+                inFlight = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         public ConditionWatchdog ConditionWatchdog { get; set; }
 
@@ -162,28 +173,18 @@ namespace WhenPlugin.When {
             ConditionWatchdog?.Start();
         }
 
-        private CancellationTokenSource FindCTS(ISequenceContainer container) {
-            var fields = typeof(SequenceContainer).GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (FieldInfo f in fields) {
-                if (f.Name.Equals("localCTS")) {
-                    CancellationTokenSource cts = (CancellationTokenSource)f.GetValue(container);
-                    return cts;
-                }
-            }
-            return null;
-        }
+        private CancellationTokenSource cts;
 
         private async Task InterruptWhenUnsafe() {
             if (!Check(null, null)) {
                 if (this.Parent != null) {
                     if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                         Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
-                        //await Container.Interrupt();
-                        //CancellationTokenSource cts = FindCTS(Container);
                         sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
                         //cts?.Cancel();
                         Status = SequenceEntityStatus.RUNNING;
-                        await Execute(null, new CancellationToken());
+                        cts = new CancellationTokenSource();
+                        await Execute(null, cts.Token);
                         Status = SequenceEntityStatus.CREATED;
                         InFlight = false;
                         sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);    
@@ -203,6 +204,10 @@ namespace WhenPlugin.When {
             if (InFlight) return false;
             Container = previousItem?.Parent;
             if (Container == null) Container = nextItem?.Parent;
+            return false;
+        }
+
+        public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
             return false;
         }
 
@@ -247,6 +252,16 @@ namespace WhenPlugin.When {
  
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             return Task.CompletedTask; // return Execute(progress, token);
+        }
+
+        private GalaSoft.MvvmLight.Command.RelayCommand stopInstructions;
+
+        public ICommand StopInstructions => stopInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformStopInstructions);
+
+        private void PerformStopInstructions() {
+            if (InFlight && cts != null) {
+                cts.Cancel();
+            }
         }
     }
 }

@@ -367,6 +367,17 @@
                                 VerticalAlignment="Center"
                                 Opacity="0.4"
                                 Text="Instructions to execute when your gear becomes 'unsafe':" />
+                        <Button
+                                Height="25"
+                                Margin="5"
+                                HorizontalAlignment="Stretch"
+                                Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                                Command="{Binding StopInstructions}">
+                                <TextBlock
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
+                                    Text="Stop"
+                                    TextWrapping="Wrap" />
+                        </Button>
                         <Border
                         MinHeight="35"
                         Margin="0,20,0,0"
