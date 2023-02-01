@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     public class Runner: SequentialContainer {
@@ -20,7 +21,6 @@ namespace WhenPlugin.When {
             Progress = progress;
             Token = token;
             ShouldRetry = false;
-            ConditionalCommand = cmd;
         }
 
         public SequentialContainer RunInstructions { get; set; }
@@ -36,7 +36,9 @@ namespace WhenPlugin.When {
         public async Task RunConditional () {
             ShouldRetry = false;
             RunInstructions.Status = SequenceEntityStatus.CREATED;
-            await RunInstructions.Run(Progress, Token);  
+            Logger.Info("When runner: starting sequence.");
+            await RunInstructions.Run(Progress, Token);
+            Logger.Info("When runner: finishing sequence.");
         }
 
         public override void ResetProgress() {

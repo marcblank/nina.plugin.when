@@ -63,6 +63,7 @@ namespace WhenPlugin.When {
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
 
+            // Fix this insanity
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
                 if (fi.Name.Equals("sequenceNavigation")) {
@@ -179,13 +180,19 @@ namespace WhenPlugin.When {
                     if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                         Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
                         sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
-                        //cts?.Cancel();
                         Status = SequenceEntityStatus.RUNNING;
                         cts = new CancellationTokenSource();
-                        await Execute(null, cts.Token);
-                        Status = SequenceEntityStatus.CREATED;
-                        InFlight = false;
-                        sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);    
+                        try {
+                            Logger.Info("WhenUnsafe: " + "Starting sequence.");
+                            await Execute(null, cts.Token);
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        } finally {
+                            Logger.Info("WhenUnsafe: " + "Finishing sequence.");
+                            Status = SequenceEntityStatus.CREATED;
+                            InFlight = false;
+                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                        }
                     }
                 }
             }
@@ -204,11 +211,6 @@ namespace WhenPlugin.When {
             if (Container == null) Container = nextItem?.Parent;
             return false;
         }
-
-        public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            return false;
-        }
-
 
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
