@@ -47,10 +47,8 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Lbl_SequenceCondition_SafetyMonitorCondition_Description")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "When (and If)")]
     [Export(typeof(ISequenceTrigger))]
-
-    //public bool Initialized => sequenceNavigation.Initialized;
 
     public class WhenUnsafe : SequenceTrigger, IValidatable {
         protected ISafetyMonitorMediator safetyMediator;
