@@ -22,13 +22,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Wait")]
-    [ExportMetadata("Description", "Wait indefinitely (until instruction is skipped or deleted)")]
+    [ExportMetadata("Name", "Wait Indefinitely")]
+    [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "When (and If)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Wait : SequenceItem {
@@ -57,9 +58,27 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+        private bool inFlight;
 
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");
+        [JsonProperty]
+        public bool InFlight {
+            get => inFlight;
+            set {
+                inFlight = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource cts;
+
+        public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            InFlight = true;
+            cts = new CancellationTokenSource();
+            try {
+                await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, cts.Token, progress, "");
+            } finally {
+                InFlight = false;
+            }
         }
 
         public override TimeSpan GetEstimatedDuration() {
@@ -69,5 +88,16 @@ namespace WhenPlugin.When {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(Wait)}, Time: 12 hours";
         }
+        
+        private GalaSoft.MvvmLight.Command.RelayCommand stopInstructions;
+
+        public ICommand StopInstructions => stopInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformStopInstructions);
+
+        private void PerformStopInstructions() {
+            if (InFlight) {
+                cts.Cancel();
+            }
+        }
+
     }
 }

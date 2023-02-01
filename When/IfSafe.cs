@@ -14,7 +14,7 @@ using NINA.Equipment.Equipment.MySafetyMonitor;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Safe")]
     [ExportMetadata("Description", "Executes an instruction set if the safety monitor indicates that conditions are safe.")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "ShieldSVG")]
     [ExportMetadata("Category", "When (and If)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

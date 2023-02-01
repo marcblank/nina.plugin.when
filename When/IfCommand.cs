@@ -63,11 +63,11 @@ namespace WhenPlugin.When {
         public void Log(string str, bool success) {
             Logger.Info(str);
             // Notification for debugging...
-            if (success) {
-                Notification.ShowSuccess(str);
-            } else {
-                Notification.ShowWarning(str);
-            }
+            //if (success) {
+            //    Notification.ShowSuccess(str);
+            //} else {
+            //    Notification.ShowWarning(str);
+            //}
         }
 
         public virtual bool Validate() {

@@ -17,8 +17,6 @@
   <ItemGroup>
     <Compile Remove="When\EndSequence.cs" />
     <Compile Remove="When\Expression.cs" />
-    <Compile Remove="When\Fail.cs" />
-    <Compile Remove="When\IfFailed.cs" />
     <Compile Remove="When\IfResults.cs" />
     <Compile Remove="When\IfSwitch.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />

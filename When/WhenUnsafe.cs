@@ -63,7 +63,7 @@ namespace WhenPlugin.When {
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
 
-            // Fix this insanity
+            // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
                 if (fi.Name.Equals("sequenceNavigation")) {
@@ -183,12 +183,12 @@ namespace WhenPlugin.When {
                         Status = SequenceEntityStatus.RUNNING;
                         cts = new CancellationTokenSource();
                         try {
-                            Logger.Info("WhenUnsafe: " + "Starting sequence.");
+                            Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
                             await Execute(null, cts.Token);
                         } catch (Exception ex) {
                             Logger.Error(ex);
                         } finally {
-                            Logger.Info("WhenUnsafe: " + "Finishing sequence.");
+                            Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
                             Status = SequenceEntityStatus.CREATED;
                             InFlight = false;
                             sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);

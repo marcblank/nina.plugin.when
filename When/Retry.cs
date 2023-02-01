@@ -14,8 +14,8 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Retry")]
     [ExportMetadata("Description", "Resets and retries the conditional instruction")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "When")]
-    [Export(typeof(ISequenceItem))]
+    //[ExportMetadata("Category", "When (and If)")]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Retry : RunnerInstruction, IValidatable {
         [ImportingConstructor]

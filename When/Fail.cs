@@ -25,11 +25,11 @@ using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Fail")]
-    [ExportMetadata("Description", "Wait indefinitely (until instruction is skipped or deleted)")]
+    [ExportMetadata("Name", "Fail (for testing)")]
+    [ExportMetadata("Description", "This instruction always fails; for experimenting with 'If Fails'!")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "When")]
-    [Export(typeof(ISequenceItem))]
+    //[ExportMetadata("Category", "When (and If)")]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Fail : SequenceItem {
 

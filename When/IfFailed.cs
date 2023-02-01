@@ -23,11 +23,11 @@ using System.Windows.Input;
 using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "If Failed")]
+    [ExportMetadata("Name", "If Fails")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate instruction failed.")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "When")]
-    [Export(typeof(ISequenceItem))]
+    //[ExportMetadata("Category", "When (and If)")]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfFailed : IfCommand {
 
