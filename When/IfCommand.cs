@@ -17,6 +17,7 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public IfContainer Condition { get; protected set; }
         
+        [JsonProperty]
         public IfContainer Instructions { get; protected set; }
 
         public IList<string> issues = new List<string>();

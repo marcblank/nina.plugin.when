@@ -165,15 +165,16 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "When (and If)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TemplateByReference : IfSafeUnsafe, IValidatable {
+    public class TemplateByReference : IfCommand, IValidatable {
 
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
         protected TemplateController templateController;
 
         [ImportingConstructor]
-        public TemplateByReference(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator) : base(safetyMediator, true) {
+        public TemplateByReference(ISequenceMediator sequenceMediator) {
             this.sequenceMediator = sequenceMediator;
+            Instructions = new IfContainer();
             Name = Name;
             // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
@@ -189,10 +190,11 @@ namespace WhenPlugin.When {
             }
         }
 
-        public TemplateByReference(TemplateByReference copyMe) : this(copyMe.safetyMediator, copyMe.sequenceMediator) {
+        public TemplateByReference(TemplateByReference copyMe) : this(copyMe.sequenceMediator) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                TemplateName = TemplateName;
             }
         }
 
@@ -209,7 +211,13 @@ namespace WhenPlugin.When {
             set {
                 templateName = value;
                 RaisePropertyChanged();
+                Validate();
             }
+        }
+
+        public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Runner runner = new Runner(Instructions, null, progress, token);
+            await runner.RunConditional();
         }
 
         public new bool Validate() {
