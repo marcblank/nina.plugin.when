@@ -201,9 +201,9 @@ namespace WhenPlugin.When {
             };
         }
 
-        [JsonProperty]
         private string templateName;
 
+        [JsonProperty]
         public string TemplateName {
             get { return templateName; }
             set {
