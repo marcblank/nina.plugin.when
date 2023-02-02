@@ -371,7 +371,7 @@
                                 Opacity="0.4"
                                 Text="Template Name:" />
                             <ComboBox
-                                Height="20"
+                                Height="24"
                                 Margin="10,-4,0,0"
                                 DisplayMemberPath="Container.Name"
                                 ItemsSource="{Binding Templates}"
@@ -393,11 +393,11 @@
                                 VerticalAlignment="Center"
                                 FontStyle="Italic"
                                 Opacity="0.4"
-                                Text="Instructions go here"
-                                Visibility="Visible"/>
+                                Text="The specified template will go here..."
+                                Visibility="{Binding TemplateName, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"/>
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />
                                 </i:Interaction.Behaviors>
                             </Grid>
                         </Border>

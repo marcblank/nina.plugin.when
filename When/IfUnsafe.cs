@@ -27,7 +27,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Unsafe")]
     [ExportMetadata("Description", "Executes an instruction set if the safety monitor indicates that conditions are unsafe.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "When (and If)")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfUnsafe : IfSafeUnsafe, IValidatable {

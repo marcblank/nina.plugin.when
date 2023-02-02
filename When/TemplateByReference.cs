@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using NINA.Sequencer.Container;
 using Castle.Core.Internal;
 using NINA.Core.Utility;
+using NINA.Sequencer.DragDrop;
+using System.Windows.Input;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -37,7 +39,7 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public TemplateByReference(ISequenceMediator sequenceMediator) {
             this.sequenceMediator = sequenceMediator;
-            Instructions = new IfContainer();
+            Instructions = new TemplateContainer();
             Name = Name;
             // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
@@ -56,11 +58,11 @@ namespace WhenPlugin.When {
         public TemplateByReference(TemplateByReference copyMe) : this(copyMe.sequenceMediator) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions = (TemplateContainer)copyMe.Instructions.Clone();
             }
         }
 
-        public IfContainer Instructions { get; protected set; }
+        public TemplateContainer Instructions { get; protected set; }
 
         public IList<string> issues = new List<string>();
         public IList<string> Issues {
@@ -119,7 +121,15 @@ namespace WhenPlugin.When {
             var i = new List<string>();
 
             if (SelectedTemplate == null) {
-                if (TemplateName == null) {
+                if (TemplateName == null && Instructions.Items.Count > 0) {
+                    if (Instructions.DroppedTemplate != null) {
+                        selectedTemplate = Instructions.DroppedTemplate;
+                        TemplateName = selectedTemplate.Container.Name;
+                        RaisePropertyChanged("Instructions");
+                        RaisePropertyChanged("TemplateName");
+                        RaisePropertyChanged("SelectedTemplate");
+                    }
+                } else if (TemplateName == null) {
                     i.Add("A template must be selected!");
                 } else {
                     i.Add("The specified template '" + TemplateName + "' was not found.");
