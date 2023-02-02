@@ -165,7 +165,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "When (and If)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TemplateByReference : IfCommand, IValidatable {
+    public class TemplateByReference : SequenceItem, IValidatable {
 
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
@@ -194,22 +194,34 @@ namespace WhenPlugin.When {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
-                TemplateName = TemplateName;
+            }
+        }
+
+        public IfContainer Instructions { get; protected set; }
+
+        public IList<string> issues = new List<string>();
+
+        public IList<string> Issues {
+            get => issues;
+            set {
+                issues = value;
+                RaisePropertyChanged();
             }
         }
 
         public override object Clone() {
-            return new TemplateByReference(this) {
-            };
+            TemplateByReference clone = new TemplateByReference(this);
+            clone.TempName= this.TempName;
+            return clone;
         }
 
-        private string templateName;
+        public string tempName;
 
         [JsonProperty]
-        public string TemplateName {
-            get { return templateName; }
+        public string TempName {
+            get { return tempName; }
             set {
-                templateName = value;
+                tempName = value;
                 RaisePropertyChanged();
                 Validate();
             }
@@ -223,11 +235,11 @@ namespace WhenPlugin.When {
         public new bool Validate() {
             if (templateController == null) return true;
             var i = new List<string>();
-            if (TemplateName.IsNullOrEmpty()) {
+            if (TempName.IsNullOrEmpty()) {
                 i.Add("A template name must be specified!");
             } else if (Instructions.Items.Count == 0) {
                 foreach (TemplatedSequenceContainer tsc in templateController.Templates) {
-                    if (tsc.Container.Name.Equals(TemplateName)) {
+                    if (tsc.Container.Name.Equals(TempName)) {
                         Console.WriteLine("Found template!");
                         Instructions.Items.Add((ISequenceContainer)tsc.Container.Clone());
                         foreach (ISequenceItem item in Instructions.Items) {
@@ -237,7 +249,7 @@ namespace WhenPlugin.When {
                         return true;
                     }
                 }
-                i.Add("The template '" + TemplateName + "' was not found in your template list.");
+                i.Add("The template '" + TempName + "' was not found in your template list.");
             }
             Issues = i;
             return i.Count == 0;

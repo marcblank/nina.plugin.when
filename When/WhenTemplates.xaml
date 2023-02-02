@@ -374,7 +374,7 @@
                                 MinWidth="150"
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding TemplateName}"
+                                Text="{Binding TempName}"
                                 TextAlignment="Center" />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
