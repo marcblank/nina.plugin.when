@@ -385,7 +385,7 @@
                         Margin="0,20,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}">
+                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
                                 <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                                 <TextBlock
                                 HorizontalAlignment="Center"
@@ -393,7 +393,7 @@
                                 FontStyle="Italic"
                                 Opacity="0.4"
                                 Text="Instructions go here"
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                                Visibility="Visible"/>
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
                                     <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
