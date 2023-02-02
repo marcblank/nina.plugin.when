@@ -370,12 +370,13 @@
                                 VerticalAlignment="Center"
                                 Opacity="0.4"
                                 Text="Template Name:" />
-                            <TextBox
-                                MinWidth="150"
-                                Margin="5,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding TempName}"
-                                TextAlignment="Center" />
+                            <ComboBox
+                                Height="20"
+                                Margin="10,-4,0,0"
+                                DisplayMemberPath="Container.Name"
+                                ItemsSource="{Binding Templates}"
+                                SelectedItem="{Binding SelectedTemplate, Mode=TwoWay}"
+                                SelectedValuePath="Container.Name" />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
 
