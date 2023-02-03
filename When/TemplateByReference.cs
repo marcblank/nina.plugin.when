@@ -43,17 +43,15 @@ namespace WhenPlugin.When {
             Instructions.TBR = this;
             Name = Name;
             
-            // GetField() returns null, so iterate?
+            // Get the various NINA components we need
             if (sequenceNavigationVM == null || templateController == null) {
-                var fields = sequenceMediator.GetType().GetRuntimeFields();
-                foreach (FieldInfo fi in fields) {
-                    if (fi.Name.Equals("sequenceNavigation")) {
-                        sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
-                        ISequence2VM s2vm = sequenceNavigationVM.Sequence2VM;
-                        if (s2vm != null) {
-                            PropertyInfo pi = s2vm.GetType().GetRuntimeProperty("TemplateController");
-                            templateController = (TemplateController)pi.GetValue(s2vm);
-                        }
+                FieldInfo fi = sequenceMediator.GetType().GetField("sequenceNavigation", BindingFlags.Instance | BindingFlags.NonPublic); 
+                if (fi != null) {
+                    sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
+                    ISequence2VM s2vm = sequenceNavigationVM.Sequence2VM;
+                    if (s2vm != null) {
+                        PropertyInfo pi = s2vm.GetType().GetRuntimeProperty("TemplateController");
+                        templateController = (TemplateController)pi.GetValue(s2vm);
                     }
                 }
             }
@@ -106,11 +104,16 @@ namespace WhenPlugin.When {
             TemplateByReference clone = new TemplateByReference(this);
             clone.TemplateName = TemplateName;
             if (TemplateName != null && templateController != null) {
+                bool found = false;
                 foreach (var tmp in templateController.Templates) {
                     if (tmp.Container.Name.Equals(TemplateName)) {
-                        Logger.Info("Cloning TemplateByReference; found template " + TemplateName);
+                        Logger.Info("Cloning TemplateByReference; found template: " + TemplateName);
                         clone.SelectedTemplate = tmp;
+                        found = true;
                     }
+                }
+                if (!found) {
+                    Logger.Info("Cloned TemplateByReference refers to missing template: " + TemplateName);
                 }
             }
             return clone;
