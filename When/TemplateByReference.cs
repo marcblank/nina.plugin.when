@@ -104,19 +104,23 @@ namespace WhenPlugin.When {
             TemplateByReference clone = new TemplateByReference(this);
             clone.TemplateName = TemplateName;
             if (TemplateName != null && templateController != null) {
-                bool found = false;
-                foreach (var tmp in templateController.Templates) {
-                    if (tmp.Container.Name.Equals(TemplateName)) {
-                        Logger.Info("Cloning TemplateByReference; found template: " + TemplateName);
-                        clone.SelectedTemplate = tmp;
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    Logger.Info("Cloned TemplateByReference refers to missing template: " + TemplateName);
+                TemplatedSequenceContainer tc = FindTemplate(TemplateName);
+                if (tc != null) {
+                    SelectedTemplate = tc;
                 }
             }
             return clone;
+        }
+
+        private TemplatedSequenceContainer FindTemplate(string name) {
+            foreach (var tmp in templateController.Templates) {
+                if (tmp.Container.Name.Equals(TemplateName)) {
+                    Logger.Info("TemplateByReference; found template: " + TemplateName);
+                    return tmp;
+                }
+            }
+            Logger.Info("TemplateByReference refers to missing template: " + TemplateName);
+            return null;
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -132,6 +136,13 @@ namespace WhenPlugin.When {
 
             if (SelectedTemplate == null && TemplateName == null) {
                 i.Add("A template must be selected!");
+            } else if (TemplateName != null && SelectedTemplate == null) {
+                TemplatedSequenceContainer tc = FindTemplate(TemplateName);
+                if (tc != null) {
+                    SelectedTemplate = tc;
+                } else {
+                    i.Add("The specified template '" + TemplateName + "' was not found.");
+                }
             } else if (SelectedTemplate == null) {
                 i.Add("The specified template '" + TemplateName + "' was not found.");
             }
