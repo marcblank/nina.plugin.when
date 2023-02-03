@@ -32,33 +32,38 @@ namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class TemplateByReference : SequenceItem, IValidatable {
 
-        protected ISequenceMediator sequenceMediator;
-        protected ISequenceNavigationVM sequenceNavigationVM;
-        protected TemplateController templateController;
+        static protected ISequenceMediator sequenceMediator;
+        static protected ISequenceNavigationVM sequenceNavigationVM;
+        static protected TemplateController templateController;
 
         [ImportingConstructor]
-        public TemplateByReference(ISequenceMediator sequenceMediator) {
-            this.sequenceMediator = sequenceMediator;
+        public TemplateByReference(ISequenceMediator seqMediator) {
+            sequenceMediator = seqMediator;
             Instructions = new TemplateContainer();
+            Instructions.TBR = this;
             Name = Name;
+            
             // GetField() returns null, so iterate?
-            var fields = sequenceMediator.GetType().GetRuntimeFields();
-            foreach (FieldInfo fi in fields) {
-                if (fi.Name.Equals("sequenceNavigation")) {
-                    sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
-                    ISequence2VM s2vm = sequenceNavigationVM.Sequence2VM;
-                    if (s2vm != null) {
-                        PropertyInfo pi = s2vm.GetType().GetRuntimeProperty("TemplateController");
-                        templateController = (TemplateController)pi.GetValue(s2vm);
+            if (sequenceNavigationVM == null || templateController == null) {
+                var fields = sequenceMediator.GetType().GetRuntimeFields();
+                foreach (FieldInfo fi in fields) {
+                    if (fi.Name.Equals("sequenceNavigation")) {
+                        sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
+                        ISequence2VM s2vm = sequenceNavigationVM.Sequence2VM;
+                        if (s2vm != null) {
+                            PropertyInfo pi = s2vm.GetType().GetRuntimeProperty("TemplateController");
+                            templateController = (TemplateController)pi.GetValue(s2vm);
+                        }
                     }
                 }
             }
         }
 
-        public TemplateByReference(TemplateByReference copyMe) : this(copyMe.sequenceMediator) {
+        public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (TemplateContainer)copyMe.Instructions.Clone();
+                Instructions.TBR = this;
             }
         }
 
@@ -92,6 +97,7 @@ namespace WhenPlugin.When {
                     item.AttachNewParent(Instructions);
                 }
                 RaisePropertyChanged("Instructions");
+                RaisePropertyChanged("TemplateName");
                 Validate();
             }
         }
@@ -116,24 +122,15 @@ namespace WhenPlugin.When {
         }
 
         public bool Validate() {
+
             if (templateController == null) return true;
-            
+
             var i = new List<string>();
 
-            if (SelectedTemplate == null) {
-                if (TemplateName == null && Instructions.Items.Count > 0) {
-                    if (Instructions.DroppedTemplate != null) {
-                        selectedTemplate = Instructions.DroppedTemplate;
-                        TemplateName = selectedTemplate.Container.Name;
-                        RaisePropertyChanged("Instructions");
-                        RaisePropertyChanged("TemplateName");
-                        RaisePropertyChanged("SelectedTemplate");
-                    }
-                } else if (TemplateName == null) {
-                    i.Add("A template must be selected!");
-                } else {
-                    i.Add("The specified template '" + TemplateName + "' was not found.");
-                }
+            if (SelectedTemplate == null && TemplateName == null) {
+                i.Add("A template must be selected!");
+            } else if (SelectedTemplate == null) {
+                i.Add("The specified template '" + TemplateName + "' was not found.");
             }
 
             Issues = i;

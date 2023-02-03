@@ -19,6 +19,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace WhenPlugin.When {
@@ -36,43 +37,34 @@ namespace WhenPlugin.When {
             DropIntoTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropIntoTemplate);
         }
 
-        public override TemplateContainer Clone() {
-            TemplateContainer ic = new TemplateContainer();
-            ic.Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
-            foreach (var item in ic.Items) {
-                item.AttachNewParent(ic);
+        public TemplateContainer (TemplateContainer copyMe) : this() {
+            Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
+            foreach (var item in Items) {
+                item.AttachNewParent(this);
             }
-            return ic;
+        }
+
+        public override TemplateContainer Clone() {
+            return new TemplateContainer(this);
         }
 
         private object lockObj = new object();
-        
-        public TemplatedSequenceContainer DroppedTemplate { get; set; }
+
+        private TemplateByReference tbr;
+        public TemplateByReference TBR { get => tbr;
+            set {
+                tbr = value;
+            }
+        }
 
         public ICommand DropIntoTemplateCommand { get; set; }
 
         // Allow only ONE instruction to be added to Instructions
         public void DropIntoTemplate(DropIntoParameters parameters) {
             lock (lockObj) {
-                ISequenceContainer item;
-                var source = parameters.Source as TemplatedSequenceContainer;
-                DroppedTemplate = source;
-
-                if (source.Parent != null && !parameters.Duplicate) {
-                    item = source.Container;
-                } else {
-                    item = (ISequenceContainer)source.Container.Clone();
-                }
-
-                ISequenceItem seq = item as ISequenceItem;
-
-                if (seq.Parent != this) {
-                    seq.Parent?.Remove(seq);
-                    seq.AttachNewParent(this);
-                }
-
-                Items.Clear();
-                Items.Add(seq);
+                TemplatedSequenceContainer tsc = parameters.Source as TemplatedSequenceContainer;
+                TemplateContainer tc = parameters.Target as TemplateContainer;
+                tc.TBR.SelectedTemplate = tsc;
             }
         }
 
