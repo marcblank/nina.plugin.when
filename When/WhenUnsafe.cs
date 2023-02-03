@@ -45,7 +45,7 @@ using System.Windows.Input;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "When Becomes Unsafe")]
-    [ExportMetadata("Description", "Lbl_SequenceCondition_SafetyMonitorCondition_Description")]
+    [ExportMetadata("Description", "Sequencer Powerups:\r\nRuns a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
     [ExportMetadata("Icon", "ShieldSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
     [Export(typeof(ISequenceTrigger))]

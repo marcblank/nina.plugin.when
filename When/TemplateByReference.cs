@@ -25,9 +25,9 @@ using System.Windows.Input;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
-    [ExportMetadata("Description", "Executes an instruction set if the safety monitor indicates that conditions are safe.")]
+    [ExportMetadata("Description", "Sequencer Powerups:\r\nIncorporate a template by reference.  Please read the description on the plugin page.")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
-    [ExportMetadata("Category", "When (and If)")]
+    [ExportMetadata("Category", "Sequencer Powerups")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TemplateByReference : SequenceItem, IValidatable {

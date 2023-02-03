@@ -22,6 +22,53 @@
     </GeometryGroup>
 
 
+    <DataTemplate DataType="{x:Type local:InterruptTrigger}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <ninactrl:DetachingExpander>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border
+                        Grid.Row="1"
+                        MinHeight="65"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1">
+                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">
+                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                Opacity="0.4"
+                                Text="Interrupt instructions go here"
+                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                                <i:Interaction.Behaviors>
+                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.TemplatedSequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoCommand" />
+                                </i:Interaction.Behaviors>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander>
+
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:InterruptWait}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <!--  The definition of the plugin test instruction style  -->
     <!--  The DataType has to be defined as the instruction in context  -->
     <!--<DataTemplate DataType="{x:Type local:SetConstant}">
@@ -461,7 +508,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:Wait}">
+    <DataTemplate DataType="{x:Type local:WaitIndefinitely}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">

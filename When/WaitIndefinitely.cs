@@ -27,23 +27,23 @@ using System.Windows.Input;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Wait Indefinitely")]
-    [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
+    [ExportMetadata("Description", "Sequencer Powerups:\r\nWait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "When (and If)")]
+    [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class Wait : SequenceItem {
+    public class WaitIndefinitely : SequenceItem {
 
         [ImportingConstructor]
-        public Wait() {
+        public WaitIndefinitely() {
             Time = 60*60*12;  // 12 hours
         }
 
-        private Wait(Wait cloneMe) : base(cloneMe) {
+        private WaitIndefinitely(WaitIndefinitely cloneMe) : base(cloneMe) {
         }
 
         public override object Clone() {
-            return new Wait(this) {
+            return new WaitIndefinitely(this) {
                 Time = Time
             };
         }
@@ -86,7 +86,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(Wait)}, Time: 12 hours";
+            return $"Category: {Category}, Item: {nameof(WaitIndefinitely)}, Time: 12 hours";
         }
         
         private GalaSoft.MvvmLight.Command.RelayCommand stopInstructions;
