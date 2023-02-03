@@ -16,7 +16,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Interrupt Trigger")]
     [ExportMetadata("Description", "Sequencer Powerups:\r\nThis trigger will stop execution after the currently running instruction, allowing you to add whatever instructions you want before proceeding.")]
     [ExportMetadata("Icon", "SequenceSVG")]
-    [ExportMetadata("Category", "Sequencer Powerups")]
+    [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]
@@ -28,7 +28,7 @@ namespace WhenPlugin.When {
         public InterruptTrigger() {
             AddItem(TriggerRunner, new InterruptWait() { Name = "[Add instructions below, then delete this to execute them]", Icon = HourglassIcon }); ;
         }
-
+        
         private void AddItem(SequentialContainer runner, ISequenceItem item) {
             runner.Items.Add(item);
             item.AttachNewParent(runner);
