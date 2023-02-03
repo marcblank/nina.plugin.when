@@ -97,7 +97,7 @@ namespace WhenPlugin.When {
                     item.AttachNewParent(Instructions);
                 }
                 RaisePropertyChanged("Instructions");
-                RaisePropertyChanged("TemplateName");
+                RaisePropertyChanged("SelectedTemplate");
                 Validate();
             }
         }
