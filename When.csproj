@@ -24,6 +24,8 @@
     <Compile Remove="When\SmartExposure.cs" />
     <Compile Remove="When\TakeExposure.cs" />
     <Compile Remove="When\TakeManyExposures.cs" />
+    <Compile Remove="When\When.cs" />
+    <Compile Remove="When\WhenSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ReachFramework" />
