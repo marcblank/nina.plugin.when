@@ -23,8 +23,8 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Results")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate, based on the results of the previous instruction, is true")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    //[Export(typeof(ISequenceItem))]
-    //[Export(typeof(ISequenceContainer))]
+    [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
     public class IfContainer : SequentialContainer {
