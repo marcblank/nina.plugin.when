@@ -93,7 +93,7 @@ namespace WhenPlugin.When {
         public TemplatedSequenceContainer[] SortedTemplates {
             get {
                 IList<TemplatedSequenceContainer> l = Templates; ;
-                TemplatedSequenceContainer[] lCopy = Templates.ToArray<TemplatedSequenceContainer>();
+                TemplatedSequenceContainer[] lCopy = Templates.ToArray();
                 lCopy.Sort(TemplateCompare);
                 return lCopy;
             }
@@ -148,7 +148,7 @@ namespace WhenPlugin.When {
                 }
             }
             Logger.Info("TemplateByReference refers to missing template: " + TemplateName);
-            Notification.ShowWarning("TemplateByReference refers to missing template: " + TemplateName);
+            //Notification.ShowWarning("TemplateByReference refers to missing template: " + TemplateName);
             return null;
         }
 

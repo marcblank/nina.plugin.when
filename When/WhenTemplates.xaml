@@ -59,7 +59,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:InterruptWait}">
+    <!--<DataTemplate DataType="{x:Type local:InterruptWait}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -67,7 +67,7 @@
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
-    </DataTemplate>
+    </DataTemplate>-->
 
     <!--  The definition of the plugin test instruction style  -->
     <!--  The DataType has to be defined as the instruction in context  -->
@@ -478,7 +478,7 @@
                                 Command="{Binding StopInstructions}">
                                 <TextBlock
                                     Foreground="{StaticResource ButtonForegroundBrush}"
-                                    Text="Stop"
+                                    Text="{Binding StartStop}"
                                     TextWrapping="Wrap" />
                             </Button>
                         </StackPanel>

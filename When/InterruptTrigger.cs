@@ -26,9 +26,9 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public InterruptTrigger() {
-            AddItem(TriggerRunner, new InterruptWait() { Name = "[Add instructions below, then delete this to execute them]", Icon = HourglassIcon }); ;
+            AddItem(TriggerRunner, new WaitIndefinitely() { Name="Wait Indefinitely", Icon = HourglassIcon }); ;
         }
-        
+
         private void AddItem(SequentialContainer runner, ISequenceItem item) {
             runner.Items.Add(item);
             item.AttachNewParent(runner);

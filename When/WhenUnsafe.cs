@@ -175,11 +175,21 @@ namespace WhenPlugin.When {
 
         private CancellationTokenSource cts;
 
+
+        private string startStop = "Stop";
+        public string StartStop {
+            get {
+                return Stopped ? "Restart" : "Pause";
+            }
+            set { }
+        }
+
         private bool stopped = false;
         public bool Stopped {
             get => stopped;
             set {
                 stopped = value;
+                RaisePropertyChanged("StartStop");
             }
         }
 
@@ -206,10 +216,12 @@ namespace WhenPlugin.When {
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     } finally {
-                        Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
-                        Status = SequenceEntityStatus.CREATED;
-                        InFlight = false;
-                        sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                        if (!Stopped) {
+                            Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
+                            Status = SequenceEntityStatus.CREATED;
+                            InFlight = false;
+                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                        }
                     }
                 }
             }
@@ -253,14 +265,16 @@ namespace WhenPlugin.When {
                     // No retries at this point
                     await runner.RunConditional();
                 } finally {
-                    // Clean up
-                    Instructions.AttachNewParent(Parent);
-                    foreach (ISequenceItem item in Instructions.Items) {
-                        item.AttachNewParent(Instructions);
+                    if (!Stopped) {
+                        // Clean up
+                        Instructions.AttachNewParent(Parent);
+                        foreach (ISequenceItem item in Instructions.Items) {
+                            item.AttachNewParent(Instructions);
+                        }
+                        // Allow this to be run multiple times
+                        Instructions.ResetProgress();
+                        Status = SequenceEntityStatus.CREATED;
                     }
-                    // Allow this to be run multiple times
-                    Instructions.ResetProgress();
-                    Status = SequenceEntityStatus.CREATED;
                 }
 
                 return;
@@ -276,10 +290,16 @@ namespace WhenPlugin.When {
         public ICommand StopInstructions => stopInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformStopInstructions);
 
         private void PerformStopInstructions() {
-            if (InFlight && cts != null) {
-                cts.Cancel();
-                //Instructions.Interrupt(); // Keeps retrying the Instructions...  After wait until safe, works right
-                Stopped = true;
+            if (!Stopped) {
+                if (InFlight && cts != null) {
+                    cts.Cancel();
+                    Stopped = true;
+                }
+            } else {
+                Stopped = false;
+                InFlight = false;
+                Parent.Status = SequenceEntityStatus.RUNNING;
+                _ = InterruptWhenUnsafe();
             }
         }
     }

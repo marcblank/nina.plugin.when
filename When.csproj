@@ -19,6 +19,7 @@
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
     <Compile Remove="When\IfSwitch.cs" />
+    <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstant.cs" />
     <Compile Remove="When\SmartExposure.cs" />
