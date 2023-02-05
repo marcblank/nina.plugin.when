@@ -22,6 +22,9 @@ using Castle.Core.Internal;
 using NINA.Core.Utility;
 using NINA.Sequencer.DragDrop;
 using System.Windows.Input;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -101,6 +104,12 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
+            if (cycleStack.Contains(TemplateName)) {
+                Notification.ShowError("The template '" + TemplateName + "' is recursive.  Please don't do that.");
+                TemplateName = "{Error}";
+            }
+            cycleStack.Push(TemplateName);
+
             TemplateByReference clone = new TemplateByReference(this);
             clone.TemplateName = TemplateName;
             if (TemplateName != null && templateController != null) {
@@ -109,12 +118,16 @@ namespace WhenPlugin.When {
                     SelectedTemplate = tc;
                 }
             }
+            cycleStack.Pop();
             return clone;
         }
 
+        private Stack<string> cycleStack = new Stack<string>();
+
         private TemplatedSequenceContainer FindTemplate(string name) {
+
             foreach (var tmp in templateController.Templates) {
-                if (tmp.Container.Name.Equals(TemplateName)) {
+                if (tmp.Container.Name.Equals(name)) {
                     Logger.Info("TemplateByReference; found template: " + TemplateName);
                     return tmp;
                 }

@@ -1,22 +1,9 @@
-﻿using Accord.IO;
-using NINA.Astrometry;
-using NINA.Core.Utility;
-using NINA.Equipment.Equipment.MyPlanetarium;
-using NINA.Profile;
-using NINA.Sequencer.Conditions;
-using NINA.Sequencer.Container;
+﻿using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Utility;
-using NINA.WPF.Base.Interfaces.ViewModel;
-using NINA.WPF.Base.Mediator;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
 
@@ -27,7 +14,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceContainer))]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
-    public class IfContainer : SequentialContainer {
+    public class IfContainer : SequentialContainer, ISequenceContainer {
 
 
         public IfContainer() : base() {
@@ -40,6 +27,19 @@ namespace WhenPlugin.When {
                 item.AttachNewParent(ic);
             }
             return ic;
+        }
+
+        private Object lockObj = new Object();
+
+        public new void MoveUp(ISequenceItem item) {
+            lock (lockObj) {
+                var index = Items.IndexOf(item);
+                if (index == 0) {
+                    return;
+                } else {
+                    base.MoveUp(item);
+                }
+            }
         }
     }
 }
