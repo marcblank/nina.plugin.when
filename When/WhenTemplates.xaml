@@ -421,7 +421,7 @@
                                 Height="24"
                                 Margin="10,-4,0,0"
                                 DisplayMemberPath="Container.Name"
-                                ItemsSource="{Binding Templates}"
+                                ItemsSource="{Binding SortedTemplates}"
                                 SelectedItem="{Binding SelectedTemplate, Mode=TwoWay}"
                                 SelectedValuePath="Container.Name" />
                         </StackPanel>

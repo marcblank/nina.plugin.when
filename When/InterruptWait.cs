@@ -17,8 +17,8 @@ using System.Windows;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Plugin Template Instruction")]
-    [ExportMetadata("Description", "This item will just show a notification and is just there to show how the plugin system works")]
-    [ExportMetadata("Icon", "Plugin_Test_SVG")]
+    //[ExportMetadata("Description", "This item will just show a notification and is just there to show how the plugin system works")]
+    //[ExportMetadata("Icon", "Plugin_Test_SVG")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class InterruptWait : SequenceItem {

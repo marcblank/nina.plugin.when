@@ -25,6 +25,7 @@ using System.Windows.Input;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Accord.Math;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -81,8 +82,22 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public string TemplateName { get; set; }
-
+        
         public IList<TemplatedSequenceContainer> Templates { get => templateController.Templates; }
+
+        private int TemplateCompare (TemplatedSequenceContainer a, TemplatedSequenceContainer b) {
+            return String.Compare(a.Container.Name, b.Container.Name);
+
+        }
+
+        public TemplatedSequenceContainer[] SortedTemplates {
+            get {
+                IList<TemplatedSequenceContainer> l = Templates; ;
+                TemplatedSequenceContainer[] lCopy = Templates.ToArray<TemplatedSequenceContainer>();
+                lCopy.Sort(TemplateCompare);
+                return lCopy;
+            }
+        }
 
         private TemplatedSequenceContainer selectedTemplate;
         public TemplatedSequenceContainer SelectedTemplate {
@@ -133,6 +148,7 @@ namespace WhenPlugin.When {
                 }
             }
             Logger.Info("TemplateByReference refers to missing template: " + TemplateName);
+            Notification.ShowWarning("TemplateByReference refers to missing template: " + TemplateName);
             return null;
         }
 

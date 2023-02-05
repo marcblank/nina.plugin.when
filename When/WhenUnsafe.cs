@@ -41,6 +41,7 @@ using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
 using System.Windows.Input;
+using System.Management;
 
 namespace WhenPlugin.When {
 
@@ -144,7 +145,7 @@ namespace WhenPlugin.When {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
 
-        public bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
+        public bool Check() {
             var info = safetyMediator.GetInfo();
             IsSafe = info.Connected && info.IsSafe;
             if (!IsSafe && IsActive()) {
@@ -174,25 +175,41 @@ namespace WhenPlugin.When {
 
         private CancellationTokenSource cts;
 
+        private bool stopped = false;
+        public bool Stopped {
+            get => stopped;
+            set {
+                stopped = value;
+            }
+        }
+
         private async Task InterruptWhenUnsafe() {
-            if (!Check(null, null)) {
-                if (this.Parent != null) {
-                    if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
-                        Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
-                        sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
-                        Status = SequenceEntityStatus.RUNNING;
-                        cts = new CancellationTokenSource();
-                        try {
-                            Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
-                            await Execute(null, cts.Token);
-                        } catch (Exception ex) {
-                            Logger.Error(ex);
-                        } finally {
-                            Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
-                            Status = SequenceEntityStatus.CREATED;
-                            InFlight = false;
-                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
-                        }
+            // Don't even think of it...
+            if (Stopped) {
+                Logger.Info("WhenUnsafe: Stopped");
+                return;
+            }
+
+            if (InFlight) return;
+
+            if (!Check() && Parent != null) {
+                if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
+                    Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
+                    sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
+                    Status = SequenceEntityStatus.RUNNING;
+                    cts = new CancellationTokenSource();
+                    try {
+                        // Wait a short time for the sequence to be canceled...
+                        Thread.Sleep(1500);
+                        Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
+                        await Execute(null, cts.Token);
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                    } finally {
+                        Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
+                        Status = SequenceEntityStatus.CREATED;
+                        InFlight = false;
+                        sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
                     }
                 }
             }
@@ -223,7 +240,7 @@ namespace WhenPlugin.When {
                     return;
                 }
 
-                Notification.ShowSuccess("WhenUnsafe true; triggered.");
+                Logger.Info("WhenUnsafe: Conditions unsafe.");
 
                 // We'll attach ourselves to the sequence that was running
                 Instructions.AttachNewParent(Container);
@@ -261,7 +278,8 @@ namespace WhenPlugin.When {
         private void PerformStopInstructions() {
             if (InFlight && cts != null) {
                 cts.Cancel();
-                InFlight = false;
+                //Instructions.Interrupt(); // Keeps retrying the Instructions...  After wait until safe, works right
+                Stopped = true;
             }
         }
     }
