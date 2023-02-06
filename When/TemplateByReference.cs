@@ -26,6 +26,9 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Accord.Math;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Serialization;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -38,14 +41,22 @@ namespace WhenPlugin.When {
 
         static protected ISequenceMediator sequenceMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
-        static protected TemplateController templateController;
+        static protected TemplateController ninaTemplateController;
+        static protected TemplateControllerLite templateController;
+        private static SequenceJsonConverter sequenceJsonConverter;
+        private static IProfileService profileService;
+        private static ISequencerFactory sequencerFactory;
+
+        public static int instanceNumber = 0;
 
         [ImportingConstructor]
-        public TemplateByReference(ISequenceMediator seqMediator) {
+        public TemplateByReference(ISequenceMediator seqMediator, IProfileService pService) {
             sequenceMediator = seqMediator;
+            profileService = pService;
             Instructions = new TemplateContainer();
             Instructions.TBR = this;
             Name = Name;
+            Id = ++instanceNumber;
             
             // Get the various NINA components we need
             if (sequenceNavigationVM == null || templateController == null) {
@@ -54,20 +65,28 @@ namespace WhenPlugin.When {
                     sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
                     ISequence2VM s2vm = sequenceNavigationVM.Sequence2VM;
                     if (s2vm != null) {
+                        sequencerFactory = s2vm.SequencerFactory;
                         PropertyInfo pi = s2vm.GetType().GetRuntimeProperty("TemplateController");
-                        templateController = (TemplateController)pi.GetValue(s2vm);
+                        ninaTemplateController = (TemplateController)pi.GetValue(s2vm);
+                        fi = ninaTemplateController.GetType().GetField("sequenceJsonConverter", BindingFlags.Instance | BindingFlags.NonPublic);
+                        sequenceJsonConverter = (SequenceJsonConverter)fi.GetValue(ninaTemplateController);
+                        templateController = new TemplateControllerLite(sequenceJsonConverter, profileService);
+                        Debug.WriteLine("Foo");
+
                     }
                 }
             }
         }
 
-        public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator) {
+        public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator, profileService) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (TemplateContainer)copyMe.Instructions.Clone();
                 Instructions.TBR = this;
             }
         }
+
+        public int Id { get; set; }
 
         public TemplateContainer Instructions { get; protected set; }
 
@@ -92,10 +111,12 @@ namespace WhenPlugin.When {
 
         public TemplatedSequenceContainer[] SortedTemplates {
             get {
-                IList<TemplatedSequenceContainer> l = Templates; ;
-                TemplatedSequenceContainer[] lCopy = Templates.ToArray();
-                lCopy.Sort(TemplateCompare);
-                return lCopy;
+                lock (TemplateControllerLite.TemplateLock) {
+                    IList<TemplatedSequenceContainer> l = Templates;
+                    TemplatedSequenceContainer[] lCopy = Templates.ToArray();
+                    lCopy.Sort(TemplateCompare);
+                    return lCopy;
+                }
             }
         }
 
@@ -103,6 +124,13 @@ namespace WhenPlugin.When {
         public TemplatedSequenceContainer SelectedTemplate {
             get => selectedTemplate;
             set {
+                if (value == null) {
+                    //RaisePropertyChanged("SelectedTemplate");
+                    value = FindTemplate(TemplateName);
+                    if (value == null) {
+                        return;
+                    }
+                }
                 selectedTemplate = value;
                 if (Instructions.Items.Count > 0) {
                     Instructions.Items.Clear();
@@ -112,18 +140,23 @@ namespace WhenPlugin.When {
                 foreach (ISequenceItem item in Instructions.Items) {
                     item.AttachNewParent(Instructions);
                 }
-                RaisePropertyChanged("Instructions");
                 RaisePropertyChanged("SelectedTemplate");
                 Validate();
             }
         }
 
+        public void Log(string str) {
+            Debug.WriteLine("Instance #" + Id.ToString() + ": " + str);
+        }
+
         public override object Clone() {
-            if (cycleStack.Contains(TemplateName)) {
+            if (TemplateName != null && cycleStack.Contains(TemplateName)) {
                 Notification.ShowError("The template '" + TemplateName + "' is recursive.  Please don't do that.");
                 TemplateName = "{Error}";
             }
-            cycleStack.Push(TemplateName);
+            if (TemplateName != null) {
+                cycleStack.Push(TemplateName);
+            }
 
             TemplateByReference clone = new TemplateByReference(this);
             clone.TemplateName = TemplateName;
@@ -131,9 +164,15 @@ namespace WhenPlugin.When {
                 TemplatedSequenceContainer tc = FindTemplate(TemplateName);
                 if (tc != null) {
                     SelectedTemplate = tc;
+                    TemplateName = tc.Container.Name;
+                    RaisePropertyChanged("TemplateName");
                 }
             }
-            cycleStack.Pop();
+            if (TemplateName != null) {
+                cycleStack.Pop();
+            }
+
+            Log("Clone #" + clone.Id + " returned, TemplateName = " + TemplateName);
             return clone;
         }
 
@@ -141,10 +180,12 @@ namespace WhenPlugin.When {
 
         private TemplatedSequenceContainer FindTemplate(string name) {
 
-            foreach (var tmp in templateController.Templates) {
-                if (tmp.Container.Name.Equals(name)) {
-                    Logger.Info("TemplateByReference; found template: " + TemplateName);
-                    return tmp;
+            lock (TemplateControllerLite.TemplateLock) {
+                foreach (var tmp in templateController.Templates) {
+                    if (tmp.Container.Name.Equals(name)) {
+                        Logger.Info("TemplateByReference; found template: " + TemplateName);
+                        return tmp;
+                    }
                 }
             }
             Logger.Info("TemplateByReference refers to missing template: " + TemplateName);
@@ -157,9 +198,15 @@ namespace WhenPlugin.When {
             await runner.RunConditional();
         }
 
+        public bool Validatex() {
+            return true;
+        }
+        
         public bool Validate() {
 
             if (templateController == null) return true;
+
+            Log("Validate");
 
             var i = new List<string>();
 
@@ -174,6 +221,11 @@ namespace WhenPlugin.When {
                 }
             } else if (SelectedTemplate == null) {
                 i.Add("The specified template '" + TemplateName + "' was not found.");
+            }
+
+            if (templateController.Updated) {
+                SelectedTemplate = FindTemplate(TemplateName);
+                RaisePropertyChanged("SortedTemplates");
             }
 
             Issues = i;

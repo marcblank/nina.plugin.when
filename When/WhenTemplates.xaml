@@ -422,7 +422,7 @@
                                 Margin="10,-4,0,0"
                                 DisplayMemberPath="Container.Name"
                                 ItemsSource="{Binding SortedTemplates}"
-                                SelectedItem="{Binding SelectedTemplate, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Container.Name" />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
