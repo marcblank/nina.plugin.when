@@ -146,7 +146,7 @@ namespace WhenPlugin.When {
         }
 
         public void Log(string str) {
-            Debug.WriteLine("Instance #" + Id.ToString() + ": " + str);
+            //Debug.WriteLine("Instance #" + Id.ToString() + ": " + str);
         }
 
         public override object Clone() {
