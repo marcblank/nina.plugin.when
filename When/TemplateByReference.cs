@@ -153,6 +153,7 @@ namespace WhenPlugin.When {
             if (TemplateName != null && cycleStack.Contains(TemplateName)) {
                 Notification.ShowError("The template '" + TemplateName + "' is recursive.  Please don't do that.");
                 TemplateName = "{Error}";
+                throw new Exception("Recursive template");
             }
             if (TemplateName != null) {
                 cycleStack.Push(TemplateName);
@@ -188,8 +189,6 @@ namespace WhenPlugin.When {
                     }
                 }
             }
-            Logger.Info("TemplateByReference refers to missing template: " + TemplateName);
-            //Notification.ShowWarning("TemplateByReference refers to missing template: " + TemplateName);
             return null;
         }
 
@@ -203,7 +202,11 @@ namespace WhenPlugin.When {
             ISequenceContainer p = Parent;
             while (p != null) {
                 if (p is SequenceRootContainer root) {
-                    UpdateChangedTemplate(root, name.Split('.')[0]);
+                    try {
+                        UpdateChangedTemplate(root, name.Split('.')[0]);
+                    } catch (Exception ex) {
+                        Logger.Warning("Exception trying to parse template file name: " + name + " Error: " + ex.Message);
+                    }
                     return;
                 }
                 p = p.Parent;
