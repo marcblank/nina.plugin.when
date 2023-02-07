@@ -198,8 +198,31 @@ namespace WhenPlugin.When {
             await runner.RunConditional();
         }
 
-        public bool Validatex() {
-            return true;
+        
+        private void UpdateChangedTemplates(string name) {
+            ISequenceContainer p = Parent;
+            while (p != null) {
+                if (p is SequenceRootContainer root) {
+                    UpdateChangedTemplate(root, name.Split('.')[0]);
+                    return;
+                }
+                p = p.Parent;
+            }
+            return;
+        }
+
+        private void UpdateChangedTemplate(ISequenceContainer p, string name) {
+            foreach (ISequenceItem item in p.Items) {
+                if (item is ISequenceContainer sc) {
+                    UpdateChangedTemplate(sc, name);
+                } else if (item is TemplateByReference tbr) {
+                    if (tbr.TemplateName.Equals(name)) {
+                        // reload
+                        tbr.SelectedTemplate = FindTemplate(name);
+                        tbr.Log("Updated due to '" + name + "' changed.");
+                    }
+                }
+            }
         }
         
         public bool Validate() {
@@ -226,6 +249,7 @@ namespace WhenPlugin.When {
             if (templateController.Updated) {
                 SelectedTemplate = FindTemplate(TemplateName);
                 RaisePropertyChanged("SortedTemplates");
+                UpdateChangedTemplates(templateController.UpdatedFile);
             }
 
             Issues = i;

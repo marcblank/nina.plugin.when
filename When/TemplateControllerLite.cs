@@ -96,12 +96,16 @@ namespace WhenPlugin.When {
                 sequenceTemplateFolderWatcher.EnableRaisingEvents = false;
                 await LoadUserTemplates();
                 Updated = true;
+                UpdatedFile = e.Name;
             } finally {
                 sequenceTemplateFolderWatcher.EnableRaisingEvents = true;
             }
         }
 
         private bool updated = false;
+
+        public string UpdatedFile { get; set; }
+
         public bool Updated {
             get {
                 if (updated) {
