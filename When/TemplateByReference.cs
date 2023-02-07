@@ -29,6 +29,8 @@ using Accord.Math;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Serialization;
 using System.Diagnostics;
+using NINA.Core.Locale;
+using NINA.Core.MyMessageBox;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -220,10 +222,12 @@ namespace WhenPlugin.When {
                     UpdateChangedTemplate(sc, name);
                 } else if (item is TemplateByReference tbr) {
                     if (tbr.TemplateName.Equals(name)) {
-                        // reload
-                        tbr.SelectedTemplate = FindTemplate(name);
-                        tbr.Log("Updated due to '" + name + "' changed.");
-                        Notification.ShowSuccess("The instruction set '" + tbr.Parent.Name + "' has been updated due to the change in template '" + name + "'.");
+                        // Update instruction set if user wants
+                        if (MyMessageBox.Show("An instruction set named '" + tbr.Parent.Name + "' includes a reference to template '" + name + "', which has just been changed.  Do you want this instruction set to be updated as well?", "Update instruction set?", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                            tbr.SelectedTemplate = FindTemplate(name);
+                            tbr.Log("Updated due to '" + name + "' changed.");
+                            Notification.ShowSuccess("The instruction set '" + tbr.Parent.Name + "' has been updated.");
+                        }
                     }
                 }
             }
