@@ -223,6 +223,7 @@ namespace WhenPlugin.When {
                         // reload
                         tbr.SelectedTemplate = FindTemplate(name);
                         tbr.Log("Updated due to '" + name + "' changed.");
+                        Notification.ShowSuccess("The instruction set '" + tbr.Parent.Name + "' has been updated due to the change in template '" + name + "'.");
                     }
                 }
             }
