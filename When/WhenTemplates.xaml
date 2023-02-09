@@ -585,50 +585,6 @@
         </mini:MiniSequenceItem>
     </DataTemplate>
 
-    <WrapPanel x:Key="IfBlock">
-        <ninactrl:DetachingExpander>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Margin="5,0,10,0" Text="Predicate expression:" />
-                    <TextBox
-                                    MinWidth="150"
-                                    Margin="5,0,10,0"
-                                    Text="{Binding Predicate}"
-                                    VerticalAlignment="Center"
-                                    TextAlignment="Left" />
-                </StackPanel>
-                <Border
-                        Grid.Row="1"
-                        MinHeight="35"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
-                    <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                        <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                        <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Margin="5,0,10,0"
-                                FontStyle="Italic"
-                                Opacity="0.4"
-                                Text="Conditional instructions go here"
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                        <i:Interaction.Behaviors>
-                            <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem;" OnDropCommand="DropIntoCommand" />
-                        </i:Interaction.Behaviors>
-                    </Grid>
-                </Border>
-            </Grid>
-        </ninactrl:DetachingExpander>
-    </WrapPanel>
-
-
-
     <WrapPanel
         x:Key="TakeExposureDetails"
         x:Shared="false"
@@ -636,32 +592,13 @@
         <WrapPanel.Resources>
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
+ 
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTime}" />
-        <ninactrl:UnitTextBox
-            MinWidth="40"
-            Margin="5,0,0,0"
-            VerticalAlignment="Center"
-            VerticalContentAlignment="Center"
-            Text="{Binding ExposureTimeExpr}"
-            TextAlignment="Right"
-            Unit="s" />
-
-        <TextBlock
-            Margin="7.5,0,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="(" />
-        <TextBlock
-            Foreground="{Binding IsValidExposureTime}"  
-            Margin="0,0,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="{Binding ExposureTimeString}" />
-        <TextBlock
-            Margin="0,0,7.5,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text=")" />
+        <local:ConstantControl 
+            Margin = "8,0,10,5" 
+            Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
+            />
+        
         <TextBlock
             Margin="7.5,0,7.5,0"
             HorizontalAlignment="Center"
@@ -754,7 +691,13 @@
                 VerticalAlignment="Center"
                 Text="|" />
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-            <ninactrl:HintTextBox
+
+            <local:ConstantControl 
+                Margin = "8,0,10,5" 
+                Expr="{Binding Path=GainExpr, Mode=TwoWay, ValidatesOnExceptions=True}"
+            />
+            
+            <!--<ninactrl:HintTextBox
                 MinWidth="40"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
@@ -785,8 +728,11 @@
                         </Binding.ValidationRules>
                     </Binding>
                 </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>
+            </ninactrl:HintTextBox>-->
         </WrapPanel>
+
+        <!-- <local:ConstantControl Margin = "8,0,10,5" Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}" /> -->
+        
 
         <!--  Offset  -->
         <WrapPanel Orientation="Horizontal">
@@ -840,7 +786,7 @@
         </WrapPanel>
     </WrapPanel>
 
-    <!--<DataTemplate x:Key="WhenPlugin.When.TakeExposure_Mini">
+    <DataTemplate x:Key="ConstantsPlugin.Constants.TakeExposure_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -859,9 +805,9 @@
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
-    </DataTemplate>-->
+    </DataTemplate>
 
-    <!--<DataTemplate x:Key="WhenPlugin.When.TakeManyExposures_Mini" DataType="{x:Type local:SmartExposure}">
+    <DataTemplate x:Key="ConstantsPlugin.Constants.TakeManyExposures_Mini" DataType="{x:Type local:SmartExposure}">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -893,34 +839,7 @@
             <nina:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="#" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding IterationsExpr}"
-                        TextAlignment="Right" />
-                    <TextBlock
-                        Margin="7.5,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="(" />
-                    <TextBlock
-                        Foreground="{Binding IsValidIterationCount}" 
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding IterationCountString}" />
-                    <TextBlock
-                        Margin="0,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text=")" />
-                    <TextBlock
-                        Margin="7.5,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="|" />
-
+                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
@@ -938,7 +857,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate x:Key="WhenPlugin.When.SmartExposure_Mini" DataType="{x:Type local:SmartExposure}">
+    <DataTemplate x:Key="ConstantsPlugin.Constants.SmartExposure_Mini" DataType="{x:Type local:SmartExposure}">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -974,28 +893,7 @@
 
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="#" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding IterationsExpr}"
-                        TextAlignment="Right" />
-                    <TextBlock
-                        Margin="7.5,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="(" />
-                    <TextBlock
-                        Foreground="{Binding IsValidSmartIterationCount}"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding IterationCountString}" />
-                    <TextBlock
-                        Margin="0,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text=")" />
+                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -1036,33 +934,9 @@
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblDitherEveryNoFrame}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding DitherExpr}"
-                        TextAlignment="Right">
-                        <TextBox.ToolTip>
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_Imaging_SmartExposure_DitherTooltip}" />
-                        </TextBox.ToolTip>
-                    </TextBox>
-                    <TextBlock
-                        Margin="7.5,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="(" />
-                    <TextBlock
-                        Foreground="{Binding IsValidDitherCount}" 
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding DitherCountString}" />
-                    <TextBlock
-                        Margin="0,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text=")" />
-                 </WrapPanel>
+                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=DitherExpr, Mode=TwoWay}" />
+
+                </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
                 <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
@@ -1076,9 +950,7 @@
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemProgressContent>
         </nina:SequenceBlockView>
-    </DataTemplate>-->
-
-
+    </DataTemplate>
 
 
 

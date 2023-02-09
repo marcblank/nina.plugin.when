@@ -142,7 +142,7 @@ namespace WhenPlugin.When {
                     return true;
                 } catch (Exception ex) {
                     pi.SetValue(item, 0);
-                    return false;
+                    throw new ArgumentException("Bad");
                 }
             }
             return false;

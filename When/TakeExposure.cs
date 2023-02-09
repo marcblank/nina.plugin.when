@@ -42,6 +42,7 @@ using NINA.Image.ImageData;
 using Namotion.Reflection;
 using NINA.Core.Utility.Notification;
 using System.Windows.Media.Converters;
+using Nikon;
 
 namespace WhenPlugin.When {
 
@@ -114,28 +115,35 @@ namespace WhenPlugin.When {
                 double val;
                 exposureTimeExpr = value;
                 ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime");
-                RaisePropertyChanged("ExposureTimeString");
             }
         } 
-
-        [JsonProperty]
-        public string ExposureTimeString {
-            get {
-                if (exposureTime < 0) return " ? ";
-                return exposureTime.ToString();
-            }
-            set { }
-        }
         
         private double exposureTime;
 
         [JsonProperty]
         public double ExposureTime { get => exposureTime; set { exposureTime = value; RaisePropertyChanged(); } }
 
+
+        private string gainExpr = "0";
+        [JsonProperty]
+        public string GainExpr {
+            get => gainExpr;
+            set {
+                gainExpr = value;
+                ConstantExpression.Evaluate(this, "GainExpr", "Gain");
+            }
+        }
+
         private int gain;
 
         [JsonProperty]
-        public int Gain { get => gain; set { gain = value; RaisePropertyChanged(); } }
+        public int Gain { get => gain; 
+            set {
+                if (value < -1 || value > 32767) throw new ArgumentException("value");
+                gain = value; 
+                RaisePropertyChanged();
+            } 
+        }
 
         private int offset;
 

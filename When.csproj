@@ -15,18 +15,18 @@
     <Page Remove="localappdata\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="When\ConstantsTemplates.xaml.cs" />
     <Compile Remove="When\EndSequence.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
     <Compile Remove="When\IfSwitch.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
-    <Compile Remove="When\SetConstant.cs" />
-    <Compile Remove="When\SmartExposure.cs" />
-    <Compile Remove="When\TakeExposure.cs" />
-    <Compile Remove="When\TakeManyExposures.cs" />
     <Compile Remove="When\When.cs" />
     <Compile Remove="When\WhenSwitch.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="When\ConstantsTemplates.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ReachFramework" />
