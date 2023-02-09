@@ -48,7 +48,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_TakeExposure_Name")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TakeExposure : SequenceItem, IExposureItem, IValidatable, IInstructionResults {
@@ -113,12 +113,7 @@ namespace WhenPlugin.When {
             set {
                 double val;
                 exposureTimeExpr = value;
-                if (value == null) {
-                    exposureTime = 0;
-                }
-                else if (Expression.IsValidExpression(this, nameof(ExposureTimeExpr), value, out val, null)) {
-                    exposureTime = val;
-                }
+                ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime");
                 RaisePropertyChanged("ExposureTimeString");
             }
         } 
@@ -372,7 +367,7 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            if (Expression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
+            if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
                 ExposureTime = expTime;
                 IsValidExposureTime = Brushes.GreenYellow;
             }

@@ -32,13 +32,16 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.SequenceItem;
 using System.Windows.Media;
+using System.Data;
+using Namotion.Reflection;
+using System.Reflection;
 
 namespace WhenPlugin.When { 
 
     [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_TakeManyExposures_Name")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeManyExposures_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -124,19 +127,11 @@ namespace WhenPlugin.When {
             get => iterationsExpr;
             set {
                 iterationsExpr = value;
-                double val;
-                if (Conditions.Count == 0) return;
-                LoopCondition lc = Conditions[0] as LoopCondition;
-                if (value == null) {
-                   lc.Iterations = iterations = 1;
-                } else if (Expression.IsValidExpression(this, nameof(IterationsExpr), value, out val, null)) {
-                    IterationCount = (int)val;
-                }
+                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount");
                 RaisePropertyChanged();
             }
         }
 
-        private readonly string iterationCountString;
 
         [JsonProperty]
         public string ValueString {
@@ -169,18 +164,11 @@ namespace WhenPlugin.When {
             var valid = item.Validate();
             Issues = item.Issues;
             double iterations;
-            if (!Expression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out iterations, Issues)) {
-                IterationCount = -1;
-                IsValidIterationCount = Brushes.Orange;
-                valid = false;
-            } else {
-                IterationCount = Convert.ToInt32(iterations);
-                IsValidIterationCount = Brushes.GreenYellow;
-            }
             RaisePropertyChanged(nameof(Issues));
             RaisePropertyChanged("IterationCount");
             RaisePropertyChanged("IsValidIterationCount");
             RaisePropertyChanged("IterationCountString");
+            RaisePropertyChanged("IterationsExpr");
             return valid;
         }
 

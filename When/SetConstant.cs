@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using WhenPlugin.When;
+using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -14,7 +15,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SetConstant : SequenceItem, IValidatable {
@@ -46,7 +47,7 @@ namespace WhenPlugin.When {
                         prop.SetValue(consumer.Item, value);
                         RaisePropertyChanged(consumer.Name);
                     }
-                    if (Expression.IsValidExpression(this, Dummy, value, out double val, null)) {
+                    if (ConstantExpression.IsValidExpression(this, Dummy, value, out double val, null)) {
                         // Already defined!
                         value = "'" + value + "' is defined elsewhere!";
                     }
@@ -77,7 +78,7 @@ namespace WhenPlugin.When {
                 valueExpr = value;
                 if (value == null || isLoop()) {
                     Value = 0;
-                } else if (Expression.IsValidExpression(this, nameof(ValueExpr), value, out val, null)) {
+                } else if (ConstantExpression.IsValidExpression(this, nameof(ValueExpr), value, out val, null)) {
                     Value = val;
                 }
                 RaisePropertyChanged();
@@ -176,7 +177,7 @@ namespace WhenPlugin.When {
                 Value = -1;
                 isValidValue = Brushes.Orange;
                 i.Add("I see what you're doing there...");
-            } else if (Expression.IsValidExpression(this, nameof(ValueExpr), ValueExpr, out double expTime, i)) {
+            } else if (ConstantExpression.IsValidExpression(this, nameof(ValueExpr), ValueExpr, out double expTime, i)) {
                 Value = expTime;
                 IsValidValue = Brushes.GreenYellow;
             } else {

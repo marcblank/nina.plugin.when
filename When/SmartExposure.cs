@@ -36,14 +36,13 @@ using NINA.Sequencer.SequenceItem;
 using System.Windows.Media;
 using NINA.Core.Utility.ColorSchema;
 using System.Windows;
-using Expression =  WhenPlugin.When.Expression;
 
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_SmartExposure_Name")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -155,20 +154,11 @@ namespace WhenPlugin.When {
             get => iterationsExpr;
             set {
                 iterationsExpr = value;
-                double val;
-                if (Conditions.Count == 0) return;
-                LoopCondition lc = Conditions[0] as LoopCondition;
-                if (value == null) {
-                    lc.Iterations = iterations = 1;
-                }
-                else if (Expression.IsValidExpression(GetTakeExposure(), nameof(IterationsExpr), value, out val, null)) {
-                    IterationCount = (int)val;
-                }
+                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount");
                 RaisePropertyChanged();
             }
         }
 
-        private readonly string iterationCountString;
         [JsonProperty]
         public string IterationCountString {
             get {
@@ -206,22 +196,10 @@ namespace WhenPlugin.When {
             get => ditherExpr;
             set {
                 ditherExpr = value;
-                double val;
-                if (Triggers.Count == 0) return;
-                DitherAfterExposures lc = Triggers[0] as DitherAfterExposures;
-                if (value == null) {
-                    lc.AfterExposures = dithers = 0;
-                }
-                else if (Expression.IsValidExpression(this, nameof(DitherExpr), value, out val, null)) {
-                    DitherCount = (int)val;
-                } else {
-                    DitherCount = -1;
-                }
+                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount");
                 RaisePropertyChanged();
             }
         }
-
-        private readonly string ditherCountString;
 
         [JsonProperty]
         public string DitherCountString {
@@ -270,7 +248,7 @@ namespace WhenPlugin.When {
             Issues = issues;
   
             double count;
-            if (!Expression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
+            if (!ConstantExpression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
                 IterationCount = -1;
                 IsValidSmartIterationCount = Brushes.Orange; // (Brush)Application.Current.FindResource("NotificationErrorTextBrush");
                 valid = false;
@@ -279,7 +257,7 @@ namespace WhenPlugin.When {
                 IterationCount = (int)count;
             }
  
-            if (!Expression.IsValidExpression(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
+            if (!ConstantExpression.IsValidExpression(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
                 DitherCount = -1;
                 IsValidDitherCount = Brushes.Orange; // (Brush)Application.Current.FindResource("NotificationErrorTextBrush");
                 valid = false;

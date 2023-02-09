@@ -69,9 +69,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>-->
 
-    <!--  The definition of the plugin test instruction style  -->
-    <!--  The DataType has to be defined as the instruction in context  -->
-    <!--<DataTemplate DataType="{x:Type local:SetConstant}">
+    <DataTemplate DataType="{x:Type local:SetConstant}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -107,7 +105,7 @@
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
-    </DataTemplate>-->
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:Retry}">
         <nina:SequenceBlockView DataContext="{Binding}">
