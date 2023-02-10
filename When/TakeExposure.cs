@@ -112,7 +112,6 @@ namespace WhenPlugin.When {
         public string ExposureTimeExpr {
             get => exposureTimeExpr;
             set {
-                double val;
                 exposureTimeExpr = value;
                 ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime");
             }

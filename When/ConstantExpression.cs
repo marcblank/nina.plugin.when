@@ -19,44 +19,7 @@ using System.Xml.Linq;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
-        static private bool AreConstantsResolved (string[] tokens, IList<string> issues, bool root) {
-            double dbl;
-            bool allFound = true;
-            foreach (string tok in tokens) {
-                if (!double.TryParse(tok, out dbl)) {
-                    if (Regex.IsMatch(tok, "^[a-zA-Z0-9]*$")) {
-                        // This is an alphanumeric string that isn't a number
-                        if (root) {
-                            issues?.Add(tok + " is not defined");
-                        }
-                        allFound = false;
-                    }
-                }
-            }
-            return allFound;
-        }
-
-        static private bool ResolveInContainer(SequenceItem exprItem, string exprName, ISequenceContainer container, string[] tokens, IList<string> issues) {
-           foreach (SequenceItem item in container.Items) {
-                if (item is SetConstant sc) {
-                    string constantName = sc.Constant.ToLower();
-                    for (int i = 0; i < tokens.Length; i++) {
-                        string str = tokens[i];
-                        if (string.Equals(str.Trim().ToLower(), constantName)) {
-                            sc.AddConsumer(exprItem, exprName);
-                            // TODO: Better test here...
-                            if (sc.Value >= 0) {
-                                tokens[i] = sc.Value.ToString();
-                            }
-                       }
-                    }
-                }
-            }
-            bool topLevel = container is SequenceRootContainer || container is StartAreaContainer;
-            return AreConstantsResolved(tokens, issues, topLevel || (container.Parent == null));
-        }
-
-        static SequenceRootContainer FindRoot(ISequenceContainer cont) {
+         static SequenceRootContainer FindRoot(ISequenceContainer cont) {
             while (cont != null) {
                 if (cont is SequenceRootContainer root) { return root; }
                 cont = cont.Parent;
@@ -77,15 +40,7 @@ namespace WhenPlugin.When {
                 return sb.ToString();
             }
         }
-       
-        static private Dictionary<string, object> CopyKeys(Dictionary<string, object> dict) {
-            Dictionary<string, object> copy = new Dictionary<string, object>();
-            foreach (KeyValuePair<string, object> keyValuePair in dict) {
-                copy.Add(keyValuePair.Key, keyValuePair.Value);
-            }
-            return copy;
-        }
-
+ 
         private static Stack<Keys> KeysStack = new Stack<Keys>();
 
         private static int FC = 0;
@@ -95,7 +50,7 @@ namespace WhenPlugin.When {
             FindConstants(container, keys);
         }
 
-        static private double EvaluateExpression (string expr, Stack<Keys> stack) {
+        static private Double EvaluateExpression (string expr, Stack<Keys> stack) {
             Expression e = new Expression(expr);
             // Consolidate keys
             Keys mergedKeys = new Keys();
@@ -105,6 +60,10 @@ namespace WhenPlugin.When {
                         mergedKeys.Add(kvp.Key, kvp.Value);
                     }
                 }
+            }
+            if (mergedKeys.Count == 0) {
+                Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                return Double.NaN;
             }
             e.Parameters = mergedKeys;
             try {
@@ -167,30 +126,6 @@ namespace WhenPlugin.When {
                 Debug.WriteLine(container.Name + ": " + keys);
             }
         }
-
-        public static bool IsValidExpression_new(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
-            val = 0;
-            if (expr.IsNullOrEmpty()) return false;
-            try {
-                val = Double.Parse(expr);
-                return true;
-
-            } catch (Exception) {
-                // Ok, it's not a number. Let's look for constants
-                // Find relevant keys
-                // Look in cache eventually
-                Keys keys = new Keys();
-                ISequenceContainer c = item.Parent;
-                if (c != null) {
-                    // Tokenize the expression
-                    string[] tokens = Regex.Split(expr, @"(?=[-+*/])|(?<=[-+*/])");
-                    List<string> tokenList = tokens.Cast<string>().ToList();
-                    FindConstants(c, keys);
-                }
-            }
-            return true;
-        }
-
         
         public static bool IsValidExpression(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
