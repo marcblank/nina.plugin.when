@@ -14,6 +14,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -92,7 +94,33 @@ namespace WhenPlugin.When {
             Debug.WriteLine("Root: #" + ++FC);
             FindConstants(container, keys);
         }
-        
+
+        static private double EvaluateExpression (string expr, Stack<Keys> stack) {
+            Expression e = new Expression(expr);
+            // Consolidate keys
+            Keys mergedKeys = new Keys();
+            foreach (Keys k in stack) {
+                foreach (KeyValuePair<string, object> kvp in k) {
+                    if (!mergedKeys.ContainsKey(kvp.Key)) {
+                        mergedKeys.Add(kvp.Key, kvp.Value);
+                    }
+                }
+            }
+            e.Parameters = mergedKeys;
+            try {
+                var eval = e.Evaluate();
+                Debug.WriteLine("Expression " + expr + " evaluated to " + eval);
+                try {
+                    return (double)eval;
+                } catch (Exception ex) {
+                    return Double.NaN;
+                }
+            } catch (Exception ex) {
+                return Double.NaN;
+            }
+
+        }
+
         static private void FindConstants(ISequenceContainer container, Keys keys) {
             if (container == null) return;
             if (container.Items.IsNullOrEmpty()) return;
@@ -116,26 +144,10 @@ namespace WhenPlugin.When {
                         keys.Add(name, value);
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
-                        // The value is an expression, so we must deal with it
-                        Expression e = new Expression(val);
-                        // Consolidate keys
-                        Keys mergedKeys = new Keys();
-                        foreach(Keys k in KeysStack) {
-                            foreach(KeyValuePair<string, object> kvp in k) {
-                                if (!mergedKeys.ContainsKey(kvp.Key)) {
-                                    mergedKeys.Add(kvp.Key, kvp.Value);
-                                }
-                            }
+                        double result = EvaluateExpression(val, KeysStack);
+                        if (result != Double.NaN) {
+                            keys.Add(name, result);
                         }
-                        e.Parameters = mergedKeys;
-                        try {
-                            var eval = e.Evaluate();
-                            keys.Add(name, eval);
-                            Debug.WriteLine("Constant " + name + " evaluated to " + eval);
-                        } catch (Exception ex) {
-                            Debug.WriteLine("OOPS!");
-                        }
-
                     }
                 } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
                     FindConstants(descendant, new Keys());
@@ -201,73 +213,26 @@ namespace WhenPlugin.When {
             } catch (Exception) {
                 ISequenceContainer c = item.Parent;
                 // Ok, it's not a number. Let's look for constants
-                if (c != null) {                                      
-                    // Tokenize the expression
-                    string[] tokens = Regex.Split(expr, @"(?=[-+*/])|(?<=[-+*/])");
-
-                    bool resolved = false;
-                    while (c != null) {
-                        if (ResolveInContainer(item, exprName, c, tokens, issues)) {
-                            expr = string.Concat(tokens);
-                            resolved = true;
-                            break;
+                if (c != null) {
+                    // Build the keys stack
+                    Stack<Keys> stack = new Stack<Keys>();
+                    ISequenceContainer cc = c;
+                    while (cc != null) {
+                        Keys cachedKeys;
+                        KeyCache.TryGetValue(cc, out cachedKeys);
+                        if (cachedKeys != null) {
+                            stack.Push(cachedKeys);
                         }
-                        else {
-                            c = c.Parent;
-                        }
+                        cc = cc.Parent;
                     }
-                    if (c == null) return false;
-
-                    if (!resolved) {
-                        // Look in the StartArea
-                        // ** Check if we're already IN the start container!
-                        c = item.Parent;
-                        while (c != null) {
-                            c = c.Parent;
-                            if (c != null && c is SequenceRootContainer) {
-                                // Found root container; now let's find the StartArea
-                                foreach (SequenceItem rootItem in c.Items) {
-                                    if (rootItem is StartAreaContainer) {
-                                        ISequenceContainer startArea = (SequenceContainer)rootItem;
-                                        // Don't pass issues because we've already failed to resolve
-                                        if (ResolveInContainer(item, exprName, startArea, tokens, null)) { //issues)) {
-                                            expr = string.Concat(tokens);
-                                            resolved = true;
-                                            break;
-                                        } else {
-                                            return false;
-                                        }
-                                    }
-                                }
-                            }
-                            if (resolved) break;
-                        }
+                    double result = EvaluateExpression(expr, stack);
+                    if (result == Double.NaN) {
+                        val = -1;
                         return false;
+                    } else {
+                        val = result;
+                        return true;
                     }
-
-                    if (!resolved) return false;
-                    DataTable dt = new DataTable();
-                    try {
-                        var v = dt.Compute(expr, "");
-                        if (v == DBNull.Value) {
-                            issues.Add("Not an arithmetic expression");
-                            return false;
-                        }
-                        else {
-                            if (v is double) {
-                                val = (double)v;
-                                return true;
-                            }
-                            else {
-                                val = Convert.ToDouble(v);
-                                return true;
-                            }
-                        }
-                    }
-                    catch (Exception) {
-                        // Not a valid expression
-                    }
-
                 }
             }
             return false;
