@@ -11,7 +11,9 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -60,11 +62,20 @@ namespace WhenPlugin.When {
             return null;
         }
         
-        static private Dictionary<ISequenceContainer, Dictionary<string, object>> KeyCache = new Dictionary<ISequenceContainer, Dictionary<string, object>>();  
+        static private Dictionary<ISequenceContainer, Keys> KeyCache = new Dictionary<ISequenceContainer, Keys>();  
         
         private class Keys : Dictionary<string, object> {
+
+            public override string ToString() {
+                StringBuilder sb = new StringBuilder();
+                foreach (KeyValuePair<string, object> kvp in this) {
+                    sb.Append(kvp.Key);
+                    sb.Append(' ');
+                }
+                return sb.ToString();
+            }
         }
-        
+       
         static private Dictionary<string, object> CopyKeys(Dictionary<string, object> dict) {
             Dictionary<string, object> copy = new Dictionary<string, object>();
             foreach (KeyValuePair<string, object> keyValuePair in dict) {
@@ -74,22 +85,36 @@ namespace WhenPlugin.When {
         }
 
         private static Stack<Keys> KeysStack = new Stack<Keys>();
+
+        private static int FC = 0;
+
+        static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
+            Debug.WriteLine("Root: #" + ++FC);
+            FindConstants(container, keys);
+        }
         
         static private void FindConstants(ISequenceContainer container, Keys keys) {
             if (container == null) return;
             if (container.Items.IsNullOrEmpty()) return;
 
+            Keys cachedKeys = null;
+            if (KeyCache.TryGetValue(container, out cachedKeys)) {
+                Debug.WriteLine("FindConstants for " + container.Name + " in cache: " + cachedKeys);
+            } else {
+                Debug.WriteLine("FindConstants: " + container.Name);
+            }
+ 
             KeysStack.Push(keys);
 
-            Debug.WriteLine("FindConstants: " + container.Name);
             foreach (ISequenceItem item in container.Items) {
-                if (item is SetConstant sc) {
+                if (item is SetConstant sc && cachedKeys == null) {
                     string name = sc.Constant;
                     string val = sc.ValueExpr;
                     double value;
                     if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
                         keys.Add(name, value);
+                        Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
                         // The value is an expression, so we must deal with it
                         Expression e = new Expression(val);
@@ -106,22 +131,29 @@ namespace WhenPlugin.When {
                         try {
                             var eval = e.Evaluate();
                             keys.Add(name, eval);
+                            Debug.WriteLine("Constant " + name + " evaluated to " + eval);
                         } catch (Exception ex) {
                             Debug.WriteLine("OOPS!");
                         }
 
                     }
-                } else if (item is ISequenceContainer descendant) {
+                } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
                     FindConstants(descendant, new Keys());
                 }
             }
-            if (KeyCache.ContainsKey(container)) {
-                KeyCache.Remove(container);
+            
+            if (cachedKeys == null) {
+                if (KeyCache.ContainsKey(container)) {
+                    KeyCache.Remove(container);
+                }
+                KeyCache.Add(container, keys);
             }
-            KeyCache.Add(container, keys);
+            
             KeysStack.Pop();
 
-            Debug.WriteLine(container.Name + ": " + keys);
+            if (keys.Count > 0) {
+                Debug.WriteLine(container.Name + ": " + keys);
+            }
         }
 
         public static bool IsValidExpression_new(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
@@ -154,7 +186,10 @@ namespace WhenPlugin.When {
             if (item.Parent == null) return true;
             
             ISequenceContainer root = FindRoot(item.Parent);
-            FindConstants(root, new Keys());
+            if (root != null) {
+                Debug.WriteLine("IsValid: ", item.Name + ", " + exprName + " = " + expr);
+                FindConstantsRoot(root, new Keys());
+            }
             
             try {
                if (expr == null || expr.Length == 0) {
