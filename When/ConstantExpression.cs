@@ -1,9 +1,15 @@
-﻿using Namotion.Reflection;
+﻿using Castle.Core.Internal;
+using Namotion.Reflection;
+using NCalc;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -42,14 +48,116 @@ namespace WhenPlugin.When {
                     }
                 }
             }
-             bool topLevel = container is SequenceRootContainer || container is StartAreaContainer;
+            bool topLevel = container is SequenceRootContainer || container is StartAreaContainer;
             return AreConstantsResolved(tokens, issues, topLevel || (container.Parent == null));
         }
+
+        static SequenceRootContainer FindRoot(ISequenceContainer cont) {
+            while (cont != null) {
+                if (cont is SequenceRootContainer root) { return root; }
+                cont = cont.Parent;
+            }
+            return null;
+        }
+        
+        static private Dictionary<ISequenceContainer, Dictionary<string, object>> KeyCache = new Dictionary<ISequenceContainer, Dictionary<string, object>>();  
+        
+        private class Keys : Dictionary<string, object> {
+        }
+        
+        static private Dictionary<string, object> CopyKeys(Dictionary<string, object> dict) {
+            Dictionary<string, object> copy = new Dictionary<string, object>();
+            foreach (KeyValuePair<string, object> keyValuePair in dict) {
+                copy.Add(keyValuePair.Key, keyValuePair.Value);
+            }
+            return copy;
+        }
+
+        private static Stack<Keys> KeysStack = new Stack<Keys>();
+        
+        static private void FindConstants(ISequenceContainer container, Keys keys) {
+            if (container == null) return;
+            if (container.Items.IsNullOrEmpty()) return;
+
+            KeysStack.Push(keys);
+
+            Debug.WriteLine("FindConstants: " + container.Name);
+            foreach (ISequenceItem item in container.Items) {
+                if (item is SetConstant sc) {
+                    string name = sc.Constant;
+                    string val = sc.ValueExpr;
+                    double value;
+                    if (Double.TryParse(val, out value)) {
+                        // The value is a number, so we're good
+                        keys.Add(name, value);
+                    } else {
+                        // The value is an expression, so we must deal with it
+                        Expression e = new Expression(val);
+                        // Consolidate keys
+                        Keys mergedKeys = new Keys();
+                        foreach(Keys k in KeysStack) {
+                            foreach(KeyValuePair<string, object> kvp in k) {
+                                if (!mergedKeys.ContainsKey(kvp.Key)) {
+                                    mergedKeys.Add(kvp.Key, kvp.Value);
+                                }
+                            }
+                        }
+                        e.Parameters = mergedKeys;
+                        try {
+                            var eval = e.Evaluate();
+                            keys.Add(name, eval);
+                        } catch (Exception ex) {
+                            Debug.WriteLine("OOPS!");
+                        }
+
+                    }
+                } else if (item is ISequenceContainer descendant) {
+                    FindConstants(descendant, new Keys());
+                }
+            }
+            if (KeyCache.ContainsKey(container)) {
+                KeyCache.Remove(container);
+            }
+            KeyCache.Add(container, keys);
+            KeysStack.Pop();
+
+            Debug.WriteLine(container.Name + ": " + keys);
+        }
+
+        public static bool IsValidExpression_new(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
+            val = 0;
+            if (expr.IsNullOrEmpty()) return false;
+            try {
+                val = Double.Parse(expr);
+                return true;
+
+            } catch (Exception) {
+                // Ok, it's not a number. Let's look for constants
+                // Find relevant keys
+                // Look in cache eventually
+                Keys keys = new Keys();
+                ISequenceContainer c = item.Parent;
+                if (c != null) {
+                    // Tokenize the expression
+                    string[] tokens = Regex.Split(expr, @"(?=[-+*/])|(?<=[-+*/])");
+                    List<string> tokenList = tokens.Cast<string>().ToList();
+                    FindConstants(c, keys);
+                }
+            }
+            return true;
+        }
+
+        
         public static bool IsValidExpression(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
- 
+
+            if (item.Parent == null) return true;
+            
+            ISequenceContainer root = FindRoot(item.Parent);
+            FindConstants(root, new Keys());
+            
             try {
-                if (expr == null || expr.Length == 0) {
+               if (expr == null || expr.Length == 0) {
                     return false;
                 }
                 // Best case, this is a number of some sort

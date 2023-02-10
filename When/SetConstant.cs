@@ -49,7 +49,7 @@ namespace WhenPlugin.When {
                     }
                     if (ConstantExpression.IsValidExpression(this, Dummy, value, out double val, null)) {
                         // Already defined!
-                        value = "'" + value + "' is defined elsewhere!";
+                        //value = "'" + value + "' is defined elsewhere!";
                     }
                     constant = value;
                 }
