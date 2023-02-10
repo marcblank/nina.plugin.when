@@ -83,6 +83,7 @@ namespace WhenPlugin.When {
                 ExposureTimeExpr = ExposureTimeExpr,
                 ExposureCount = 0,
                 Binning = Binning,
+                GainExpr = GainExpr,
                 Gain = Gain,
                 Offset = Offset,
                 ImageType = ImageType,
@@ -130,6 +131,7 @@ namespace WhenPlugin.When {
             set {
                 gainExpr = value;
                 ConstantExpression.Evaluate(this, "GainExpr", "Gain");
+                RaisePropertyChanged("GainExpr");
             }
         }
 

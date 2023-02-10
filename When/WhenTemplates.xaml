@@ -21,6 +21,7 @@
         <PathGeometry Figures="M 498.653,179.5C 494.361,180.625 489.673,181.542 484.59,182.292C 479.507,183.021 474.986,183.396 471.028,183.396C 457.153,183.396 446.59,179.667 439.361,172.188C 432.132,164.729 428.528,152.75 428.528,136.271L 428.528,63.9583L 413.069,63.9583L 413.069,44.7292L 428.528,44.7292L 428.528,5.64583L 451.423,5.64583L 451.423,44.7292L 498.653,44.7292L 498.653,63.9583L 451.423,63.9583L 451.423,125.917C 451.423,133.083 451.569,138.667 451.903,142.667C 452.236,146.688 453.361,150.438 455.319,153.917C 457.111,157.167 459.569,159.542 462.694,161.042C 465.819,162.542 470.569,163.292 476.986,163.292C 480.715,163.292 484.611,162.75 488.673,161.667C 492.715,160.583 495.653,159.667 497.444,158.917L 498.653,158.917L 498.653,179.5 Z " />
     </GeometryGroup>
 
+    <local:ExpressionConverter x:Key="ec" />
 
     <DataTemplate DataType="{x:Type local:InterruptTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
@@ -677,7 +678,7 @@
 
         <!--  Free Gain  -->
         <WrapPanel Orientation="Horizontal">
-            <WrapPanel.Visibility>
+             <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding
                         Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
@@ -686,17 +687,22 @@
                 </PriorityBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,0,7.5,0"
+                Margin="7.5,0,7.5,-3"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+            <TextBlock VerticalAlignment="Bottom" Text="{ns:Loc LblGain}" />
 
-            <local:ConstantControl 
-                Margin = "8,0,10,5" 
-                Expr="{Binding Path=GainExpr, Mode=TwoWay, ValidatesOnExceptions=True}"
-            />
-            
+            <TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />
+            <TextBlock VerticalAlignment="Center" Margin="-3,0,10,0">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource ec}">
+                        <Binding Path="GainExpr" Mode="TwoWay" ValidatesOnExceptions="True" />
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
             <!--<ninactrl:HintTextBox
                 MinWidth="40"
                 Margin="5,0,0,0"
