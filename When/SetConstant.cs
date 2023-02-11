@@ -86,8 +86,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private readonly string valueString;
-
         public string ValueString {
             get {
                 return Value.ToString();

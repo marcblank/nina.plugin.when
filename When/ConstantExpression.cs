@@ -54,14 +54,18 @@ namespace WhenPlugin.When {
             FindConstants(container, keys);
         }
 
-        static private Double EvaluateExpression (string expr, Stack<Keys> stack) {
+        static private Double EvaluateExpression (string expr, Stack<Keys> stack, IList<string> issues) {
+            if (expr == null) return 0;
+
             Expression e = new Expression(expr);
             // Consolidate keys
             Keys mergedKeys = new Keys();
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
                     if (!mergedKeys.ContainsKey(kvp.Key)) {
-                        mergedKeys.Add(kvp.Key, kvp.Value);
+                        if (!Double.IsNaN((double)kvp.Value)) {
+                            mergedKeys.Add(kvp.Key, kvp.Value);
+                        }
                     }
                 }
             }
@@ -79,6 +83,9 @@ namespace WhenPlugin.When {
                     return Double.NaN;
                 }
             } catch (Exception ex) {
+                if (issues != null) {
+                    issues.Add(ex.Message);
+                }
                 return Double.NaN;
             }
 
@@ -107,7 +114,7 @@ namespace WhenPlugin.When {
                         keys.Add(name, value);
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
-                        double result = EvaluateExpression(val, KeysStack);
+                        double result = EvaluateExpression(val, KeysStack, null);
                         if (result != Double.NaN) {
                             keys.Add(name, result);
                         }
@@ -134,7 +141,7 @@ namespace WhenPlugin.When {
         public static bool IsValidExpression(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
 
-            if (item.Parent == null) return true;
+                if (item.Parent == null) return true;
             
             ISequenceContainer root = FindRoot(item.Parent);
             if (root != null) {
@@ -164,8 +171,8 @@ namespace WhenPlugin.When {
                         }
                         cc = cc.Parent;
                     }
-                    double result = EvaluateExpression(expr, stack);
-                    if (result == Double.NaN) {
+                    double result = EvaluateExpression(expr, stack, issues);
+                    if (Double.IsNaN(result)) {
                         val = -1;
                         return false;
                     } else {
