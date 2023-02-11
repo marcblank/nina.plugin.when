@@ -75,15 +75,49 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <!--<DataTemplate DataType="{x:Type local:InterruptWait}">
+    <DataTemplate x:Key="WhenPlugin.When.CoolCamera_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Temperature}" />
+                    <TextBlock VerticalAlignment="Center" Text="°" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type local:CoolCamera}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
+                    <local:ConstantControl 
+                        MinWidth="40"
+                        Margin="5,-4,0,0"
+                        Expr="{Binding TemperatureExpr}" />
+                    <!--<ninactrl:UnitTextBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding Temperature}"
+                        TextAlignment="Right"
+                        Unit="°C" />-->
+                    <TextBlock
+                        Margin="2.5,0,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="°C |" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
+                    <ninactrl:UnitTextBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding Duration}"
+                        TextAlignment="Right"
+                        Unit="min" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
-    </DataTemplate>-->
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SetConstant}">
         <nina:SequenceBlockView DataContext="{Binding}">
@@ -613,6 +647,7 @@
         <local:ConstantControl 
             Margin = "8,1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
+
             />
         
         <TextBlock

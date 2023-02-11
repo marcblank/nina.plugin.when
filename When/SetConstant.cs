@@ -90,7 +90,7 @@ namespace WhenPlugin.When {
 
         public string ValueString {
             get {
-                return Value < 0 ? " ? " : Value.ToString();
+                return Value.ToString();
             }
             set { }
         }

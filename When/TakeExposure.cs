@@ -348,12 +348,7 @@ namespace WhenPlugin.When {
                 return null;
             }
         }
- 
-        private Brush isValidExposureTime = Brushes.GreenYellow;
-        [JsonProperty]
-        public Brush IsValidExposureTime { get => isValidExposureTime; set => isValidExposureTime = value; }
-
- 
+  
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
@@ -378,10 +373,8 @@ namespace WhenPlugin.When {
 
             if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
                 ExposureTime = expTime;
-                IsValidExposureTime = Brushes.GreenYellow;
             }
             else {
-                IsValidExposureTime = Brushes.Orange;
                 ExposureTime = -1;
             }
             RaisePropertyChanged();
