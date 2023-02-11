@@ -45,6 +45,10 @@ namespace WhenPlugin.When {
 
         private static int FC = 0;
 
+        static public void UpdateConstants(ISequenceItem item) {
+            KeyCache.Clear();
+            FindConstants(item.Parent, new Keys());
+        }
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             Debug.WriteLine("Root: #" + ++FC);
             FindConstants(container, keys);

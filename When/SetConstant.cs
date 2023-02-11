@@ -81,6 +81,7 @@ namespace WhenPlugin.When {
                 } else if (ConstantExpression.IsValidExpression(this, nameof(ValueExpr), value, out val, null)) {
                     Value = val;
                 }
+                ConstantExpression.UpdateConstants(this);
                 RaisePropertyChanged();
             }
         }
