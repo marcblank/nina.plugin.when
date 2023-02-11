@@ -25,23 +25,34 @@ namespace WhenPlugin.When {
 
     public class ExpressionConverter : IMultiValueConverter {
 
+        public static Dictionary<ISequenceItem, bool> ValidityCache = new Dictionary<ISequenceItem, bool>();
+
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
+            SequenceItem item = value[1] as SequenceItem;
             if (value[0] is string expr) {
                 double test;
                 if (double.TryParse(expr, out test)) {
+                    ValidityCache.Remove(item);
+                    ValidityCache.Add(item, true);
                     return test;
                 } else {
                     double result;
                     IList<string> issues = new List<string>();
-                    SequenceItem item = value[1] as SequenceItem;
                     if (ConstantExpression.IsValidExpression(item, "foo", expr, out result, issues)) {
+                        ValidityCache.Remove(item);
+                        ValidityCache.Add(item, true);
                         return " {" + result.ToString() + "}";
                     } else if (issues.Count > 0) {
+                        ValidityCache.Remove(item);
                         return " {" + issues[0] + "}";
-                    } else return " {Error}";
+                    } else {
+                        ValidityCache.Remove(item);
+                        return " {Error}";
+                    }
                  }
             }
+            ValidityCache.Remove(item);
             return "Illegal";
         }
 

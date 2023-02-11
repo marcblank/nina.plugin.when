@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:WhenPlugin.When">
     <UserControl.Resources>
         <local:ExpressionConverter x:Key="ec" />
+        <local:ValidityConverter x:Key="vc" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
         <TextBox MinWidth="20" Margin="0,0,0,-5" Text="{Binding Expr, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:ConstantControl}}}" />
@@ -14,6 +15,12 @@
                     <Binding Path="."/>
                 </MultiBinding>
             </TextBlock.Text>
+            <TextBlock.Foreground>
+                <MultiBinding Converter="{StaticResource vc}">
+                    <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
+                    <Binding Path="."/>
+                </MultiBinding>
+            </TextBlock.Foreground>
         </TextBlock>
     </StackPanel>
 </UserControl>
