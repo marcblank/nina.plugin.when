@@ -14,16 +14,28 @@ namespace WhenPlugin.When {
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ExprProperty = 
-            DependencyProperty.Register("Expr", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnChanged));
-        
+        public static readonly DependencyProperty ExprProperty =
+            DependencyProperty.Register("Expr", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnExprChanged));
+
         public String Expr {
             get { return (String)GetValue(ExprProperty); }
             set { SetValue(ExprProperty, value); }
         }
 
-        private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             d.SetValue(ExprProperty, e.NewValue);
+        }
+
+        public static readonly DependencyProperty ValuProperty =
+             DependencyProperty.Register("Valu", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnValuChanged));
+
+        public String Valu {
+            get { return (String)GetValue(ValuProperty); }
+            set { SetValue(ValuProperty, value); }
+        }
+
+        private static void OnValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            d.SetValue(ValuProperty, e.NewValue);
         }
 
         //<local:ConstantControl Margin = "0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />

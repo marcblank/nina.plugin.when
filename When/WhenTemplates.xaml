@@ -23,6 +23,21 @@
 
     <local:ExpressionConverter x:Key="ec" />
 
+    <ControlTemplate x:Key="ConstantExpression" TargetType="ContentControl">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+            <TextBox MinWidth="20" Margin="0,0,0,-5" Text="{TemplateBinding Content}" />
+            <TextBlock VerticalAlignment="Center" Margin="0,0,0,-5">
+            <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource ec}" Mode="TwoWay">
+                        <Binding Path="Content" RelativeSource="{RelativeSource Mode=TemplatedParent}"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+    </ControlTemplate>
+
+
     <DataTemplate DataType="{x:Type local:InterruptTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -596,7 +611,7 @@
  
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTime}" />
         <local:ConstantControl 
-            Margin = "8,0,10,5" 
+            Margin = "8,1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
             />
         
@@ -691,9 +706,11 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Bottom" Text="{ns:Loc LblGain}" />
 
-            <TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+            <local:ConstantControl Margin="8,1,10,5" Expr="{Binding Path=GainExpr, Mode=TwoWay}" />
+
+            <!--<TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />
             <TextBlock VerticalAlignment="Center" Margin="-3,0,10,0">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource ec}">
@@ -701,7 +718,7 @@
                         <Binding Path="."/>
                     </MultiBinding>
                 </TextBlock.Text>
-            </TextBlock>
+            </TextBlock>-->
 
             <!--<ninactrl:HintTextBox
                 MinWidth="40"
