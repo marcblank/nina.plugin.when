@@ -50,7 +50,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TakeExposure : SequenceItem, IExposureItem, IValidatable, IInstructionResults {
         private ICameraMediator cameraMediator;
