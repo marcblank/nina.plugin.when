@@ -1,5 +1,6 @@
 ﻿using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -14,7 +15,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceContainer))]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
-    public class IfContainer : SequentialContainer, ISequenceContainer {
+    public class IfContainer : SequentialContainer, ISequenceContainer, IValidatable {
 
 
         public IfContainer() : base() {

@@ -60,6 +60,7 @@ namespace WhenPlugin.When {
             Expression e = new Expression(expr);
             // Consolidate keys
             Keys mergedKeys = new Keys();
+
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
                     if (!mergedKeys.ContainsKey(kvp.Key)) {
@@ -166,12 +167,20 @@ namespace WhenPlugin.When {
                     while (cc != null) {
                         Keys cachedKeys;
                         KeyCache.TryGetValue(cc, out cachedKeys);
-                        if (cachedKeys != null) {
+                        if (!cachedKeys.IsNullOrEmpty()) {
                             stack.Push(cachedKeys);
                         }
                         cc = cc.Parent;
                     }
-                    double result = EvaluateExpression(expr, stack, issues);
+
+                    // Reverse the stack to maintain proper scoping
+                    Stack<Keys> reverseStack= new Stack<Keys>();
+                    Keys k;
+                    while (stack.TryPop(out k)) {
+                        reverseStack.Push(k);
+                    }
+
+                    double result = EvaluateExpression(expr, reverseStack, issues);
                     if (Double.IsNaN(result)) {
                         val = -1;
                         return false;
