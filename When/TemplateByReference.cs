@@ -31,6 +31,7 @@ using NINA.Sequencer.Serialization;
 using System.Diagnostics;
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
+using System.Windows;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -56,6 +57,7 @@ namespace WhenPlugin.When {
             sequenceMediator = seqMediator;
             profileService = pService;
             Instructions = new TemplateContainer();
+            Instructions.AttachNewParent(Parent);
             Instructions.TBR = this;
             Name = Name;
             Id = ++instanceNumber;

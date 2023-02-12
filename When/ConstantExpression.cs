@@ -61,6 +61,7 @@ namespace WhenPlugin.When {
             Expression e = new Expression(expr);
             // Consolidate keys
             Keys mergedKeys = new Keys();
+
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
                     if (!mergedKeys.ContainsKey(kvp.Key)) {

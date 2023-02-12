@@ -40,6 +40,7 @@ namespace WhenPlugin.When {
             foreach (var item in Items) {
                 item.AttachNewParent(TBR?.Parent);
             }
+            AttachNewParent(copyMe.Parent);
         }
 
         public override TemplateContainer Clone() {
