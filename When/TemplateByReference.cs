@@ -232,6 +232,12 @@ namespace WhenPlugin.When {
                 }
             }
         }
+
+        public override void AfterParentChanged() {
+            Debug.WriteLine("Template parent changed");
+            // New; provide link up the chain
+            Instructions.AttachNewParent(Parent);
+        }
         
         public bool Validate() {
 
@@ -258,6 +264,12 @@ namespace WhenPlugin.When {
                 SelectedTemplate = FindTemplate(TemplateName);
                 RaisePropertyChanged("SortedTemplates");
                 UpdateChangedTemplates(templateController.UpdatedFile);
+            }
+
+            foreach (ISequenceItem item in Instructions.Items) {
+                if (item is IValidatable val) {
+                    _ = val.Validate();
+                }
             }
 
             Issues = i;

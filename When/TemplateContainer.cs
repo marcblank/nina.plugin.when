@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
         public TemplateContainer (TemplateContainer copyMe) : this() {
             Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
             foreach (var item in Items) {
-                item.AttachNewParent(this);
+                item.AttachNewParent(TBR?.Parent);
             }
         }
 

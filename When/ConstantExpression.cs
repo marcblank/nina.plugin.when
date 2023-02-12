@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -166,12 +167,21 @@ namespace WhenPlugin.When {
                     while (cc != null) {
                         Keys cachedKeys;
                         KeyCache.TryGetValue(cc, out cachedKeys);
-                        if (cachedKeys != null) {
+                        if (!cachedKeys.IsNullOrEmpty()) {
                             stack.Push(cachedKeys);
                         }
                         cc = cc.Parent;
                     }
-                    double result = EvaluateExpression(expr, stack, issues);
+
+                    // Reverse the stack to maintain proper scoping
+                    Stack<Keys> reverseStack = new Stack<Keys>();
+                    Keys k;
+                    while (stack.TryPop(out k)) {
+                        reverseStack.Push(k);
+                    }
+
+                    double result = EvaluateExpression(expr, reverseStack, issues);
+
                     if (Double.IsNaN(result)) {
                         val = -1;
                         return false;
