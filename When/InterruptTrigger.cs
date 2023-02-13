@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Accord.Diagnostics;
+using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Validations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +23,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]
-    public class InterruptTrigger : SequenceTrigger {
+    public class InterruptTrigger : SequenceTrigger, IValidatable {
 
         private GeometryGroup HourglassIcon = (GeometryGroup)Application.Current.Resources["HourglassSVG"];
 
@@ -47,6 +50,8 @@ namespace WhenPlugin.When {
 
         public bool InFlight { get; set; }
 
+        public IList<string> Issues => new List<string>();
+
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             try {
@@ -68,6 +73,14 @@ namespace WhenPlugin.When {
         /// <returns></returns>
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(InterruptTrigger)}";
+        }
+
+        public bool Validate() {
+            // Make sure a proper tree is maintained
+            foreach (ISequenceItem item in TriggerRunner.Items) {
+                item.AttachNewParent(Parent);
+            }
+            return true;
         }
     }
 }

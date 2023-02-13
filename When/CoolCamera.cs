@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
+using NINA.Astrometry;
 
 namespace WhenPlugin.When {
 

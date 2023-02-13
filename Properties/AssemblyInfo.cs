@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.1.4.0")]
-[assembly: AssemblyFileVersion("3.1.4.0")]
+[assembly: AssemblyVersion("3.1.6.0")]
+[assembly: AssemblyFileVersion("3.1.6.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -39,7 +39,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Homepage", "https://mypluginwebsite.com/")]
 
 //[Optional] Common tags that quickly describe your plugin
-[assembly: AssemblyMetadata("Tags", "Sequencer, Utility, Powerups")]
+[assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups")]
 
 //[Optional] A link that will show a log of all changes in between your plugin's versions
 [assembly: AssemblyMetadata("ChangelogURL", "https://bitbucket.org/zorkmid/nina.plugin.when/CHANGELOG.md")]
