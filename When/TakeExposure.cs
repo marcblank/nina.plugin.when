@@ -373,15 +373,16 @@ namespace WhenPlugin.When {
             }
 
             if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
-                // UGH!
                 ExposureTime = expTime;
-                //string OldExposureTimeExpr = ExposureTimeExpr;
-                //ExposureTimeExpr = "";
-                //ExposureTimeExpr = OldExposureTimeExpr;
-            }
-            else {
+            } else {
                 ExposureTime = -1;
             }
+            if (ConstantExpression.IsValidExpression(this, nameof(GainExpr), GainExpr, out double gain, i)) {
+                Gain = (int)gain;
+            } else {
+                Gain = -1;
+            }
+
             RaisePropertyChanged("ExposureTimeExpr");
             Issues = i;
             return i.Count == 0;

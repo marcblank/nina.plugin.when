@@ -130,28 +130,10 @@
                         Text="{Binding Constant}"
                         TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding ValueExpr}"
-                        TextAlignment="Right" />
-                    <TextBlock
-                        Margin="7.5,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="(" />
-                    <TextBlock
-                        Foreground="{Binding IsValidValue}" 
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding ValueString}" />
-                    <TextBlock
-                        Margin="0,0,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text=")" />
+                    <local:ConstantControl
+                        Margin="5,0,5,0"
+                        Expr="{Binding CValueExpr, Mode=TwoWay}"
+                        Valu="{Binding CValue, Mode=TwoWay}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -743,7 +725,10 @@
                 Text="|" />
 
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" /> 
-            <local:ConstantControl Margin="8,1,10,5" Expr="{Binding Path=GainExpr, Mode=TwoWay}" />
+            <local:ConstantControl 
+                Margin="8,1,10,5" 
+                Expr="{Binding Path=GainExpr, Mode=TwoWay}"
+                Valu="{Binding Path=Gain, Mode=TwoWay}" />
 
             <!--<TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />
             <TextBlock VerticalAlignment="Center" Margin="-3,0,10,0">

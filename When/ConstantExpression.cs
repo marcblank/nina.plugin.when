@@ -3,6 +3,7 @@ using Namotion.Reflection;
 using NCalc;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -109,7 +110,7 @@ namespace WhenPlugin.When {
             foreach (ISequenceItem item in container.Items) {
                 if (item is SetConstant sc && cachedKeys == null) {
                     string name = sc.Constant;
-                    string val = sc.ValueExpr;
+                    string val = sc.CValue;
                     double value;
                     if (name.IsNullOrEmpty()) {
                         Debug.WriteLine("Empty name in SetConstant; ignore");
@@ -199,7 +200,7 @@ namespace WhenPlugin.When {
 
         public static bool Evaluate(SequenceItem item, string exprName, string valueName) {
             double val;
-            string expr = item.TryGetPropertyValue(exprName, "") as string;
+               string expr = item.TryGetPropertyValue(exprName, "") as string;
 
             if (ConstantExpression.IsValidExpression(item, exprName, expr, out val, null)) {
                 PropertyInfo pi = item.GetType().GetProperty(valueName);

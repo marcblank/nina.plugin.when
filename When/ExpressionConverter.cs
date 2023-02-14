@@ -30,7 +30,7 @@ namespace WhenPlugin.When {
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
             SequenceItem item = value[1] as SequenceItem;
-            if (value[0] is string expr) {
+                if (value[0] is string expr) {
                 double test;
                 if (double.TryParse(expr, out test)) {
                     ValidityCache.Remove(item);
