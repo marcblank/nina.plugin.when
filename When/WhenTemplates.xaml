@@ -126,12 +126,12 @@
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
                         MinWidth="40"
-                        Margin="5,0,10,0"
+                        Margin="5,0,10,-2"
                         Text="{Binding Constant}"
                         TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
-                        Margin="5,0,5,0"
+                        Margin="5,0,5,3"
                         Expr="{Binding CValueExpr, Mode=TwoWay}"
                         Valu="{Binding CValue, Mode=TwoWay}" />
                 </StackPanel>
