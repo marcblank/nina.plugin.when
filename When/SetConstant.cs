@@ -42,10 +42,9 @@ namespace WhenPlugin.When {
                 // ** Fix when Constant can be an expression
                 if (constant != value) {
                     if (ConstantExpression.IsValidExpression(this, Dummy, value, out double val, null)) {
-                        // Already defined!
-                        //value = "'" + value + "' is defined elsewhere!";
                     }
                     constant = value;
+                    ConstantExpression.UpdateConstants(this);
                 }
                 RaisePropertyChanged();
             }
