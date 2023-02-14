@@ -11,9 +11,9 @@
         <TextBlock VerticalAlignment="Center" Margin="0,-1,0,-3">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
-                    <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
+                    <Binding Path="Expr" ValidatesOnExceptions="True"  RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
                     <Binding Path="."/>
-                    <Binding Path="Valu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
+                    <Binding Path="Valu" ValidatesOnExceptions="True"  RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>

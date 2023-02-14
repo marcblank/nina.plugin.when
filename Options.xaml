@@ -5,15 +5,42 @@
     <!--  This data template will be displayed in N.I.N.A. on the options->plugin tab with the datacontext of the TestPlugin instance  -->
     <!--  In order for this datatemplate to be picked correctly, the key has to follow the naming convention of <IPlugin.Name>_Options -->
     <!--  Furthermore the Resource Dictionary has to be exported via code behind export attributes  -->
-    <DataTemplate x:Key="When_Options">
+    <DataTemplate x:Key="Sequencer Powerups_Options">
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Default Notification Message" />
-                <TextBox MinWidth="50" Text="{Binding DefaultNotificationMessage}" />
+            <TextBlock Margin="0,0,0,10">
+                <TextBlock.Inlines>
+                    <Run FontWeight="Bold" FontSize="13pt"  Text="Global Constants (applicable in any Constant expression)" />
+                </TextBlock.Inlines>
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" MinHeight="20" Margin="0,0,0,5">
+                <TextBlock Text="Name: " />
+                <TextBox MinWidth="50" Text="{Binding Name1}" />
+                <TextBlock Text="Value: " />
+                <TextBox MinWidth="50" Text="{Binding Value1}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Profile Specific Notification Message" />
-                <TextBox MinWidth="50" Text="{Binding ProfileSpecificNotificationMessage}" />
+            <StackPanel Orientation="Horizontal" MinHeight="20" Margin="0,0,0,5">
+                <TextBlock Text="Name: " />
+                <TextBox MinWidth="50" Text="{Binding Name2}" />
+                <TextBlock Text="Value: " />
+                <TextBox MinWidth="50" Text="{Binding Value2}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" MinHeight="20" Margin="0,0,0,5">
+                <TextBlock Text="Name: " />
+                <TextBox MinWidth="50" Text="{Binding Name3}" />
+                <TextBlock Text="Value: " />
+                <TextBox MinWidth="50" Text="{Binding Value3}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" MinHeight="20" Margin="0,0,0,5">
+                <TextBlock Text="Name: " />
+                <TextBox MinWidth="50" Text="{Binding Name4}" />
+                <TextBlock Text="Value: " />
+                <TextBox MinWidth="50" Text="{Binding Value4}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" MinHeight="20" Margin="0,0,0,5">
+                <TextBlock Text="Name: " />
+                <TextBox MinWidth="50" Text="{Binding Name5}" />
+                <TextBlock Text="Value: " />
+                <TextBox MinWidth="50" Text="{Binding Value5}" />
             </StackPanel>
         </StackPanel>
     </DataTemplate>

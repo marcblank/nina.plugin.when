@@ -130,8 +130,13 @@ namespace WhenPlugin.When {
         public string GainExpr {
             get => gainExpr;
             set {
-                gainExpr = value;
                 ConstantExpression.Evaluate(this, "GainExpr", "Gain");
+
+                if (gain < -1 || gain > 32767) {
+                    throw new ArgumentException("value");
+                }
+
+                gainExpr = value;
                 RaisePropertyChanged("GainExpr");
             }
         }
@@ -141,9 +146,6 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public int Gain { get => gain; 
             set {
-                if (value < -1 || value > 32767) {
-                    throw new ArgumentException("value");
-                }
                 gain = value; 
                 RaisePropertyChanged();
             } 

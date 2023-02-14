@@ -111,12 +111,42 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
-        public string DefaultNotificationMessage {
+        public string Name1 {
             get {
-                return Settings.Default.DefaultNotificationMessage;
+                return Settings.Default.Name1;
             }
             set {
-                Settings.Default.DefaultNotificationMessage = value;
+                Settings.Default.Name1 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value1 {
+            get {
+                return Settings.Default.Value1;
+            }
+            set {
+                Settings.Default.Value1 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Name2 {
+            get {
+                return Settings.Default.Name2;
+            }
+            set {
+                Settings.Default.Name2 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value2 {
+            get {
+                return Settings.Default.Value2;
+            }
+            set {
+                Settings.Default.Value2 = value;
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }

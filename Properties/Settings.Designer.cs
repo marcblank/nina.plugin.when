@@ -37,13 +37,49 @@ namespace WhenPlugin.When.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("This is a notification")]
-        public string DefaultNotificationMessage {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name1 {
             get {
-                return ((string)(this["DefaultNotificationMessage"]));
+                return ((string)(this["Name1"]));
             }
             set {
-                this["DefaultNotificationMessage"] = value;
+                this["Name1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value1 {
+            get {
+                return ((string)(this["Value1"]));
+            }
+            set {
+                this["Value1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name2 {
+            get {
+                return ((string)(this["Name2"]));
+            }
+            set {
+                this["Name2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value2 {
+            get {
+                return ((string)(this["Value2"]));
+            }
+            set {
+                this["Value2"] = value;
             }
         }
     }
