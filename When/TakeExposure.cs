@@ -141,7 +141,9 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public int Gain { get => gain; 
             set {
-                if (value < -1 || value > 32767) throw new ArgumentException("value");
+                if (value < -1 || value > 32767) {
+                    throw new ArgumentException("value");
+                }
                 gain = value; 
                 RaisePropertyChanged();
             } 

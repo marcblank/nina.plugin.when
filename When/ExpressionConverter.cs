@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NINA.Sequencer.SequenceItem;
 using System;
 using System.Collections;
@@ -26,6 +27,8 @@ namespace WhenPlugin.When {
     public class ExpressionConverter : IMultiValueConverter {
 
         public static Dictionary<ISequenceItem, bool> ValidityCache = new Dictionary<ISequenceItem, bool>();
+
+        public static string Not_Defined = "Parameter was not defined (";
 
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
@@ -46,9 +49,9 @@ namespace WhenPlugin.When {
                     } else if (issues.Count > 0) {
                         ValidityCache.Remove(item);
                         string errorString = issues[0];
-                        int pos = errorString.IndexOf("Parameter was not defined (");
+                        int pos = errorString.IndexOf(Not_Defined);
                         if (pos == 0) {
-                            errorString = "Undefined (" + errorString.Substring("Paremeter was not defined (".Length);
+                            errorString = "Undefined (" + errorString.Substring(Not_Defined.Length);
                         }
                         return " {" + errorString + "}";
                     } else {

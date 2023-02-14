@@ -208,7 +208,7 @@ namespace WhenPlugin.When {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
                     pi.SetValue(item, conv);
                     return true;
-                } catch (Exception) {
+                } catch (Exception ex) {
                     pi.SetValue(item, 0);
                     throw new ArgumentException("Bad");
                 }

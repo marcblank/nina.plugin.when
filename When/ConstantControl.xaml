@@ -7,7 +7,7 @@
         <local:ValidityConverter x:Key="vc" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-        <TextBox MinWidth="20" Margin="0,0,0,-5" Text="{Binding Expr, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:ConstantControl}}}" />
+        <TextBox MinWidth="20" Margin="0,0,0,-5" Text="{Binding Expr, Mode=TwoWay, ValidatesOnExceptions=True, RelativeSource={RelativeSource AncestorType={x:Type local:ConstantControl}}}" />
         <TextBlock VerticalAlignment="Center" Margin="0,-1,0,-3">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
