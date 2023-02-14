@@ -719,7 +719,7 @@
                 </PriorityBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,0,7.5,-3"
+                Margin="7.5,0,7.5,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />

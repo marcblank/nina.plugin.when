@@ -45,7 +45,12 @@ namespace WhenPlugin.When {
                         return " {" + result.ToString() + "}";
                     } else if (issues.Count > 0) {
                         ValidityCache.Remove(item);
-                        return " {" + issues[0] + "}";
+                        string errorString = issues[0];
+                        int pos = errorString.IndexOf("Parameter was not defined (");
+                        if (pos == 0) {
+                            errorString = "Undefined (" + errorString.Substring("Paremeter was not defined (".Length);
+                        }
+                        return " {" + errorString + "}";
                     } else {
                         ValidityCache.Remove(item);
                         return " {Error}";
