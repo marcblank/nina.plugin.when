@@ -1,0 +1,44 @@
+﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace WhenPlugin.When {
+
+    public partial class ConstantHintControl : UserControl {
+        public ConstantHintControl() {
+            InitializeComponent();
+        }
+
+        public static readonly DependencyProperty HintExprProperty =
+            DependencyProperty.Register("HintExpr", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnHintExprChanged));
+
+        public String HintExpr {
+            get { return (String)GetValue(HintExprProperty); }
+            set { SetValue(HintExprProperty, value); }
+        }
+
+        private static void OnHintExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            d.SetValue(HintExprProperty, e.NewValue);
+        }
+
+        public static readonly DependencyProperty HintValuProperty =
+             DependencyProperty.Register("HintValu", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnHintValuChanged));
+
+        public String HintValu {
+            get { return (String)GetValue(HintValuProperty); }
+            set { SetValue(HintValuProperty, value); }
+        }
+        
+
+        private static void OnHintValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            d.SetValue(HintValuProperty, e.NewValue);
+        }
+
+    }
+}
+
