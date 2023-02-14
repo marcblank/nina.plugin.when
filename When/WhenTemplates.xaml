@@ -742,7 +742,7 @@
                 VerticalAlignment="Center"
                 Text="|" />
 
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" /> 
             <local:ConstantControl Margin="8,1,10,5" Expr="{Binding Path=GainExpr, Mode=TwoWay}" />
 
             <!--<TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />

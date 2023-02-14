@@ -42,8 +42,8 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeManyExposures_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
-    //[Export(typeof(ISequenceItem))]
-    //[Export(typeof(ISequenceContainer))]
+    [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TakeManyExposures : SequentialContainer, IImmutableContainer, IInstructionResults {
 

@@ -34,7 +34,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Lbl_SequenceItem_Camera_CoolCamera_Description")]
     [ExportMetadata("Icon", "SnowflakeSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class CoolCamera : SequenceItem, IValidatable {
 

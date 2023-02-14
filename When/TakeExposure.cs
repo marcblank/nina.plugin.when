@@ -50,7 +50,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TakeExposure : SequenceItem, IExposureItem, IValidatable, IInstructionResults {
         private ICameraMediator cameraMediator;
@@ -115,6 +115,7 @@ namespace WhenPlugin.When {
             set {
                 exposureTimeExpr = value;
                 ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime");
+                RaisePropertyChanged("ExposureTimeExpr");
             }
         } 
         
@@ -372,14 +373,16 @@ namespace WhenPlugin.When {
             }
 
             if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
+                // UGH!
                 ExposureTime = expTime;
+                string OldExposureTimeExpr = ExposureTimeExpr;
+                ExposureTimeExpr = "";
+                ExposureTimeExpr = OldExposureTimeExpr;
             }
             else {
                 ExposureTime = -1;
             }
-            RaisePropertyChanged();
-            RaisePropertyChanged("IsValidExposureTime");
-            RaisePropertyChanged("ExposureTimeString");
+            RaisePropertyChanged("ExposureTimeExpr");
             Issues = i;
             return i.Count == 0;
         }

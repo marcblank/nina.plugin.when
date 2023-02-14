@@ -111,7 +111,9 @@ namespace WhenPlugin.When {
                     string name = sc.Constant;
                     string val = sc.ValueExpr;
                     double value;
-                    if (Double.TryParse(val, out value)) {
+                    if (name.IsNullOrEmpty()) {
+                        Debug.WriteLine("Empty name in SetConstant; ignore");
+                    } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
                         keys.Add(name, value);
                         Debug.WriteLine("Constant " + name + " defined as " + value);
@@ -139,11 +141,11 @@ namespace WhenPlugin.When {
                 Debug.WriteLine(container.Name + ": " + keys);
             }
         }
-        
+
         public static bool IsValidExpression(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
 
-                if (item.Parent == null) return true;
+            if (item.Parent == null) return true;
             
             ISequenceContainer root = FindRoot(item.Parent);
             if (root != null) {
@@ -205,8 +207,26 @@ namespace WhenPlugin.When {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
                     pi.SetValue(item, conv);
                     return true;
-                } catch (Exception ex) {
+                } catch (Exception) {
                     pi.SetValue(item, 0);
+                    throw new ArgumentException("Bad");
+                }
+            }
+            return false;
+        }
+
+        public static bool Evaluate(SequenceItem item, string exprName, string valueName, double def, List<string> issues) {
+            double val;
+            string expr = item.TryGetPropertyValue(exprName, "") as string;
+
+            if (ConstantExpression.IsValidExpression(item, exprName, expr, out val, issues)) {
+                PropertyInfo pi = item.GetType().GetProperty(valueName);
+                try {
+                    var conv = Convert.ChangeType(val, pi.PropertyType);
+                    pi.SetValue(item, conv);
+                    return true;
+                } catch (Exception) {
+                    pi.SetValue(item, def);
                     throw new ArgumentException("Bad");
                 }
             }

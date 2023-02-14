@@ -16,7 +16,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Sequencer")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SetConstant : SequenceItem, IValidatable {
         [ImportingConstructor]
@@ -102,12 +102,12 @@ namespace WhenPlugin.When {
                 iValue = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("ValueString");
-                foreach (Consumer consumers in consumers) {
-                    object item = consumers.Item;
-                    if (item is IValidatable) {
-                        _ = (item as IValidatable).Validate();
-                    }
-                }
+            //    foreach (Consumer consumers in consumers) {
+            //        object item = consumers.Item;
+            //        if (item is IValidatable) {
+            //            _ = (item as IValidatable).Validate();
+            //        }
+            //    }
             }
         }
 
@@ -183,13 +183,10 @@ namespace WhenPlugin.When {
                 IsValidValue = Brushes.Orange;
                 Value = -1;
             }
-            RaisePropertyChanged();
-            RaisePropertyChanged("IsValidValue");
-            RaisePropertyChanged("Value");
-
-            if (!Regex.IsMatch(Constant, "^[a-zA-Z0-9]*$")) {
-                i.Add("Constant name must be alphanumeric");
-            }
+            //RaisePropertyChanged();
+            //RaisePropertyChanged("IsValidValue");
+            //RaisePropertyChanged("Value");
+            //RaisePropertyChanged("ValueExpr");
 
             Issues = i;
             return i.Count == 0;
