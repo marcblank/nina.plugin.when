@@ -20,6 +20,7 @@
                 <MultiBinding Converter="{StaticResource vc}">
                     <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
                     <Binding Path="."/>
+                    <Binding Path="Valu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}" />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
