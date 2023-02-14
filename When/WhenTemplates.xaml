@@ -647,7 +647,7 @@
         <local:ConstantControl 
             Margin = "8,1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
-
+            Valu="{Binding Path=ExposureTime, Mode=TwoWay}"
             />
         
         <TextBlock

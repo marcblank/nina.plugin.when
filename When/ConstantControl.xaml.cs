@@ -37,10 +37,6 @@ namespace WhenPlugin.When {
         private static void OnValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             d.SetValue(ValuProperty, e.NewValue);
         }
-
-        //<local:ConstantControl Margin = "0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />
-
-
     }
 }
 

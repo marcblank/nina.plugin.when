@@ -122,7 +122,7 @@ namespace WhenPlugin.When {
         private double exposureTime;
 
         [JsonProperty]
-        public double ExposureTime { get => exposureTime; set { exposureTime = value; RaisePropertyChanged(); } }
+        public double ExposureTime { get => exposureTime; set { exposureTime = value; RaisePropertyChanged("ExposureTime"); } }
 
 
         private string gainExpr = "0";
@@ -375,9 +375,9 @@ namespace WhenPlugin.When {
             if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
                 // UGH!
                 ExposureTime = expTime;
-                string OldExposureTimeExpr = ExposureTimeExpr;
-                ExposureTimeExpr = "";
-                ExposureTimeExpr = OldExposureTimeExpr;
+                //string OldExposureTimeExpr = ExposureTimeExpr;
+                //ExposureTimeExpr = "";
+                //ExposureTimeExpr = OldExposureTimeExpr;
             }
             else {
                 ExposureTime = -1;
