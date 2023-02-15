@@ -15,7 +15,6 @@
     <Page Remove="localappdata\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="When\ConstantHintControl.xaml.cs" />
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
     <Compile Remove="When\EndSequence.cs" />
     <Compile Remove="When\Expression.cs" />
@@ -27,7 +26,6 @@
     <Compile Remove="When\WhenSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Remove="When\ConstantHintControl.xaml" />
     <Page Remove="When\ConstantsTemplates.xaml" />
   </ItemGroup>
   <ItemGroup>

@@ -710,7 +710,7 @@
 
         <!--  Free Gain  -->
         <WrapPanel Orientation="Horizontal">
-             <WrapPanel.Visibility>
+            <WrapPanel.Visibility>
                 <PriorityBinding FallbackValue="Visible">
                     <Binding
                         Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
@@ -724,21 +724,14 @@
                 VerticalAlignment="Center"
                 Text="|" />
 
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" /> 
-            <local:ConstantControl 
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+            <local:ConstantHintControl 
                 Margin="8,1,10,5" 
-                Expr="{Binding Path=GainExpr, Mode=TwoWay}"
-                Valu="{Binding Path=Gain, Mode=TwoWay}" />
-
-            <!--<TextBox MinWidth="10" Margin="3,0,7.5,-3" Text="{Binding GainExpr, Mode=TwoWay}" />
-            <TextBlock VerticalAlignment="Center" Margin="-3,0,10,0">
-                <TextBlock.Text>
-                    <MultiBinding Converter="{StaticResource ec}">
-                        <Binding Path="GainExpr" Mode="TwoWay" ValidatesOnExceptions="True" />
-                        <Binding Path="."/>
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>-->
+                HintExpr="{Binding 
+                    Path=GainExpr, 
+                    Mode=TwoWay}"
+                DefaultExpr="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}"
+                HintValu="{Binding Path=Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
             <!--<ninactrl:HintTextBox
                 MinWidth="40"
@@ -762,20 +755,10 @@
                         Mode="TwoWay"
                         Path="Gain"
                         UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:ShortRangeRule>
-                                <util:ShortRangeRule.ValidRange>
-                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                </util:ShortRangeRule.ValidRange>
-                            </util:ShortRangeRule>
-                        </Binding.ValidationRules>
                     </Binding>
                 </ninactrl:HintTextBox.Text>
             </ninactrl:HintTextBox>-->
         </WrapPanel>
-
-        <!-- <local:ConstantControl Margin = "8,0,10,5" Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}" /> -->
-        
 
         <!--  Offset  -->
         <WrapPanel Orientation="Horizontal">
@@ -885,7 +868,7 @@
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
                         Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"/>
+                        Valu="{Binding Path=IterationCountq, Mode=TwoWay}"/>
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>

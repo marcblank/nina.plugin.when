@@ -38,6 +38,20 @@ namespace WhenPlugin.When {
         private static void OnHintValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             d.SetValue(HintValuProperty, e.NewValue);
         }
+        
+        public static readonly DependencyProperty DefaultExprProperty =
+             DependencyProperty.Register("DefaultExpr", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnDefaultExprChanged));
+
+        public String DefaultExpr{
+            get { return (String)GetValue(DefaultExprProperty); }
+            set { SetValue(DefaultExprProperty, value); }
+        }
+
+
+        private static void OnDefaultExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            d.SetValue(DefaultExprProperty, e.NewValue);
+        }
+
 
     }
 }

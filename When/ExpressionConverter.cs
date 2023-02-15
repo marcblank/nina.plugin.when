@@ -12,6 +12,8 @@
 
 #endregion "copyright"
 
+using Accord.Diagnostics;
+using Castle.Core.Internal;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NINA.Sequencer.SequenceItem;
 using System;
@@ -35,14 +37,18 @@ namespace WhenPlugin.When {
             SequenceItem item = value[1] as SequenceItem;
             if (value[0] is string expr) {
                 double test;
-                if (double.TryParse(expr, out test)) {
+                if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
+                    ValidityCache.Remove(item);
+                    ValidityCache.Add(item, true);
+                    return 0;
+                } else if (double.TryParse(expr, out test)) {
                     ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return test;
                 } else {
                     double result;
                     IList<string> issues = new List<string>();
-                    if (ConstantExpression.IsValidExpression(item, "foo", expr, out result, issues)) {
+                    if (ConstantExpression.IsValidExpression(item, "ExpressionConverter", expr, out result, issues)) {
                         ValidityCache.Remove(item);
                         ValidityCache.Add(item, true);
                         return " {" + result.ToString() + "}";

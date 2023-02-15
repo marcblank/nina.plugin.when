@@ -11,20 +11,14 @@
 
         <ninactrl:HintTextBox
                 MinWidth="40"
-                Margin="5,0,0,0"
+                Margin="0,0,0,-5"
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
+                HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
                 TextAlignment="Right">
             <ninactrl:HintTextBox.HintText>
-                75
-                <!--<Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultOffset"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />-->
+                <Binding Mode="TwoWay" Path="DefaultExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
             </ninactrl:HintTextBox.HintText>
             <ninactrl:HintTextBox.Text>
                 <Binding
@@ -33,22 +27,32 @@
                 </Binding>
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
-        <TextBlock VerticalAlignment="Center" Margin="0,-1,0,-5">
+        <TextBlock VerticalAlignment="Center" Margin="0,-1,0,-3">
             <TextBlock.Text>
-                <MultiBinding Converter="{StaticResource ec}">
-                    <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
+                    <Binding Path="HintExpr" ValidatesOnExceptions="True" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="."/>
+                    <Binding Path="HintValu" ValidatesOnExceptions="True"  RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
-                <MultiBinding Converter="{StaticResource vc}">
+                <MultiBinding Converter="{StaticResource vc}" ConverterParameter="Hint">
                     <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="."/>
+                    <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
     </StackPanel>
 </UserControl>
+
+<!--<Binding
+                        Converter="{StaticResource CameraDefaultValueConverter}"
+                        Mode="OneWay"
+                        Path="Data.DefaultOffset"
+                        Source="{StaticResource CameraInfo}"
+                        UpdateSourceTrigger="PropertyChanged" />-->
+
 
 
 

@@ -43,6 +43,7 @@ using Namotion.Reflection;
 using NINA.Core.Utility.Notification;
 using System.Windows.Media.Converters;
 using Nikon;
+using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
 
@@ -131,10 +132,13 @@ namespace WhenPlugin.When {
             get => gainExpr;
             set {
                 gainExpr = value;
-                ConstantExpression.Evaluate(this, "GainExpr", "Gain");
-
-                if (gain < -1 || gain > 32767) {
-                    throw new ArgumentException("value");
+                if (gainExpr.IsNullOrEmpty()) {
+                    gain = CameraInfo.DefaultGain;
+                } else {
+                    ConstantExpression.Evaluate(this, "GainExpr", "Gain");
+                    if (gain < -1 || gain > 32767) {
+                        throw new ArgumentException("value");
+                    }
                 }
 
                 RaisePropertyChanged("GainExpr");
@@ -381,7 +385,7 @@ namespace WhenPlugin.When {
             } else {
                 ExposureTime = -1;
             }
-            if (ConstantExpression.IsValidExpression(this, nameof(GainExpr), GainExpr, out double gain, i)) {
+            if (!GainExpr.IsNullOrEmpty() && ConstantExpression.IsValidExpression(this, nameof(GainExpr), GainExpr, out double gain, i)) {
                 Gain = (int)gain;
             } else {
                 Gain = -1;
