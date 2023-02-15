@@ -78,7 +78,7 @@ namespace WhenPlugin.When {
         public bool Validate() {
             // Make sure a proper tree is maintained
             foreach (ISequenceItem item in TriggerRunner.Items) {
-                item.AttachNewParent(Parent);
+                item.AttachNewParent(TriggerRunner);
             }
             return true;
         }
