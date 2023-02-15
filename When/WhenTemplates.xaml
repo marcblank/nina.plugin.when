@@ -882,7 +882,10 @@
             <nina:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="#" />
-                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />
+                    <local:ConstantControl 
+                        Margin="0,0,10,5" 
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=Iterations, Mode=TwoWay}"/>
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
