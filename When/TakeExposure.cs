@@ -130,13 +130,13 @@ namespace WhenPlugin.When {
         public string GainExpr {
             get => gainExpr;
             set {
+                gainExpr = value;
                 ConstantExpression.Evaluate(this, "GainExpr", "Gain");
 
                 if (gain < -1 || gain > 32767) {
                     throw new ArgumentException("value");
                 }
 
-                gainExpr = value;
                 RaisePropertyChanged("GainExpr");
             }
         }

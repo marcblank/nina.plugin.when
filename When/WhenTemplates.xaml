@@ -939,7 +939,10 @@
 
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="#" />
-                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=IterationsExpr, Mode=TwoWay}" />
+                    <local:ConstantControl 
+                        Margin="0,0,10,5" 
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"/>
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
