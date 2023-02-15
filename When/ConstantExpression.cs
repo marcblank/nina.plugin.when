@@ -1,23 +1,14 @@
 ﻿using Castle.Core.Internal;
 using Namotion.Reflection;
 using NCalc;
+using NINA.Profile;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
-using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Xml.Linq;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -51,9 +42,21 @@ namespace WhenPlugin.When {
             KeyCache.Clear();
             FindConstants(item.Parent, new Keys());
         }
+
+        static private SequenceContainer GlobalContainer = new SequentialContainer(); 
+
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
+            // We start from root, but we'll add global constants
+            GlobalContainer.Items.Clear();
+            var def = Properties.Settings.Default;
+            if (!def.Name2.IsNullOrEmpty()) {
+                if (!def.Value2.IsNullOrEmpty()) {
+                    GlobalContainer.Items.Add(new SetConstant() { Constant = def.Name2, CValue = def.Value2 });
+                }
+            }
             Debug.WriteLine("Root: #" + ++FC);
-            FindConstants(container, keys);
+            GlobalContainer.Items.Add(container);
+            FindConstants(GlobalContainer, keys);
         }
 
         static private Double EvaluateExpression (string expr, Stack<Keys> stack, IList<string> issues) {
@@ -174,7 +177,11 @@ namespace WhenPlugin.When {
                         if (!cachedKeys.IsNullOrEmpty()) {
                             stack.Push(cachedKeys);
                         }
-                        cc = cc.Parent;
+                        if (cc == root) {
+                            cc = GlobalContainer;
+                        } else {
+                            cc = cc.Parent;
+                        }
                     }
 
                     // Reverse the stack to maintain proper scoping

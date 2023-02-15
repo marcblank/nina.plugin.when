@@ -152,6 +152,7 @@ namespace WhenPlugin.When {
             }
         }
 
+
         public string ProfileSpecificNotificationMessage {
             get {
                 return pluginSettings.GetValueString(nameof(ProfileSpecificNotificationMessage), string.Empty);
