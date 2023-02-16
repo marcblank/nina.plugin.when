@@ -161,15 +161,17 @@ namespace WhenPlugin.When {
         
         public override bool Validate() {
             var item = GetTakeExposure();
-            var valid = item.Validate();
+            item.Validate();
             Issues = item.Issues;
-            double iterations;
-            RaisePropertyChanged(nameof(Issues));
+            double count;
+            if (!ConstantExpression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
+                IterationCount = -1;
+            } else {
+                IterationCount = (int)count;
+            }
             RaisePropertyChanged("IterationCount");
-            RaisePropertyChanged("IsValidIterationCount");
-            RaisePropertyChanged("IterationCountString");
             RaisePropertyChanged("IterationsExpr");
-            return valid;
+            return Issues.Count == 0;
         }
 
         public override object Clone() {

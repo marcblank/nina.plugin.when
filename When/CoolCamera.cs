@@ -63,6 +63,7 @@ namespace WhenPlugin.When {
         public double Temperature {
             get => temperature;
             set {
+                if (value > 50) throw new ArgumentException();
                 temperature = value;
                 RaisePropertyChanged();
             }

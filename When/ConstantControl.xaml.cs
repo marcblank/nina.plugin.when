@@ -23,7 +23,7 @@ namespace WhenPlugin.When {
         }
 
         private static void OnExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(ExprProperty, e.NewValue);
+            //d.SetValue(ExprProperty, e.NewValue);
         }
 
         public static readonly DependencyProperty ValuProperty =

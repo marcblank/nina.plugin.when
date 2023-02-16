@@ -43,7 +43,7 @@ namespace WhenPlugin.When {
             FindConstants(item.Parent, new Keys());
         }
 
-        static private SequenceContainer GlobalContainer = new SequentialContainer(); 
+        static private SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" }; 
 
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             // We start from root, but we'll add global constants
@@ -125,6 +125,9 @@ namespace WhenPlugin.When {
                         double result = EvaluateExpression(val, KeysStack, null);
                         if (result != Double.NaN) {
                             keys.Add(name, result);
+                            Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
+                        } else {
+                            Debug.WriteLine("Constant " + name + " evaluated as NaN");
                         }
                     }
                 } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
@@ -142,7 +145,7 @@ namespace WhenPlugin.When {
             KeysStack.Pop();
 
             if (keys.Count > 0) {
-                Debug.WriteLine(container.Name + ": " + keys);
+                Debug.WriteLine("Constants in " + container.Name + ": " + keys);
             }
         }
 

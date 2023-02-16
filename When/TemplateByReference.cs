@@ -236,7 +236,6 @@ namespace WhenPlugin.When {
         }
 
         public override void AfterParentChanged() {
-            Debug.WriteLine("Template parent changed");
             // New; provide link up the chain
             Instructions.AttachNewParent(Parent);
         }

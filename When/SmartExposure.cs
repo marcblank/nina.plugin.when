@@ -142,11 +142,6 @@ namespace WhenPlugin.When {
             return Conditions[0] as LoopCondition;
         }
 
-        private Brush isValidSmartIterationCount = Brushes.GreenYellow;
-        [JsonProperty]
-        public Brush IsValidSmartIterationCount { get => isValidSmartIterationCount; set => isValidSmartIterationCount = value; }
-
-
         private string iterationsExpr = "1";
 
         [JsonProperty]
@@ -250,10 +245,8 @@ namespace WhenPlugin.When {
             double count;
             if (!ConstantExpression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
                 IterationCount = -1;
-                IsValidSmartIterationCount = Brushes.Orange; // (Brush)Application.Current.FindResource("NotificationErrorTextBrush");
                 valid = false;
             } else {
-                IsValidSmartIterationCount = Brushes.GreenYellow;
                 IterationCount = (int)count;
             }
  
