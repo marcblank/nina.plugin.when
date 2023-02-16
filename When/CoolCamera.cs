@@ -99,6 +99,8 @@ namespace WhenPlugin.When {
             return cameraMediator.CoolCamera(Temperature, TimeSpan.FromMinutes(Duration), progress, token);
         }
 
+        private static string BAD_TEMPERATURE = "Temperature must be between -30C and 30C";
+        
         public bool Validate() {
             var i = new List<string>();
             var info = cameraMediator.GetInfo();
@@ -109,7 +111,7 @@ namespace WhenPlugin.When {
             }
 
             if (ValidateTemperature(temperature) != String.Empty) {
-                i.Add("Temperature out of range");
+                i.Add(BAD_TEMPERATURE);
             }
             
             Issues = i;
@@ -122,7 +124,7 @@ namespace WhenPlugin.When {
 
         public string ValidateTemperature(double temp) {
             if (temp < -30 || temp > 30) {
-                return "Temperature must be between -30 and 30";
+                return BAD_TEMPERATURE;
             }
             return string.Empty;
         }
