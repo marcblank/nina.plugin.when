@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
             set {
                 temperatureExpr = value;
                 ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature");
-                if (temperature > 50) throw new ArgumentException();
+                if (temperature > 50) throw new ArgumentException("Temperature not valid!");
                 RaisePropertyChanged("TemperatureExpr");
             }
         }

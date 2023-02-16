@@ -20,7 +20,7 @@ namespace WhenPlugin.When {
             return null;
         }
         
-        static private Dictionary<ISequenceContainer, Keys> KeyCache = new Dictionary<ISequenceContainer, Keys>();  
+        static private Dictionary<ISequenceContainer, Keys> KeyCache = new Dictionary<ISequenceContainer, Keys>();
         
         private class Keys : Dictionary<string, object> {
 
@@ -38,9 +38,25 @@ namespace WhenPlugin.When {
 
         private static int FC = 0;
 
+        static public ISequenceContainer GetRoot(ISequenceItem item) {
+            if (item == null) return null;
+            ISequenceContainer p = item.Parent;
+            while (p != null) {
+                if (p is ISequenceRootContainer root) {
+                    return root;
+                }
+                p = p.Parent;
+            }
+            return null;
+        }
+        
         static public void UpdateConstants(ISequenceItem item) {
-            KeyCache.Clear();
-            FindConstants(item.Parent, new Keys());
+            ISequenceContainer root = GetRoot(item);
+            if (root != null) {
+                KeyCache.Clear();
+                FindConstantsRoot(root, new Keys());
+                Debug.WriteLine("KeyCache: " + KeyCache.Count);
+            }
         }
 
         static private SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" }; 
@@ -51,7 +67,7 @@ namespace WhenPlugin.When {
             var def = Properties.Settings.Default;
             if (!def.Name2.IsNullOrEmpty()) {
                 if (!def.Value2.IsNullOrEmpty()) {
-                    GlobalContainer.Items.Add(new SetConstant() { Constant = def.Name2, CValue = def.Value2 });
+                    //GlobalContainer.Items.Add(new SetConstant() { Constant = def.Name2, CValue = def.Value2 });
                 }
             }
             Debug.WriteLine("Root: #" + ++FC);
@@ -59,7 +75,7 @@ namespace WhenPlugin.When {
             FindConstants(GlobalContainer, keys);
         }
 
-        static private Double EvaluateExpression (string expr, Stack<Keys> stack, IList<string> issues) {
+        static private Double EvaluateExpression (ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
             if (expr == null) return 0;
 
             Expression e = new Expression(expr);
@@ -82,7 +98,7 @@ namespace WhenPlugin.When {
             e.Parameters = mergedKeys;
             try {
                 var eval = e.Evaluate();
-                Debug.WriteLine("Expression " + expr + " evaluated to " + eval);
+                Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
                 try {
                     return (double)eval;
                 } catch (Exception ex) {
@@ -122,7 +138,7 @@ namespace WhenPlugin.When {
                         keys.Add(name, value);
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
-                        double result = EvaluateExpression(val, KeysStack, null);
+                        double result = EvaluateExpression(item, val, KeysStack, null);
                         if (result != Double.NaN) {
                             keys.Add(name, result);
                             Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
@@ -139,7 +155,9 @@ namespace WhenPlugin.When {
                 if (KeyCache.ContainsKey(container)) {
                     KeyCache.Remove(container);
                 }
-                KeyCache.Add(container, keys);
+                if (keys.Count > 0) {
+                    KeyCache.Add(container, keys);
+                }
             }
             
             KeysStack.Pop();
@@ -149,23 +167,28 @@ namespace WhenPlugin.When {
             }
         }
 
-        public static bool IsValidExpression(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
+        public static bool IsValid(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
 
-            if (item.Parent == null) return true;
-            
-            ISequenceContainer root = FindRoot(item.Parent);
-            if (root != null) {
-                Debug.WriteLine("IsValid: ", item.Name + ", " + exprName + " = " + expr);
-                FindConstantsRoot(root, new Keys());
+            if (item.Parent == null) {
+                Debug.WriteLine("IsValid: " + exprName + " No parent");
+                return true;
             }
             
+            // Make sure we're up-to-date on constants
+            ISequenceContainer root = FindRoot(item.Parent);
+            if (root != null && KeyCache.IsNullOrEmpty()) {
+                UpdateConstants(item);
+            }
+
             try {
                if (expr == null || expr.Length == 0) {
+                    Debug.WriteLine("IsValid: " + exprName + " null/empty");
                     return false;
-                }
+               }
                 // Best case, this is a number of some sort
                 val = double.Parse(expr);
+                Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
                 return true;
             } catch (Exception) {
                 ISequenceContainer c = item.Parent;
@@ -194,7 +217,8 @@ namespace WhenPlugin.When {
                         reverseStack.Push(k);
                     }
 
-                    double result = EvaluateExpression(expr, reverseStack, issues);
+                    double result = EvaluateExpression(item, expr, reverseStack, issues);
+                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr + ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
 
                     if (Double.IsNaN(result)) {
                         val = -1;
@@ -212,7 +236,7 @@ namespace WhenPlugin.When {
             double val;
               string expr = item.TryGetPropertyValue(exprName, "") as string;
 
-            if (ConstantExpression.IsValidExpression(item, exprName, expr, out val, null)) {
+            if (ConstantExpression.IsValid(item, exprName, expr, out val, null)) {
                 PropertyInfo pi = item.GetType().GetProperty(valueName);
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
@@ -230,7 +254,7 @@ namespace WhenPlugin.When {
             double val;
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 
-            if (ConstantExpression.IsValidExpression(item, exprName, expr, out val, issues)) {
+            if (ConstantExpression.IsValid(item, exprName, expr, out val, issues)) {
                 PropertyInfo pi = item.GetType().GetProperty(valueName);
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);

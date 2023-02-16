@@ -115,10 +115,6 @@ namespace WhenPlugin.When {
         public LoopCondition GetLoopCondition() {
             return Conditions[0] as LoopCondition;
         }
-
-        private Brush isValidIterationCount = Brushes.GreenYellow;
-        [JsonProperty]
-        public Brush IsValidIterationCount { get => isValidIterationCount; set => isValidIterationCount = value; }
         
         private string iterationsExpr = "1";
 
@@ -154,24 +150,23 @@ namespace WhenPlugin.When {
                 LoopCondition lc = Conditions[0] as LoopCondition;
                 lc.Iterations = iterations = value;
                 RaisePropertyChanged("IterationCount");
-                RaisePropertyChanged("IsValidIterationCount");
                 RaisePropertyChanged("IterationCountString");
             }
         } 
         
         public override bool Validate() {
-            var item = GetTakeExposure();
-            item.Validate();
-            Issues = item.Issues;
+            var valid = GetTakeExposure().Validate();
+            Issues = new List<string>();
             double count;
-            if (!ConstantExpression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
+            if (!ConstantExpression.IsValid(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
                 IterationCount = -1;
             } else {
                 IterationCount = (int)count;
             }
             RaisePropertyChanged("IterationCount");
             RaisePropertyChanged("IterationsExpr");
-            return Issues.Count == 0;
+            return valid && (Issues.Count == 0);
+            //return Issues.Count == 0;
         }
 
         public override object Clone() {

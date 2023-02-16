@@ -41,7 +41,7 @@ namespace WhenPlugin.When {
             set {
                 // ** Fix when Constant can be an expression
                 if (constant != value) {
-                    if (ConstantExpression.IsValidExpression(this, Dummy, value, out double val, null)) {
+                    if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
                     }
                     constant = value;
                     ConstantExpression.UpdateConstants(this);

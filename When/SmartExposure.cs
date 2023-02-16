@@ -236,14 +236,14 @@ namespace WhenPlugin.When {
             Issues = issues;
   
             double count;
-            if (!ConstantExpression.IsValidExpression(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
+            if (!ConstantExpression.IsValid(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
                 IterationCount = -1;
                 valid = false;
             } else {
                 IterationCount = (int)count;
             }
  
-            if (!ConstantExpression.IsValidExpression(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
+            if (!ConstantExpression.IsValid(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
                 DitherCount = -1;
                 valid = false;
             }

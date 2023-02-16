@@ -380,12 +380,12 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            if (ConstantExpression.IsValidExpression(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
+            if (ConstantExpression.IsValid(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
                 ExposureTime = expTime;
             } else {
                 ExposureTime = -1;
             }
-            if (!GainExpr.IsNullOrEmpty() && ConstantExpression.IsValidExpression(this, nameof(GainExpr), GainExpr, out double gain, i)) {
+            if (!GainExpr.IsNullOrEmpty() && ConstantExpression.IsValid(this, nameof(GainExpr), GainExpr, out double gain, i)) {
                 Gain = (int)gain;
             } else {
                 Gain = -1;
