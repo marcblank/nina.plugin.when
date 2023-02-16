@@ -95,6 +95,11 @@ namespace WhenPlugin.When {
             };
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            ConstantExpression.FlushKeys();
+        }
+
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SetConstant)}, Constant: {Constant}, Value: {CValueExpr}";
         }

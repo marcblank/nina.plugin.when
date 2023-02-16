@@ -38,6 +38,10 @@ namespace WhenPlugin.When {
 
         private static int FC = 0;
 
+        static public void FlushKeys() {
+            KeyCache.Clear();
+        }
+
         static public ISequenceContainer GetRoot(ISequenceItem item) {
             if (item == null) return null;
             ISequenceContainer p = item.Parent;
