@@ -8,15 +8,14 @@
             <local:ValidityConverter x:Key="vc" />
         </UserControl.Resources>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-
         <ninactrl:HintTextBox
                 MinWidth="40"
-                Margin="0,0,0,-5"
+                Margin="0,0,0,-2"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
+                TextAlignment="Center">
             <ninactrl:HintTextBox.HintText>
                 <Binding Mode="TwoWay" Path="DefaultExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
             </ninactrl:HintTextBox.HintText>
@@ -27,7 +26,7 @@
                 </Binding>
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
-        <TextBlock VerticalAlignment="Center" Margin="0,-1,0,-3">
+        <TextBlock VerticalAlignment="Center"  Margin="0,-1,0,-3">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
                     <Binding Path="HintExpr" ValidatesOnExceptions="True" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />

@@ -174,15 +174,8 @@ namespace WhenPlugin.When {
                 lc.Iterations = iterations = value;
                 RaisePropertyChanged("IterationCount");
                 RaisePropertyChanged("IterationCountString");
-                RaisePropertyChanged("IsValidSmartIterationCount");
             }
         }
-
-
-        private Brush isValidDitherCount = Brushes.GreenYellow;
-        [JsonProperty]
-        public Brush IsValidDitherCount { get => isValidDitherCount; set => isValidDitherCount = value; }
-
 
         private string ditherExpr = "1";
 
@@ -225,7 +218,7 @@ namespace WhenPlugin.When {
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
 
-            bool valid = false;
+            bool valid = true;
 
             valid = te.Validate() && valid;
             issues.AddRange(te.Issues);
@@ -252,11 +245,9 @@ namespace WhenPlugin.When {
  
             if (!ConstantExpression.IsValidExpression(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
                 DitherCount = -1;
-                IsValidDitherCount = Brushes.Orange; // (Brush)Application.Current.FindResource("NotificationErrorTextBrush");
                 valid = false;
             }
             else {
-                IsValidDitherCount = Brushes.GreenYellow;
                 DitherCount = (int)count;
             }
             RaisePropertyChanged("IsValidDitherCount");

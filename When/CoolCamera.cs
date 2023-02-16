@@ -63,7 +63,6 @@ namespace WhenPlugin.When {
         public double Temperature {
             get => temperature;
             set {
-                if (value > 50) throw new ArgumentException();
                 temperature = value;
                 RaisePropertyChanged();
             }
@@ -78,6 +77,7 @@ namespace WhenPlugin.When {
             set {
                 temperatureExpr = value;
                 ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature");
+                if (temperature > 50) throw new ArgumentException();
                 RaisePropertyChanged("TemperatureExpr");
             }
         }
