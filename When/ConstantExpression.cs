@@ -174,23 +174,23 @@ namespace WhenPlugin.When {
                 Debug.WriteLine("IsValid: " + exprName + " No parent");
                 return true;
             }
-            
+
             // Make sure we're up-to-date on constants
             ISequenceContainer root = FindRoot(item.Parent);
             if (root != null && KeyCache.IsNullOrEmpty()) {
                 UpdateConstants(item);
             }
 
-            try {
-               if (expr == null || expr.Length == 0) {
-                    Debug.WriteLine("IsValid: " + exprName + " null/empty");
-                    return false;
-               }
-                // Best case, this is a number of some sort
-                val = double.Parse(expr);
+            if (expr == null || expr.Length == 0) {
+                Debug.WriteLine("IsValid: " + exprName + " null/empty");
+                return false;
+            }
+            // Best case, this is a number of some sort
+
+            if (double.TryParse(expr, out val)) {
                 Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
                 return true;
-            } catch (Exception) {
+            } else {
                 ISequenceContainer c = item.Parent;
                 // Ok, it's not a number. Let's look for constants
                 if (c != null) {
