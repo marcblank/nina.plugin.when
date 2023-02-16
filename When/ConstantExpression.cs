@@ -207,7 +207,7 @@ namespace WhenPlugin.When {
 
         public static bool Evaluate(SequenceItem item, string exprName, string valueName) {
             double val;
-               string expr = item.TryGetPropertyValue(exprName, "") as string;
+              string expr = item.TryGetPropertyValue(exprName, "") as string;
 
             if (ConstantExpression.IsValidExpression(item, exprName, expr, out val, null)) {
                 PropertyInfo pi = item.GetType().GetProperty(valueName);

@@ -23,21 +23,6 @@
 
     <local:ExpressionConverter x:Key="ec" />
 
-    <ControlTemplate x:Key="ConstantExpression" TargetType="ContentControl">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-            <TextBox MinWidth="20" Margin="0,0,0,-5" Text="{TemplateBinding Content}" />
-            <TextBlock VerticalAlignment="Center" Margin="0,0,0,-5">
-            <TextBlock.Text>
-                    <MultiBinding Converter="{StaticResource ec}" Mode="TwoWay">
-                        <Binding Path="Content" RelativeSource="{RelativeSource Mode=TemplatedParent}"/>
-                        <Binding Path="."/>
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </StackPanel>
-    </ControlTemplate>
-
-
     <DataTemplate DataType="{x:Type local:InterruptTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -93,7 +78,8 @@
                     <local:ConstantControl 
                         MinWidth="40"
                         Margin="5,-4,0,0"
-                        Expr="{Binding TemperatureExpr}" />
+                        Expr="{Binding TemperatureExpr, Mode=TwoWay}"
+                        Valu="{Binding Temperature, Mode=TwoWay}"/>
                     <!--<ninactrl:UnitTextBox
                         MinWidth="40"
                         Margin="5,0,0,0"
@@ -127,7 +113,7 @@
                     <TextBox
                         MinWidth="40"
                         Margin="5,0,10,-2"
-                        Text="{Binding Constant}"
+                        Text="{Binding Constant, ValidatesOnExceptions=True}"
                         TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl

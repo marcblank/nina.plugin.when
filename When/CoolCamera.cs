@@ -105,7 +105,7 @@ namespace WhenPlugin.When {
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else if (!info.CanSetTemperature) {
-                i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
+                //i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
             Issues = i;
