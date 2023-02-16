@@ -77,7 +77,6 @@ namespace WhenPlugin.When {
             set {
                 temperatureExpr = value;
                 ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature");
-                if (temperature > 50) throw new ArgumentException("Temperature not valid!");
                 RaisePropertyChanged("TemperatureExpr");
             }
         }
@@ -109,12 +108,23 @@ namespace WhenPlugin.When {
                 //i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
+            if (ValidateTemperature(temperature) != String.Empty) {
+                i.Add("Temperature out of range");
+            }
+            
             Issues = i;
             return i.Count == 0;
         }
 
         public override void AfterParentChanged() {
             Validate();
+        }
+
+        public string ValidateTemperature(double temp) {
+            if (temp < -30 || temp > 30) {
+                return "Temperature must be between -30 and 30";
+            }
+            return string.Empty;
         }
 
         public override TimeSpan GetEstimatedDuration() {

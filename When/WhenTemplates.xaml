@@ -78,6 +78,7 @@
                     <local:ConstantControl 
                         MinWidth="40"
                         Margin="5,-4,0,0"
+                        Validate="ValidateTemperature"
                         Expr="{Binding TemperatureExpr, Mode=TwoWay}"
                         Valu="{Binding Temperature, Mode=TwoWay}"/>
                     <!--<ninactrl:UnitTextBox

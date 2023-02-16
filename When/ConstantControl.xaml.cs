@@ -37,6 +37,18 @@ namespace WhenPlugin.When {
         private static void OnValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             d.SetValue(ValuProperty, e.NewValue);
         }
+
+        public static readonly DependencyProperty ValidateProperty =
+             DependencyProperty.Register("Validate", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnValidateChanged));
+
+        public String Validate {
+            get { return (String)GetValue(ValidateProperty); }
+            set { SetValue(ValidateProperty, value); }
+        }
+
+        private static void OnValidateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            d.SetValue(ValidateProperty, e.NewValue);
+        }
     }
 }
 
