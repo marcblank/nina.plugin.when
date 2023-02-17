@@ -31,15 +31,13 @@
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
                     <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="."/>
-                    <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="HintValidate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}"/>
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}" ConverterParameter="Hint">
                     <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
-                    <Binding Path="."/>
-                    <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="." />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>

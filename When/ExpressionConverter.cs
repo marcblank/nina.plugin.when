@@ -36,11 +36,10 @@ namespace WhenPlugin.When {
 
         private static int VALUE_EXPR = 0;
         private static int VALUE_ITEM = 1;
-        private static int VALUE_WHA = 2;
-        private static int VALUE_VALIDATE = 3;
+        private static int VALUE_VALIDATE = 2;
 
         private string Validate (ISequenceItem item, double val, object[] values) {
-            if (values.Length > 3 && values[VALUE_VALIDATE] is string validationMethod) {
+            if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
                 MethodInfo m = item.GetType().GetMethod(validationMethod);
                 if (m != null) {
                     string error = (string)m.Invoke(item, new object[] { val });
@@ -57,25 +56,25 @@ namespace WhenPlugin.When {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
             SequenceItem item = values[VALUE_ITEM] as SequenceItem;
-            if (values[0] is string expr) {
+            if (values[VALUE_EXPR] is string expr) {
                 double val;
                 if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
                     ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return 0;
                 } else if (double.TryParse(expr, out val)) {
+                    ValidityCache.Remove(item);
                     string valid = Validate(item, val, values);
                     if (valid != string.Empty) return valid;
-                    ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return val;
                 } else {
                     double result;
                     IList<string> issues = new List<string>();
                     if (ConstantExpression.IsValid(item, "*Converter*", expr, out result, issues)) {
+                        ValidityCache.Remove(item);
                         string valid = Validate(item, result, values);
                         if (valid != string.Empty) return valid;
-                        ValidityCache.Remove(item);
                         ValidityCache.Add(item, true);
                         return " {" + result.ToString() + "}";
                     } else if (issues.Count > 0) {

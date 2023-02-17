@@ -26,19 +26,6 @@ namespace WhenPlugin.When {
             d.SetValue(HintExprProperty, e.NewValue);
         }
 
-        public static readonly DependencyProperty HintValuProperty =
-             DependencyProperty.Register("HintValu", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnHintValuChanged));
-
-        public String HintValu {
-            get { return (String)GetValue(HintValuProperty); }
-            set { SetValue(HintValuProperty, value); }
-        }
-        
-
-        private static void OnHintValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(HintValuProperty, e.NewValue);
-        }
-
         public static readonly DependencyProperty DefaultExprProperty =
              DependencyProperty.Register("DefaultExpr", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnDefaultExprChanged));
 
@@ -46,7 +33,6 @@ namespace WhenPlugin.When {
             get { return (String)GetValue(DefaultExprProperty); }
             set { SetValue(DefaultExprProperty, value); }
         }
-
 
         private static void OnDefaultExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             d.SetValue(DefaultExprProperty, e.NewValue);

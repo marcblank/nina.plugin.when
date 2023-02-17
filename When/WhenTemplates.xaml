@@ -79,8 +79,7 @@
                         MinWidth="40"
                         Margin="5,-4,0,0"
                         Validate="ValidateTemperature"
-                        Expr="{Binding TemperatureExpr, Mode=TwoWay}"
-                        Valu="{Binding Temperature, Mode=TwoWay}"/>
+                        Expr="{Binding TemperatureExpr, Mode=TwoWay}"/>
                     <!--<ninactrl:UnitTextBox
                         MinWidth="40"
                         Margin="5,0,0,0"
@@ -119,8 +118,7 @@
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
                         Margin="5,0,5,3"
-                        Expr="{Binding CValueExpr, Mode=TwoWay}"
-                        Valu="{Binding CValue, Mode=TwoWay}" />
+                        Expr="{Binding CValueExpr, Mode=TwoWay}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -616,7 +614,6 @@
         <local:ConstantControl 
             Margin = "8,1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
-            Valu="{Binding Path=ExposureTime, Mode=TwoWay}"
             />
         
         <TextBlock
@@ -715,9 +712,9 @@
             <local:ConstantHintControl 
                 Margin="8,1,10,5" 
                 HintExpr="{Binding Path=GainExpr, Mode=TwoWay}"
+                DefaultExpr="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
                 HintValidate="ValidateGain"
-                DefaultExpr="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}"
-                HintValu="{Binding Path=Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                />
 
         </WrapPanel>
 
@@ -828,8 +825,7 @@
                     <TextBlock VerticalAlignment="Center" Text="#" />
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
-                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"/>
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"/>
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
@@ -885,8 +881,7 @@
                     <TextBlock VerticalAlignment="Center" Text="#" />
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
-                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"/>
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"/>
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
