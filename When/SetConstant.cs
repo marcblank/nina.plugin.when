@@ -106,11 +106,9 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            if (ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0)) {
-                CValue = CValueExpr;
-            }
+            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0, i);
             Issues = i;
-            return i.Count == 0;
+            return Issues.Count == 0;
         }
     }
 }

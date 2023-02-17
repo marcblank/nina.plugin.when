@@ -111,11 +111,7 @@ namespace WhenPlugin.When {
             }
 
 
-            if (ConstantExpression.IsValid(this, nameof(TemperatureExpr), out double temp, i)) {
-                Temperature = temp;
-            } else {
-                Temperature = 0;
-            }
+            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", 0, i);
 
             if (ValidateTemperature(temperature) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
@@ -130,7 +126,7 @@ namespace WhenPlugin.When {
         }
 
         public string ValidateTemperature(double temp) {
-            if (temp < -30 || temp > 30) {
+                if (temp < -30 || temp > 30) {
                 return BAD_TEMPERATURE;
             }
             return string.Empty;

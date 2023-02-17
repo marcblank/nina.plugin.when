@@ -15,40 +15,19 @@ namespace WhenPlugin.When {
         }
 
         public static readonly DependencyProperty ExprProperty =
-            DependencyProperty.Register("Expr", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnExprChanged));
+            DependencyProperty.Register("Expr", typeof(String), typeof(ConstantControl), null);
 
-        public String Expr {
-            get { return (String)GetValue(ExprProperty); }
-            set { SetValue(ExprProperty, value); }
-        }
-
-        private static void OnExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            //d.SetValue(ExprProperty, e.NewValue);
-        }
+        public String Expr { get; set; }
 
         public static readonly DependencyProperty ValuProperty =
-             DependencyProperty.Register("Valu", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnValuChanged));
+             DependencyProperty.Register("Valu", typeof(String), typeof(ConstantControl), null);
 
-        public String Valu {
-            get { return (String)GetValue(ValuProperty); }
-            set { SetValue(ValuProperty, value); }
-        }
-
-        private static void OnValuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(ValuProperty, e.NewValue);
-        }
+        public String Valu { get; set; }
 
         public static readonly DependencyProperty ValidateProperty =
-             DependencyProperty.Register("Validate", typeof(String), typeof(ConstantControl), new PropertyMetadata("Foo", OnValidateChanged));
+             DependencyProperty.Register("Validate", typeof(String), typeof(ConstantControl), null);
 
-        public String Validate {
-            get { return (String)GetValue(ValidateProperty); }
-            set { SetValue(ValidateProperty, value); }
-        }
-
-        private static void OnValidateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(ValidateProperty, e.NewValue);
-        }
+        public String Validate { get; set; }
     }
 }
 
