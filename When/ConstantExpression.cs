@@ -110,7 +110,11 @@ namespace WhenPlugin.When {
                 }
             } catch (Exception ex) {
                 if (issues != null) {
-                    issues.Add(ex.Message);
+                    if (ex is EvaluationException) {
+                        issues.Add("Syntax error");
+                    } else {
+                        issues.Add(ex.Message);
+                    }
                 }
                 return Double.NaN;
             }
