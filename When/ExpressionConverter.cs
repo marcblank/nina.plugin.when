@@ -36,7 +36,7 @@ namespace WhenPlugin.When {
 
         private static int VALUE_EXPR = 0;              // The expression to be evaluated
         private static int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
-        private static int VALUE_VALU = 2;              // Used source->target to cause updates
+        private static int VALUE_VALU = 2;              // Present to cause source->target updates; not used in code
         private static int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
 
         private string Validate (ISequenceItem item, double val, object[] values) {

@@ -149,19 +149,20 @@ namespace WhenPlugin.When {
             get => iterationsExpr;
             set {
                 iterationsExpr = value;
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount");
+                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1);
                 RaisePropertyChanged();
             }
         }
-        
+
+        private int iterationCount = 0;
         [JsonProperty]
         public int IterationCount {
-            get => (Conditions[0] as LoopCondition).Iterations;
+            get => iterationCount;
             set {
                 //
                 if (Conditions.Count == 0) return;
                 LoopCondition lc = Conditions[0] as LoopCondition;
-                lc.Iterations = value;
+                iterationCount = lc.Iterations = value;
                 RaisePropertyChanged("IterationCount");
             }
         }
@@ -173,7 +174,7 @@ namespace WhenPlugin.When {
             get => ditherExpr;
             set {
                 ditherExpr = value;
-                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount");
+                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0);
                 RaisePropertyChanged();
             }
         }
@@ -190,7 +191,7 @@ namespace WhenPlugin.When {
         }
 
         public override bool Validate() {
-            var issues = new List<string>();
+            var i = new List<string>();
             var sw = GetSwitchFilter();
             var te = GetTakeExposure();
             var dither = GetDitherAfterExposures();
@@ -198,37 +199,23 @@ namespace WhenPlugin.When {
             bool valid = true;
 
             valid = te.Validate() && valid;
-            issues.AddRange(te.Issues);
+            i.AddRange(te.Issues);
 
             if (sw.Filter != null) {
                 valid = sw.Validate() && valid;
-                issues.AddRange(sw.Issues);
+                i.AddRange(sw.Issues);
             }
 
             if (dither.AfterExposures > 0) {
                 valid = dither.Validate() && valid;
-                issues.AddRange(dither.Issues);
+                i.AddRange(dither.Issues);
             }
-
-            Issues = issues;
   
-            double count;
-            if (!ConstantExpression.IsValid(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
-                IterationCount = -1;
-                valid = false;
-            } else {
-                IterationCount = (int)count;
-            }
- 
-            if (!ConstantExpression.IsValid(this, nameof(DitherExpr), DitherExpr, out count, Issues)) {
-                DitherCount = -1;
-                valid = false;
-            }
-            else {
-                DitherCount = (int)count;
-            }
+            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
+            ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
 
-            return valid;
+            Issues = i;
+            return (Issues.Count == 0) && valid;
         }
 
         public override object Clone() {

@@ -115,7 +115,7 @@ namespace WhenPlugin.When {
             get => exposureTimeExpr;
             set {
                 exposureTimeExpr = value;
-                ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime");
+                ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0);
                 RaisePropertyChanged("ExposureTimeExpr");
             }
         } 
@@ -132,12 +132,7 @@ namespace WhenPlugin.When {
             get => gainExpr;
             set {
                 gainExpr = value;
-                if (gainExpr.IsNullOrEmpty()) {
-                    gain = CameraInfo.DefaultGain;
-                } else {
-                    ConstantExpression.Evaluate(this, "GainExpr", "Gain");
-                }
-
+                ConstantExpression.Evaluate(this, "GainExpr", "Gain", CameraInfo.DefaultGain);
                 RaisePropertyChanged("GainExpr");
             }
         }
@@ -363,6 +358,7 @@ namespace WhenPlugin.When {
   
         public bool Validate() {
             var i = new List<string>();
+            
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
@@ -376,23 +372,14 @@ namespace WhenPlugin.When {
             }
 
             var fileSettings = profileService.ActiveProfile.ImageFileSettings;
-
             if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathEmpty"]);
             } else if (!Directory.Exists(fileSettings.FilePath)) {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            if (ConstantExpression.IsValid(this, nameof(ExposureTimeExpr), ExposureTimeExpr, out double expTime, i)) {
-                ExposureTime = expTime;
-            } else {
-                ExposureTime = -1;
-            }
-            if (!GainExpr.IsNullOrEmpty() && ConstantExpression.IsValid(this, nameof(GainExpr), GainExpr, out double gain, i)) {
-                Gain = (int)gain;
-            } else {
-                Gain = -1;
-            }
+            ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0, i);
+            ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, i);
 
             if (ValidateGain(Gain) != String.Empty) {
                 i.Add(BAD_GAIN);

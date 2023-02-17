@@ -123,7 +123,7 @@ namespace WhenPlugin.When {
             get => iterationsExpr;
             set {
                 iterationsExpr = value;
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount");
+                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
                 RaisePropertyChanged();
             }
         }
@@ -141,15 +141,11 @@ namespace WhenPlugin.When {
         
         public override bool Validate() {
             var valid = GetTakeExposure().Validate();
-            Issues = new List<string>();
-            double count;
-            if (!ConstantExpression.IsValid(this, nameof(IterationsExpr), IterationsExpr, out count, Issues)) {
-                IterationCount = -1;
-            } else {
-                IterationCount = (int)count;
-            }
+            IList<string> i = GetTakeExposure().Issues;
+            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
             RaisePropertyChanged("IterationCount");
             RaisePropertyChanged("IterationsExpr");
+            Issues = i;
             return valid && (Issues.Count == 0);
         }
 

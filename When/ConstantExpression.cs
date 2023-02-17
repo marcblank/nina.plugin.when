@@ -175,6 +175,12 @@ namespace WhenPlugin.When {
             }
         }
 
+        public static bool IsValid(SequenceItem item, string exprName, out double val, IList<string> issues) {
+            string expr = item.TryGetPropertyValue(exprName, String.Empty);
+            val = 0;
+            return IsValid(item, exprName, expr, out val, issues);
+        }
+
         public static bool IsValid(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
 
@@ -226,7 +232,8 @@ namespace WhenPlugin.When {
                     }
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
-                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr + ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr + 
+                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
 
                     if (Double.IsNaN(result)) {
                         val = -1;
@@ -240,29 +247,15 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        public static bool Evaluate(SequenceItem item, string exprName, string valueName) {
-            double val;
-              string expr = item.TryGetPropertyValue(exprName, "") as string;
-
-            if (ConstantExpression.IsValid(item, exprName, expr, out val, null)) {
-                PropertyInfo pi = item.GetType().GetProperty(valueName);
-                try {
-                    var conv = Convert.ChangeType(val, pi.PropertyType);
-                    pi.SetValue(item, conv);
-                    return true;
-                } catch (Exception ex) {
-                    pi.SetValue(item, 0);
-                    throw new ArgumentException("Bad");
-                }
-            }
-            return false;
+        public static bool Evaluate(SequenceItem item, string exprName, string valueName, object def) {
+            return Evaluate(item, exprName, valueName, def, null);
         }
 
-        public static bool Evaluate(SequenceItem item, string exprName, string valueName, double def, List<string> issues) {
+        public static bool Evaluate(SequenceItem item, string exprName, string valueName, object def, IList<string> issues) {
             double val;
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 
-            if (ConstantExpression.IsValid(item, exprName, expr, out val, issues)) {
+            if (IsValid(item, exprName, expr, out val, issues)) {
                 PropertyInfo pi = item.GetType().GetProperty(valueName);
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
@@ -276,5 +269,8 @@ namespace WhenPlugin.When {
             return false;
         }
 
+        private static void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            throw new NotImplementedException();
+        }
     }
 }
