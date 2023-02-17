@@ -17,29 +17,29 @@
                 Foreground="{StaticResource PrimaryBrush}"
                 TextAlignment="Center">
             <ninactrl:HintTextBox.HintText>
-                <Binding Mode="TwoWay" Path="DefaultExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                <Binding Mode="TwoWay" Path="Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
             </ninactrl:HintTextBox.HintText>
             <ninactrl:HintTextBox.Text>
                 <Binding
                         Mode="TwoWay"
-                        Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}">
+                        Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}">
                 </Binding>
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
         <TextBlock VerticalAlignment="Center"  Margin="0,-1,0,-3">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
-                    <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="."/>
-                    <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
-                    <Binding Path="HintValidate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}"/>
-                    <Binding Path="DefaultExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="Valu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}"/>
+                    <Binding Path="Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}" ConverterParameter="Hint">
-                    <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="." />
                 </MultiBinding>
             </TextBlock.Foreground>

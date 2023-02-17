@@ -718,10 +718,10 @@
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
             <local:ConstantHintControl 
                 Margin="8,1,10,5" 
-                HintExpr="{Binding Path=GainExpr, Mode=TwoWay}"
-                HintValu="{Binding Path=Gain, Mode=TwoWay}"
-                DefaultExpr="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                HintValidate="ValidateGain"
+                Expr="{Binding Path=GainExpr, Mode=TwoWay}"
+                Valu="{Binding Path=Gain, Mode=TwoWay}"
+                Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                Validate="ValidateGain"
                 />
 
         </WrapPanel>

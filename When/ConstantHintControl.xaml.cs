@@ -14,25 +14,25 @@ namespace WhenPlugin.When {
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty HintExprProperty =
-            DependencyProperty.Register("HintExpr", typeof(String), typeof(ConstantHintControl), null);
+        public static readonly DependencyProperty ExprProperty =
+            DependencyProperty.Register("Expr", typeof(String), typeof(ConstantHintControl), null);
 
-        public String HintExpr { get; set; }
+        public String Expr { get; set; }
 
-        public static readonly DependencyProperty HintValuProperty =
-            DependencyProperty.Register("HintValu", typeof(String), typeof(ConstantHintControl), null);
+        public static readonly DependencyProperty ValuProperty =
+            DependencyProperty.Register("Valu", typeof(String), typeof(ConstantHintControl), null);
 
-        public String HintValu { get; set; }
+        public String Valu { get; set; }
 
-        public static readonly DependencyProperty DefaultExprProperty =
-             DependencyProperty.Register("DefaultExpr", typeof(String), typeof(ConstantHintControl), null);
+        public static readonly DependencyProperty DefaultProperty =
+             DependencyProperty.Register("Default", typeof(String), typeof(ConstantHintControl), null);
 
-        public String DefaultExpr { get; set; }
+        public String Default { get; set; }
 
-        public static readonly DependencyProperty HintValidateProperty =
-             DependencyProperty.Register("HintValidate", typeof(String), typeof(ConstantHintControl), null);
+        public static readonly DependencyProperty ValidateProperty =
+             DependencyProperty.Register("Validate", typeof(String), typeof(ConstantHintControl), null);
 
-        public String HintValidate { get; set; }
+        public String Validate { get; set; }
 
         public static readonly DependencyProperty TypeProperty =
               DependencyProperty.Register("Type", typeof(String), typeof(ConstantHintControl), null);
