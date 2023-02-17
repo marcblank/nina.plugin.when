@@ -143,9 +143,8 @@ namespace WhenPlugin.When {
             var valid = GetTakeExposure().Validate();
             IList<string> i = GetTakeExposure().Issues;
             ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
-            RaisePropertyChanged("IterationCount");
-            RaisePropertyChanged("IterationsExpr");
             Issues = i;
+            RaisePropertyChanged("Issues");
             return valid && (Issues.Count == 0);
         }
 

@@ -215,6 +215,7 @@ namespace WhenPlugin.When {
             ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
 
             Issues = i;
+            RaisePropertyChanged("Issues");
             return (Issues.Count == 0) && valid;
         }
 
