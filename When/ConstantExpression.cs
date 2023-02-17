@@ -181,9 +181,9 @@ namespace WhenPlugin.When {
 
             // Make sure we're up-to-date on constants
             ISequenceContainer root = FindRoot(item.Parent);
-            if (root != null && KeyCache.IsNullOrEmpty()) {
+            //if (root != null && KeyCache.IsNullOrEmpty()) {
                 UpdateConstants(item);
-            }
+            //}
 
             if (expr == null || expr.Length == 0) {
                 Debug.WriteLine("IsValid: " + exprName + " null/empty");
