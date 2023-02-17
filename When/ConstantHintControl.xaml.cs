@@ -33,6 +33,11 @@ namespace WhenPlugin.When {
              DependencyProperty.Register("HintValidate", typeof(String), typeof(ConstantHintControl), null);
 
         public String HintValidate { get; set; }
+
+        public static readonly DependencyProperty TypeProperty =
+              DependencyProperty.Register("Type", typeof(String), typeof(ConstantHintControl), null);
+
+        public String Type { get; set; }
     }
 }
 

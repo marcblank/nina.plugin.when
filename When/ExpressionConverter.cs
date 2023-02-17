@@ -38,6 +38,8 @@ namespace WhenPlugin.When {
         private static int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
         private static int VALUE_VALU = 2;              // Present to cause source->target updates; not used in code
         private static int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
+        private static int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
+        private static int VALUE_TYPE = 5;              // If present, the type of result needed
 
         private string Validate (ISequenceItem item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
@@ -57,6 +59,7 @@ namespace WhenPlugin.When {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
             SequenceItem item = values[VALUE_ITEM] as SequenceItem;
+            string type = (string)values[VALUE_TYPE];
             if (values[VALUE_EXPR] is string expr) {
                 double val;
                 if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
@@ -68,6 +71,9 @@ namespace WhenPlugin.When {
                     string valid = Validate(item, val, values);
                     if (valid != string.Empty) return valid;
                     ValidityCache.Add(item, true);
+                    if ("Integer".Equals(type) && Double.Floor(val) != val) {
+                        return " {" + (int)val + "}  ";
+                    }
                     return val;
                 } else {
                     double result;
@@ -77,6 +83,9 @@ namespace WhenPlugin.When {
                         string valid = Validate(item, result, values);
                         if (valid != string.Empty) return valid;
                         ValidityCache.Add(item, true);
+                        if ("Integer".Equals(type)) {
+                            result = (int)result;
+                        }
                         return " {" + result.ToString() + "}";
                     } else if (issues.Count > 0) {
                         ValidityCache.Remove(item);

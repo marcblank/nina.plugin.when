@@ -835,6 +835,7 @@
                         Margin="0,0,10,5" 
                         Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
                         Valu="{Binding Path=IterationCount, Mode=TwoWay}"
+                        Type="Integer"
                         />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
@@ -893,7 +894,8 @@
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
                         Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"  />
+                        Valu="{Binding Path=IterationCount, Mode=TwoWay}" 
+                        Type="Integer"/>
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -938,6 +940,7 @@
                         Margin="0,0,10,5" 
                         Expr="{Binding Path=DitherExpr, Mode=TwoWay}" 
                         Valu="{Binding Path=DitherCount, Mode=TwoWay}" 
+                        Type="Integer"
                         />
 
                 </WrapPanel>

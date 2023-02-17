@@ -34,6 +34,7 @@
                     <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="HintValidate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}"/>
                     <Binding Path="DefaultExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>

@@ -28,6 +28,11 @@ namespace WhenPlugin.When {
              DependencyProperty.Register("Validate", typeof(String), typeof(ConstantControl), null);
 
         public String Validate { get; set; }
+ 
+        public static readonly DependencyProperty TypeProperty =
+              DependencyProperty.Register("Type", typeof(String), typeof(ConstantControl), null);
+
+        public String Type { get; set; }
     }
 }
 
