@@ -29,9 +29,10 @@
         <TextBlock VerticalAlignment="Center"  Margin="0,-1,0,-3">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
-                    <Binding Path="HintExpr" ValidatesOnExceptions="True" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="HintExpr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
                     <Binding Path="."/>
-                    <Binding Path="HintValu" ValidatesOnExceptions="True"  RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="HintValu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
+                    <Binding Path="HintValidate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}"/>
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>

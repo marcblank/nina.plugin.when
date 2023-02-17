@@ -56,8 +56,8 @@ namespace WhenPlugin.When {
             get => cValueExpr;
             set {
                 cValueExpr = value;
-                ConstantExpression.UpdateConstants(this);
                 ConstantExpression.Evaluate(this, "CValueExpr", "CValue");
+                ConstantExpression.UpdateConstants(this);
                 RaisePropertyChanged("CValueExpr");
             }
         }

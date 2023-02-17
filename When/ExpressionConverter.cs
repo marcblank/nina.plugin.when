@@ -34,27 +34,38 @@ namespace WhenPlugin.When {
 
         public static string Not_Defined = "Parameter was not defined (";
 
-        public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
+        private static int VALUE_EXPR = 0;
+        private static int VALUE_ITEM = 1;
+        private static int VALUE_WHA = 2;
+        private static int VALUE_VALIDATE = 3;
+
+        private string Validate (ISequenceItem item, double val, object[] values) {
+            if (values.Length > 3 && values[VALUE_VALIDATE] is string validationMethod) {
+                MethodInfo m = item.GetType().GetMethod(validationMethod);
+                if (m != null) {
+                    string error = (string)m.Invoke(item, new object[] { val });
+                    if (error != string.Empty && item is IValidatable vitem) {
+                        vitem.Issues.Add(error);
+                        ValidityCache.Remove(item);
+                        return " { " + error + "} ";
+                    }
+                }              
+            }
+            return string.Empty;
+        }
+         
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
-            SequenceItem item = value[1] as SequenceItem;
-          if (value[0] is string expr) {
+            SequenceItem item = values[VALUE_ITEM] as SequenceItem;
+            if (values[0] is string expr) {
                 double val;
                 if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
                     ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return 0;
                 } else if (double.TryParse(expr, out val)) {
-                    if (value.Length > 3 && value[3] is string validationMethod) {
-                        MethodInfo m = item.GetType().GetMethod(validationMethod);
-                        if (m != null) {
-                            string error = (string)m.Invoke(item, new object[] { val });
-                            if (error != string.Empty && item is IValidatable vitem) {
-                                vitem.Issues.Add(error);
-                                ValidityCache.Remove(item) ;
-                                return " { " + error + "} ";
-                            }
-                        }
-                    }
+                    string valid = Validate(item, val, values);
+                    if (valid != string.Empty) return valid;
                     ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return val;
@@ -62,6 +73,8 @@ namespace WhenPlugin.When {
                     double result;
                     IList<string> issues = new List<string>();
                     if (ConstantExpression.IsValid(item, "*Converter*", expr, out result, issues)) {
+                        string valid = Validate(item, result, values);
+                        if (valid != string.Empty) return valid;
                         ValidityCache.Remove(item);
                         ValidityCache.Add(item, true);
                         return " {" + result.ToString() + "}";

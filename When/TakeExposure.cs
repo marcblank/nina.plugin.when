@@ -136,16 +136,13 @@ namespace WhenPlugin.When {
                     gain = CameraInfo.DefaultGain;
                 } else {
                     ConstantExpression.Evaluate(this, "GainExpr", "Gain");
-                    if (gain < -1 || gain > 32767) {
-                        throw new ArgumentException("value");
-                    }
                 }
 
                 RaisePropertyChanged("GainExpr");
             }
         }
 
-        private int gain;
+        private int gain = 0;
 
         [JsonProperty]
         public int Gain { get => gain; 
@@ -153,6 +150,10 @@ namespace WhenPlugin.When {
                 gain = value; 
                 RaisePropertyChanged();
             } 
+        }
+
+        public string ValidateGain (double gain) {
+            return (gain < -1 || gain > 1000) ? BAD_GAIN : string.Empty;
         }
 
         private int offset;
@@ -357,6 +358,8 @@ namespace WhenPlugin.When {
                 return null;
             }
         }
+
+        private static string BAD_GAIN = "Gain must be between -1 and 1000";
   
         public bool Validate() {
             var i = new List<string>();
@@ -389,6 +392,10 @@ namespace WhenPlugin.When {
                 Gain = (int)gain;
             } else {
                 Gain = -1;
+            }
+
+            if (ValidateGain(Gain) != String.Empty) {
+                i.Add(BAD_GAIN);
             }
 
             RaisePropertyChanged("ExposureTimeExpr");

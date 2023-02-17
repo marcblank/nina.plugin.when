@@ -714,37 +714,11 @@
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
             <local:ConstantHintControl 
                 Margin="8,1,10,5" 
-                HintExpr="{Binding 
-                    Path=GainExpr, 
-                    Mode=TwoWay}"
+                HintExpr="{Binding Path=GainExpr, Mode=TwoWay}"
+                HintValidate="ValidateGain"
                 DefaultExpr="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}"
                 HintValu="{Binding Path=Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
-            <!--<ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
-                VerticalContentAlignment="Center"
-                Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
-                <ninactrl:HintTextBox.HintText>
-                    <Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultGain"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />
-                </ninactrl:HintTextBox.HintText>
-                <ninactrl:HintTextBox.Text>
-                    <Binding
-                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                        Mode="TwoWay"
-                        Path="Gain"
-                        UpdateSourceTrigger="PropertyChanged">
-                    </Binding>
-                </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>-->
         </WrapPanel>
 
         <!--  Offset  -->
