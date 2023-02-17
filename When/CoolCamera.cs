@@ -110,6 +110,13 @@ namespace WhenPlugin.When {
                 //i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
+
+            if (ConstantExpression.IsValid(this, nameof(TemperatureExpr), TemperatureExpr, out double temp, i)) {
+                Temperature = temp;
+            } else {
+                Temperature = 0;
+            }
+
             if (ValidateTemperature(temperature) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
             }

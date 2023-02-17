@@ -36,7 +36,8 @@ namespace WhenPlugin.When {
 
         private static int VALUE_EXPR = 0;
         private static int VALUE_ITEM = 1;
-        private static int VALUE_VALIDATE = 2;
+        private static int VALUE_vALU = 2;
+        private static int VALUE_VALIDATE = 3;
 
         private string Validate (ISequenceItem item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {

@@ -70,6 +70,7 @@
             </mini:MiniSequenceItem.SequenceItemContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
+   
     <DataTemplate DataType="{x:Type local:CoolCamera}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
@@ -79,7 +80,10 @@
                         MinWidth="40"
                         Margin="5,-4,0,0"
                         Validate="ValidateTemperature"
-                        Expr="{Binding TemperatureExpr, Mode=TwoWay}"/>
+                        Expr="{Binding TemperatureExpr, Mode=TwoWay}"
+                        Valu="{Binding Temperature, Mode=TwoWay}" 
+                        
+                        />
                     <!--<ninactrl:UnitTextBox
                         MinWidth="40"
                         Margin="5,0,0,0"
@@ -118,7 +122,8 @@
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
                         Margin="5,0,5,3"
-                        Expr="{Binding CValueExpr, Mode=TwoWay}" />
+                        Expr="{Binding CValueExpr, Mode=TwoWay}" 
+                        Valu="{Binding CValue, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -614,6 +619,8 @@
         <local:ConstantControl 
             Margin = "8,1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
+            Valu="{Binding Path=ExposureTime, Mode=TwoWay}" 
+
             />
         
         <TextBlock
@@ -825,7 +832,9 @@
                     <TextBlock VerticalAlignment="Center" Text="#" />
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
-                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"/>
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=Iterations, Mode=TwoWay}"
+                        />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
@@ -873,6 +882,7 @@
             </mini:MiniSequenceItem.SequenceItemProgressContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:SmartExposure}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -881,7 +891,8 @@
                     <TextBlock VerticalAlignment="Center" Text="#" />
                     <local:ConstantControl 
                         Margin="0,0,10,5" 
-                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"/>
+                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=IterationCount, Mode=TwoWay}"  />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -922,7 +933,11 @@
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblDitherEveryNoFrame}" />
-                    <local:ConstantControl Margin="0,0,10,5" Expr="{Binding Path=DitherExpr, Mode=TwoWay}" />
+                    <local:ConstantControl 
+                        Margin="0,0,10,5" 
+                        Expr="{Binding Path=DitherExpr, Mode=TwoWay}" 
+                        Valu="{Binding Path=DitherCount, Mode=TwoWay}" 
+                        />
 
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
