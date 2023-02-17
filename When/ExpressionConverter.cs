@@ -32,12 +32,12 @@ namespace WhenPlugin.When {
 
         public static Dictionary<ISequenceItem, bool> ValidityCache = new Dictionary<ISequenceItem, bool>();
 
-        public static string Not_Defined = "Parameter was not defined (";
+        public static string NOT_DEFINED = "Parameter was not defined (";
 
-        private static int VALUE_EXPR = 0;
-        private static int VALUE_ITEM = 1;
-        private static int VALUE_vALU = 2;
-        private static int VALUE_VALIDATE = 3;
+        private static int VALUE_EXPR = 0;              // The expression to be evaluated
+        private static int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
+        private static int VALUE_VALU = 2;              // Used source->target to cause updates
+        private static int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
 
         private string Validate (ISequenceItem item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
@@ -84,9 +84,10 @@ namespace WhenPlugin.When {
                     } else if (issues.Count > 0) {
                         ValidityCache.Remove(item);
                         string errorString = issues[0];
-                        int pos = errorString.IndexOf(Not_Defined);
+                        // Shorten this common error from NCalc
+                        int pos = errorString.IndexOf(NOT_DEFINED);
                         if (pos == 0) {
-                            errorString = "Undefined (" + errorString.Substring(Not_Defined.Length);
+                            errorString = "Undefined (" + errorString.Substring(NOT_DEFINED.Length);
                         }
                         return " {" + errorString + "} ";
                     } else {
