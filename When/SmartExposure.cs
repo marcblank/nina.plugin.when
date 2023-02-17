@@ -200,7 +200,7 @@ namespace WhenPlugin.When {
 
             valid = te.Validate() && valid;
             i.AddRange(te.Issues);
-
+            g
             if (sw.Filter != null) {
                 valid = sw.Validate() && valid;
                 i.AddRange(sw.Issues);
@@ -211,7 +211,7 @@ namespace WhenPlugin.When {
                 i.AddRange(dither.Issues);
             }
   
-            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
+            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount",s 1, i);
             ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
 
             Issues = i;
