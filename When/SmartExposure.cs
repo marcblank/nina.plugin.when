@@ -153,17 +153,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-
-        [JsonProperty]
-        public string IterationCountString {
-            get {
-                return IterationCount < 0 ? " ? " : IterationCount.ToString();
-            }
-            set { }
-        }
         
-        private int iterations = 1;
-
         [JsonProperty]
         public int IterationCount {
             get => (Conditions[0] as LoopCondition).Iterations;
@@ -171,9 +161,8 @@ namespace WhenPlugin.When {
                 //
                 if (Conditions.Count == 0) return;
                 LoopCondition lc = Conditions[0] as LoopCondition;
-                lc.Iterations = iterations = value;
+                lc.Iterations = value;
                 RaisePropertyChanged("IterationCount");
-                RaisePropertyChanged("IterationCountString");
             }
         }
 
@@ -190,25 +179,13 @@ namespace WhenPlugin.When {
         }
 
         [JsonProperty]
-        public string DitherCountString {
-            get {
-                return DitherCount < 0 ? " ? " : DitherCount.ToString();
-            }
-            set { }
-        }
-
-        private double iValue;
-        private int dithers = 1;
-
-        [JsonProperty]
         public int DitherCount {
             get => (Triggers[0] as DitherAfterExposures).AfterExposures;
             set {
                 if (Triggers.Count == 0) return;
                 DitherAfterExposures lc = Triggers[0] as DitherAfterExposures;
-                lc.AfterExposures = dithers = value;
+                lc.AfterExposures = value;
                 RaisePropertyChanged("DitherCount");
-                RaisePropertyChanged("DitherCountString");
             }
         }
 
@@ -250,8 +227,6 @@ namespace WhenPlugin.When {
             else {
                 DitherCount = (int)count;
             }
-            RaisePropertyChanged("IsValidDitherCount");
-            RaisePropertyChanged("Issues");
 
             return valid;
         }
@@ -271,10 +246,8 @@ namespace WhenPlugin.When {
             return GetTakeExposure().GetEstimatedDuration();
         }
 
-        /// <summary>
         /// When an inner instruction interrupts this set, it should reroute the interrupt to the real parent set
-        /// </summary>
-        /// <returns></returns>
+
         public override Task Interrupt() {
             return this.Parent?.Interrupt();
         }

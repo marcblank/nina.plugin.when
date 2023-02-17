@@ -127,20 +127,6 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-
-
-        [JsonProperty]
-        public string ValueString {
-            get {
-                return IterationCount < 0 ? " ? " : IterationCount.ToString();
-            }
-            set { }
-        }
-
-        private double iValue;
-
-        private int iterations = 1;
-
         [JsonProperty]
         public int IterationCount {
             get => (Conditions[0] as LoopCondition).Iterations;
@@ -148,9 +134,8 @@ namespace WhenPlugin.When {
                 //
                 if (Conditions.Count == 0) return;
                 LoopCondition lc = Conditions[0] as LoopCondition;
-                lc.Iterations = iterations = value;
+                lc.Iterations = value;
                 RaisePropertyChanged("IterationCount");
-                RaisePropertyChanged("IterationCountString");
             }
         } 
         
@@ -166,7 +151,6 @@ namespace WhenPlugin.When {
             RaisePropertyChanged("IterationCount");
             RaisePropertyChanged("IterationsExpr");
             return valid && (Issues.Count == 0);
-            //return Issues.Count == 0;
         }
 
         public override object Clone() {
@@ -181,11 +165,8 @@ namespace WhenPlugin.When {
             return GetTakeExposure().GetEstimatedDuration();
         }
 
-        /// <summary>
         /// When an inner instruction interrupts this set, it should reroute the interrupt to the real parent set
-        /// </summary>
-        /// <returns></returns>
-        public override Task Interrupt() {
+         public override Task Interrupt() {
             return this.Parent?.Interrupt();
         }
 
