@@ -64,6 +64,9 @@ namespace WhenPlugin.When {
                     return 0;
                 } else if (double.TryParse(expr, out val)) {
                     ValidityCache.Remove(item);
+
+                    if (Validate(item, val, values) == "") { }
+
                     string valid = Validate(item, val, values);
                     if (valid != string.Empty) return valid;
                     ValidityCache.Add(item, true);
