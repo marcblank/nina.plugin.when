@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using NJsonSchema.Validation.FormatValidators;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -106,8 +107,13 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0, i);
+            if (!ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0, i)) {
+
+            }
             Issues = i;
+            if (Issues.Count > 0) {
+                cValue = Double.NaN.ToString();
+            }
             return Issues.Count == 0;
         }
     }

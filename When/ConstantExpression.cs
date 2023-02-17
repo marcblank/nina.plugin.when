@@ -255,17 +255,18 @@ namespace WhenPlugin.When {
             double val;
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 
+            PropertyInfo pi = item.GetType().GetProperty(valueName);
             if (IsValid(item, exprName, expr, out val, issues)) {
-                PropertyInfo pi = item.GetType().GetProperty(valueName);
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
                     pi.SetValue(item, conv);
                     return true;
                 } catch (Exception) {
-                    pi.SetValue(item, def);
-                    throw new ArgumentException("Bad");
                 }
             }
+            try {
+                pi.SetValue(item, def);
+            } catch (Exception) { }
             return false;
         }
 

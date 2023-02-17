@@ -15,43 +15,24 @@ namespace WhenPlugin.When {
         }
 
         public static readonly DependencyProperty HintExprProperty =
-            DependencyProperty.Register("HintExpr", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnHintExprChanged));
+            DependencyProperty.Register("HintExpr", typeof(String), typeof(ConstantHintControl), null);
 
-        public String HintExpr {
-            get { return (String)GetValue(HintExprProperty); }
-            set { SetValue(HintExprProperty, value); }
-        }
+        public String HintExpr { get; set; }
 
-        private static void OnHintExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(HintExprProperty, e.NewValue);
-        }
+        public static readonly DependencyProperty HintValuProperty =
+            DependencyProperty.Register("HintValu", typeof(String), typeof(ConstantHintControl), null);
+
+        public String HintValu { get; set; }
 
         public static readonly DependencyProperty DefaultExprProperty =
-             DependencyProperty.Register("DefaultExpr", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnDefaultExprChanged));
+             DependencyProperty.Register("DefaultExpr", typeof(String), typeof(ConstantHintControl), null);
 
-        public String DefaultExpr {
-            get { return (String)GetValue(DefaultExprProperty); }
-            set { SetValue(DefaultExprProperty, value); }
-        }
-
-        private static void OnDefaultExprChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(DefaultExprProperty, e.NewValue);
-        }
+        public String DefaultExpr { get; set; }
 
         public static readonly DependencyProperty HintValidateProperty =
-             DependencyProperty.Register("HintValidate", typeof(String), typeof(ConstantHintControl), new PropertyMetadata("Foo", OnHintValidateChanged));
+             DependencyProperty.Register("HintValidate", typeof(String), typeof(ConstantHintControl), null);
 
-        public String HintValidate {
-            get { return (String)GetValue(HintValidateProperty); }
-            set { SetValue(HintValidateProperty, value); }
-        }
-
-
-        private static void OnHintValidateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            d.SetValue(HintValidateProperty, e.NewValue);
-        }
-
-
+        public String HintValidate { get; set; }
     }
 }
 
