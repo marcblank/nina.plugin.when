@@ -34,12 +34,12 @@ namespace WhenPlugin.When {
 
         public static string NOT_DEFINED = "Parameter was not defined (";
 
-        private static int VALUE_EXPR = 0;              // The expression to be evaluated
-        private static int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
-        private static int VALUE_VALU = 2;              // Present to cause source->target updates; not used in code
-        private static int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
-        private static int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
-        private static int VALUE_TYPE = 5;              // If present, the type of result needed
+        private const int VALUE_EXPR = 0;              // The expression to be evaluated
+        private const int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
+        private const int VALUE_VALU = 2;              // Present to cause source->target updates; not used in code
+        private const int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
+        private const int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
+        private const int VALUE_TYPE = 5;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
 
         private string Validate (ISequenceItem item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
