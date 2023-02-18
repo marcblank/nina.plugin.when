@@ -59,7 +59,13 @@ namespace WhenPlugin.When {
             if (root != null) {
                 KeyCache.Clear();
                 FindConstantsRoot(root, new Keys());
-                Debug.WriteLine("KeyCache: " + KeyCache.Count);
+                Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
+                foreach (var kvp in KeyCache) {
+                    Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
+                    foreach (var c in kvp.Value) {
+                        Debug.WriteLine(c);
+                    }
+                }
             }
         }
 
@@ -137,7 +143,7 @@ namespace WhenPlugin.When {
             foreach (ISequenceItem item in container.Items) {
                 if (item is SetConstant sc && cachedKeys == null) {
                     string name = sc.Constant;
-                    string val = sc.CValue;
+                    string val = sc.CValueExpr;
                     double value;
                     if (name.IsNullOrEmpty()) {
                         Debug.WriteLine("Empty name in SetConstant; ignore");
@@ -175,12 +181,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        public static bool IsValid(SequenceItem item, string exprName, out double val, IList<string> issues) {
-            string expr = item.TryGetPropertyValue(exprName, String.Empty);
-            val = 0;
-            return IsValid(item, exprName, expr, out val, issues);
-        }
-
         public static bool IsValid(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
 
@@ -191,9 +191,9 @@ namespace WhenPlugin.When {
 
             // Make sure we're up-to-date on constants
             ISequenceContainer root = FindRoot(item.Parent);
-            //if (root != null && KeyCache.IsNullOrEmpty()) {
+            if (root != null && KeyCache.IsNullOrEmpty()) {
                 UpdateConstants(item);
-            //}
+            }
 
             if (expr == null || expr.Length == 0) {
                 Debug.WriteLine("IsValid: " + exprName + " null/empty");

@@ -45,7 +45,7 @@ namespace WhenPlugin.When {
                     if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
                     }
                     constant = value;
-                    ConstantExpression.FlushKeys();
+                    ConstantExpression.UpdateConstants(this);
                 }
                 RaisePropertyChanged();
             }
@@ -58,7 +58,7 @@ namespace WhenPlugin.When {
             set {
                 cValueExpr = value;
                 ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0);
-                ConstantExpression.FlushKeys();
+                ConstantExpression.UpdateConstants(this);
                 RaisePropertyChanged("CValueExpr");
             }
         }
@@ -98,7 +98,7 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            ConstantExpression.FlushKeys();
+            ConstantExpression.UpdateConstants(this);
         }
 
         public override string ToString() {
