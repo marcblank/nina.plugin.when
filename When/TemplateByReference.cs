@@ -186,14 +186,20 @@ namespace WhenPlugin.When {
         private TemplatedSequenceContainer FindTemplate(string name) {
 
             lock (TemplateControllerLite.TemplateLock) {
-                foreach (var tmp in templateController.Templates) {
-                    if (tmp.Container.Name.Equals(name)) {
-                        Logger.Info("TemplateByReference; found template: " + TemplateName);
-                        return tmp;
+                for (int i = 0; i < 4; i++) {
+                    try {
+                        foreach (var tmp in templateController.Templates) {
+                            if (tmp.Container.Name.Equals(name)) {
+                                Logger.Info("TemplateByReference; found template: " + TemplateName);
+                                return tmp;
+                            }
+                        }
+                    } catch (Exception) {
+                        Thread.Sleep(100);
                     }
                 }
+                return null;
             }
-            return null;
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {

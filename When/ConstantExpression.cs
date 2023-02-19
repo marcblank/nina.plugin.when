@@ -264,7 +264,8 @@ namespace WhenPlugin.When {
             }
             try {
                 pi.SetValue(item, def);
-            } catch (Exception) { }
+            } catch (Exception) {
+            }
             return false;
         }
 

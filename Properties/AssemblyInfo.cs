@@ -50,8 +50,7 @@ using System.Runtime.InteropServices;
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
-[assembly: AssemblyMetadata("LongDescription", @"
-This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.  (NOTE: This plugin includes all of the functionality of the 'Interrupts' plugin, which is now obsolete; it is also renamed from 'When (and If)').
+[assembly: AssemblyMetadata("LongDescription", @"This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.  (NOTE: This plugin includes all of the functionality of the 'Interrupts' plugin, which is now obsolete; it is also renamed from 'When (and If)').
 
 These are the instructions that are current in Sequencer Powerups, broken down by the Category in which they appear in the instruction sidebar.
 
@@ -65,6 +64,8 @@ Cool Camera - Same as built-in instruction, with the ability to use a constant f
 
 Take Exposure/Take Many Exposures/Smart Exposure -  These three instructions are effectively copies of the built-in instructions, with the ability to use constants for iterations (smart/many), exposure time, gain, and dither.
 
+Screenshot: [Constants Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIEvcjHtr65Jl7W9Q?e=FM4WRF)
+
 SAFETY MONITOR:
 
 When Becomes Unsafe - This trigger is activated within SECONDS of your Safety Monitor registering an 'Unsafe' condition.  You specify the actions (instructions) to be taken in that circumstance - for example, you might want to ""Close Dome Shutter"", send yourself a message using the Ground Station plugin, and then ""Wait for Safe"".  After that, you might ""Open Dome Shutter"", send yourself another message, ""Run Autofocus"", and ""Slew and Center"".  When your instructions have finished executing, NINA will continue from where it left off!  And this instruction can be used repeatedly (the rain might start and stop and then start again...)  This instruction is likely to be much simpler to understand than multiple loops based on the 'safe' status of your gear.
@@ -72,6 +73,8 @@ When Becomes Unsafe - This trigger is activated within SECONDS of your Safety Mo
 If Safe - Specify instructions to execute if your Safety Monitor is currently reporting 'Safe'
 
 If Unsafe - Specify instructions to execute if your Safety Monitor is currently reporting 'Unsafe'
+
+Screnshot: [When Becomes Unsafe Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF)
 
 SEQUENCER (new Category):
 
