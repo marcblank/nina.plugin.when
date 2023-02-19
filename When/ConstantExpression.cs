@@ -145,7 +145,7 @@ namespace WhenPlugin.When {
                     string val = sc.CValueExpr;
                     double value;
                     if (name.IsNullOrEmpty()) {
-                        Debug.WriteLine("Empty name in SetConstant; ignore");
+                        //Debug.WriteLine("Empty name in SetConstant; ignore");
                     } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
                         keys.Add(name, value);
@@ -183,19 +183,8 @@ namespace WhenPlugin.When {
         public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
             ISequenceItem item = obj as ISequenceItem;
-            if (item == null) return false;
+            if (item == null || item.Parent == null) return false;
             
-
-            if (obj.GetType() == typeof(WhenPlugin)) {
-                Debug.WriteLine("Foo");
-            }
-
- 
-            if (item.Parent == null) {
-                Debug.WriteLine("IsValid: " + exprName + " No parent");
-                return true;
-            }
-
             // Make sure we're up-to-date on constants
             ISequenceContainer root = FindRoot(item.Parent);
             Keys kk;
@@ -204,10 +193,10 @@ namespace WhenPlugin.When {
             }
 
             if (expr == null || expr.Length == 0) {
-                Debug.WriteLine("IsValid: " + exprName + " null/empty");
+                //Debug.WriteLine("IsValid: " + exprName + " null/empty");
                 return false;
             }
-            // Best case, this is a number of some sort
+            // Best case, this is a number a some sort
 
             if (double.TryParse(expr, out val)) {
                 Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
