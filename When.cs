@@ -149,7 +149,7 @@ namespace WhenPlugin.When {
                     globals.Items.Add(new SetConstant() { Constant = def.Name1, CValueExpr = def.Value1 });
                 }
                 if (Name2.Length != 0 && Name2.Length != 0) {
-                    globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2 });
+                    globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2});
                 }
             }
             //ConstantExpression.UpdateConstants(globals);

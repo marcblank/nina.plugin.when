@@ -78,7 +78,9 @@ namespace WhenPlugin.When {
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             // We start from root, but we'll add global constants
             Debug.WriteLine("Root: #" + ++FC);
-            GlobalContainer.Items.Add(container);
+            if (!GlobalContainer.Items.Contains(container)) {
+                GlobalContainer.Items.Add(container);
+            }
             FindConstants(GlobalContainer, keys);
         }
 
