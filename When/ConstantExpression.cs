@@ -5,6 +5,7 @@ using NINA.Profile;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -20,7 +21,7 @@ namespace WhenPlugin.When {
             return null;
         }
         
-        static private Dictionary<ISequenceContainer, Keys> KeyCache = new Dictionary<ISequenceContainer, Keys>();
+        static private ConcurrentDictionary<ISequenceContainer, Keys> KeyCache = new ConcurrentDictionary<ISequenceContainer, Keys>();
         
         private class Keys : Dictionary<string, object> {
 
@@ -166,10 +167,10 @@ namespace WhenPlugin.When {
             
             if (cachedKeys == null) {
                 if (KeyCache.ContainsKey(container)) {
-                    KeyCache.Remove(container);
+                    KeyCache.TryRemove(container, out _);
                 }
                 if (keys.Count > 0) {
-                    KeyCache.Add(container, keys);
+                    KeyCache.TryAdd(container, keys);
                 }
             }
             

@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.1.6.0")]
-[assembly: AssemblyFileVersion("3.1.6.0")]
+[assembly: AssemblyVersion("3.2.0.0")]
+[assembly: AssemblyFileVersion("3.2.0.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -39,17 +39,16 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Homepage", "https://mypluginwebsite.com/")]
 
 //[Optional] Common tags that quickly describe your plugin
-[assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups")]
+[assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Interrupt")]
 
 //[Optional] A link that will show a log of all changes in between your plugin's versions
 [assembly: AssemblyMetadata("ChangelogURL", "https://bitbucket.org/zorkmid/nina.plugin.when/CHANGELOG.md")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
-[assembly: AssemblyMetadata("FeaturedImageURL", "https://bnz07pap001files.storage.live.com/y4mYxcPQqg9HC_C5B4jDve72bZ91epqEi-LhQW2HklNx-UFzbse9svy9ulvFEApVIQgJ-iWfzgf2XcRyxLtstPMcj7sqB4dhnP4gAFPgl0TJhkYtoYrCpPeq0K_SSPehd6aPKitznJS74qAErQoJ0W2gDz6bUF_B1ujl6HbTncrtMhhXGmurFiFaLU47lbfO4E9?encodeFailures=1&width=168&height=164")]
-//[Optional] A url to an example screenshot of your plugin in action
-[assembly: AssemblyMetadata("ScreenshotURL", "")]
+[assembly: AssemblyMetadata("FeaturedImageURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgekr7EEVg_8-hIOmPQ?e=ZQbdD6")]
+[assembly: AssemblyMetadata("ScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIEvcjHtr65Jl7W9Q?e=FM4WRF")]
 //[Optional] An additional url to an example example screenshot of your plugin in action
-[assembly: AssemblyMetadata("AltScreenshotURL", "")]
+[assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
 [assembly: AssemblyMetadata("LongDescription", @"
 This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.  (NOTE: This plugin includes all of the functionality of the 'Interrupts' plugin, which is now obsolete; it is also renamed from 'When (and If)').
