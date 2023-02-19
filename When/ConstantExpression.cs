@@ -265,6 +265,12 @@ namespace WhenPlugin.When {
             try {
                 pi.SetValue(item, def);
             } catch (Exception) {
+                try {
+                    var conv = Convert.ChangeType(def, pi.PropertyType);
+                    pi.SetValue(item, conv);
+                } catch (Exception ex) {
+                    Debug.WriteLine("Caught exception: " + ex);
+                }
             }
             return false;
         }

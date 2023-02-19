@@ -81,7 +81,7 @@ namespace WhenPlugin.When {
             get => cValueExpr;
             set {
                 cValueExpr = value;
-                ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0);
+                ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                 ConstantExpression.FlushKeys();
                 ConstantExpression.UpdateConstants(this);
                 RaisePropertyChanged("CValueExpr");
@@ -143,7 +143,7 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            if (!ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0, i)) {
+            if (!ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i)) {
 
             }
             Issues = i;
