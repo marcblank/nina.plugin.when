@@ -70,6 +70,8 @@ namespace WhenPlugin.When {
                     PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalName);
                     pi?.SetValue(WhenPluginObject, value, null);
                 }
+                // Force every expression to re-evaluate
+                ConstantExpression.GlobalContainer.Validate();
             }
         }
  
