@@ -104,7 +104,7 @@ namespace WhenPlugin.When {
                         if (item != null) {
                             ValidityCache.Remove(item);
                         }
-                        return " {Error} ";
+                        return ""; // return " {Error} ";
                     }
                  }
             }

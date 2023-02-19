@@ -9,9 +9,14 @@ using System.ComponentModel.Composition;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Settings = WhenPlugin.When.Properties.Settings;
 using System.Windows.Media;
 using NJsonSchema.Validation.FormatValidators;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System.Reflection;
+using NINA.Profile;
+using System.Configuration;
+using System.Linq;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -24,16 +29,22 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public SetConstant() {
             Constant = "";
+            Icon = Icon;
         }
         public SetConstant(SetConstant copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
+                Icon = copyMe.Icon;
             }
         }
 
-        [JsonProperty]
+        public string GlobalName { get; set; }
+        public string GlobalValue { get; set; }
+
         public string Dummy;
+
+        public static WhenPlugin WhenPluginObject { get; set; }
 
         private string constant;
 
@@ -51,9 +62,13 @@ namespace WhenPlugin.When {
                 }
                 RaisePropertyChanged();
                 if (Parent == ConstantExpression.GlobalContainer) {
-                    foreach (IValidatable val in Parent.Items) {
+                    foreach (IValidatable val in Parent.Items.Cast<IValidatable>()) {
                         val.Validate();
                     }
+                }
+                if (GlobalName!= null) {
+                    PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalName);
+                    pi?.SetValue(WhenPluginObject, value, null);
                 }
             }
         }
@@ -70,8 +85,12 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("CValueExpr");
                 if (Parent == ConstantExpression.GlobalContainer) {
                     //WhenPlugin.UpdateGlobalConstants();
-                    foreach (IValidatable val in Parent.Items) {
+                    foreach (IValidatable val in Parent.Items.Cast<IValidatable>()) {
                         val.Validate();
+                    }
+                    if (GlobalName != null) {
+                        PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalValue);
+                        pi?.SetValue(WhenPluginObject, value, null);
                     }
                 }
             }

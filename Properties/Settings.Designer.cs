@@ -82,5 +82,53 @@ namespace WhenPlugin.When.Properties {
                 this["Value2"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name3 {
+            get {
+                return ((string)(this["Name3"]));
+            }
+            set {
+                this["Name3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value3 {
+            get {
+                return ((string)(this["Value3"]));
+            }
+            set {
+                this["Value3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name4 {
+            get {
+                return ((string)(this["Name4"]));
+            }
+            set {
+                this["Name4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value4 {
+            get {
+                return ((string)(this["Value4"]));
+            }
+            set {
+                this["Value4"] = value;
+            }
+        }
     }
 }

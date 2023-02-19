@@ -21,6 +21,10 @@ using System.Reflection.Metadata;
 using WhenPlugin.When;
 using NINA.Sequencer.Container;
 using Namotion.Reflection;
+using System.Reflection;
+using System.Drawing;
+using System.Windows.Media;
+using System.Windows;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -38,6 +42,7 @@ namespace WhenPlugin.When {
 
         // Implementing a file pattern
         private readonly ImagePattern exampleImagePattern = new ImagePattern("$$EXAMPLEPATTERN$$", "An example of an image pattern implementation", "When");
+        private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
 
         [ImportingConstructor]
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator) {
@@ -63,7 +68,8 @@ namespace WhenPlugin.When {
             // Register a new image file pattern for the Options > Imaging > File Patterns area
             options.AddImagePattern(exampleImagePattern);
 
-            CreateGlobalSetConstants();
+            CreateGlobalSetConstants(this);
+            SetConstant.WhenPluginObject = this;
         }
 
         public override Task Teardown() {
@@ -121,40 +127,22 @@ namespace WhenPlugin.When {
             get => ConstantExpression.GlobalContainer;
             set { }
         }
-        
-        private void CreateGlobalSetConstants () {
+
+        private void CreateGlobalSetConstants (WhenPlugin plugin) {
             Globals.Name = "Global Constants";
             var def = Properties.Settings.Default;
-            if (Name1.Length != 0 && Value1.Length != 0) {
-                Globals.Items.Add(new SetConstant() { Name = "Global Constant", Constant = def.Name1, CValueExpr = def.Value1 });
-            }
-            if (Name2.Length != 0 && Name2.Length != 0) {
-                Globals.Items.Add(new SetConstant() { Name = "Global Constant", Constant = def.Name2, CValueExpr = def.Value2 });
-            }
+            Globals.Items.Add(new SetConstant() { Constant = def.Name1, CValueExpr = def.Value1, GlobalName = "Name1", GlobalValue = "Value1" });
+            Globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2, GlobalName = "Name2", GlobalValue = "Value2" });
+            Globals.Items.Add(new SetConstant() { Constant = def.Name3, CValueExpr = def.Value3, GlobalName = "Name3", GlobalValue = "Value3" });
+            Globals.Items.Add(new SetConstant() { Constant = def.Name4, CValueExpr = def.Value4, GlobalName = "Name4", GlobalValue = "Value4" });
+
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);
+                item.Icon = ConstantsIcon;
+                item.Name = "Global Constant";
             }
             RaisePropertyChanged("Globals");
         } 
-
-        private static bool InFlight { get; set; }
-
-        private void UpdateGlobalConstants() {
-            SequenceContainer globals = ConstantExpression.GlobalContainer;
-            globals.Items.Clear();
-            if (!InFlight) {
-                InFlight = true;
-                var def = Properties.Settings.Default;
-                if (Name1.Length != 0 && Value1.Length != 0) {
-                    globals.Items.Add(new SetConstant() { Constant = def.Name1, CValueExpr = def.Value1 });
-                }
-                if (Name2.Length != 0 && Name2.Length != 0) {
-                    globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2});
-                }
-            }
-            //ConstantExpression.UpdateConstants(globals);
-        }
-
 
         public string Name1 {
             get {
@@ -178,7 +166,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        public string Value1C { get; set; }
         public string Name2 {
             get {
                 return Settings.Default.Name2;
@@ -199,9 +186,46 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-        public string Value2C { get;set; }  
-
-
+        public string Name3 {
+            get {
+                return Settings.Default.Name3;
+            }
+            set {
+                Settings.Default.Name3 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value3 {
+            get {
+                return Settings.Default.Value3;
+            }
+            set {
+                Settings.Default.Value3 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Name4 {
+            get {
+                return Settings.Default.Name4   ;
+            }
+            set {
+                Settings.Default.Name4   = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value4 {
+            get {
+                return Settings.Default.Value4;
+            }
+            set {
+                Settings.Default.Value4 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
         public string ProfileSpecificNotificationMessage {
             get {
                 return pluginSettings.GetValueString(nameof(ProfileSpecificNotificationMessage), string.Empty);
