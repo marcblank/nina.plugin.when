@@ -17,6 +17,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Settings = WhenPlugin.When.Properties.Settings;
+using System.Reflection.Metadata;
+using WhenPlugin.When;
+using NINA.Sequencer.Container;
+using Namotion.Reflection;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -58,6 +62,8 @@ namespace WhenPlugin.When {
 
             // Register a new image file pattern for the Options > Imaging > File Patterns area
             options.AddImagePattern(exampleImagePattern);
+
+            CreateGlobalSetConstants();
         }
 
         public override Task Teardown() {
@@ -111,6 +117,45 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
+        public SequenceContainer Globals {
+            get => ConstantExpression.GlobalContainer;
+            set { }
+        }
+        
+        private void CreateGlobalSetConstants () {
+            Globals.Name = "Global Constants";
+            var def = Properties.Settings.Default;
+            if (Name1.Length != 0 && Value1.Length != 0) {
+                Globals.Items.Add(new SetConstant() { Name = "Global Constant", Constant = def.Name1, CValueExpr = def.Value1 });
+            }
+            if (Name2.Length != 0 && Name2.Length != 0) {
+                Globals.Items.Add(new SetConstant() { Name = "Global Constant", Constant = def.Name2, CValueExpr = def.Value2 });
+            }
+            foreach (var item in Globals.Items) {
+                item.AttachNewParent(Globals);
+            }
+            RaisePropertyChanged("Globals");
+        } 
+
+        private static bool InFlight { get; set; }
+
+        private void UpdateGlobalConstants() {
+            SequenceContainer globals = ConstantExpression.GlobalContainer;
+            globals.Items.Clear();
+            if (!InFlight) {
+                InFlight = true;
+                var def = Properties.Settings.Default;
+                if (Name1.Length != 0 && Value1.Length != 0) {
+                    globals.Items.Add(new SetConstant() { Constant = def.Name1, CValueExpr = def.Value1 });
+                }
+                if (Name2.Length != 0 && Name2.Length != 0) {
+                    globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2 });
+                }
+            }
+            //ConstantExpression.UpdateConstants(globals);
+        }
+
+
         public string Name1 {
             get {
                 return Settings.Default.Name1;
@@ -121,6 +166,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
         public string Value1 {
             get {
                 return Settings.Default.Value1;
@@ -131,6 +177,8 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
+        public string Value1C { get; set; }
         public string Name2 {
             get {
                 return Settings.Default.Name2;
@@ -151,6 +199,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+        public string Value2C { get;set; }  
 
 
         public string ProfileSpecificNotificationMessage {

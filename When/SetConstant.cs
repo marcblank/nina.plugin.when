@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using NJsonSchema.Validation.FormatValidators;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -45,9 +46,15 @@ namespace WhenPlugin.When {
                     if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
                     }
                     constant = value;
+                    ConstantExpression.FlushKeys();
                     ConstantExpression.UpdateConstants(this);
                 }
                 RaisePropertyChanged();
+                if (Parent == ConstantExpression.GlobalContainer) {
+                    foreach (IValidatable val in Parent.Items) {
+                        val.Validate();
+                    }
+                }
             }
         }
  
@@ -58,8 +65,15 @@ namespace WhenPlugin.When {
             set {
                 cValueExpr = value;
                 ConstantExpression.Evaluate(this, "CValueExpr", "CValue", 0);
+                ConstantExpression.FlushKeys();
                 ConstantExpression.UpdateConstants(this);
                 RaisePropertyChanged("CValueExpr");
+                if (Parent == ConstantExpression.GlobalContainer) {
+                    //WhenPlugin.UpdateGlobalConstants();
+                    foreach (IValidatable val in Parent.Items) {
+                        val.Validate();
+                    }
+                }
             }
         }
 
@@ -114,6 +128,8 @@ namespace WhenPlugin.When {
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();
             }
+            RaisePropertyChanged("CValueExpr");
+            RaisePropertyChanged("CValue");
             return Issues.Count == 0;
         }
     }

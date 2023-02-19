@@ -29,7 +29,7 @@ namespace WhenPlugin.When {
 
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             SequenceItem item = value[1] as SequenceItem;
-            if (ExpressionConverter.ValidityCache.ContainsKey(item)) {
+            if (item != null && ExpressionConverter.ValidityCache.ContainsKey(item)) {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
             return new SolidColorBrush(Colors.Orange);

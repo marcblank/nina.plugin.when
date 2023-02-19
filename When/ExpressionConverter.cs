@@ -67,10 +67,12 @@ namespace WhenPlugin.When {
                     ValidityCache.Add(item, true);
                     return 0;
                 } else if (double.TryParse(expr, out val)) {
-                    ValidityCache.Remove(item);
-                    string valid = Validate(item, val, values);
-                    if (valid != string.Empty) return valid;
-                    ValidityCache.Add(item, true);
+                    if (item != null) {
+                        ValidityCache.Remove(item);
+                        string valid = Validate(item, val, values);
+                        if (valid != string.Empty) return valid;
+                        ValidityCache.Add(item, true);
+                    }
                     if ("Integer".Equals(type) && Double.Floor(val) != val) {
                         return " {" + (int)val + "}  ";
                     }
@@ -80,9 +82,11 @@ namespace WhenPlugin.When {
                     IList<string> issues = new List<string>();
                     if (ConstantExpression.IsValid(item, "*Converter*", expr, out result, issues)) {
                         ValidityCache.Remove(item);
-                        string valid = Validate(item, result, values);
-                        if (valid != string.Empty) return valid;
-                        ValidityCache.Add(item, true);
+                        if (item != null) {
+                            string valid = Validate(item, result, values);
+                            if (valid != string.Empty) return valid;
+                            ValidityCache.Add(item, true);
+                        }
                         if ("Integer".Equals(type)) {
                             result = (int)result;
                         }
@@ -97,12 +101,16 @@ namespace WhenPlugin.When {
                         }
                         return " {" + errorString + "} ";
                     } else {
-                        ValidityCache.Remove(item);
+                        if (item != null) {
+                            ValidityCache.Remove(item);
+                        }
                         return " {Error} ";
                     }
                  }
             }
-            ValidityCache.Remove(item);
+            if (item != null) {
+                ValidityCache.Remove(item);
+            }
             return "Illegal";
         }
 

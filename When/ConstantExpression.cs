@@ -66,20 +66,17 @@ namespace WhenPlugin.When {
                         Debug.WriteLine(c);
                     }
                 }
+            } else {
+                FindConstants(GlobalContainer, new Keys());
             }
         }
 
-        static private SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" }; 
+        static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
+
+        static private bool InFlight { get; set; } = false;
 
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             // We start from root, but we'll add global constants
-            GlobalContainer.Items.Clear();
-            var def = Properties.Settings.Default;
-            if (!def.Name2.IsNullOrEmpty()) {
-                if (!def.Value2.IsNullOrEmpty()) {
-                    //GlobalContainer.Items.Add(new SetConstant() { Constant = def.Name2, CValue = def.Value2 });
-                }
-            }
             Debug.WriteLine("Root: #" + ++FC);
             GlobalContainer.Items.Add(container);
             FindConstants(GlobalContainer, keys);
@@ -181,9 +178,17 @@ namespace WhenPlugin.When {
             }
         }
 
-        public static bool IsValid(SequenceItem item, string exprName, string expr, out double val, IList<string> issues) {
+        public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
+            ISequenceItem item = obj as ISequenceItem;
+            if (item == null) return false;
+            
 
+            if (obj.GetType() == typeof(WhenPlugin)) {
+                Debug.WriteLine("Foo");
+            }
+
+ 
             if (item.Parent == null) {
                 Debug.WriteLine("IsValid: " + exprName + " No parent");
                 return true;
@@ -191,7 +196,8 @@ namespace WhenPlugin.When {
 
             // Make sure we're up-to-date on constants
             ISequenceContainer root = FindRoot(item.Parent);
-            if (root != null && KeyCache.IsNullOrEmpty()) {
+            Keys kk;
+            if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
                 UpdateConstants(item);
             }
 
