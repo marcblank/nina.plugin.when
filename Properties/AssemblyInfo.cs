@@ -56,13 +56,15 @@ This plugin contains a variety of potentially useful instructions that enhance t
 
 These are the instructions that are current in Sequencer Powerups, broken down by the Category in which they appear in the instruction sidebar.
 
-SEQUENCER (new Category):
+CONSTANTS ENHANCED (new Category):
 
-Template By Reference - This powerful instruction incorporates the specified (by name) Template into your sequence/target/template at the time it is brought into the Advanced Sequencer screen.  A sequence/target/template that has one (or more) of this instruction, when saved, saves ONLY the name of the Template; in that way, you can update any of your Templates and have the updates reflected in ALL of the sequences/targets/templates that use that Template!
+** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' plugin.  Instructions from the deprecated plugin will no longer work if you remove that plugin! **
 
-Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
+Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to four 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
 
-Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
+Cool Camera - Same as built-in instruction, with the ability to use a constant for temperature
+
+Take Exposure/Take Many Exposures/Smart Exposure -  These three instructions are effectively copies of the built-in instructions, with the ability to use constants for iterations (smart/many), exposure time, gain, and dither.
 
 SAFETY MONITOR:
 
@@ -71,6 +73,14 @@ When Becomes Unsafe - This trigger is activated within SECONDS of your Safety Mo
 If Safe - Specify instructions to execute if your Safety Monitor is currently reporting 'Safe'
 
 If Unsafe - Specify instructions to execute if your Safety Monitor is currently reporting 'Unsafe'
+
+SEQUENCER (new Category):
+
+Template By Reference - This powerful instruction incorporates the specified (by name) Template into your sequence/target/template at the time it is brought into the Advanced Sequencer screen.  A sequence/target/template that has one (or more) of this instruction, when saved, saves ONLY the name of the Template; in that way, you can update any of your Templates and have the updates reflected in ALL of the sequences/targets/templates that use that Template!
+
+Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
+
+Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
 
 UTILITY:
 
