@@ -164,7 +164,9 @@ namespace WhenPlugin.When {
                     string name = sc.Constant;
                     string val = sc.CValueExpr;
                     double value;
-                    if (name.IsNullOrEmpty()) {
+                    if (item.Parent != container) {
+                        // In this case item has been deleted from parent (but it's still in Parent's Items)
+                    } else if (name.IsNullOrEmpty()) {
                         //Debug.WriteLine("Empty name in SetConstant; ignore");
                     } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
