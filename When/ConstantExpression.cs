@@ -7,9 +7,11 @@ using NINA.Sequencer.SequenceItem;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -128,10 +130,23 @@ namespace WhenPlugin.When {
                 }
                 return Double.NaN;
             }
+        }
 
+        static private bool IsAttachedToRoot(ISequenceContainer container) {
+            ISequenceContainer p = container;
+            while (p != null) {
+                if (p is SequenceRootContainer) {
+                    return true;
+                }
+                p = p.Parent;
+            }
+            return false;
         }
 
         static private void FindConstants(ISequenceContainer container, Keys keys) {
+
+            if (!Loaded && (container != GlobalContainer)) return;
+
             if (container == null) return;
             if (container.Items.IsNullOrEmpty()) return;
 
@@ -185,6 +200,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        private static bool Loaded { get; set; } = false;
+
         public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
             val = 0;
             ISequenceItem item = obj as ISequenceItem;
@@ -195,6 +212,13 @@ namespace WhenPlugin.When {
                 return false;
             }
 
+            // We will always process the Global container
+            if (item.Parent != GlobalContainer) {
+                if (!IsAttachedToRoot(item.Parent)) return true;
+                // Say that we have a sequence loaded...
+                Loaded = true;
+            }
+
             // Make sure we're up-to-date on constants
             ISequenceContainer parent = item.Parent;
             ISequenceContainer root = FindRoot(parent);
@@ -202,6 +226,7 @@ namespace WhenPlugin.When {
             if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
                 UpdateConstants(item);
             } else if (!(parent is IImmutableContainer) && !KeyCache.ContainsKey(parent)) {
+                // The IImmutableContainer case is for TakeManyExposures and SmartExposure, which are containers and items
                 UpdateConstants(item);
             }
             
@@ -213,7 +238,7 @@ namespace WhenPlugin.When {
                 ISequenceContainer c = item.Parent;
                 // Ok, it's not a number. Let's look for constants
                 if (c != null) {
-                    // Build the keys stack
+                    // Build the keys stack, walking up the ladder of Parents
                     Stack<Keys> stack = new Stack<Keys>();
                     ISequenceContainer cc = c;
                     while (cc != null) {

@@ -158,10 +158,7 @@ namespace WhenPlugin.When {
             base.AfterParentChanged();
             if (IsAttachedToRoot()) {
                 ConstantExpression.FlushKeys();
-            } else {
-
-            }
-            if (LastParent != null) {
+            } else if (LastParent != null) {
                 ConstantExpression.FlushContainerKeys(LastParent);
             }
             ConstantExpression.UpdateConstants(this);
