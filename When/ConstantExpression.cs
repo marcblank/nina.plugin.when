@@ -43,6 +43,10 @@ namespace WhenPlugin.When {
             KeyCache.Clear();
         }
 
+        static public void FlushContainerKeys(ISequenceContainer container) {
+            KeyCache.TryRemove(container, out _);
+        }
+
         static public ISequenceContainer GetRoot(ISequenceItem item) {
             if (item == null) return null;
             ISequenceContainer p = item.Parent;
@@ -185,20 +189,23 @@ namespace WhenPlugin.When {
             val = 0;
             ISequenceItem item = obj as ISequenceItem;
             if (item == null || item.Parent == null) return false;
-            
-            // Make sure we're up-to-date on constants
-            ISequenceContainer root = FindRoot(item.Parent);
-            Keys kk;
-            if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
-                UpdateConstants(item);
-            }
 
             if (expr == null || expr.Length == 0) {
                 //Debug.WriteLine("IsValid: " + exprName + " null/empty");
                 return false;
             }
-            // Best case, this is a number a some sort
 
+            // Make sure we're up-to-date on constants
+            ISequenceContainer parent = item.Parent;
+            ISequenceContainer root = FindRoot(parent);
+            Keys kk;
+            if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
+                UpdateConstants(item);
+            } else if (!(parent is IImmutableContainer) && !KeyCache.ContainsKey(parent)) {
+                UpdateConstants(item);
+            }
+            
+            // Best case, this is a number a some sort
             if (double.TryParse(expr, out val)) {
                 Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
                 return true;

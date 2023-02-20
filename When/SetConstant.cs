@@ -17,6 +17,9 @@ using System.Reflection;
 using NINA.Profile;
 using System.Configuration;
 using System.Linq;
+using NINA.Sequencer.Container;
+using System.Diagnostics;
+using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -52,6 +55,9 @@ namespace WhenPlugin.When {
         public string Constant {
             get => constant;
             set {
+                if (value == constant) {
+                    return;
+                }
                 // ** Fix when Constant can be an expression
                 if (constant != value) {
                     if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
@@ -80,6 +86,9 @@ namespace WhenPlugin.When {
         public string CValueExpr {
             get => cValueExpr;
             set {
+                if (cValueExpr == value) {
+                    return;
+                }
                 cValueExpr = value;
                 ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                 ConstantExpression.FlushKeys();
@@ -132,9 +141,32 @@ namespace WhenPlugin.When {
             };
         }
 
+        private bool IsAttachedToRoot() {
+            ISequenceContainer p = Parent;
+            while (p != null) {
+                if (p is SequenceRootContainer) {
+                    return true;
+                }
+                p = p.Parent;
+            }
+            return false;
+        }
+
+        private ISequenceContainer LastParent { get; set; }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            if (IsAttachedToRoot()) {
+                ConstantExpression.FlushKeys();
+            } else {
+
+            }
+            if (LastParent != null) {
+                ConstantExpression.FlushContainerKeys(LastParent);
+            }
             ConstantExpression.UpdateConstants(this);
+            ConstantExpression.GlobalContainer.Validate();
+            LastParent = Parent;
         }
 
         public override string ToString() {
