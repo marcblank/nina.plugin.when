@@ -1,9 +1,11 @@
 ﻿using Castle.Core.Internal;
 using Namotion.Reflection;
 using NCalc;
+using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using Nito.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -164,6 +166,7 @@ namespace WhenPlugin.When {
                     string name = sc.Constant;
                     string val = sc.CValueExpr;
                     double value;
+                    sc.DuplicateName = false;
                     if (item.Parent != container) {
                         // In this case item has been deleted from parent (but it's still in Parent's Items)
                     } else if (name.IsNullOrEmpty()) {
@@ -174,6 +177,7 @@ namespace WhenPlugin.When {
                             keys.Add(name, value);
                         } catch (Exception) {
                             // Multiply defined...
+                            sc.DuplicateName = true;
                         }
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
@@ -183,7 +187,7 @@ namespace WhenPlugin.When {
                                 keys.Add(name, result);
                             } catch (Exception) {
                                 // Multiply defined...
-
+                                sc.DuplicateName = true;
                             }
                             Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
                         } else {

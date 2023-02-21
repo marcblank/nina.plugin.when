@@ -82,7 +82,9 @@ namespace WhenPlugin.When {
                 ConstantExpression.GlobalContainer.Validate();
             }
         }
- 
+
+        public bool DuplicateName { get; set; } = false;
+        
         private string cValueExpr = "0";
         [JsonProperty]
         public string CValueExpr {
@@ -182,6 +184,10 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
             ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
+
+            if (DuplicateName) {
+                i.Add("Duplicate name in the same instruction set!");
+            }
 
             Issues = i;
             if (Issues.Count > 0) {
