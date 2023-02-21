@@ -33,15 +33,16 @@
                                     <local:GlobalConstantView>
                                         <local:GlobalConstantView.SequenceItemContent>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock VerticalAlignment="Center" Text="Name:" />
+                                                <TextBlock VerticalAlignment="Center" Text="Name:"/>
                                                 <TextBox
-                                                    MinWidth="40"
+                                                    MinWidth="100"
                                                     Margin="5,0,10,-2"
-                                                    Text="{Binding Constant, ValidatesOnExceptions=True}"
+                                                    Text="{Binding Constant}"
                                                     TextAlignment="Center" />
                                                 <TextBlock VerticalAlignment="Center" Text="Value:" />
                                                 <local:ConstantControl
                                                     Margin="5,0,5,3"
+                                                    MinWidth="100"
                                                     Expr="{Binding CValueExpr, Mode=TwoWay}" 
                                                     Valu="{Binding CValue, Mode=TwoWay}"/>
                                             </StackPanel>
