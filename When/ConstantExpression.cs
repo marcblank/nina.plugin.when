@@ -152,7 +152,7 @@ namespace WhenPlugin.When {
 
             Keys cachedKeys = null;
             if (KeyCache.TryGetValue(container, out cachedKeys)) {
-                Debug.WriteLine("FindConstants for " + container.Name + " in cache: " + cachedKeys);
+                Debug.WriteLine("FindConstants for " + container.Name + ", found in cache: " + cachedKeys);
             } else {
                 Debug.WriteLine("FindConstants: " + container.Name);
             }
@@ -178,11 +178,12 @@ namespace WhenPlugin.When {
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
-                        if (result != Double.NaN) {
+                        if (!double.IsNaN(result)) {
                             try {
                                 keys.Add(name, result);
                             } catch (Exception) {
                                 // Multiply defined...
+
                             }
                             Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
                         } else {

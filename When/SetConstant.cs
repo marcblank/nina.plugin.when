@@ -99,8 +99,9 @@ namespace WhenPlugin.When {
                 if (Parent == ConstantExpression.GlobalContainer) {
                     //WhenPlugin.UpdateGlobalConstants();
                     foreach (var val in Parent.Items) {
-                        ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
-                        //val.Validate();
+                        if (val is SetConstant) {
+                            ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
+                        }
                     }
                     if (GlobalName != null) {
                         PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalValue);
