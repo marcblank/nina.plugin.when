@@ -105,6 +105,12 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public string TemplateName { get; set; }
+
+        public bool TemplateNameIsTrue {
+            get {
+                return TemplateName == null;
+            }
+        }
         
         public IList<TemplatedSequenceContainer> Templates { get => templateController.Templates; }
 
@@ -145,6 +151,7 @@ namespace WhenPlugin.When {
                     item.AttachNewParent(Instructions);
                 }
                 RaisePropertyChanged("SelectedTemplate");
+                RaisePropertyChanged("TemplateNameIsTrue");
                 Validate();
             }
         }
@@ -170,7 +177,7 @@ namespace WhenPlugin.When {
                 if (tc != null) {
                     SelectedTemplate = tc;
                     TemplateName = tc.Container.Name;
-                    RaisePropertyChanged("TemplateName");
+                    RaisePropertyChanged("TemplateNameIsTrue");
                 }
             }
             if (TemplateName != null) {
@@ -269,6 +276,7 @@ namespace WhenPlugin.When {
 
             if (templateController.Updated) {
                 SelectedTemplate = FindTemplate(TemplateName);
+                _ = SortedTemplates;
                 RaisePropertyChanged("SortedTemplates");
                 UpdateChangedTemplates(templateController.UpdatedFile);
             }

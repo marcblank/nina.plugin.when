@@ -461,7 +461,7 @@
                                 FontStyle="Italic"
                                 Opacity="0.4"
                                 Text="The specified template will go here..."
-                                Visibility="{Binding TemplateName, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"/>
+                                Visibility="{Binding Path=TBR.TemplateNameIsTrue, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"/>
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
                                     <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />

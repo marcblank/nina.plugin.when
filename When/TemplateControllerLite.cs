@@ -172,6 +172,8 @@ namespace WhenPlugin.When {
                         }
                     }
 
+                    Updated = true;
+
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(Loc.Instance["Lbl_SequenceTemplateController_LoadUserTemplatesFailed"]);
