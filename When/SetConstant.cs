@@ -88,7 +88,7 @@ namespace WhenPlugin.When {
         public string CValueExpr {
             get => cValueExpr;
             set {
-                if (cValueExpr == value || Parent == null) {
+                if (cValueExpr == value) {
                     return;
                 }
                 cValueExpr = value;
@@ -177,8 +177,7 @@ namespace WhenPlugin.When {
         }
 
         public bool Validate() {
-            if (ConstantExpression.GlobalContainer.Equals(Parent)) { }
-            else if (!IsAttachedToRoot()) return true;
+            if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
             ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
