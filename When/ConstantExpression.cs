@@ -73,7 +73,7 @@ namespace WhenPlugin.When {
                         Debug.WriteLine(c);
                     }
                 }
-            } else {
+            } else if (item.Parent != null) {
                 FindConstants(GlobalContainer, new Keys());
             }
         }

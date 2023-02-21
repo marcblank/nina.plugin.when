@@ -156,11 +156,14 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            
             if (IsAttachedToRoot()) {
                 ConstantExpression.FlushKeys();
             } else if (LastParent != null) {
                 ConstantExpression.FlushContainerKeys(LastParent);
+                return;
             }
+            
             ConstantExpression.UpdateConstants(this);
             ConstantExpression.GlobalContainer.Validate();
             LastParent = Parent;
@@ -172,6 +175,8 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
+            if (!IsAttachedToRoot()) return true;
+
             if (!ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i)) {
 
             }
