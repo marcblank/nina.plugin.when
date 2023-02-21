@@ -14,19 +14,47 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Interfaces.Mediator;
+using NINA.Sequencer.Serialization;
+using NINA.Sequencer;
+using NINA.ViewModel.Sequencer;
+using System.Reflection;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "End Sequence")]
-    [ExportMetadata("Description", "Ends the currently running sequence; the End Sequence instructions will run")]
+    [ExportMetadata("Description", "Ends the currenty running sequence; the End Sequence instructions will run")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class EndSequence : SequenceItem, IValidatable {
+
+        static protected ISequenceMediator sequenceMediator;
+        static protected ISequenceNavigationVM sequenceNavigationVM;
+        private static IProfileService profileService;
+        private protected ISequence2VM s2vm;
+
+        public static int instanceNumber = 0;
+
         [ImportingConstructor]
-        public EndSequence() {
+        public EndSequence(ISequenceMediator seqMediator, IProfileService pService) {
+            sequenceMediator = seqMediator;
+            profileService = pService;
+
+            // Get the various NINA components we need
+            if (sequenceNavigationVM == null) {
+                FieldInfo fi = sequenceMediator.GetType().GetField("sequenceNavigation", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (fi != null) {
+                    sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
+                    s2vm = sequenceNavigationVM.Sequence2VM;
+                }
+            } else if (s2vm == null) {
+                s2vm = sequenceNavigationVM.Sequence2VM;
+            }
         }
-        public EndSequence(EndSequence copyMe) : this() {
+
+        public EndSequence(EndSequence copyMe) : this(sequenceMediator, profileService) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
             }
@@ -42,7 +70,13 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Nothing to do here
+            if (s2vm != null) {
+                FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (fi != null) {
+                    CancellationTokenSource cts = (CancellationTokenSource)fi.GetValue(s2vm);
+                    cts?.Cancel();
+                }
+            }
             return Task.CompletedTask;
         }
 
