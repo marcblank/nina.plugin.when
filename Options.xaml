@@ -32,7 +32,7 @@
                                 <DataTemplate>
                                     <local:GlobalConstantView>
                                         <local:GlobalConstantView.SequenceItemContent>
-                                            <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal" Visibility="Visible">
                                                 <TextBlock VerticalAlignment="Center" Text="Name:"/>
                                                 <TextBox
                                                     MinWidth="100"
@@ -49,6 +49,11 @@
 
                                         </local:GlobalConstantView.SequenceItemContent>
                                     </local:GlobalConstantView>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsSetConstant}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"></Setter>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

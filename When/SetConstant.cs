@@ -51,6 +51,8 @@ namespace WhenPlugin.When {
 
         private string constant;
 
+        public bool IsSetConstant { get; set; } = false;
+
         [JsonProperty]
         public string Constant {
             get => constant;
@@ -59,7 +61,7 @@ namespace WhenPlugin.When {
                     return;
                 }
                 // ** Fix when Constant can be an expression
-                if (constant != value) {
+                if (constant != value || Parent == null) {
                     if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
                     }
                     constant = value;
@@ -86,7 +88,7 @@ namespace WhenPlugin.When {
         public string CValueExpr {
             get => cValueExpr;
             set {
-                if (cValueExpr == value) {
+                if (cValueExpr == value || Parent == null) {
                     return;
                 }
                 cValueExpr = value;
@@ -174,12 +176,12 @@ namespace WhenPlugin.When {
         }
 
         public bool Validate() {
+            if (ConstantExpression.GlobalContainer.Equals(Parent)) { }
+            else if (!IsAttachedToRoot()) return true;
+
             var i = new List<string>();
-            if (!IsAttachedToRoot()) return true;
+            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
 
-            if (!ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i)) {
-
-            }
             Issues = i;
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();

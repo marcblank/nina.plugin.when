@@ -141,6 +141,8 @@ namespace WhenPlugin.When {
                 item.Icon = ConstantsIcon;
                 item.Name = "Global Constant";
             }
+
+            Globals.Validate();
             RaisePropertyChanged("Globals");
         } 
 
