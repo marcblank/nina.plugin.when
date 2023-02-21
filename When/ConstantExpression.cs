@@ -287,11 +287,11 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        public static bool Evaluate(SequenceItem item, string exprName, string valueName, object def) {
+        public static bool Evaluate(ISequenceItem item, string exprName, string valueName, object def) {
             return Evaluate(item, exprName, valueName, def, null);
         }
 
-        public static bool Evaluate(SequenceItem item, string exprName, string valueName, object def, IList<string> issues) {
+        public static bool Evaluate(ISequenceItem item, string exprName, string valueName, object def, IList<string> issues) {
             double val;
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 

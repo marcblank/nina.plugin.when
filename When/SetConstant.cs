@@ -98,8 +98,9 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("CValueExpr");
                 if (Parent == ConstantExpression.GlobalContainer) {
                     //WhenPlugin.UpdateGlobalConstants();
-                    foreach (IValidatable val in Parent.Items.Cast<IValidatable>()) {
-                        val.Validate();
+                    foreach (var val in Parent.Items) {
+                        ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
+                        //val.Validate();
                     }
                     if (GlobalName != null) {
                         PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalValue);
