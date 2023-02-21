@@ -69,9 +69,11 @@ namespace WhenPlugin.When {
                     ConstantExpression.UpdateConstants(this);
                 }
                 RaisePropertyChanged();
-                if (Parent == ConstantExpression.GlobalContainer) {
-                    foreach (IValidatable val in Parent.Items.Cast<IValidatable>()) {
-                        val.Validate();
+                if (Parent != null) {
+                    foreach (var val in Parent.Items) {
+                        if (val is SetConstant) {
+                            ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
+                        }
                     }
                 }
                 if (GlobalName!= null) {
