@@ -38,7 +38,7 @@ using System.Reflection;
 
 namespace WhenPlugin.When { 
 
-    [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_TakeManyExposures_Name")]
+    [ExportMetadata("Name", "Take Many Exposures +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeManyExposures_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]

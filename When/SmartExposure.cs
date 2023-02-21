@@ -39,7 +39,7 @@ using System.Windows;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_SmartExposure_Name")]
+    [ExportMetadata("Name", "Smart Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]

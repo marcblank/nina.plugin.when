@@ -47,7 +47,7 @@ using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Lbl_SequenceItem_Imaging_TakeExposure_Name")]
+    [ExportMetadata("Name", "Take Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]

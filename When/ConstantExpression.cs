@@ -92,7 +92,7 @@ namespace WhenPlugin.When {
         }
 
         static private Double EvaluateExpression (ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
-            if (expr == null) return 0;
+            if (expr.IsNullOrEmpty()) return 0;
 
             Expression e = new Expression(expr);
             // Consolidate keys
@@ -170,12 +170,20 @@ namespace WhenPlugin.When {
                         //Debug.WriteLine("Empty name in SetConstant; ignore");
                     } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
-                        keys.Add(name, value);
+                        try {
+                            keys.Add(name, value);
+                        } catch (Exception) {
+                            // Multiply defined...
+                        }
                         Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (result != Double.NaN) {
-                            keys.Add(name, result);
+                            try {
+                                keys.Add(name, result);
+                            } catch (Exception) {
+                                // Multiply defined...
+                            }
                             Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
                         } else {
                             Debug.WriteLine("Constant " + name + " evaluated as NaN");

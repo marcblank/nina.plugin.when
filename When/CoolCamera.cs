@@ -30,7 +30,7 @@ using NINA.Astrometry;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Lbl_SequenceItem_Camera_CoolCamera_Name")]
+    [ExportMetadata("Name", "Cool Camera +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Camera_CoolCamera_Description")]
     [ExportMetadata("Icon", "SnowflakeSVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
