@@ -27,7 +27,30 @@
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                     <Grid  Background="{StaticResource BackgroundBrush}">
-                        <ItemsControl MinHeight="35" ItemsSource="{Binding Globals.Items}" />
+                        <ItemsControl MinHeight="35" ItemsSource="{Binding Globals.Items}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:GlobalConstantView>
+                                        <local:GlobalConstantView.SequenceItemContent>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="Name:" />
+                                                <TextBox
+                                                    MinWidth="40"
+                                                    Margin="5,0,10,-2"
+                                                    Text="{Binding Constant, ValidatesOnExceptions=True}"
+                                                    TextAlignment="Center" />
+                                                <TextBlock VerticalAlignment="Center" Text="Value:" />
+                                                <local:ConstantControl
+                                                    Margin="5,0,5,3"
+                                                    Expr="{Binding CValueExpr, Mode=TwoWay}" 
+                                                    Valu="{Binding CValue, Mode=TwoWay}"/>
+                                            </StackPanel>
+
+                                        </local:GlobalConstantView.SequenceItemContent>
+                                    </local:GlobalConstantView>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </Border>
             </StackPanel>

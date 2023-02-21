@@ -22,12 +22,14 @@
     <Compile Remove="When\IfSwitch.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
+    <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
     <Compile Remove="When\When.cs" />
     <Compile Remove="When\WhenSwitch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
+    <Page Remove="When\SetConstantView.xaml" />
     <Page Remove="When\UserControl1.xaml" />
   </ItemGroup>
   <ItemGroup>
