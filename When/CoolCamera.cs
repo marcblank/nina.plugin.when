@@ -50,6 +50,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             return new CoolCamera(this) {
                 Temperature = Temperature,
+                TemperatureExpr = TemperatureExpr,
                 Duration = Duration
             };
         }
