@@ -63,6 +63,7 @@ namespace WhenPlugin.When {
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
+            Instructions.PseudoParent = this;
 
             // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
@@ -79,6 +80,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
+                Instructions.PseudoParent = this;
             }
         }
 

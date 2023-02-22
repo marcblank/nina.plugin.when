@@ -3,6 +3,7 @@ using Namotion.Reflection;
 using NCalc;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using Nito.Mvvm;
@@ -17,15 +18,19 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
-         static SequenceRootContainer FindRoot(ISequenceContainer cont) {
+         static SequenceRootContainer FindRoot(ISequenceEntity cont) {
             while (cont != null) {
                 if (cont is SequenceRootContainer root) { return root; }
-                cont = cont.Parent;
+                if (cont is IfContainer ifc) {
+                    cont = ifc.PseudoParent;
+                } else {
+                    cont = cont.Parent;
+                }
             }
             return null;
         }
         
-        static private ConcurrentDictionary<ISequenceContainer, Keys> KeyCache = new ConcurrentDictionary<ISequenceContainer, Keys>();
+        static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
         
         private class Keys : Dictionary<string, object> {
 
@@ -135,7 +140,7 @@ namespace WhenPlugin.When {
         }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
-            ISequenceItem p = container;
+            ISequenceEntity p = container;
             while (p != null) {
                 if (p is SequenceRootContainer) {
                     return true;
@@ -260,7 +265,7 @@ namespace WhenPlugin.When {
                 if (c != null) {
                     // Build the keys stack, walking up the ladder of Parents
                     Stack<Keys> stack = new Stack<Keys>();
-                    ISequenceContainer cc = c;
+                    ISequenceEntity cc = c;
                     while (cc != null) {
                         Keys cachedKeys;
                         KeyCache.TryGetValue(cc, out cachedKeys);
@@ -269,8 +274,8 @@ namespace WhenPlugin.When {
                         }
                         if (cc == root) {
                             cc = GlobalContainer;
-                        } if (cc is IfContainer ifc) {
-                            cc = ifc.PseudoParent?.Parent;
+                        } else if (cc is IfContainer ifc) {
+                            cc = ifc.PseudoParent;
                         }
                         else {
                             cc = cc.Parent;

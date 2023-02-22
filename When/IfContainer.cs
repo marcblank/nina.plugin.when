@@ -1,4 +1,5 @@
-﻿using NINA.Sequencer.Container;
+﻿using NINA.Sequencer;
+using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -32,9 +33,9 @@ namespace WhenPlugin.When {
 
         private Object lockObj = new Object();
 
-        private ISequenceItem iPseudoParent;
+        private ISequenceEntity iPseudoParent;
         
-        public ISequenceItem PseudoParent  {
+        public ISequenceEntity PseudoParent  {
             get => iPseudoParent;
             set {
                 iPseudoParent = value;
