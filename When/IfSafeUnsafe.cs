@@ -30,11 +30,13 @@ namespace WhenPlugin.When {
             Instructions = new IfContainer();
             this.safetyMediator = safetyMediator;
             this.isSafe = isSafe;
+            Instructions.PseudoParent = this;
         }
         public IfSafeUnsafe(IfSafeUnsafe copyMe) : this(copyMe.safetyMediator, copyMe.isSafe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions.PseudoParent = this;
             }
         }
 
@@ -67,12 +69,11 @@ namespace WhenPlugin.When {
         }
 
         public new bool Validate() {
-            var i = new List<string>();
+            bool valid = base.Validate();
             if (safetyMediator == null || !safetyMediator.GetInfo().Connected) {
-                i.Add("Safety Monitor must be connected");
+                Issues.Add("Safety Monitor must be connected");
             }
-            Issues = i;
-            return i.Count == 0;
+            return Issues.Count == 0;
         }
 
         public override string ToString() {

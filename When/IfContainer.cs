@@ -32,6 +32,15 @@ namespace WhenPlugin.When {
 
         private Object lockObj = new Object();
 
+        private ISequenceItem iPseudoParent;
+        
+        public ISequenceItem PseudoParent  {
+            get => iPseudoParent;
+            set {
+                iPseudoParent = value;
+            }
+        }
+
         public new void MoveUp(ISequenceItem item) {
             lock (lockObj) {
                 var index = Items.IndexOf(item);

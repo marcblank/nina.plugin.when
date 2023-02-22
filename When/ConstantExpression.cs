@@ -135,12 +135,15 @@ namespace WhenPlugin.When {
         }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
-            ISequenceContainer p = container;
+            ISequenceItem p = container;
             while (p != null) {
                 if (p is SequenceRootContainer) {
                     return true;
+                } else if (p is IfContainer ic) {
+                    p = ic.PseudoParent;
+                } else {
+                    p = p.Parent;
                 }
-                p = p.Parent;
             }
             return false;
         }
@@ -264,7 +267,10 @@ namespace WhenPlugin.When {
                         }
                         if (cc == root) {
                             cc = GlobalContainer;
-                        } else {
+                        } if (cc is IfContainer ifc) {
+                            cc = ifc.PseudoParent?.Parent;
+                        }
+                        else {
                             cc = cc.Parent;
                         }
                     }
@@ -301,7 +307,7 @@ namespace WhenPlugin.When {
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 
             PropertyInfo pi = item.GetType().GetProperty(valueName);
-            if (IsValid(item, exprName, expr, out val, issues)) {
+           if (IsValid(item, exprName, expr, out val, issues)) {
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
                     pi.SetValue(item, conv);

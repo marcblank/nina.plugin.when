@@ -26,16 +26,13 @@ namespace WhenPlugin.When {
             Name = Name;
         }
 
-        public IfSafe(IfSafe copyMe) : this(copyMe.safetyMediator) {
-            if (copyMe != null) {
-                CopyMetaData(copyMe);
-                Instructions = (IfContainer)copyMe.Instructions.Clone();
-            }
+        public IfSafe(IfSafe copyMe) : base(copyMe) {
         }
 
         public override object Clone() {
             return new IfSafe(this) {
             };
         }
+        
     }
 }

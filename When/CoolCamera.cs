@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
             get => temperatureExpr;
             set {
                 temperatureExpr = value;
-                ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", 0);
+                ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", 7);
                 RaisePropertyChanged("TemperatureExpr");
             }
         }
