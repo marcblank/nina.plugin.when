@@ -197,6 +197,8 @@ namespace WhenPlugin.When {
                             Debug.WriteLine("Constant " + name + " evaluated as NaN");
                         }
                     }
+                } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
+                    FindConstants(ifc.Instructions, new Keys());
                 } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
                     FindConstants(descendant, new Keys());
                 }
