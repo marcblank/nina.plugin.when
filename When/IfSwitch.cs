@@ -43,6 +43,7 @@ namespace WhenPlugin.When {
         public IfSwitch(ISwitchMediator switchMediator, IWeatherDataMediator weatherMediator) {
             Predicate = "";
             Instructions = new IfContainer();
+            Instructions.PseudoParent = this;
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
         }
@@ -52,6 +53,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Predicate = copyMe.Predicate;
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions.PseudoParent = this;
             }
         }
 
@@ -150,6 +152,10 @@ namespace WhenPlugin.When {
 
         public new bool Validate() {
             var i = new List<string>();
+
+            if (Instructions.PseudoParent == null) {
+                Instructions.PseudoParent = this;
+            }
 
             if (Predicate.IsNullOrEmpty()) {
                 i.Add("Expression cannot be empty!");

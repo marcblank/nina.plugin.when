@@ -71,6 +71,11 @@ namespace WhenPlugin.When {
         }
 
         public virtual bool Validate() {
+
+            if (Instructions.PseudoParent == null) {
+                Instructions.PseudoParent = this;
+            }
+
             var i = new List<string>();
             if (Condition == null) { }
             else if (Condition.Items.IsNullOrEmpty()) {
