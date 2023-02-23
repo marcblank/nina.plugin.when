@@ -26,6 +26,7 @@ using System.Windows;
 using NINA.Equipment.Equipment.MyWeatherData;
 using System.Windows.Controls;
 using System.Diagnostics;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Switch/Weather")]
@@ -93,9 +94,7 @@ namespace WhenPlugin.When {
             // Evaluate predicate
             if (e.HasErrors()) {
                 // Syntax error...
-                Notification.ShowError("There is a syntax error in your predicate expression.");
-                Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
-                return null;
+                throw new Exception("The expression has a syntax error.");
             }
 
             return e.Evaluate();
@@ -113,27 +112,26 @@ namespace WhenPlugin.When {
                     object result = EvaluatePredicate();
                     if (result == null) {
                         // Syntax error...
-                        Notification.ShowError("There is a syntax error in your predicate expression.");
+                        Logger.Info("IfSwitch: There is a syntax error in your predicate expression.");
                         Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                         return;
                     }
 
                     if (result != null && result is Boolean && (Boolean)result) {
-                        Notification.ShowSuccess("If Predicate is true!");
+                        Logger.Info("IfSwitch: If Predicate is true!");
                         Runner runner = new Runner(Instructions, null, progress, token);
                         await runner.RunConditional();
                         if (runner.ShouldRetry) {
                             runner.ResetProgress();
                             runner.ShouldRetry = false;
-                            Notification.ShowSuccess("IfSwitch; retrying the failed instruction");
+                            Logger.Info("IfSwitch; retrying the failed instruction");
                             continue;
                         }
                     } else {
-                        Notification.ShowSuccess("IfSwitch Predicate is false!");
                         return;
                     }
                 } catch (ArgumentException ex) {
-                    Notification.ShowError(ex.Message);
+                    Logger.Info("IfSwitch error: " + ex.Message);
                     Status = SequenceEntityStatus.FAILED;
                 }
                 return;
@@ -161,10 +159,15 @@ namespace WhenPlugin.When {
                 i.Add("Expression cannot be empty!");
             }
 
+            try {
+                EvaluatePredicate();
+            } catch (Exception ex) {
+                i.Add("Error in expression: " + ex.Message);
+            }
+
             PredicateValue = "";
 
             if (!switchMediator.GetInfo().Connected) {
-                //PredicateValue = "Unknown";
                 i.Add("Switch not connected");
                 Issues = i;
                 return false;

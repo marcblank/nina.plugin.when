@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.2.7.0")]
-[assembly: AssemblyFileVersion("3.2.7.0")]
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.0.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -83,6 +83,12 @@ Template By Reference - This powerful instruction incorporates the specified (by
 Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
 
 Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
+
+SWITCH:
+
+If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
+
+Screenshot: [If Switch/Weather Exampl(https://1drv.ms/u/s!AjBSqKNCEWOTgfN26vDK79WD1gUWBw?e=31xqYu)
 
 UTILITY:
 
