@@ -15,12 +15,11 @@ namespace WhenPlugin.When {
         public WhenTemplates() {
             InitializeComponent();
         }
-/*        public void IfSwitch_PredicateToolTip(object sender, ToolTipEventArgs e) {
+        public void IfSwitch_PredicateToolTip(object sender, ToolTipEventArgs e) {
             TextBox predicateText = (TextBox)sender;
             IfSwitch ifSwitch = (IfSwitch)(predicateText.DataContext);
             predicateText.ToolTip = ifSwitch.ShowCurrentInfo();
         }
-*/
 
     }
 }

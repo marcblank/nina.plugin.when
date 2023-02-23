@@ -246,7 +246,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>-->
 
-    <!--<DataTemplate DataType="{x:Type local:IfSwitch}">
+    <DataTemplate DataType="{x:Type local:IfSwitch}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <ninactrl:DetachingExpander>
@@ -320,8 +320,8 @@
                 </ninactrl:DetachingExpander>
 
             </nina:SequenceBlockView.SequenceItemContent>
-         </nina:SequenceBlockView>
-    </DataTemplate>-->
+        </nina:SequenceBlockView>
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:IfFailed}">
         <nina:SequenceBlockView DataContext="{Binding}">

@@ -214,6 +214,7 @@ namespace WhenPlugin.When {
 
         
         private void UpdateChangedTemplates(string name) {
+            if (name == null) return;
             ISequenceContainer p = Parent;
             while (p != null) {
                 if (p is SequenceRootContainer root) {

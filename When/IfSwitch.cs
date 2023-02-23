@@ -30,8 +30,8 @@ using System.Diagnostics;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Switch/Weather")]
     [ExportMetadata("Description", "Executes an instruction set if the expression, based on current switch and/or weather values, is true")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "When")]
+    [ExportMetadata("Icon", "SwitchesSVG")]
+    [ExportMetadata("Category", "Switch")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     
