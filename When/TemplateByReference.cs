@@ -40,7 +40,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TemplateByReference : SequenceItem, IValidatable {
+    public class TemplateByReference : IfCommand, IValidatable {
 
         static protected ISequenceMediator sequenceMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
@@ -58,7 +58,7 @@ namespace WhenPlugin.When {
             profileService = pService;
             Instructions = new TemplateContainer();
             Instructions.AttachNewParent(Parent);
-            Instructions.TBR = this;
+            Instructions.PseudoParent = this;
             Name = Name;
             Id = ++instanceNumber;
             
@@ -86,13 +86,11 @@ namespace WhenPlugin.When {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Instructions = (TemplateContainer)copyMe.Instructions.Clone();
-                Instructions.TBR = this;
+                Instructions.PseudoParent = this;
             }
         }
 
         public int Id { get; set; }
-
-        public TemplateContainer Instructions { get; protected set; }
 
         public IList<string> issues = new List<string>();
         public IList<string> Issues {

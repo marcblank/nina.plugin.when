@@ -29,7 +29,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
-    public class TemplateContainer : SequentialContainer {
+    public class TemplateContainer : IfContainer {
 
         public TemplateContainer() : base() {
             DropIntoTemplateCommand = new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropIntoTemplate);
@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
         public TemplateContainer (TemplateContainer copyMe) : this() {
             Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
             foreach (var item in Items) {
-                item.AttachNewParent(TBR?.Parent);
+                item.AttachNewParent(this);
             }
             AttachNewParent(copyMe.Parent);
         }
@@ -49,13 +49,6 @@ namespace WhenPlugin.When {
 
         private object lockObj = new object();
 
-        private TemplateByReference tbr;
-        public TemplateByReference TBR { get => tbr;
-            set {
-                tbr = value;
-            }
-        }
-
         public ICommand DropIntoTemplateCommand { get; set; }
 
         // TODO: Allow only ONE instruction to be added to Instructions
@@ -63,7 +56,7 @@ namespace WhenPlugin.When {
             lock (lockObj) {
                 TemplatedSequenceContainer tsc = parameters.Source as TemplatedSequenceContainer;
                 TemplateContainer tc = parameters.Target as TemplateContainer;
-                tc.TBR.SelectedTemplate = tsc;
+                ((TemplateByReference)tc.PseudoParent).SelectedTemplate = tsc;
             }
         }
 
