@@ -42,6 +42,8 @@ using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
 using System.Windows.Input;
 using System.Management;
+using System.Diagnostics;
+using NINA.WPF.Base.Interfaces.Mediator;
 
 namespace WhenPlugin.When {
 
@@ -55,11 +57,13 @@ namespace WhenPlugin.When {
         protected ISafetyMonitorMediator safetyMediator;
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         [ImportingConstructor]
-        public WhenUnsafe (ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator) {
+        public WhenUnsafe (ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator) {
             this.safetyMediator = safetyMediator;
             this.sequenceMediator = sequenceMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
@@ -74,8 +78,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        protected WhenUnsafe(WhenUnsafe cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator
-            ) {
+        protected WhenUnsafe(WhenUnsafe cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
@@ -102,6 +105,24 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new WhenUnsafe(this);
+        }
+
+        private ApplicationStatus _status;
+
+        public ApplicationStatus AppStatus {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                if (string.IsNullOrWhiteSpace(_status.Source)) {
+                    _status.Source = Loc.Instance["LblSequence"];
+                }
+
+                RaisePropertyChanged();
+
+                applicationStatusMediator.StatusUpdate(_status);
+            }
         }
 
         private bool isSafe;
@@ -214,7 +235,7 @@ namespace WhenPlugin.When {
                         // Wait a short time for the sequence to be canceled...
                         Thread.Sleep(1500);
                         Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
-                        await Execute(null, cts.Token);
+                        await Execute(new Progress<ApplicationStatus>(p => AppStatus = p), cts.Token);
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     } finally {

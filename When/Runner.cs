@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Utility;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
     public class Runner: SequentialContainer {
