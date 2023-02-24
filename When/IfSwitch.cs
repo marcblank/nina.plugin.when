@@ -63,44 +63,7 @@ namespace WhenPlugin.When {
             };
         }
 
-        public object EvaluatePredicate() {
-            NCalc.Expression e = new NCalc.Expression(Predicate);
-
-            // Get switch values
-            SwitchInfo switchInfo = switchMediator.GetInfo();
-            if (switchInfo.Connected) {
-                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    e.Parameters[key] = sw.Value;
-                }
-                foreach (ISwitch sw in switchInfo.WritableSwitches) {
-                    string key = RemoveSpecialCharacters(sw.Name);
-                    e.Parameters[key] = sw.Value;
-                }
-            }
-
-            // Get weather values
-            WeatherDataInfo weatherInfo = weatherMediator.GetInfo();
-            if (weatherInfo.Connected) {
-                foreach (string dataName in weatherData) {
-                    double value = 0;
-                    double t = weatherInfo.TryGetPropertyValue(dataName, value);
-                    if (!Double.IsNaN(t)) {
-                        e.Parameters[RemoveSpecialCharacters(dataName)] = t;
-                    }
-                }
-            }
-
-            // Evaluate predicate
-            if (e.HasErrors()) {
-                // Syntax error...
-                throw new Exception("The expression has a syntax error.");
-            }
-
-            return e.Evaluate();
-        }
-
-        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
  
             if (Predicate.IsNullOrEmpty()) {
                 Status = SequenceEntityStatus.FAILED;
@@ -109,7 +72,7 @@ namespace WhenPlugin.When {
 
             while (true) {
                 try {
-                    object result = EvaluatePredicate();
+                    object result = IfWhenSwitch.EvaluatePredicate(Predicate, switchMediator, weatherMediator);
                     if (result == null) {
                         // Syntax error...
                         Logger.Info("IfSwitch: There is a syntax error in your predicate expression.");
@@ -160,7 +123,7 @@ namespace WhenPlugin.When {
             }
 
             try {
-                EvaluatePredicate();
+                IfWhenSwitch.EvaluatePredicate(Predicate, switchMediator, weatherMediator);
             } catch (Exception ex) {
                 i.Add("Error in expression: " + ex.Message);
             }
@@ -173,10 +136,21 @@ namespace WhenPlugin.When {
                 return false;
             }
 
-            SetSwitchList();
+            Switches = IfWhenSwitch.GetSwitchList(switchMediator, weatherMediator);
+            RaisePropertyChanged("Switches");
+
+            foreach (ISequenceItem item in Instructions.Items) {
+                if (item is IValidatable val) {
+                    _ = val.Validate();
+                }
+            }
 
             Issues = i;
             return i.Count == 0;
+        }
+
+        public string ShowCurrentInfo() {
+            return IfWhenSwitch.ShowCurrentInfo(Predicate, switchMediator, weatherMediator);
         }
  
 
@@ -190,54 +164,5 @@ namespace WhenPlugin.When {
             }
         }
 
-        public string ShowCurrentInfo() {
-            try {
-                object result = EvaluatePredicate();
-                if (result == null) {
-                    return "There is a syntax error in the expression.";
-                } else {
-                    return "Your expression is currently: " + result.ToString();
-                }
-            } catch (Exception ex) {
-                return "Error: " + ex.Message;
-            }
-        }
-
-        private string[] weatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature", "StarFWHM", "Temperature",
-            "WindDirection", "WindGust", "WindSpeed"};
-
-        public void SetSwitchList() {
-            var i = new List<string>();
-            SwitchInfo switchInfo = switchMediator.GetInfo();
-            WeatherDataInfo weatherInfo = weatherMediator.GetInfo();
-
-            if (switchInfo.Connected) {
-                foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
-                    i.Add("Gauge: " + RemoveSpecialCharacters(sw.Name) + " (" + sw.Value + ")");
-                }
-                foreach (ISwitch sw in switchInfo.WritableSwitches) {
-                    i.Add("Switch: " + RemoveSpecialCharacters(sw.Name) + " (" + sw.Value + ")");
-                }
-            }
-
-            if (weatherInfo.Connected) {
-                foreach (string dataName in weatherData) {
-                    double value = 0;
-                    double t = weatherInfo.TryGetPropertyValue(dataName, value);
-                    if (!Double.IsNaN(t)) {
-                        i.Add("Weather: " + RemoveSpecialCharacters(dataName) + " (" + t + ")");
-                    }
-                }
-            }
-
-            foreach (ISequenceItem item in Instructions.Items) {
-                if (item is IValidatable val) {
-                    _ = val.Validate();
-                }
-            }
-
-            Switches = i;
-            RaisePropertyChanged("Switches");
-        }
-    }
+     }
 }

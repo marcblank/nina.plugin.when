@@ -20,6 +20,11 @@ namespace WhenPlugin.When {
             IfSwitch ifSwitch = (IfSwitch)(predicateText.DataContext);
             predicateText.ToolTip = ifSwitch.ShowCurrentInfo();
         }
+        public void WhenSwitch_PredicateToolTip(object sender, ToolTipEventArgs e) {
+            TextBox predicateText = (TextBox)sender;
+            WhenSwitch whenSwitch = (WhenSwitch)(predicateText.DataContext);
+            predicateText.ToolTip = whenSwitch.ShowCurrentInfo();
+        }
 
     }
 }

@@ -31,7 +31,7 @@ namespace WhenPlugin.When {
     public class SetConstant : SequenceItem, IValidatable {
         [ImportingConstructor]
         public SetConstant() {
-            Constant = "";
+          Constant = "";
             Icon = Icon;
         }
         public SetConstant(SetConstant copyMe) : this() {

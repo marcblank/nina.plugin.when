@@ -21,20 +21,13 @@ using NINA.Sequencer.Validations;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.SequenceItem;
-using System.Windows.Media;
-using System.Data;
-using Namotion.Reflection;
-using System.Reflection;
 
 namespace WhenPlugin.When { 
 

@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.3.0.0")]
-[assembly: AssemblyFileVersion("3.3.0.0")]
+[assembly: AssemblyVersion("3.3.1.0")]
+[assembly: AssemblyFileVersion("3.3.1.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -88,7 +88,7 @@ SWITCH:
 
 If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
 
-Screenshot: [If Switch/Weather Exampl(https://1drv.ms/u/s!AjBSqKNCEWOTgfN26vDK79WD1gUWBw?e=31xqYu)
+Screenshot: [If Switch/Weather Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfN26vDK79WD1gUWBw?e=31xqYu)
 
 UTILITY:
 
