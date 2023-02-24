@@ -43,6 +43,7 @@ using NINA.ViewModel.Sequencer;
 using System.Windows.Input;
 using System.Management;
 using Castle.Core.Internal;
+using NINA.WPF.Base.Interfaces.Mediator;
 
 namespace WhenPlugin.When {
 
@@ -57,12 +58,14 @@ namespace WhenPlugin.When {
         private IWeatherDataMediator weatherMediator;
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
+        private IApplicationStatusMediator applicationStatusMediator;
 
         [ImportingConstructor]
-        public WhenSwitch(ISwitchMediator switchMediator, IWeatherDataMediator weatherMediator, ISequenceMediator sequenceMediator) {
+        public WhenSwitch(ISwitchMediator switchMediator, IWeatherDataMediator weatherMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator) {
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
             this.sequenceMediator = sequenceMediator;
+            this.applicationStatusMediator = applicationStatusMediator;
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
@@ -77,7 +80,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        protected WhenSwitch(WhenSwitch cloneMe) : this(cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.sequenceMediator) {
+        protected WhenSwitch(WhenSwitch cloneMe) : this(cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
@@ -105,6 +108,24 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new WhenSwitch(this);
+        }
+
+        private ApplicationStatus _status;
+
+        public ApplicationStatus AppStatus {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                if (string.IsNullOrWhiteSpace(_status.Source)) {
+                    _status.Source = Loc.Instance["LblSequence"];
+                }
+
+                RaisePropertyChanged();
+
+                applicationStatusMediator.StatusUpdate(_status);
+            }
         }
 
         private IList<string> switches = new List<string>();
@@ -243,7 +264,7 @@ namespace WhenPlugin.When {
                         // Wait a short time for the sequence to be canceled...
                         Thread.Sleep(1500);
                         Logger.Info("When Switch/Weather is starting user sequence.");
-                        await Execute(null, cts.Token);
+                        await Execute(new Progress<ApplicationStatus>(p => AppStatus = p), cts.Token);
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     } finally {
