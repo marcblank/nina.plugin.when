@@ -83,7 +83,7 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
-                Predicate = cloneMe.git Predicate;
+                Predicate = cloneMe.Predicate;
             }
         }
 
