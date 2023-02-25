@@ -16,6 +16,8 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
+using WhenPlugin.When;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WhenPlugin.When {
@@ -34,7 +36,7 @@ namespace WhenPlugin.When {
 
         static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
 
-        private class Keys : Dictionary<string, object> {
+        public class Keys : Dictionary<string, object> {
 
             public override string ToString() {
                 StringBuilder sb = new StringBuilder();
@@ -167,7 +169,7 @@ namespace WhenPlugin.When {
             return k;
         }
 
-        static private string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
+        static public string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
             if (expr.IsNullOrEmpty()) return String.Empty;
 
             Expression e = new Expression(expr);
@@ -197,6 +199,38 @@ namespace WhenPlugin.When {
                 }
             }
         }
+
+        static public Stack<Keys> GetKeyStack(ISequenceEntity item) {
+
+            // Build the keys stack, walking up the ladder of Parents
+            ISequenceContainer root = FindRoot(item.Parent);
+            Stack<Keys> stack = new Stack<Keys>();
+            ISequenceEntity cc = item.Parent;
+            while (cc != null) {
+                Keys cachedKeys;
+                KeyCache.TryGetValue(cc, out cachedKeys);
+                if (!cachedKeys.IsNullOrEmpty()) {
+                    stack.Push(cachedKeys);
+                }
+                if (cc == root) {
+                    cc = GlobalContainer;
+                } else if (cc is IfContainer ifc) {
+                    cc = ifc.PseudoParent;
+                } else {
+                    cc = cc.Parent;
+                }
+            }
+
+            // Reverse the stack to maintain proper scoping
+            Stack<Keys> reverseStack = new Stack<Keys>();
+            Keys k;
+            while (stack.TryPop(out k)) {
+                reverseStack.Push(k);
+
+            }
+            return reverseStack;
+        }
+
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;

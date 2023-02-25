@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Sequencer.SequenceItem;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,17 @@ namespace WhenPlugin.When {
               DependencyProperty.Register("Type", typeof(String), typeof(ConstantControl), null);
 
         public String Type { get; set; }
+
+        public void Fooble(object sender, ToolTipEventArgs e) {
+            TextBox tb = (TextBox)sender;
+            ISequenceItem item = (ISequenceItem)tb.DataContext;
+            string expr = tb.Text;
+            var stack = ConstantExpression.GetKeyStack(item);
+            string tip = ConstantExpression.DissectExpression(item, expr, stack);
+            tb.ToolTip = tip;
+        }
+
+
     }
 }
 

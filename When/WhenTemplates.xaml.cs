@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NINA.Sequencer.SequenceItem;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -25,6 +26,6 @@ namespace WhenPlugin.When {
             WhenSwitch whenSwitch = (WhenSwitch)(predicateText.DataContext);
             predicateText.ToolTip = whenSwitch.ShowCurrentInfo();
         }
-
+ 
     }
 }
