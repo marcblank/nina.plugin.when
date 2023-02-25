@@ -1,6 +1,7 @@
 ﻿using Castle.Core.Internal;
 using Namotion.Reflection;
 using NCalc;
+using NCalc.Domain;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer;
@@ -8,6 +9,7 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using Nito.Mvvm;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -18,7 +20,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
-         static SequenceRootContainer FindRoot(ISequenceEntity cont) {
+        static SequenceRootContainer FindRoot(ISequenceEntity cont) {
             while (cont != null) {
                 if (cont is SequenceRootContainer root) { return root; }
                 if (cont is IfContainer ifc) {
@@ -29,9 +31,9 @@ namespace WhenPlugin.When {
             }
             return null;
         }
-        
+
         static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
-        
+
         private class Keys : Dictionary<string, object> {
 
             public override string ToString() {
@@ -43,7 +45,7 @@ namespace WhenPlugin.When {
                 return sb.ToString();
             }
         }
- 
+
         private static Stack<Keys> KeysStack = new Stack<Keys>();
 
         private static int FC = 0;
@@ -67,7 +69,7 @@ namespace WhenPlugin.When {
             }
             return null;
         }
-        
+
         static public void UpdateConstants(ISequenceItem item) {
             ISequenceContainer root = GetRoot(item);
             if (root != null) {
@@ -98,7 +100,7 @@ namespace WhenPlugin.When {
             FindConstants(GlobalContainer, keys);
         }
 
-        static private Double EvaluateExpression (ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
+        static private Double EvaluateExpression(ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
             if (expr.IsNullOrEmpty()) return 0;
 
             Expression e = new Expression(expr);
@@ -139,6 +141,63 @@ namespace WhenPlugin.When {
             }
         }
 
+        static Keys GetMergedKeys(Stack<Keys> stack) {
+            // Consolidate keys
+            Keys mergedKeys = new Keys();
+
+            foreach (Keys k in stack) {
+                foreach (KeyValuePair<string, object> kvp in k) {
+                    if (!mergedKeys.ContainsKey(kvp.Key)) {
+                        if (!Double.IsNaN((double)kvp.Value)) {
+                            mergedKeys.Add(kvp.Key, kvp.Value);
+                        }
+                    }
+                }
+            }
+            return mergedKeys;
+        }
+
+        static Keys GetParsedKeys(LogicalExpression e, Keys mergedKeys, Keys k) {
+            if (e is BinaryExpression b) {
+                GetParsedKeys(b.LeftExpression, mergedKeys, k);
+                GetParsedKeys(b.RightExpression, mergedKeys, k);
+            } else if (e is Identifier i) {
+                k.Add(i.Name, mergedKeys.GetValueOrDefault(i.Name));
+            }
+            return k;
+        }
+
+        static private string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
+            if (expr.IsNullOrEmpty()) return String.Empty;
+
+            Expression e = new Expression(expr);
+            // Consolidate keys
+            Keys mergedKeys = GetMergedKeys(stack);
+            if (mergedKeys.Count == 0) {
+                Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                return String.Empty;
+            }
+            e.Parameters = mergedKeys;
+            try {
+                var eval = e.Evaluate();
+                // Find the keys used in the expression
+                Keys parsedKeys = GetParsedKeys(e.ParsedExpression, mergedKeys, new Keys());
+                StringBuilder stringBuilder = new StringBuilder("Constants used: ");
+                int cnt = parsedKeys.Count;
+                foreach (var key in parsedKeys) {
+                    stringBuilder.Append(key.Key + " = " + key.Value);
+                    if (--cnt > 0) stringBuilder.Append("; ");
+                }
+                return (stringBuilder.ToString());
+            } catch (Exception ex) {
+                if (ex is EvaluationException) {
+                    return ("Syntax error");
+                } else {
+                    return ("Error: " + ex.Message);
+                }
+            }
+        }
+
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
@@ -166,7 +225,7 @@ namespace WhenPlugin.When {
             } else {
                 Debug.WriteLine("FindConstants: " + container.Name);
             }
- 
+
             KeysStack.Push(keys);
 
             foreach (ISequenceItem item in container.Items) {
@@ -208,7 +267,7 @@ namespace WhenPlugin.When {
                     FindConstants(descendant, new Keys());
                 }
             }
-            
+
             if (cachedKeys == null) {
                 if (KeyCache.ContainsKey(container)) {
                     KeyCache.TryRemove(container, out _);
@@ -217,7 +276,7 @@ namespace WhenPlugin.When {
                     KeyCache.TryAdd(container, keys);
                 }
             }
-            
+
             KeysStack.Pop();
 
             if (keys.Count > 0) {
@@ -254,7 +313,7 @@ namespace WhenPlugin.When {
                 // The IImmutableContainer case is for TakeManyExposures and SmartExposure, which are containers and items
                 UpdateConstants(item);
             }
-            
+
             // Best case, this is a number a some sort
             if (double.TryParse(expr, out val)) {
                 Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
@@ -276,8 +335,7 @@ namespace WhenPlugin.When {
                             cc = GlobalContainer;
                         } else if (cc is IfContainer ifc) {
                             cc = ifc.PseudoParent;
-                        }
-                        else {
+                        } else {
                             cc = cc.Parent;
                         }
                     }
@@ -290,7 +348,7 @@ namespace WhenPlugin.When {
                     }
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
-                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr + 
+                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
                         ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
 
                     if (Double.IsNaN(result)) {
@@ -314,7 +372,7 @@ namespace WhenPlugin.When {
             string expr = item.TryGetPropertyValue(exprName, "") as string;
 
             PropertyInfo pi = item.GetType().GetProperty(valueName);
-           if (IsValid(item, exprName, expr, out val, issues)) {
+            if (IsValid(item, exprName, expr, out val, issues)) {
                 try {
                     var conv = Convert.ChangeType(val, pi.PropertyType);
                     pi.SetValue(item, conv);

@@ -247,8 +247,8 @@ namespace WhenPlugin.When {
 
         private async Task InterruptWhenUnsafe() {
             // Don't even think of it...
-            if (Stopped) {
-                Logger.Info("WhenUnsafe: Stopped");
+            if (Stopped || Status == SequenceEntityStatus.FINISHED) {
+                //Logger.Info("WhenUnsafe: Stopped");
                 return;
             }
 
@@ -268,12 +268,13 @@ namespace WhenPlugin.When {
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     } finally {
-                        if (!Stopped) {
+                        //if (!Stopped) {
                             Logger.Info("When Switch/Weather finishing user sequence; restarting interrupted sequence.");
-                            Status = SequenceEntityStatus.CREATED;
+                        //Status = SequenceEntityStatus.CREATED;
+                        Status = SequenceEntityStatus.FINISHED;
                             InFlight = false;
                             sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
-                        }
+                        //}
                     }
                 }
             }
