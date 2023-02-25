@@ -16,7 +16,11 @@ using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer;
+using NINA.Sequencer.Container;
+using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -59,10 +63,27 @@ namespace WhenPlugin.When {
 
         public TimeSpan WaitInterval { get; set; } = TimeSpan.FromSeconds(5);
 
+        private WhenSwitch FindWhenSwitch() {
+            SequenceContainer p = (SequenceContainer)Parent;
+            while (p != null) {
+                foreach (SequenceTrigger t in p.Triggers) {
+                    if (t is WhenSwitch) {
+                        return (WhenSwitch)t;
+                    }
+                }
+                if (p is IfContainer ifc) {
+                    p = (SequenceContainer)ifc.PseudoParent?.Parent;
+                } else {
+                    p = (SequenceContainer)p.Parent;
+                }
+            }
+            return null;
+        }
         public bool Validate() {
             var i = new List<string>();
 
-            if (!(Parent is IfContainer ifc && ifc.PseudoParent is WhenSwitch ws)) {
+            WhenSwitch ws = FindWhenSwitch();
+            if (ws == null) {
                 // Walk up parents; sigh...
                 i.Add("Wait Until False must be within a When Switch/Weather instruction.");
             }
@@ -76,7 +97,8 @@ namespace WhenPlugin.When {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            if (Parent is IfContainer ifc && ifc.PseudoParent is WhenSwitch ws) {
+            WhenSwitch ws = FindWhenSwitch();
+            if (ws != null) {
                 while (ws.Check()) {
                     progress?.Report(new ApplicationStatus() { Status = "Waiting for expression to be false" });
                     await CoreUtil.Wait(WaitInterval, token, default);
