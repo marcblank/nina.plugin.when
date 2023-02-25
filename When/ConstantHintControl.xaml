@@ -15,7 +15,9 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Center">
+                TextAlignment="Center"
+                ToolTip="Foo" 
+                ToolTipOpening="ShowConstants" >
             <ninactrl:HintTextBox.HintText>
                 <Binding Mode="TwoWay" Path="Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantHintControl}}" />
             </ninactrl:HintTextBox.HintText>
