@@ -35,13 +35,11 @@ namespace WhenPlugin.When {
 
         public String Type { get; set; }
 
-        public void Fooble(object sender, ToolTipEventArgs e) {
+        public void ShowConstants(object sender, ToolTipEventArgs e) {
             TextBox tb = (TextBox)sender;
             ISequenceItem item = (ISequenceItem)tb.DataContext;
-            string expr = tb.Text;
             var stack = ConstantExpression.GetKeyStack(item);
-            string tip = ConstantExpression.DissectExpression(item, expr, stack);
-            tb.ToolTip = tip;
+            tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
         }
 
 

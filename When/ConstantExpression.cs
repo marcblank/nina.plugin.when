@@ -1,4 +1,5 @@
-﻿using Castle.Core.Internal;
+﻿using Accord;
+using Castle.Core.Internal;
 using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
@@ -169,6 +170,27 @@ namespace WhenPlugin.When {
             return k;
         }
 
+       static string FindKey(ISequenceEntity item, string key) {
+            ISequenceContainer root = FindRoot(item.Parent);
+            ISequenceEntity p = item.Parent;
+            while (p != null) {
+                Keys k = KeyCache.GetValueOrDefault(p, null);
+                if (k != null) {
+                    if (k.ContainsKey(key)) {
+                        return (p == item.Parent ? "Here" : p == GlobalContainer ? "Global" : p.Name);
+                    }
+                }
+                if (p == root) {
+                    p = GlobalContainer;
+                } else if (p is IfContainer ifc) {
+                    p = ifc.PseudoParent;
+                } else {
+                    p = p.Parent;
+                }
+            }
+            return "??";
+        }
+
         static public string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
             if (expr.IsNullOrEmpty()) return String.Empty;
 
@@ -186,9 +208,14 @@ namespace WhenPlugin.When {
                 Keys parsedKeys = GetParsedKeys(e.ParsedExpression, mergedKeys, new Keys());
                 StringBuilder stringBuilder = new StringBuilder("Constants used: ");
                 int cnt = parsedKeys.Count;
-                foreach (var key in parsedKeys) {
-                    stringBuilder.Append(key.Key + " = " + key.Value);
-                    if (--cnt > 0) stringBuilder.Append("; ");
+                if (cnt == 0) {
+                    stringBuilder.Append("None");
+                } else {
+                    foreach (var key in parsedKeys) {
+                        string whereDefined = FindKey(item, key.Key);
+                        stringBuilder.Append(key.Key + " (" + whereDefined + ") = " + key.Value);
+                        if (--cnt > 0) stringBuilder.Append("; ");
+                    }
                 }
                 return (stringBuilder.ToString());
             } catch (Exception ex) {
