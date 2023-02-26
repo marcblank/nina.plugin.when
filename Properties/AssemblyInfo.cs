@@ -56,7 +56,7 @@ These are the instructions that are current in Sequencer Powerups, broken down b
 
 CONSTANTS ENHANCED (new Category):
 
-** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' plugin.  Instructions from the deprecated plugin will no longer work if you remove that plugin! **
+** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' and 'Interrupts' plugins.  Instructions from the deprecated plugins will no longer work if you remove that plugin; you will have to replace them with instructions from here! **
 
 Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to four 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
 
@@ -88,7 +88,7 @@ SWITCH:
 
 If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
 
-When Switch/Weather - This is the trigger equivalent of 'If Switch/Weather'; it will trigger within 5 seconds of your expression becoming true (see above)
+When Switch/Weather - This is the trigger equivalent of 'If Switch/Weather'; it will trigger within 5 seconds of your expression becoming true (see above).  The 'Once Only' switch indicates whether you want this instruction to be limited to a single use (remember that the instruction might be triggered repeatedly depending on what steps have been taken to make the expression 'false').
 
 Wait until False - When used within a 'When Switch/Weather' or 'If Switch/Weather' instruction, will wait until the triggering condition becomes false.
 
