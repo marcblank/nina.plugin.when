@@ -88,6 +88,10 @@ SWITCH:
 
 If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
 
+When Switch/Weather - This is the trigger equivalent of 'If Switch/Weather'; it will trigger within 5 seconds of your expression becoming true (see above)
+
+Wait until False - When used within a 'When Switch/Weather' or 'If Switch/Weather' instruction, will wait until the triggering condition becomes false.
+
 Screenshot: [If Switch/Weather Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfN26vDK79WD1gUWBw?e=31xqYu)
 
 UTILITY:

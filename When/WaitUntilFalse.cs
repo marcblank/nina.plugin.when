@@ -63,12 +63,17 @@ namespace WhenPlugin.When {
 
         public TimeSpan WaitInterval { get; set; } = TimeSpan.FromSeconds(5);
 
-        private WhenSwitch FindWhenSwitch() {
+        private IIfWhenSwitch FindIfWhen() {
             SequenceContainer p = (SequenceContainer)Parent;
             while (p != null) {
                 foreach (SequenceTrigger t in p.Triggers) {
-                    if (t is WhenSwitch) {
-                        return (WhenSwitch)t;
+                    if (t is IIfWhenSwitch ws) {
+                        return ws;
+                    }
+                }
+                foreach (SequenceItem item in p.Items) {
+                    if (item is IIfWhenSwitch ws) {
+                        return ws;
                     }
                 }
                 if (p is IfContainer ifc) {
@@ -82,10 +87,10 @@ namespace WhenPlugin.When {
         public bool Validate() {
             var i = new List<string>();
 
-            WhenSwitch ws = FindWhenSwitch();
+            IIfWhenSwitch ws = FindIfWhen();
             if (ws == null) {
                 // Walk up parents; sigh...
-                i.Add("Wait Until False must be within a When Switch/Weather instruction.");
+                i.Add("Wait Until False must be within an If or When Switch/Weather instruction.");
             }
 
             Issues = i;
@@ -97,7 +102,7 @@ namespace WhenPlugin.When {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            WhenSwitch ws = FindWhenSwitch();
+            IIfWhenSwitch ws = FindIfWhen();
             if (ws != null) {
                 while (ws.Check()) {
                     progress?.Report(new ApplicationStatus() { Status = "Waiting for expression to be false" });

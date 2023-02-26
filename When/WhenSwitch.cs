@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Switch")]
     [Export(typeof(ISequenceTrigger))]
 
-    public class WhenSwitch : SequenceTrigger, IValidatable {
+    public class WhenSwitch : SequenceTrigger, IValidatable, IIfWhenSwitch {
         private ISwitchMediator switchMediator;
         private IWeatherDataMediator weatherMediator;
         protected ISequenceMediator sequenceMediator;

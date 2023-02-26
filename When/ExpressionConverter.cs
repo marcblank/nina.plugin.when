@@ -63,7 +63,7 @@ namespace WhenPlugin.When {
             if (values[VALUE_EXPR] is string expr) {
                 double val;
                 if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
-                    ValidityCache.Remove(item);
+                   ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return 0;
                 } else if (double.TryParse(expr, out val)) {

@@ -36,7 +36,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     
-    public class IfSwitch : IfCommand, IValidatable {
+    public class IfSwitch : IfCommand, IValidatable, IIfWhenSwitch {
         private ISwitchMediator switchMediator;
         private IWeatherDataMediator weatherMediator;
 
@@ -152,10 +152,18 @@ namespace WhenPlugin.When {
         public string ShowCurrentInfo() {
             return IfWhenSwitch.ShowCurrentInfo(Predicate, switchMediator, weatherMediator);
         }
- 
+
+
+        public bool Check() {
+            object result = IfWhenSwitch.EvaluatePredicate(Predicate, switchMediator, weatherMediator);
+            if (result == null) {
+                return true;
+            }
+            return (result != null && result is Boolean && (Boolean)result);
+        }
 
         private IList<string> switches = new List<string>();
-       
+
         public IList<string> Switches {
             get => switches;
             set {
