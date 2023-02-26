@@ -229,8 +229,8 @@ namespace WhenPlugin.When {
             Results.Clear();
 
             if (!handlerInit) {
-                imagingMediator.ImagePrepared += ProcessResults;
-                imageSaveMediator.ImageSaved += ImageSaved;
+                //imagingMediator.ImagePrepared += ProcessResults;
+                //imageSaveMediator.ImageSaved += ImageSaved;
                 handlerInit = true;
             }
  
