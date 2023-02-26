@@ -329,7 +329,7 @@
                 <ninactrl:DetachingExpander>
                     <ninactrl:DetachingExpander.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Enter an expression using the available switch/weather values:" />
+                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Enter an expression:" />
                             <TextBox
                                     MinWidth="300"
                                     Margin="5,5,10,0"
@@ -364,6 +364,13 @@
                                     </Border.ToolTip>
                                 </Border>
                             </Grid>
+                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only" />
+                            <CheckBox
+                                    MinWidth="40"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding OnceOnly}"
+                                    ToolTip="If set, this instruction will only run one time and then be disabled.  This can prevent looping behavior that may not be desirable." />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>

@@ -99,7 +99,16 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+        public static bool onceOnly = true;
 
+        [JsonProperty]
+        public bool OnceOnly {
+            get => onceOnly;
+            protected set {
+                onceOnly = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ConditionWatchdog ConditionWatchdog { get; set; }
 
@@ -248,7 +257,6 @@ namespace WhenPlugin.When {
         private async Task InterruptWhenUnsafe() {
             // Don't even think of it...
             if (Stopped || Status == SequenceEntityStatus.FINISHED) {
-                //Logger.Info("WhenUnsafe: Stopped");
                 return;
             }
 
@@ -269,11 +277,12 @@ namespace WhenPlugin.When {
                         Logger.Error(ex);
                     } finally {
                         //if (!Stopped) {
-                            Logger.Info("When Switch/Weather finishing user sequence; restarting interrupted sequence.");
+                        Logger.Info("When Switch/Weather finishing user sequence; restarting interrupted sequence.");
                         //Status = SequenceEntityStatus.CREATED;
                         Status = SequenceEntityStatus.FINISHED;
-                            InFlight = false;
-                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                        InFlight = false;
+                        if (OnceOnly) Stopped = true;
+                        sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
                         //}
                     }
                 }
