@@ -99,17 +99,11 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-        public static bool onceOnly = true;
-
+        
         [JsonProperty]
-        public bool OnceOnly {
-            get => onceOnly;
-            protected set {
-                onceOnly = value;
-                RaisePropertyChanged();
-            }
-        }
+        public bool OnceOnly { get; set; } = true;
 
+ 
         public ConditionWatchdog ConditionWatchdog { get; set; }
 
         [JsonProperty]
