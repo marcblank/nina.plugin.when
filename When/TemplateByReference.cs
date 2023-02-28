@@ -32,6 +32,7 @@ using System.Diagnostics;
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
 using System.Windows;
+using System.Runtime.Serialization;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -80,6 +81,11 @@ namespace WhenPlugin.When {
                     }
                 }
             }
+        }
+
+        [OnSerializing]
+        public void OnSerializingMethod(StreamingContext context) {
+            Instructions = new IfContainer();
         }
 
         public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator, profileService) {

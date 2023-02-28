@@ -27,6 +27,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Foo")]
     [ExportMetadata("Description", "")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [Export(typeof(ISequenceContainer))]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
     public class TemplateContainer : IfContainer {

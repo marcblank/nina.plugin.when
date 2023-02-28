@@ -17,7 +17,6 @@
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
     <Compile Remove="When\Expression.cs" />
-    <Compile Remove="When\IfResults.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />

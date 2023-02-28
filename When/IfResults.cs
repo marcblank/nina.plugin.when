@@ -28,7 +28,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Executes an instruction set if the predicate, based on the results of the previous instruction, is true")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "When")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfResults : IfCommand, IValidatable {
     
