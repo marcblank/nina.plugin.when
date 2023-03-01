@@ -85,8 +85,16 @@ namespace WhenPlugin.When {
 
         [OnSerializing]
         public void OnSerializingMethod(StreamingContext context) {
+            iInstructions = Instructions;
             Instructions = new TemplateContainer();
         }
+
+        [OnSerialized]
+        public void OnSerializedMethod(StreamingContext context) {
+            Instructions = iInstructions;
+        }
+
+        private IfContainer iInstructions;
 
         public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator, profileService) {
             if (copyMe != null) {
