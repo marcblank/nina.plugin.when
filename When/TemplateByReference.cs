@@ -85,13 +85,17 @@ namespace WhenPlugin.When {
 
         [OnSerializing]
         public void OnSerializingMethod(StreamingContext context) {
-            Instructions = new IfContainer();
+            Instructions = new TemplateContainer();
         }
 
         public TemplateByReference(TemplateByReference copyMe) : this(sequenceMediator, profileService) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Instructions = (TemplateContainer)copyMe.Instructions.Clone();
+                try {
+                    Instructions = (TemplateContainer)copyMe.Instructions.Clone();
+                } catch (Exception ex) {
+                    Instructions = copyMe.Instructions.Clone();
+                }
                 Instructions.PseudoParent = this;
             }
         }
