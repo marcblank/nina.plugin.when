@@ -126,7 +126,7 @@ namespace WhenPlugin.When {
         public double ExposureTime { get => exposureTime; set { exposureTime = value; RaisePropertyChanged("ExposureTime"); } }
 
 
-        private string gainExpr = "0";
+        private string gainExpr = "";
         [JsonProperty]
         public string GainExpr {
             get => gainExpr;
@@ -137,7 +137,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        private int gain = 0;
+        private int gain = -1;
 
         [JsonProperty]
         public int Gain { get => gain; 

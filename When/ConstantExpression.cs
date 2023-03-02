@@ -106,7 +106,7 @@ namespace WhenPlugin.When {
         static private Double EvaluateExpression(ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
             if (expr.IsNullOrEmpty()) return 0;
 
-            Expression e = new Expression(expr);
+            Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
             // Consolidate keys
             Keys mergedKeys = new Keys();
 
@@ -127,6 +127,9 @@ namespace WhenPlugin.When {
             try {
                 var eval = e.Evaluate();
                 Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
+                if (eval is Boolean b) {
+                    return b ? 1 : 0;
+                }
                 try {
                     return (double)eval;
                 } catch (Exception ex) {
@@ -194,7 +197,7 @@ namespace WhenPlugin.When {
         static public string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
             if (expr.IsNullOrEmpty()) return String.Empty;
 
-            Expression e = new Expression(expr);
+            Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
             // Consolidate keys
             Keys mergedKeys = GetMergedKeys(stack);
             if (mergedKeys.Count == 0) {

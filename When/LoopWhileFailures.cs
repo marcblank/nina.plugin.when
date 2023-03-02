@@ -26,25 +26,25 @@ using NINA.Sequencer.Conditions;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Lbl_SequenceCondition_LoopCondition_Name")]
+    [ExportMetadata("Name", "Loop While Failures")]
     [ExportMetadata("Description", "Lbl_SequenceCondition_LoopCondition_Description")]
     [ExportMetadata("Icon", "LoopSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Condition")]
     //[Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class LoopCondition : SequenceCondition {
+    public class LoopWhileFailures : SequenceCondition {
 
         [ImportingConstructor]
-        public LoopCondition() {
+        public LoopWhileFailures() {
             Iterations = 2;
         }
 
-        private LoopCondition(LoopCondition cloneMe) : this() {
+        private LoopWhileFailures(LoopWhileFailures cloneMe) : this() {
             CopyMetaData(cloneMe);
         }
 
         public override object Clone() {
-            return new LoopCondition(this) {
+            return new LoopWhileFailures(this) {
                 Iterations = Iterations
             };
         }
