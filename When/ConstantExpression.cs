@@ -1,5 +1,6 @@
 ﻿using Accord;
 using Castle.Core.Internal;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
@@ -244,10 +245,8 @@ namespace WhenPlugin.When {
                 }
                 if (cc == root) {
                     cc = GlobalContainer;
-                } else if (cc is IfContainer ifc) {
-                    cc = ifc.PseudoParent;
-                } else {
-                    cc = cc.Parent;
+               } else {
+                    cc = GetParent(cc);
                 }
             }
 
@@ -262,15 +261,22 @@ namespace WhenPlugin.When {
         }
 
 
+        static ISequenceEntity GetParent(ISequenceEntity p) {
+            if (p is IfContainer ic) {
+                return (ic.Parent == null ? ic.PseudoParent : ic.Parent);
+            } else {
+                return p.Parent;
+            }
+
+        }
+
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
                 if (p is SequenceRootContainer) {
                     return true;
-                } else if (p is IfContainer ic) {
-                    p = ic.PseudoParent;
                 } else {
-                    p = p.Parent;
+                    p = GetParent(p);
                 }
             }
             return false;
@@ -395,12 +401,10 @@ namespace WhenPlugin.When {
                         if (!cachedKeys.IsNullOrEmpty()) {
                             stack.Push(cachedKeys);
                         }
-                        if (cc == root) {
+                        if (cc is SequenceRootContainer) {
                             cc = GlobalContainer;
-                        } else if (cc is IfContainer ifc) {
-                            cc = ifc.PseudoParent;
                         } else {
-                            cc = cc.Parent;
+                            cc = GetParent(cc);
                         }
                     }
 
