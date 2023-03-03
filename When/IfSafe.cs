@@ -13,7 +13,7 @@ using NINA.Equipment.Equipment.MySafetyMonitor;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Safe")]
-    [ExportMetadata("Description", "Sequencer Powerups:\r\nExecutes a customizable instruction set if the safety monitor indicates that conditions are safe.")]
+    [ExportMetadata("Description", "Executes a customizable instruction set if the safety monitor indicates that conditions are safe.")]
     [ExportMetadata("Icon", "ShieldSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
     [Export(typeof(ISequenceItem))]

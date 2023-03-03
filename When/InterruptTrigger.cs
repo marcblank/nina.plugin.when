@@ -17,7 +17,7 @@ using System.Windows.Media;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Interrupt Trigger")]
-    [ExportMetadata("Description", "Sequencer Powerups:\r\nThis trigger will stop execution after the currently running instruction, allowing you to add whatever instructions you want before proceeding.")]
+    [ExportMetadata("Description", "This trigger will stop execution after the currently running instruction, allowing you to add whatever instructions you want before proceeding.")]
     [ExportMetadata("Icon", "SequenceSVG")]
     [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceTrigger))]

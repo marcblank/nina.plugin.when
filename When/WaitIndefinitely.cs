@@ -27,7 +27,7 @@ using System.Windows.Input;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Wait Indefinitely")]
-    [ExportMetadata("Description", "Sequencer Powerups:\r\nWait indefinitely (until instruction is stopped or deleted)")]
+    [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
     [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
     [Export(typeof(ISequenceItem))]

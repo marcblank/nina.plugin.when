@@ -36,7 +36,7 @@ using System.Runtime.Serialization;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
-    [ExportMetadata("Description", "Sequencer Powerups:\r\nIncorporate a template by reference.  Please read the description on the plugin page.")]
+    [ExportMetadata("Description", "Incorporate a template by reference.  Please read the description on the plugin page.")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
     [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceItem))]
