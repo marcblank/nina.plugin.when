@@ -28,9 +28,11 @@ namespace WhenPlugin.When {
         }
 
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
-            TextBox predicateText = (TextBox)sender;
-            IfConstant ifConstant = (IfConstant)(predicateText.DataContext);
-            predicateText.ToolTip = ifConstant.ShowCurrentInfo();
+            try {
+                ConstantControl predicateText = (ConstantControl)sender;
+                IfConstant ifConstant = (IfConstant)(predicateText.DataContext);
+                predicateText.ToolTip = ifConstant.ShowCurrentInfo();
+            } catch (Exception) { }
         }
 
     }

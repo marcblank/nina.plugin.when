@@ -59,8 +59,18 @@ namespace WhenPlugin.When {
             };
         }
 
+        public string ValidateConstant(double temp) {
+            if ((int)temp == 0) {
+                return "False";
+            } else if ((int)temp == 1) {
+                return "True";
+            }
+            return string.Empty;
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
+            Logger.Info("IfConstant: Execute, Predicate = " + Predicate);
             if (Predicate.IsNullOrEmpty()) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
@@ -68,9 +78,10 @@ namespace WhenPlugin.When {
 
             try {
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+                Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
                 if (result == null) {
                     // Syntax error...
-                    Logger.Info("IfSwitch: There is a syntax error in your predicate expression.");
+                    Logger.Info("IfConstant: There is a syntax error in your predicate expression.");
                     Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                     return;
                 }
@@ -128,7 +139,7 @@ namespace WhenPlugin.When {
         public string ShowCurrentInfo() {
             try {
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                if (result == null) {
+                if (result is Boolean b && !b) {
                     return "There is a syntax error in the expression.";
                 } else {
                     return "Your expression is currently: " + (PredicateValue.Equals("0") ? "False" : "True");

@@ -49,7 +49,10 @@ namespace WhenPlugin.When {
                     if (error != string.Empty && item is IValidatable vitem) {
                         vitem.Issues.Add(error);
                         ValidityCache.Remove(item);
-                        return " { " + error + "} ";
+                        if (error.Equals("True")) {
+                            ValidityCache.Add(item, true);
+                        }
+                        return " { " + error + " } ";
                     }
                 }              
             }

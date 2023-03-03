@@ -23,6 +23,32 @@
 
     <local:ExpressionConverter x:Key="ec" />
 
+    <DataTemplate x:Key="WhenPlugin.When.MoveFocuserRelative_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding RelativePosition}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+ 
+    <DataTemplate DataType="{x:Type local:MoveFocuserRelative}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRelativePosition}" />
+                    <local:ConstantControl 
+                        MinWidth="40"
+                        Margin="5,-4,0,0"
+                        Expr="{Binding RelativePositionExpr, Mode=TwoWay}"
+                        Valu="{Binding RelativePosition , Mode=TwoWay}" 
+                        />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:InterruptTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -330,41 +356,15 @@
                     <ninactrl:DetachingExpander.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Enter the constant whose value is to be checked:" />
-                            <TextBox
-                                    MinWidth="100"
-                                    Margin="5,5,10,0"
-                                    Text="{Binding Predicate}"
+                            <local:ConstantControl 
+                                    Margin="5,4 ,10,5" 
                                     ToolTip="Foo"
                                     ToolTipOpening="IfConstant_PredicateToolTip"
-                                    VerticalAlignment="Center"
-                                    TextAlignment="Left" />
-                            <Grid Grid.Column="1" Visibility="Visible">
-                                <Border
-                                Width="20"
-                                Height="20"
-                                Margin="5,2,5,0"
-                                Background="{StaticResource NotificationErrorBrush}"
-                                BorderBrush="Transparent"
-                                CornerRadius="10">
-                                    <Border.Visibility>
-                                        <PriorityBinding>
-                                            <Binding
-                                            Converter="{StaticResource ZeroToVisibilityConverter}"
-                                            FallbackValue="Collapsed"
-                                            Path="Switches.Count" />
-                                        </PriorityBinding>
-                                    </Border.Visibility>
-                                    <Path
-                                    HorizontalAlignment="Right"
-                                    Data="{StaticResource AboutSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                                    <Border.ToolTip>
-                                        <ItemsControl ItemsSource="{Binding Switches}" />
-                                    </Border.ToolTip>
-                                </Border>
-                            </Grid>
-                        </StackPanel>
+                                    Validate="ValidateConstant"
+                                    Expr="{Binding Path=Predicate, Mode=TwoWay}"
+                                    Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
+                                    />
+                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
                         <Grid.RowDefinitions>
