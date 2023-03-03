@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.4.0.0")]
-[assembly: AssemblyFileVersion("3.4.0.0")]
+[assembly: AssemblyVersion("3.4.2.0")]
+[assembly: AssemblyFileVersion("3.4.2.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -64,9 +64,13 @@ If Constant - Executes the specified instructions if the provided Constant is 't
 
 Cool Camera - Same as built-in instruction, with the ability to use a constant for temperature
 
-Take Exposure/Take Many Exposures/Smart Exposure -  These three instructions are effectively copies of the built-in instructions, with the ability to use constants for iterations (smart/many), exposure time, gain, and dither.
+Take Exposure +/Take Many Exposures +/Smart Exposure + -  These three instructions are effectively copies of the built-in instructions, with the ability to use constants for iterations (smart/many), exposure time, gain, and dither.
 
 Screenshot: [Constants Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIEvcjHtr65Jl7W9Q?e=FM4WRF)
+
+FOCUSER:
+
+Move Focuser Relative + has the same functionality as NINA's Move Focuser Relative, but with the ability to use Constants
 
 SAFETY MONITOR:
 

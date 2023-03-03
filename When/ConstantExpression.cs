@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
+using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer;
@@ -80,10 +81,13 @@ namespace WhenPlugin.When {
                 KeyCache.Clear();
                 FindConstantsRoot(root, new Keys());
                 Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
+                Logger.Info("**KeyCache: " + KeyCache.Count + " **");
                 foreach (var kvp in KeyCache) {
                     Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
+                    Logger.Info(kvp.Key.Name + ": " + kvp.Value.ToString());
                     foreach (var c in kvp.Value) {
                         Debug.WriteLine(c);
+                        Logger.Info(c.ToString());
                     }
                 }
             } else if (item.Parent != null) {
@@ -107,6 +111,9 @@ namespace WhenPlugin.When {
         static private Double EvaluateExpression(ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
             if (expr.IsNullOrEmpty()) return 0;
 
+            if (string.Equals(expr, "true", StringComparison.OrdinalIgnoreCase)) { return 1; }
+            if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
+
             Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
             // Consolidate keys
             Keys mergedKeys = new Keys();
@@ -122,12 +129,14 @@ namespace WhenPlugin.When {
             }
             if (mergedKeys.Count == 0) {
                 Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                Logger.Info("Expression " + expr + " not evaluated; no keys");
                 return Double.NaN;
             }
             e.Parameters = mergedKeys;
             try {
                 var eval = e.Evaluate();
                 Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
+                Logger.Info("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
                 if (eval is Boolean b) {
                     return b ? 1 : 0;
                 }
@@ -317,6 +326,7 @@ namespace WhenPlugin.When {
                             sc.DuplicateName = true;
                         }
                         Debug.WriteLine("Constant " + name + " defined as " + value);
+                        Logger.Info("Constant " + name + " defined as " + value);
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (!double.IsNaN(result)) {
@@ -327,8 +337,10 @@ namespace WhenPlugin.When {
                                 sc.DuplicateName = true;
                             }
                             Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
+                            Logger.Info("Constant " + name + ": " + val + " evaluated to " + result);
                         } else {
                             Debug.WriteLine("Constant " + name + " evaluated as NaN");
+                            Logger.Info("Constant " + name + " evaluated as NaN");
                         }
                     }
                 } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
@@ -351,6 +363,7 @@ namespace WhenPlugin.When {
 
             if (keys.Count > 0) {
                 Debug.WriteLine("Constants in " + container.Name + ": " + keys);
+                Logger.Info("Constants in " + container.Name + ": " + keys);
             }
         }
 
@@ -418,6 +431,8 @@ namespace WhenPlugin.When {
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
                     Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
                         ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                    Logger.Info("IsValid: " + item.Name + ", " + exprName + " = " + expr +
+                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
 
                     if (Double.IsNaN(result)) {
                         val = -1;
@@ -456,6 +471,7 @@ namespace WhenPlugin.When {
                     pi.SetValue(item, conv);
                 } catch (Exception ex) {
                     Debug.WriteLine("Caught exception: " + ex);
+                    Logger.Info("Caught exception: " + ex);
                 }
             }
             return false;
