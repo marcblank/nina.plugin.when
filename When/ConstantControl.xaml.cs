@@ -1,4 +1,5 @@
-﻿using NINA.Sequencer.SequenceItem;
+﻿using Castle.Core.Internal;
+using NINA.Sequencer.SequenceItem;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -39,7 +40,11 @@ namespace WhenPlugin.When {
             TextBox tb = (TextBox)sender;
             ISequenceItem item = (ISequenceItem)tb.DataContext;
             var stack = ConstantExpression.GetKeyStack(item);
-            tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
+            if (stack.IsNullOrEmpty()) {
+                tb.ToolTip = "There are no valid, defined constants.";
+            } else {
+                tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
+            }
         }
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
             TextBox predicateText = (TextBox)sender;

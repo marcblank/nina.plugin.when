@@ -111,6 +111,7 @@ namespace WhenPlugin.When {
                         if (item != null) {
                             ValidityCache.Remove(item);
                         }
+                        if (ValidityCache.IsNullOrEmpty()) return "There are no valid constants defined.";
                         return ""; // return " {Error} ";
                     }
                  }
