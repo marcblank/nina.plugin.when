@@ -103,7 +103,15 @@ namespace WhenPlugin.When {
         public string Predicate { get; set; }
 
         [JsonProperty]
-        public string PredicateValue { get; set; }
+        private string iPredicateValue;
+
+        public string PredicateValue {
+            get { return iPredicateValue; }
+            set {
+                iPredicateValue = value;
+                RaisePropertyChanged(nameof(PredicateValue));
+            }
+        }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(IfSwitch)}, Predicate: {Predicate}";
@@ -121,7 +129,7 @@ namespace WhenPlugin.When {
             }
 
             try {
-                ConstantExpression.Evaluate(this, "PredicateExpr", "PredicateValue", 0);
+                    ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
             } catch (Exception ex) {
                 i.Add("Error in expression: " + ex.Message);
             }

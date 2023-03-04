@@ -428,7 +428,7 @@ namespace WhenPlugin.When {
                         reverseStack.Push(k);
                     }
 
-                    if (reverseStack.IsNullOrEmpty()) issues.Add("There are no valid constants defined.");
+                    if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
                     Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
