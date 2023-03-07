@@ -33,6 +33,7 @@ using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
 using System.Windows;
 using System.Runtime.Serialization;
+using CsvHelper.Configuration.Attributes;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -223,6 +224,11 @@ namespace WhenPlugin.When {
                 }
                 return null;
             }
+        }
+
+        public override void ResetProgress() {
+            base.ResetProgress();
+            Instructions.ResetAll();
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
