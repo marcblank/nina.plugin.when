@@ -16,12 +16,14 @@ namespace WhenPlugin.When {
     public class Runner: SequentialContainer {
 
         public Runner(SequentialContainer runner, IInstructionResults cmd, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            AttachNewParent(runner.Parent);
             RunInstructions = runner;
             RunInstructions.AttachNewParent(this);
             ConditionalCommand = cmd;
             Progress = progress;
             Token = token;
             ShouldRetry = false;
+            //
         }
 
         public SequentialContainer RunInstructions { get; set; }
