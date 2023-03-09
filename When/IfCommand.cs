@@ -77,12 +77,21 @@ namespace WhenPlugin.When {
             }
         }
 
-
-        public virtual bool Validate() {
-
+        protected void CommonValidate() {
             if (Instructions.PseudoParent == null) {
                 Instructions.PseudoParent = this;
             }
+
+            foreach (ISequenceItem item in Instructions.Items) {
+                if (item is IValidatable val) {
+                    item.AttachNewParent(Parent);
+                    _ = val.Validate();
+                }
+            }
+        }
+
+        public virtual bool Validate() {
+            CommonValidate();
 
             var i = new List<string>();
             if (Condition == null) { }
@@ -91,13 +100,7 @@ namespace WhenPlugin.When {
             } else if (Condition.Items[0] is IValidatable val) {
                 _ = val.Validate();
             }
-            foreach (ISequenceItem item in Instructions.Items) {
-                if (item is IValidatable val) {
-                    item.AttachNewParent(Parent);
-                    _ = val.Validate();
-                }
-            }
-
+ 
             Issues = i;
             return i.Count == 0;
         }

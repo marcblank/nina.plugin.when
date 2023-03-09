@@ -44,6 +44,7 @@ namespace WhenPlugin.When {
         public IfSwitch(ISwitchMediator switchMediator, IWeatherDataMediator weatherMediator) {
             Predicate = "";
             Instructions = new IfContainer();
+            Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
@@ -54,6 +55,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Predicate = copyMe.Predicate;
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
             }
         }
@@ -112,11 +114,9 @@ namespace WhenPlugin.When {
         }
 
         public new bool Validate() {
-            var i = new List<string>();
+            CommonValidate();
 
-            if (Instructions.PseudoParent == null) {
-                Instructions.PseudoParent = this;
-            }
+            var i = new List<string>();
 
             if (Predicate.IsNullOrEmpty()) {
                 i.Add("Expression cannot be empty!");
@@ -138,12 +138,6 @@ namespace WhenPlugin.When {
 
             Switches = IfWhenSwitch.GetSwitchList(switchMediator, weatherMediator);
             RaisePropertyChanged("Switches");
-
-            foreach (ISequenceItem item in Instructions.Items) {
-                if (item is IValidatable val) {
-                    _ = val.Validate();
-                }
-            }
 
             Issues = i;
             return i.Count == 0;

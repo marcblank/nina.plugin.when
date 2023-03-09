@@ -31,18 +31,12 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfUnsafe : IfSafeUnsafe, IValidatable {
-
  
         [ImportingConstructor]
         public IfUnsafe(ISafetyMonitorMediator safetyMediator) : base(safetyMediator, false) {
-            Name = Name;
         }
 
-        public IfUnsafe(IfUnsafe copyMe) : this(copyMe.safetyMediator) {
-            if (copyMe != null) {
-                CopyMetaData(copyMe);
-                Instructions = (IfContainer)copyMe.Instructions.Clone();
-            }
+        public IfUnsafe(IfUnsafe copyMe) : base(copyMe) {
         }
 
         public override object Clone() {

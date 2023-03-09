@@ -43,6 +43,7 @@ namespace WhenPlugin.When {
         public IfConstant() {
             Predicate = "";
             Instructions = new IfContainer();
+            Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
         }
 
@@ -51,6 +52,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Predicate = copyMe.Predicate;
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
             }
         }
@@ -120,28 +122,19 @@ namespace WhenPlugin.When {
         }
 
         public new bool Validate() {
-            var i = new List<string>();
 
-            if (Instructions.PseudoParent == null) {
-                Instructions.PseudoParent = this;
-            }
+            CommonValidate();
+
+            var i = new List<string>();
 
             if (Predicate.IsNullOrEmpty()) {
                 i.Add("Expression cannot be empty!");
             }
 
             try {
-                    ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
             } catch (Exception ex) {
                 i.Add("Error in expression: " + ex.Message);
-            }
-
-            foreach (ISequenceItem item in Instructions.Items) {
-                if (item is IValidatable val) {
-                    // Make sure our contents have a proper parent (not the container)
-                    item.AttachNewParent(Parent);
-                    _ = val.Validate();
-                }
             }
 
             Issues = i;

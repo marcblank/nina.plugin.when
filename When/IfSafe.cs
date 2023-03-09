@@ -20,10 +20,8 @@ namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class IfSafe : IfSafeUnsafe, IValidatable {
 
-
         [ImportingConstructor]
         public IfSafe(ISafetyMonitorMediator safetyMediator) : base(safetyMediator, true) {
-            Name = Name;
         }
 
         public IfSafe(IfSafe copyMe) : base(copyMe) {
