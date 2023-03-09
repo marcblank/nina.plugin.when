@@ -138,6 +138,8 @@ namespace WhenPlugin.When {
 
             foreach (ISequenceItem item in Instructions.Items) {
                 if (item is IValidatable val) {
+                    // Make sure our contents have a proper parent (not the container)
+                    item.AttachNewParent(Parent);
                     _ = val.Validate();
                 }
             }

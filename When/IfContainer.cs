@@ -28,6 +28,7 @@ namespace WhenPlugin.When {
             foreach (var item in ic.Items) {
                 item.AttachNewParent(ic);
             }
+            AttachNewParent(Parent);
             return ic;
         }
 
@@ -39,12 +40,6 @@ namespace WhenPlugin.When {
             get => iPseudoParent;
             set {
                 iPseudoParent = value;
-            }
-        }
-
-        public new SequenceContainer Parent {
-            get => PseudoParent != null ? (SequenceContainer)PseudoParent.Parent : (SequenceContainer)base.Parent;
-            set {
             }
         }
  

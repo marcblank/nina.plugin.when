@@ -93,6 +93,7 @@ namespace WhenPlugin.When {
             }
             foreach (ISequenceItem item in Instructions.Items) {
                 if (item is IValidatable val) {
+                    item.AttachNewParent(Parent);
                     _ = val.Validate();
                 }
             }
