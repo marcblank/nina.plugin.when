@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.4.3.0")]
-[assembly: AssemblyFileVersion("3.4.3.0")]
+[assembly: AssemblyVersion("3.5.0.0")]
+[assembly: AssemblyFileVersion("3.5.0.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -89,6 +89,8 @@ Template By Reference - This powerful instruction incorporates the specified (by
 Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
 
 Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
+
+Repeat Until All Succeed - This instruction will execute each included instruction in turn; if any fails, the sequence will wait the specified amount of time, and then start again (repeating each instruction).  This will continue until all instructions 'succeed'; consider this instruction as a series of prerequisites for the sequence to continue.
 
 SWITCH:
 

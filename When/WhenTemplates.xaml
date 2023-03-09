@@ -348,7 +348,7 @@
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
- 
+
     <DataTemplate DataType="{x:Type local:IfConstant}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -364,7 +364,7 @@
                                     Expr="{Binding Path=Predicate, Mode=TwoWay}"
                                     Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
                                     />
-                         </StackPanel>
+                        </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -386,6 +386,55 @@
                                 FontStyle="Italic"
                                 Opacity="0.4"
                                 Text="Conditional instructions go here"
+                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                                <i:Interaction.Behaviors>
+                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem;" OnDropCommand="DropIntoCommand" />
+                                </i:Interaction.Behaviors>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander>
+
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:RepeatUntilAllSucceed}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <ninactrl:DetachingExpander>
+                    <ninactrl:DetachingExpander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Margin="10,3,0,0" Text="Wait " />
+                            <local:ConstantControl 
+                                Margin = "8,3,10,5" 
+                                Expr="{Binding Path=WaitTimeExpr, Mode=TwoWay}"
+                                Valu="{Binding Path=WaitTime, Mode=TwoWay}"
+                                Validate="ValidateTime" />
+                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="s before repeating " />
+                        </StackPanel>
+                    </ninactrl:DetachingExpander.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border
+                        Grid.Row="1"
+                        MinHeight="35"
+                        Margin="0,10,0,10"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1">
+                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                                <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                Opacity="0.4"
+                                Text="Instructions go here"
                                 Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />

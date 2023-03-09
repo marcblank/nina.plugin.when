@@ -27,6 +27,7 @@ using NINA.Equipment.Equipment.MyWeatherData;
 using System.Windows.Controls;
 using System.Diagnostics;
 using NINA.Core.Utility;
+using NINA.Sequencer;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Constant")]
@@ -110,6 +111,7 @@ namespace WhenPlugin.When {
             set {
                 iPredicateValue = value;
                 RaisePropertyChanged(nameof(PredicateValue));
+
             }
         }
 

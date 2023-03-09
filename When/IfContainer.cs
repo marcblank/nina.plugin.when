@@ -42,6 +42,12 @@ namespace WhenPlugin.When {
             }
         }
 
+        public new SequenceContainer Parent {
+            get => PseudoParent != null ? (SequenceContainer)PseudoParent.Parent : (SequenceContainer)base.Parent;
+            set {
+            }
+        }
+ 
         public new void MoveUp(ISequenceItem item) {
             lock (lockObj) {
                 var index = Items.IndexOf(item);

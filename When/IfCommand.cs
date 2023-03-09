@@ -70,6 +70,14 @@ namespace WhenPlugin.When {
             //}
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (var item in Instructions.Items) {
+                item.AfterParentChanged();
+            }
+        }
+
+
         public virtual bool Validate() {
 
             if (Instructions.PseudoParent == null) {
