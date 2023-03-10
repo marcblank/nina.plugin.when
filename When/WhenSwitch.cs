@@ -178,8 +178,9 @@ namespace WhenPlugin.When {
                 i.Add("Error in expression: " + ex.Message);
             }
 
-            if (!switchMediator.GetInfo().Connected) {
-                i.Add("Switch not connected");
+            if (switchMediator.GetInfo().Connected || weatherMediator.GetInfo().Connected) { }
+            else {
+                i.Add("No switches or weather devices are connected");
                 Issues = i;
                 return false;
             }
