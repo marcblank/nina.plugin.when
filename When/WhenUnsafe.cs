@@ -284,6 +284,7 @@ namespace WhenPlugin.When {
                     item.AttachNewParent(Instructions);
                 }
                 Runner runner = new Runner(Instructions, null, progress, token);
+                runner.cts = cts;
                 try {
                     // No retries at this point
                     await runner.RunConditional();

@@ -34,7 +34,9 @@ namespace WhenPlugin.When {
 
         public IProgress<ApplicationStatus> Progress { get; set; }      
 
-        public CancellationToken Token { get; set; }    
+        public CancellationToken Token { get; set; }
+
+        public CancellationTokenSource cts { get; set; } = null;
 
         public async Task RunConditional () {
             ShouldRetry = false;

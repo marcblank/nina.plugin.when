@@ -130,8 +130,10 @@ namespace WhenPlugin.When {
 
             PredicateValue = "";
 
-            if (!switchMediator.GetInfo().Connected) {
-                i.Add("Switch not connected");
+            
+            if (switchMediator.GetInfo().Connected || weatherMediator.GetInfo().Connected) { }
+            else {
+                i.Add("Neither switch nor weather device is connected");
                 Issues = i;
                 return false;
             }

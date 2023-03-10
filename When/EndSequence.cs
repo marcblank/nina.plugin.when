@@ -70,6 +70,14 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            ISequenceEntity p = Parent;
+            while (p != null) {
+                if (p is Runner r && r.cts != null) {
+                    r.cts.Cancel();
+                    return Task.CompletedTask;
+                }
+                p = p.Parent;
+            }
             if (s2vm != null) {
                 FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
                 if (fi != null) {

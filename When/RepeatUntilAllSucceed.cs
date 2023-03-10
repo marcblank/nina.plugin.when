@@ -57,7 +57,7 @@ namespace WhenPlugin.When {
             return new RepeatUntilAllSucceed(this) {
             };
         }
-        private string waitTimeExpr = "0";
+        private string waitTimeExpr = "60";
 
         [JsonProperty]
         public string WaitTimeExpr {
@@ -69,7 +69,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        private double waitTime;
+        private double waitTime = 60;
 
         [JsonProperty]
         public double WaitTime { get => waitTime; set { waitTime = value; RaisePropertyChanged("WaitTime"); } }
@@ -88,15 +88,23 @@ namespace WhenPlugin.When {
             int attempts = 1;
             while (true) {
                 bool failed = false;
+                ISequenceItem failedItem = null;
                 foreach (ISequenceItem item in Instructions.Items) {
                     if (item.Status == SequenceEntityStatus.DISABLED) {
                         continue;
                     }
                     try {
-                        await item.Run(progress, token);
+                        CancellationTokenSource cts = new CancellationTokenSource();
+                        await item.Run(progress, token); // cts.Token);
+                        if (cts.IsCancellationRequested) {
+                            cts.Dispose();
+                            return;
+                        }
+                        cts.Dispose();
                         if (item.Status == SequenceEntityStatus.FAILED) {
                             // Clear status of all and start over...
                             Logger.Info(item.Name + ": failed, restarting instructions...");
+                            failedItem = item;
                             Instructions.ResetProgress();
                             attempts++;
                             failed = true;
@@ -112,7 +120,7 @@ namespace WhenPlugin.When {
                     break;
                 }
                 if (WaitTime > 0) {
-                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitTime), true, token, progress, "Waiting to repeat");
+                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitTime), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
                 }
             }
             Logger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
