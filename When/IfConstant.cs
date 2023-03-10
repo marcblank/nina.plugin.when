@@ -118,7 +118,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(IfSwitch)}, Predicate: {Predicate}";
+            return $"Category: {Category}, Item: {nameof(IfConstant)}, Predicate: {Predicate}";
         }
 
         public new bool Validate() {
