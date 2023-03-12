@@ -235,7 +235,7 @@ namespace WhenPlugin.When {
         private string startStop = "Stop";
         public string StartStop {
             get {
-                return Stopped ? "Restart" : "Pause";
+                return Stopped && InFlight ? "Enable Trigger" : Stopped ? "COntinue" : "Pause";
             }
             set { }
         }
@@ -349,7 +349,6 @@ namespace WhenPlugin.When {
         private void PerformStopInstructions() {
             if (!Stopped) {
                 if (InFlight && cts != null) {
-                    Notification.ShowSuccess("Stopped...");
                     cts.Cancel();
                     Stopped = true;
                 }
@@ -359,6 +358,7 @@ namespace WhenPlugin.When {
                 Parent.Status = SequenceEntityStatus.RUNNING;
                 _ = InterruptWhenUnsafe();
             }
+            RaisePropertyChanged("StartStop");
         }
     }
 }

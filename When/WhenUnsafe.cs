@@ -69,6 +69,7 @@ namespace WhenPlugin.When {
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
 
+
             // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
@@ -202,7 +203,7 @@ namespace WhenPlugin.When {
         private string startStop = "Stop";
         public string StartStop {
             get {
-                return Stopped ? "Restart" : "Pause";
+                return Stopped && InFlight ? "Reset Trigger" : Stopped ? "Restart" : "Pause";
             }
             set { }
         }
@@ -239,12 +240,19 @@ namespace WhenPlugin.When {
                     } catch (Exception ex) {
                         Logger.Error(ex);
                     } finally {
+                        if (cts.IsCancellationRequested) {
+                            Logger.Info("WhenUnsafe: " + "Cancellation requested; stopping");
+                            Status = SequenceEntityStatus.FINISHED;
+                            Stopped = true;
+                            InFlight = true;
+                        }
                         if (!Stopped) {
                             Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
                             Status = SequenceEntityStatus.CREATED;
                             InFlight = false;
                             sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
                         }
+                        cts.Dispose();
                     }
                 }
             }
@@ -255,7 +263,6 @@ namespace WhenPlugin.When {
         }
 
         private ISequenceContainer Container { get; set; }
-
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) return false;
@@ -316,15 +323,18 @@ namespace WhenPlugin.When {
         private void PerformStopInstructions() {
             if (!Stopped) {
                 if (InFlight && cts != null) {
+                    Logger.Info("Start/Stop pressed while not stopped; cancel cts");
                     cts.Cancel();
                     Stopped = true;
                 }
             } else {
+                Logger.Info("Start/Stop pressed, when stopped; start interrupts");
                 Stopped = false;
                 InFlight = false;
-                Parent.Status = SequenceEntityStatus.RUNNING;
+                Parent.Status = Status = SequenceEntityStatus.CREATED;
                 _ = InterruptWhenUnsafe();
             }
+            RaisePropertyChanged("StartStop");
         }
     }
 }

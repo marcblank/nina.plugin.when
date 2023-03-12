@@ -20,6 +20,7 @@ using NINA.Sequencer.Serialization;
 using NINA.Sequencer;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "End Sequence")]
@@ -70,9 +71,11 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Logger.Info("EndSequence running...");
             ISequenceEntity p = Parent;
             while (p != null) {
                 if (p is Runner r && r.cts != null) {
+                    Logger.Info("Stopping runner cts");
                     r.cts.Cancel();
                     return Task.CompletedTask;
                 }
@@ -82,6 +85,7 @@ namespace WhenPlugin.When {
                 FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
                 if (fi != null) {
                     CancellationTokenSource cts = (CancellationTokenSource)fi.GetValue(s2vm);
+                    Logger.Info("Stopping sequencer");
                     cts?.Cancel();
                 }
             }

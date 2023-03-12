@@ -42,6 +42,10 @@ namespace WhenPlugin.When {
                 iPseudoParent = value;
             }
         }
+
+        public override void ResetProgress() {
+            base.ResetProgress();
+        }
  
         public new void MoveUp(ISequenceItem item) {
             lock (lockObj) {
