@@ -45,6 +45,8 @@ namespace WhenPlugin.When {
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
 
         public IfConstant(IfConstant copyMe) : this() {
@@ -54,6 +56,8 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
+                Instructions.Name = Name;
+                Instructions.Icon = Icon;
             }
         }
 

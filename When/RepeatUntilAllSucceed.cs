@@ -43,6 +43,8 @@ namespace WhenPlugin.When {
         public RepeatUntilAllSucceed() : base() {
             Instructions = new IfContainer();
             Instructions.PseudoParent = this;
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
 
         private RepeatUntilAllSucceed(RepeatUntilAllSucceed cloneMe) : this() {
@@ -50,6 +52,8 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.PseudoParent = this;
+                Instructions.Name = Name;
+                Instructions.Icon = Icon;
             }
         }
 

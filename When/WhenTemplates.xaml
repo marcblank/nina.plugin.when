@@ -991,7 +991,7 @@
         </WrapPanel>
     </WrapPanel>
 
-    <DataTemplate x:Key="ConstantsPlugin.Constants.TakeExposure_Mini">
+    <DataTemplate x:Key="WhenPlugin.When.TakeExposure_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -1012,7 +1012,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate x:Key="ConstantsPlugin.Constants.TakeManyExposures_Mini" DataType="{x:Type local:SmartExposure}">
+    <DataTemplate x:Key="WhenPlugin.When.TakeManyExposures_Mini" DataType="{x:Type local:TakeManyExposures}">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -1193,6 +1193,36 @@
     </DataTemplate>
 
     <DataTemplate x:Key="WhenPlugin.When.WhenUnsafe_Mini" DataType="{x:Type local:WhenUnsafe}">
+        <mini:MiniContainer DataContext="{Binding Instructions}">
+            <mini:MiniContainer.Content>
+                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                </Grid>
+            </mini:MiniContainer.Content>
+        </mini:MiniContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="WhenPlugin.When.RepeatUntilAllSucceed_Mini" DataType="{x:Type local:RepeatUntilAllSucceed}">
+        <mini:MiniContainer DataContext="{Binding Instructions}">
+            <mini:MiniContainer.Content>
+                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                </Grid>
+            </mini:MiniContainer.Content>
+        </mini:MiniContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="WhenPlugin.When.TemplateByReference_Mini" DataType="{x:Type local:TemplateByReference}">
+        <mini:MiniContainer DataContext="{Binding Instructions}">
+            <mini:MiniContainer.Content>
+                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                </Grid>
+            </mini:MiniContainer.Content>
+        </mini:MiniContainer>
+    </DataTemplate>
+
+    <DataTemplate x:Key="WhenPlugin.When.IfConstant_Mini" DataType="{x:Type local:IfConstant}">
         <mini:MiniContainer DataContext="{Binding Instructions}">
             <mini:MiniContainer.Content>
                 <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">

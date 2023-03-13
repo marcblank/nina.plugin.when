@@ -61,6 +61,8 @@ namespace WhenPlugin.When {
             Instructions = new TemplateContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
             Name = Name;
             Id = ++instanceNumber;
             
@@ -106,6 +108,8 @@ namespace WhenPlugin.When {
                     Instructions = copyMe.Instructions.Clone();
                 }
                 Instructions.PseudoParent = this;
+                Instructions.Name = Name;
+                Instructions.Icon = Icon;
             }
         }
 
