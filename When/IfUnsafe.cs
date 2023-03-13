@@ -34,9 +34,13 @@ namespace WhenPlugin.When {
  
         [ImportingConstructor]
         public IfUnsafe(ISafetyMonitorMediator safetyMediator) : base(safetyMediator, false) {
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
 
         public IfUnsafe(IfUnsafe copyMe) : base(copyMe) {
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
 
         public override object Clone() {

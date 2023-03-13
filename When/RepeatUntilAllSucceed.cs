@@ -133,6 +133,7 @@ namespace WhenPlugin.When {
         }
 
         public override bool Validate() {
+            CommonValidate();
 
             if (Instructions.PseudoParent == null) {
                 Instructions.PseudoParent = this;

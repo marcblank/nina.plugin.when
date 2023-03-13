@@ -44,6 +44,7 @@ using System.Windows.Input;
 using System.Management;
 using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Sequencer;
 
 namespace WhenPlugin.When {
 
@@ -68,6 +69,9 @@ namespace WhenPlugin.When {
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
+
 
 
             // GetField() returns null, so iterate?
@@ -85,6 +89,8 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
+                Instructions.Name = Name;
+                Instructions.Icon = Icon;
             }
         }
 
@@ -230,6 +236,7 @@ namespace WhenPlugin.When {
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
                     sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
+                    ISequenceEntity p = Parent;
                     Status = SequenceEntityStatus.RUNNING;
                     cts = new CancellationTokenSource();
                     try {

@@ -44,6 +44,7 @@ using System.Windows.Input;
 using System.Management;
 using Castle.Core.Internal;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Sequencer;
 
 namespace WhenPlugin.When {
 

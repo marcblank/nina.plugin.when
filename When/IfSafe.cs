@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NINA.Core.Utility.Notification;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Equipment.MySafetyMonitor;
+using NINA.Sequencer.Container;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Safe")]
@@ -22,10 +23,17 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public IfSafe(ISafetyMonitorMediator safetyMediator) : base(safetyMediator, true) {
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
 
         public IfSafe(IfSafe copyMe) : base(copyMe) {
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
         }
+
+        public SequenceContainer X { get; set; }
+
 
         public override object Clone() {
             return new IfSafe(this) {
