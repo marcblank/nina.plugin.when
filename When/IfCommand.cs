@@ -48,6 +48,7 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
+            Instructions.ResetAll();
             foreach (ISequenceItem item in Instructions.Items) {
                 item.ResetProgress();
             }
