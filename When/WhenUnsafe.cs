@@ -223,6 +223,16 @@ namespace WhenPlugin.When {
             }
         }
 
+        private ConditionWatchdog LoopWatchdog { get; set; }
+
+        private async Task InterruptToCheckConditions() {
+            if (!(CanContinue(Parent, null, null))) {
+                PerformStopInstructions();
+                LoopWatchdog?.Cancel();
+                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+            }
+        }
+
         private async Task InterruptWhenUnsafe() {
             // Don't even think of it...
             if (Stopped) {
@@ -243,6 +253,8 @@ namespace WhenPlugin.When {
                         // Wait a short time for the sequence to be canceled...
                         Thread.Sleep(1500);
                         Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
+                        LoopWatchdog = new ConditionWatchdog(InterruptToCheckConditions, TimeSpan.FromSeconds(5));
+                        LoopWatchdog.Start();
                         await Execute(new Progress<ApplicationStatus>(p => AppStatus = p), cts.Token);
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -270,6 +282,22 @@ namespace WhenPlugin.When {
         }
 
         private ISequenceContainer Container { get; set; }
+        private bool CanContinue(ISequenceContainer container, ISequenceItem previousItem, ISequenceItem nextItem) {
+            var conditionable = container as IConditionable;
+            var canContinue = false;
+            var conditions = conditionable?.GetConditionsSnapshot()?.Where(x => x.Status != SequenceEntityStatus.DISABLED).ToList();
+            if (conditions != null && conditions.Count > 0) {
+                canContinue = conditionable.CheckConditions(previousItem, nextItem);
+            } else {
+                canContinue = container.Iterations < 1;
+            }
+
+            if (container.Parent != null) {
+                canContinue = canContinue && CanContinue(container.Parent, previousItem, nextItem);
+            }
+
+            return canContinue;
+        }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) return false;
