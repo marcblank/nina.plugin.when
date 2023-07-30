@@ -21,6 +21,8 @@ using NINA.Sequencer;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
 using NINA.Core.Utility;
+using NINA.Sequencer.Container;
+using NINA.Core.Enum;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "End Sequence")]
@@ -70,6 +72,27 @@ namespace WhenPlugin.When {
             }
         }
 
+
+        private async Task<bool> SkipToEndOfSequence() {
+            var sequencer = s2vm.Sequencer;
+            var startContainer = sequencer.MainContainer.Items[0] as ISequenceContainer;
+            var targetContainer = sequencer.MainContainer.Items[1] as ISequenceContainer;
+            if (startContainer.Status == SequenceEntityStatus.RUNNING) {
+                await startContainer.Interrupt();
+                await Task.Delay(100);
+            }
+            if (targetContainer.Status == SequenceEntityStatus.RUNNING) {
+                await targetContainer.Interrupt();
+            }
+
+            startContainer.Status = SequenceEntityStatus.DISABLED;
+            targetContainer.Status = SequenceEntityStatus.DISABLED;
+            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+
+            return true;
+        }
+
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Logger.Info("EndSequence running...");
             ISequenceEntity p = Parent;
@@ -77,17 +100,18 @@ namespace WhenPlugin.When {
                 if (p is Runner r && r.cts != null) {
                     Logger.Info("Stopping runner cts");
                     r.cts.Cancel();
-                    return Task.CompletedTask;
+                    break; // return Task.CompletedTask;
                 }
                 p = p.Parent;
             }
             if (s2vm != null) {
-                FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (fi != null) {
-                    CancellationTokenSource cts = (CancellationTokenSource)fi.GetValue(s2vm);
-                    Logger.Info("Stopping sequencer");
-                    cts?.Cancel();
-                }
+                _ = SkipToEndOfSequence();
+                //FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
+                //if (fi != null) {
+                    // CancellationTokenSource cts = (CancellationTokenSource)fi.GetValue(s2vm);
+                    //Logger.Info("Stopping sequencer");
+                    //cts?.Cancel();
+                //}
             }
             return Task.CompletedTask;
         }

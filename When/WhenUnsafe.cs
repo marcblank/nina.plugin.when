@@ -229,14 +229,25 @@ namespace WhenPlugin.When {
             if (!(CanContinue(Parent, null, null))) {
                 PerformStopInstructions();
                 LoopWatchdog?.Cancel();
-                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(FindTargetContainer());
             }
         }
+
+        private ISequenceContainer FindTargetContainer() {
+            ISequenceContainer container = Parent;
+            while (container != null) {
+                if (container is TargetAreaContainer) return container;
+                container = container.Parent;
+            }
+            return Parent;
+        }
+        
+        private IProgress<ApplicationStatus> _progress;
 
         private async Task InterruptWhenUnsafe() {
             // Don't even think of it...
             if (Stopped) {
-                Logger.Info("WhenUnsafe: Stopped");
+                //Logger.Info("WhenUnsafe: Stopped");
                 return;
             }
 
@@ -245,8 +256,12 @@ namespace WhenPlugin.When {
             if (!Check() && Parent != null) {
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
-                    sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(this);
-                    ISequenceEntity p = Parent;
+
+                    var root = ItemUtility.GetRootContainer(Parent);
+                    await root?.Interrupt();
+                    await Task.Delay(100);
+
+                    ISequenceEntity pp = Parent;
                     Status = SequenceEntityStatus.RUNNING;
                     cts = new CancellationTokenSource();
                     try {
@@ -272,6 +287,8 @@ namespace WhenPlugin.When {
                             sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
                         }
                         cts.Dispose();
+                        // Don't keep starting the sequence
+                        LoopWatchdog?.Cancel();
                     }
                 }
             }
@@ -366,7 +383,8 @@ namespace WhenPlugin.When {
                 Logger.Info("Start/Stop pressed, when stopped; start interrupts");
                 Stopped = false;
                 InFlight = false;
-                Parent.Status = Status = SequenceEntityStatus.CREATED;
+                // Don't set pparent status so that the trigger can run again...
+                Status = SequenceEntityStatus.CREATED;
                 _ = InterruptWhenUnsafe();
             }
             RaisePropertyChanged("StartStop");

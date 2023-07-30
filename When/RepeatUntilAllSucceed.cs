@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,7 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public RepeatUntilAllSucceed() : base() {
             Instructions = new IfContainer();
+            Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
             Instructions.Name = Name;
             Instructions.Icon = Icon;
@@ -51,6 +53,7 @@ namespace WhenPlugin.When {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
+                Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
