@@ -48,7 +48,8 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new MoveFocuserRelative(this) {
-                RelativePosition = RelativePosition
+                RelativePosition = RelativePosition,
+                RelativePositionExpr = RelativePositionExpr
             };
         }
 
