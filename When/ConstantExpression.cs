@@ -75,20 +75,24 @@ namespace WhenPlugin.When {
             return null;
         }
 
+        private static readonly object ConstantsLock = new object();
+
         static public void UpdateConstants(ISequenceItem item) {
-            ISequenceContainer root = GetRoot(item);
-            if (root != null) {
-                KeyCache.Clear();
-                FindConstantsRoot(root, new Keys());
-                Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
-                foreach (var kvp in KeyCache) {
-                    Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
-                    foreach (var c in kvp.Value) {
-                        Debug.WriteLine(c);
+            lock (ConstantsLock) {
+                ISequenceContainer root = GetRoot(item);
+                if (root != null) {
+                    KeyCache.Clear();
+                    FindConstantsRoot(root, new Keys());
+                    Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
+                    foreach (var kvp in KeyCache) {
+                        Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
+                        foreach (var c in kvp.Value) {
+                            Debug.WriteLine(c);
+                        }
                     }
+                } else if (item.Parent != null) {
+                    FindConstants(GlobalContainer, new Keys());
                 }
-            } else if (item.Parent != null) {
-                FindConstants(GlobalContainer, new Keys());
             }
         }
 
