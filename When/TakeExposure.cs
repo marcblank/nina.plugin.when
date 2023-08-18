@@ -44,6 +44,7 @@ using NINA.Core.Utility.Notification;
 using System.Windows.Media.Converters;
 using Nikon;
 using Castle.Core.Internal;
+using System.Runtime.CompilerServices;
 
 namespace WhenPlugin.When {
 
@@ -145,10 +146,6 @@ namespace WhenPlugin.When {
                 gain = value; 
                 RaisePropertyChanged();
             } 
-        }
-
-        public string ValidateGain (double gain) {
-            return (gain < -1 || gain > 1000) ? BAD_GAIN : string.Empty;
         }
 
         private int offset;
@@ -354,7 +351,28 @@ namespace WhenPlugin.When {
             }
         }
 
-        private static string BAD_GAIN = "Gain must be between -1 and 1000";
+        public string ValidateGain(double gain) {
+            return iValidateGain(gain, new List<string>());
+        }
+
+        public string iValidateGain(double gain, List<string> i) {
+            var iCount = i.Count;
+
+            CameraInfo = this.cameraMediator.GetInfo();
+            if (!CameraInfo.Connected) {
+                i.Add(Loc.Instance["LblCameraNotConnected"]);
+            } else if (Gain < -1) {
+                i.Add("Gain cannot be less than -1");
+            } else if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
+                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
+            }
+
+            if (iCount == i.Count) {
+                return String.Empty;
+            } else {
+                return i[iCount];
+            }
+        }
   
         public bool Validate() {
             var i = new List<string>();
@@ -380,10 +398,6 @@ namespace WhenPlugin.When {
 
             ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0, i);
             ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, i);
-
-            if (ValidateGain(Gain) != String.Empty) {
-                i.Add(BAD_GAIN);
-            }
 
             RaisePropertyChanged("ExposureTimeExpr");
             Issues = i;
