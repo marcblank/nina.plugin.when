@@ -83,13 +83,13 @@ namespace WhenPlugin.When {
                 if (root != null) {
                     KeyCache.Clear();
                     FindConstantsRoot(root, new Keys());
-                    Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
-                    foreach (var kvp in KeyCache) {
-                        Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
-                        foreach (var c in kvp.Value) {
-                            Debug.WriteLine(c);
-                        }
-                    }
+                    //Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
+                    //foreach (var kvp in KeyCache) {
+                        //Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
+                    //    foreach (var c in kvp.Value) {
+                            //Debug.WriteLine(c);
+                    //    }
+                    //}
                 } else if (item.Parent != null) {
                     FindConstants(GlobalContainer, new Keys());
                 }
@@ -102,7 +102,7 @@ namespace WhenPlugin.When {
 
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             // We start from root, but we'll add global constants
-            Debug.WriteLine("Root: #" + ++FC);
+            //Debug.WriteLine("Root: #" + ++FC);
             if (!GlobalContainer.Items.Contains(container)) {
                 GlobalContainer.Items.Add(container);
             }
@@ -129,13 +129,13 @@ namespace WhenPlugin.When {
                 }
             }
             if (mergedKeys.Count == 0) {
-                Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                //Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
                 return Double.NaN;
             }
             e.Parameters = mergedKeys;
             try {
                 var eval = e.Evaluate();
-                Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
+                //Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
                 if (eval is Boolean b) {
                     return b ? 1 : 0;
                 }
@@ -210,7 +210,7 @@ namespace WhenPlugin.When {
             // Consolidate keys
             Keys mergedKeys = GetMergedKeys(stack);
             if (mergedKeys.Count == 0) {
-                Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                //Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
                 return String.Empty;
             }
             e.Parameters = mergedKeys;
@@ -299,9 +299,9 @@ namespace WhenPlugin.When {
 
             Keys cachedKeys = null;
             if (KeyCache.TryGetValue(container, out cachedKeys)) {
-                Debug.WriteLine("FindConstants for " + container.Name + ", found in cache: " + cachedKeys);
+                //Debug.WriteLine("FindConstants for " + container.Name + ", found in cache: " + cachedKeys);
             } else {
-                Debug.WriteLine("FindConstants: " + container.Name);
+                //Debug.WriteLine("FindConstants: " + container.Name);
             }
 
             KeysStack.Push(keys);
@@ -324,7 +324,7 @@ namespace WhenPlugin.When {
                             // Multiply defined...
                             sc.DuplicateName = true;
                         }
-                        Debug.WriteLine("Constant " + name + " defined as " + value);
+                        //Debug.WriteLine("Constant " + name + " defined as " + value);
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (!double.IsNaN(result)) {
@@ -334,9 +334,9 @@ namespace WhenPlugin.When {
                                 // Multiply defined...
                                 sc.DuplicateName = true;
                             }
-                            Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
+                            //Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
                         } else {
-                            Debug.WriteLine("Constant " + name + " evaluated as NaN");
+                            //Debug.WriteLine("Constant " + name + " evaluated as NaN");
                         }
                     }
                 } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
@@ -358,7 +358,7 @@ namespace WhenPlugin.When {
             KeysStack.Pop();
 
             if (keys.Count > 0) {
-                Debug.WriteLine("Constants in " + container.Name + ": " + keys);
+                //Debug.WriteLine("Constants in " + container.Name + ": " + keys);
             }
         }
 
@@ -394,7 +394,7 @@ namespace WhenPlugin.When {
 
             // Best case, this is a number a some sort
             if (double.TryParse(expr, out val)) {
-                Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
+                //Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
                 return true;
             } else {
                 ISequenceContainer c = item.Parent;
@@ -426,8 +426,8 @@ namespace WhenPlugin.When {
                     if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
-                    Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
-                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                    //Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
+                        //((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
                     if (Double.IsNaN(result)) {
                         val = -1;
                         return false;
@@ -464,7 +464,7 @@ namespace WhenPlugin.When {
                     var conv = Convert.ChangeType(def, pi.PropertyType);
                     pi.SetValue(item, conv);
                 } catch (Exception ex) {
-                    Debug.WriteLine("Caught exception: " + ex);
+                    //Debug.WriteLine("Caught exception: " + ex);
                     Logger.Info("Caught exception: " + ex);
                 }
             }

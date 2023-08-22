@@ -123,9 +123,24 @@ namespace WhenPlugin.When {
                         // What?
                     }
                 }
+
+                // It's possible that an instruction was interrupted and is therefore still CREATED
+                // This happens with a PHD2 calibration, for example.
+                foreach (ISequenceItem item in Instructions.Items) {
+                    if (item.Status == SequenceEntityStatus.CREATED) {
+                        Logger.Info(item.Name + ": didn't finish, restarting instructions...");
+                        failedItem = item;
+                        Instructions.ResetProgress();
+                        attempts++;
+                        failed = true;
+                        break;
+                    }
+                }
+
                 if (!failed) {
                     break;
                 }
+
                 if (WaitTime > 0) {
                     await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitTime), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
                 }

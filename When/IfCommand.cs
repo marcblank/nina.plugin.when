@@ -82,7 +82,11 @@ namespace WhenPlugin.When {
             if (Instructions.PseudoParent == null) {
                 Instructions.PseudoParent = this;
             }
-            Instructions.AttachNewParent(Parent);
+
+            // Avoid infinite loop by checking first...
+            if (Instructions.Parent != Parent) {
+                Instructions.AttachNewParent(Parent);
+            }
 
             foreach (ISequenceItem item in Instructions.Items) {
                 if (item is IValidatable val) {
