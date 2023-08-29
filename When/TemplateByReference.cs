@@ -317,5 +317,9 @@ namespace WhenPlugin.When {
             Issues = i;
             return i.Count == 0;
         }
+        
+        public override string ToString() {
+            return $"Category: {Category}, Item: {nameof(TemplateByReference)}, TemplateName: {TemplateName}";
+        }
     }
 }

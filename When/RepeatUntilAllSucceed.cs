@@ -148,6 +148,7 @@ namespace WhenPlugin.When {
             Logger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
             return;
         }
+        
         private string ValidateTime(double time) {
             if (time >= 0) return String.Empty;
             return "Wait time must be greater than zero!";

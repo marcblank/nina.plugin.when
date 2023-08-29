@@ -39,6 +39,8 @@ namespace WhenPlugin.When {
 
         static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
 
+        static private bool Debugging = false;
+
         public class Keys : Dictionary<string, object> {
 
             public override string ToString() {
@@ -83,13 +85,15 @@ namespace WhenPlugin.When {
                 if (root != null) {
                     KeyCache.Clear();
                     FindConstantsRoot(root, new Keys());
-                    //Debug.WriteLine("**KeyCache: " + KeyCache.Count + " **");
-                    //foreach (var kvp in KeyCache) {
-                        //Debug.WriteLine(kvp.Key.Name + ": " + kvp.Value.ToString());
-                    //    foreach (var c in kvp.Value) {
-                            //Debug.WriteLine(c);
-                    //    }
-                    //}
+                    if (Debugging) {
+                        DebugInfo("**KeyCache: ", KeyCache.Count.ToString(), " **");
+                        foreach (var kvp in KeyCache) {
+                            DebugInfo(kvp.Key.Name, ": ", kvp.Value.ToString());
+                            //foreach (var c in kvp.Value) {
+                            //    DebugInfo(c.ToString());
+                            //}
+                        }
+                    }
                 } else if (item.Parent != null) {
                     FindConstants(GlobalContainer, new Keys());
                 }
@@ -102,7 +106,7 @@ namespace WhenPlugin.When {
 
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             // We start from root, but we'll add global constants
-            //Debug.WriteLine("Root: #" + ++FC);
+            DebugInfo("Root: #", (++FC).ToString());
             if (!GlobalContainer.Items.Contains(container)) {
                 GlobalContainer.Items.Add(container);
             }
@@ -129,13 +133,13 @@ namespace WhenPlugin.When {
                 }
             }
             if (mergedKeys.Count == 0) {
-                //Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                DebugInfo("Expression '", expr, "' not evaluated; no keys");
                 return Double.NaN;
             }
             e.Parameters = mergedKeys;
             try {
                 var eval = e.Evaluate();
-                //Debug.WriteLine("Expression " + expr + " in " + item.Name + " evaluated to " + eval);
+                DebugInfo("Expression '", expr, "' in '", item.Name , "' evaluated to " + eval.ToString());
                 if (eval is Boolean b) {
                     return b ? 1 : 0;
                 }
@@ -210,7 +214,7 @@ namespace WhenPlugin.When {
             // Consolidate keys
             Keys mergedKeys = GetMergedKeys(stack);
             if (mergedKeys.Count == 0) {
-                //Debug.WriteLine("Expression " + expr + " not evaluated; no keys");
+                DebugInfo("Expression ", expr, " not evaluated; no keys");
                 return String.Empty;
             }
             e.Parameters = mergedKeys;
@@ -299,9 +303,9 @@ namespace WhenPlugin.When {
 
             Keys cachedKeys = null;
             if (KeyCache.TryGetValue(container, out cachedKeys)) {
-                //Debug.WriteLine("FindConstants for " + container.Name + ", found in cache: " + cachedKeys);
+                DebugInfo("FindConstants for '", container.Name, "' found in cache: ", cachedKeys.ToString());
             } else {
-                //Debug.WriteLine("FindConstants: " + container.Name);
+                DebugInfo("FindConstants for '", container.Name, "'");
             }
 
             KeysStack.Push(keys);
@@ -315,7 +319,7 @@ namespace WhenPlugin.When {
                     if (item.Parent != container) {
                         // In this case item has been deleted from parent (but it's still in Parent's Items)
                     } else if (name.IsNullOrEmpty()) {
-                        //Debug.WriteLine("Empty name in SetConstant; ignore");
+                        DebugInfo("Empty name in SetConstant; ignore");
                     } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
                         try {
@@ -324,7 +328,7 @@ namespace WhenPlugin.When {
                             // Multiply defined...
                             sc.DuplicateName = true;
                         }
-                        //Debug.WriteLine("Constant " + name + " defined as " + value);
+                        DebugInfo("Constant '", name, "' defined as ", value.ToString());
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (!double.IsNaN(result)) {
@@ -334,9 +338,9 @@ namespace WhenPlugin.When {
                                 // Multiply defined...
                                 sc.DuplicateName = true;
                             }
-                            //Debug.WriteLine("Constant " + name + ": " + val + " evaluated to " + result);
+                            DebugInfo("Constant '", name, "': ", val, " evaluated to ", result.ToString());
                         } else {
-                            //Debug.WriteLine("Constant " + name + " evaluated as NaN");
+                            DebugInfo("Constant '", name, "' evaluated as NaN");
                         }
                     }
                 } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
@@ -358,7 +362,7 @@ namespace WhenPlugin.When {
             KeysStack.Pop();
 
             if (keys.Count > 0) {
-                //Debug.WriteLine("Constants in " + container.Name + ": " + keys);
+                DebugInfo("Constants defined in '", container.Name, "': ", keys.ToString());
             }
         }
 
@@ -370,7 +374,7 @@ namespace WhenPlugin.When {
             if (item == null || item.Parent == null) return false;
 
             if (expr == null || expr.Length == 0) {
-                //Debug.WriteLine("IsValid: " + exprName + " null/empty");
+                DebugInfo("IsValid: ", exprName, " null/empty");
                 return false;
             }
 
@@ -394,7 +398,7 @@ namespace WhenPlugin.When {
 
             // Best case, this is a number a some sort
             if (double.TryParse(expr, out val)) {
-                //Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr);
+                DebugInfo("IsValid for ", item.Name, ": '", exprName, "' = ", expr);
                 return true;
             } else {
                 ISequenceContainer c = item.Parent;
@@ -426,8 +430,8 @@ namespace WhenPlugin.When {
                     if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
-                    //Debug.WriteLine("IsValid: " + item.Name + ", " + exprName + " = " + expr +
-                        //((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                    DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr, 
+                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
                     if (Double.IsNaN(result)) {
                         val = -1;
                         return false;
@@ -464,11 +468,17 @@ namespace WhenPlugin.When {
                     var conv = Convert.ChangeType(def, pi.PropertyType);
                     pi.SetValue(item, conv);
                 } catch (Exception ex) {
-                    //Debug.WriteLine("Caught exception: " + ex);
+                    DebugInfo("Caught exception: ", ex.Message);
                     Logger.Info("Caught exception: " + ex);
                 }
             }
             return false;
+        }
+
+        private static void DebugInfo(params string[] strs) {
+            if (Debugging) {
+                Debug.WriteLine(String.Join("", strs));
+            }
         }
 
         private static void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
