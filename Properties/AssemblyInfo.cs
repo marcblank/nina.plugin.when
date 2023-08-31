@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.6.2.1")]
-[assembly: AssemblyFileVersion("3.6.2.1")]
+[assembly: AssemblyVersion("3.7.0.1")]
+[assembly: AssemblyFileVersion("3.7.0.1")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -35,14 +35,8 @@ using System.Runtime.InteropServices;
 
 // The following attributes are optional for the official manifest meta data
 
-//[Optional] Your plugin homepage URL - omit if not applicaple
-[assembly: AssemblyMetadata("Homepage", "https://mypluginwebsite.com/")]
-
 //[Optional] Common tags that quickly describe your plugin
 [assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Interrupt,If,When")]
-
-//[Optional] A link that will show a log of all changes in between your plugin's versions
-[assembly: AssemblyMetadata("ChangelogURL", "https://bitbucket.org/zorkmid/nina.plugin.when/CHANGELOG.md")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Powerups.png")]
@@ -91,6 +85,10 @@ Interrupt Trigger - This instruction, when dragged into a running sequence, will
 Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
 
 Repeat Until All Succeed - This instruction will execute each included instruction in turn; if any fails, the sequence will wait the specified amount of time, and then start again (repeating each instruction).  This will continue until all instructions 'succeed'; consider this instruction as a series of prerequisites for the sequence to continue.
+
+Safe Trigger - NEW for 3.7/2.7, This meta-trigger will cause the Trigger you specify to be active ONLY if a connected Safety Monitor reports 'Safe'. This instruction is intended to be used with 'When Becomes Unsafe' to prevennt unwanted Triggers from running while conditions are 'Unsafe'.
+
+DIY Trigger - NEW for 3.7/2.7, This trigger allows you to split a specified trigger's triggering condition from the action it takes when triggered.  Yes, this is the same instruction as in the DIY Trigger plugin.
 
 SWITCH:
 
