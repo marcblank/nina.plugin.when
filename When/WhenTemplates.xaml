@@ -194,6 +194,8 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel.Resources>
                         <util:BindingProxy x:Key="CameraSettings" Data="{Binding CameraSettings}" />
+                        <local:CameraTemperatureConverter  x:Key="TempConverter"/>
+
                     </StackPanel.Resources>
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
                    
@@ -202,10 +204,10 @@
                         Margin="5,-7,0,0"
                         Expr="{Binding TemperatureExpr, Mode=TwoWay}"
                         Valu="{Binding Temperature, Mode=TwoWay}" 
-                        Default="{Binding Mode=OneWay, Path=Data.Temperature, Source={StaticResource CameraSettings}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                        Default="{Binding Mode=OneWay, Path=Data.Temperature, Source={StaticResource CameraSettings}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TempConverter}}" 
                         Validate="ValidateTemperature"
                         />
- 
+
                     <TextBlock
                         Margin="2.5,0,7.5,2 "
                         HorizontalAlignment="Center"

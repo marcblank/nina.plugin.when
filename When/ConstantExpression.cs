@@ -182,7 +182,14 @@ namespace WhenPlugin.When {
                 GetParsedKeys(b.RightExpression, mergedKeys, k);
             } else if (e is Identifier i) {
                 k.Add(i.Name, mergedKeys.GetValueOrDefault(i.Name));
-            } else if (e is LogicalExpression l) {
+            } else if (e is TernaryExpression t) {
+                Logger.Info("LI");
+            } else if (e is Function f) {
+                if (f.Expressions != null) {
+                    foreach (LogicalExpression ee in  f.Expressions) {
+                        GetParsedKeys(ee, mergedKeys, k);
+                    }
+                }
             }
             return k;
         }
