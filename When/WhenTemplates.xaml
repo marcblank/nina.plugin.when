@@ -192,22 +192,20 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <util:BindingProxy x:Key="CameraSettings" Data="{Binding CameraSettings}" />
+                    </StackPanel.Resources>
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
-                    <local:ConstantControl 
+                   
+                    <local:ConstantHintControl 
                         MinWidth="40"
-                        Margin="5,-4,0,0"
-                        Validate="ValidateTemperature"
+                        Margin="5,-7,0,0"
                         Expr="{Binding TemperatureExpr, Mode=TwoWay}"
                         Valu="{Binding Temperature, Mode=TwoWay}" 
-                        
+                        Default="{Binding Mode=OneWay, Path=Data.Temperature, Source={StaticResource CameraSettings}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                        Validate="ValidateTemperature"
                         />
-                    <!--<ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Temperature}"
-                        TextAlignment="Right"
-                        Unit="°C" />-->
+ 
                     <TextBlock
                         Margin="2.5,0,7.5,2 "
                         HorizontalAlignment="Center"

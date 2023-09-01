@@ -45,6 +45,7 @@ using System.Windows.Media.Converters;
 using Nikon;
 using Castle.Core.Internal;
 using System.Runtime.CompilerServices;
+using NINA.Profile;
 
 namespace WhenPlugin.When {
 
@@ -366,6 +367,8 @@ namespace WhenPlugin.When {
             } else if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
                 i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
             }
+
+            //Logger.Info("** Temp setting: " + profileService.ActiveProfile.CameraSettings.Temperature);
 
             if (iCount == i.Count) {
                 return String.Empty;

@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using NINA.Astrometry;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
 
 namespace WhenPlugin.When {
 
@@ -38,12 +40,16 @@ namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class CoolCamera : SequenceItem, IValidatable {
 
+        IProfileService profileService;
+
         [ImportingConstructor]
-        public CoolCamera(ICameraMediator cameraMediator) {
+        public CoolCamera(IProfileService profileService, ICameraMediator cameraMediator) {
             this.cameraMediator = cameraMediator;
+            this.profileService = profileService;
+            CameraSettings = profileService.ActiveProfile.CameraSettings;
         }
 
-        private CoolCamera(CoolCamera cloneMe) : this(cloneMe.cameraMediator) {
+        private CoolCamera(CoolCamera cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator) {
             CopyMetaData(cloneMe);
         }
 
@@ -57,12 +63,27 @@ namespace WhenPlugin.When {
 
         private ICameraMediator cameraMediator;
 
+        private ICameraSettings cameraSettings;
+
+        public ICameraSettings CameraSettings {
+            get {
+                if (cameraSettings.Temperature == null) {
+                    cameraSettings.Temperature = 0;
+                }
+                return cameraSettings;
+                    }
+            private set {
+                cameraSettings = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private double temperature = 0;
 
         // COMMENTED OUT FOR CONSTANTS SUPPORT
-     //[JsonProperty]
+        //[JsonProperty]
         public double Temperature {
-            get => temperature;
+            get =>  temperature;
             set {
                 temperature = value;
                 RaisePropertyChanged();
@@ -70,14 +91,14 @@ namespace WhenPlugin.When {
         }
 
         // *** ADDED FOR CONSTANTS SUPPORT ***
-        private string temperatureExpr = "0";
+        private string temperatureExpr = "";
         
         [JsonProperty]
         public string TemperatureExpr {
             get => temperatureExpr;
             set {
                 temperatureExpr = value;
-                ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", 7);
+                ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature);
                 RaisePropertyChanged("TemperatureExpr");
             }
         }
@@ -112,12 +133,12 @@ namespace WhenPlugin.When {
             }
 
 
-            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", 0, i);
+            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", -1, i);
 
             if (ValidateTemperature(temperature) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
             }
-            
+
             Issues = i;
             return i.Count == 0;
         }

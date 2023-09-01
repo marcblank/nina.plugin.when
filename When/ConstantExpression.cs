@@ -144,7 +144,7 @@ namespace WhenPlugin.When {
                     return b ? 1 : 0;
                 }
                 try {
-                    return (double)eval;
+                    return Convert.ToDouble(eval);
                 } catch (Exception ex) {
                     return Double.NaN;
                 }
@@ -182,6 +182,7 @@ namespace WhenPlugin.When {
                 GetParsedKeys(b.RightExpression, mergedKeys, k);
             } else if (e is Identifier i) {
                 k.Add(i.Name, mergedKeys.GetValueOrDefault(i.Name));
+            } else if (e is LogicalExpression l) {
             }
             return k;
         }
