@@ -133,7 +133,8 @@ namespace WhenPlugin.When {
             }
 
 
-            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", -1, i);
+            CameraSettings = profileService.ActiveProfile.CameraSettings;
+            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature, i);
 
             if (ValidateTemperature(temperature) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
