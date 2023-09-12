@@ -106,7 +106,7 @@ namespace WhenPlugin.When.Properties {
                 this["Value3"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -118,7 +118,7 @@ namespace WhenPlugin.When.Properties {
                 this["Name4"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -128,6 +128,102 @@ namespace WhenPlugin.When.Properties {
             }
             set {
                 this["Value4"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name5 {
+            get {
+                return ((string)(this["Name5"]));
+            }
+            set {
+                this["Name5"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value5 {
+            get {
+                return ((string)(this["Value5"]));
+            }
+            set {
+                this["Value5"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name6 {
+            get {
+                return ((string)(this["Name6"]));
+            }
+            set {
+                this["Name6"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value6 {
+            get {
+                return ((string)(this["Value6"]));
+            }
+            set {
+                this["Value6"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name7 {
+            get {
+                return ((string)(this["Name7"]));
+            }
+            set {
+                this["Name7"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value7 {
+            get {
+                return ((string)(this["Value7"]));
+            }
+            set {
+                this["Value7"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Name8 {
+            get {
+                return ((string)(this["Name8"]));
+            }
+            set {
+                this["Name8"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Value8 {
+            get {
+                return ((string)(this["Value8"]));
+            }
+            set {
+                this["Value8"] = value;
             }
         }
     }
