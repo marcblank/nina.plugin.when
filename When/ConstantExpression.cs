@@ -1,6 +1,5 @@
 ﻿using Accord;
 using Castle.Core.Internal;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
@@ -19,9 +18,6 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
-using WhenPlugin.When;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {

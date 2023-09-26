@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.8.0.0")]
-[assembly: AssemblyFileVersion("3.8.0.0")]
+[assembly: AssemblyVersion("3.8.1.0")]
+[assembly: AssemblyFileVersion("3.8.1.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -52,9 +52,9 @@ CONSTANTS ENHANCED (new Category):
 
 ** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' and 'Interrupts' plugins.  Instructions from the deprecated plugins will no longer work if you remove that plugin; you will have to replace them with instructions from here! **
 
-Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to four 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
+Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to eight 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
 
-If Constant - Executes the specified instructions if the provided Constant is 'true'
+If Constant - Executes the specified instructions if the provided Constant (or expression) is 'true'
 
 Cool Camera - Same as built-in instruction, with the ability to use a constant for temperature
 
@@ -69,6 +69,8 @@ Move Focuser Relative + has the same functionality as NINA's Move Focuser Relati
 SAFETY MONITOR:
 
 When Becomes Unsafe - This trigger is activated within SECONDS of your Safety Monitor registering an 'Unsafe' condition.  You specify the actions (instructions) to be taken in that circumstance - for example, you might want to ""Close Dome Shutter"", send yourself a message using the Ground Station plugin, and then ""Wait for Safe"".  After that, you might ""Open Dome Shutter"", send yourself another message, ""Run Autofocus"", and ""Slew and Center"".  When your instructions have finished executing, NINA will continue from where it left off!  And this instruction can be used repeatedly (the rain might start and stop and then start again...)  This instruction is likely to be much simpler to understand than multiple loops based on the 'safe' status of your gear.
+
+Once Safe - Intended for use within a 'When Becomes Unsafe' instruction, this instruction will run the included instructions once conditions become safe again. If an 'Unsafe' condition occurs while running those instructions, they will terminate immediately and the 'When Becomes Unsafe' instructions will run again.
 
 If Safe - Specify instructions to execute if your Safety Monitor is currently reporting 'Safe'
 
