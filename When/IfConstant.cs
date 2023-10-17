@@ -30,8 +30,8 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "If Constant")]
-    [ExportMetadata("Description", "Executes an instruction set if the constant is True (or 1)")]
+    [ExportMetadata("Name", "If")]
+    [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("IfConstant: Execute, Predicate = " + Predicate);
+            Logger.Info("If: Execute, Predicate = " + Predicate);
             if (Predicate.IsNullOrEmpty()) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
@@ -88,20 +88,20 @@ namespace WhenPlugin.When {
                 Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
                 if (result == null) {
                     // Syntax error...
-                    Logger.Info("IfConstant: There is a syntax error in your predicate expression.");
+                    Logger.Info("If: There is a syntax error in your predicate expression.");
                     Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                     return;
                 }
 
                 if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                    Logger.Info("IfConstant: If Predicate is true!");
+                    Logger.Info("If: If Predicate is true!");
                     Runner runner = new Runner(Instructions, null, progress, token);
                     await runner.RunConditional();
                 } else {
                     return;
                 }
             } catch (ArgumentException ex) {
-                Logger.Info("IfConstant error: " + ex.Message);
+                Logger.Info("If error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
             }
         }

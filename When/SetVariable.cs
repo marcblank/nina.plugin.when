@@ -20,22 +20,22 @@ using System.Linq;
 using NINA.Sequencer.Container;
 using System.Diagnostics;
 using Castle.Core.Internal;
-using Accord.Collections;
+using NINA.Core.Enum;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Define Constant")]
-    [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
+    [ExportMetadata("Name", "Define Variable")]
+    [ExportMetadata("Description", "Sets a variable whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetConstant : SequenceItem, IValidatable, ISettable {
+    public class SetVariable : SequenceItem, IValidatable, ISettable {
         [ImportingConstructor]
-        public SetConstant() {
-          Constant = "";
+        public SetVariable() {
+            Variable = "";
             Icon = Icon;
         }
-        public SetConstant(SetConstant copyMe) : this() {
+        public SetVariable(SetVariable copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
@@ -43,46 +43,23 @@ namespace WhenPlugin.When {
             }
         }
 
-        public string GlobalName { get; set; }
-        public string GlobalValue { get; set; }
-
         public string Dummy;
 
         public static WhenPlugin WhenPluginObject { get; set; }
 
-        private string constant;
+        private string variable;
 
-        public bool IsSetConstant { get; set; } = false;
+        public bool IsSetvariable { get; set; } = false;
 
         [JsonProperty]
-        public string Constant {
-            get => constant;
+        public string Variable {
+            get => variable;
             set {
-                if (value == constant) {
+                if (value == variable) {
                     return;
                 }
-                // ** Fix when Constant can be an expression
-                if (constant != value || Parent == null) {
-                    if (ConstantExpression.IsValid(this, Dummy, value, out double val, null)) {
-                    }
-                    constant = value;
-                    ConstantExpression.FlushKeys();
-                    ConstantExpression.UpdateConstants(this);
-                }
+                variable = value;
                 RaisePropertyChanged();
-                if (Parent != null) {
-                    foreach (var val in Parent.Items) {
-                        if (val is SetConstant) {
-                            ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
-                        }
-                    }
-                }
-                if (GlobalName!= null) {
-                    PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalName);
-                    pi?.SetValue(WhenPluginObject, value, null);
-                }
-                // Force every expression to re-evaluate
-                ConstantExpression.GlobalContainer.Validate();
             }
         }
 
@@ -97,27 +74,18 @@ namespace WhenPlugin.When {
                     return;
                 }
                 cValueExpr = value;
-                ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
-                ConstantExpression.FlushKeys();
-                ConstantExpression.UpdateConstants(this);
-                RaisePropertyChanged("CValueExpr");
-                if (Parent == ConstantExpression.GlobalContainer) {
-                    //WhenPlugin.UpdateGlobalConstants();
-                    foreach (var val in Parent.Items) {
-                        if (val is SetConstant) {
-                            ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
-                        }
-                    }
-                    if (GlobalName != null) {
-                        PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalValue);
-                        pi?.SetValue(WhenPluginObject, value, null);
-                    }
-                }
-                ConstantExpression.GlobalContainer.Validate();
+                RaisePropertyChanged("CValueExpr");                ConstantExpression.GlobalContainer.Validate();
             }
         }
 
-        private string cValue = "";
+        private string cValue = "Undefined";
+
+        public string ValidateVariable(double var) {
+            if (Status != SequenceEntityStatus.FINISHED) {
+                return "Not Yet Defined";
+            }
+            return String.Empty;
+        }
 
         [JsonProperty]
         public string CValue {
@@ -139,13 +107,19 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Nothing to do here
+            // Signal that the variable is valid
+            Status = SequenceEntityStatus.FINISHED;
+            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+            ConstantExpression.FlushKeys();
+            ConstantExpression.UpdateConstants(this);
+            RaisePropertyChanged("CValueExpr");
+            ConstantExpression.GlobalContainer.Validate();
             return Task.CompletedTask;
         }
 
         public override object Clone() {
-            return new SetConstant(this) {
-                Constant = Constant,
+            return new SetVariable(this) {
+                Variable = variable,
                 CValueExpr = CValueExpr
             };
         }
@@ -165,28 +139,17 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            
-            if (IsAttachedToRoot()) {
-                ConstantExpression.FlushKeys();
-            } else if (LastParent != null) {
-                ConstantExpression.FlushContainerKeys(LastParent);
-                return;
-            }
-            
-            ConstantExpression.UpdateConstants(this);
-            ConstantExpression.GlobalContainer.Validate();
             LastParent = Parent;
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetConstant)}, Constant: {Constant}, Value: {CValueExpr}";
+            return $"Category: {Category}, Item: {nameof(SetVariable)}, Variable: {variable}, ValueExpr: {CValueExpr}, Value: {CValue}";
         }
 
         public bool Validate() {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
-            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
 
             if (DuplicateName) {
                 i.Add("Duplicate name in the same instruction set!");
@@ -196,13 +159,11 @@ namespace WhenPlugin.When {
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();
             }
-            RaisePropertyChanged("CValueExpr");
-            RaisePropertyChanged("CValue");
             return Issues.Count == 0;
         }
 
         public string GetSettable() {
-            return Constant;
+            return (Status == SequenceEntityStatus.FINISHED) ? Variable : "";
         }
 
         public string GetValueExpression() {
@@ -214,7 +175,7 @@ namespace WhenPlugin.When {
         }
 
         string ISettable.GetType() {
-            return "Constant";
+            return "Variable";
         }
     }
 }

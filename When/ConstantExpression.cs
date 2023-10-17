@@ -35,7 +35,7 @@ namespace WhenPlugin.When {
 
         static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
 
-        static private bool Debugging = false;
+        static private bool Debugging = true;
 
         public class Keys : Dictionary<string, object> {
 
@@ -315,24 +315,25 @@ namespace WhenPlugin.When {
             KeysStack.Push(keys);
 
             foreach (ISequenceItem item in container.Items) {
-                if (item is SetConstant sc && cachedKeys == null) {
-                    string name = sc.Constant;
-                    string val = sc.CValueExpr;
+                if (item is ISettable sc && cachedKeys == null) {
+                    string name = sc.GetSettable();
+                    string val = sc.GetValueExpression();
+                    string typ = sc.GetType();
                     double value;
-                    sc.DuplicateName = false;
+                    sc.IsDuplicate(false);
                     if (item.Parent != container) {
                         // In this case item has been deleted from parent (but it's still in Parent's Items)
                     } else if (name.IsNullOrEmpty()) {
-                        DebugInfo("Empty name in SetConstant; ignore");
+                        DebugInfo("Empty name in ", typ, "; ignore");
                     } else if (Double.TryParse(val, out value)) {
                         // The value is a number, so we're good
                         try {
                             keys.Add(name, value);
                         } catch (Exception) {
                             // Multiply defined...
-                            sc.DuplicateName = true;
+                            sc.IsDuplicate(true);
                         }
-                        DebugInfo("Constant '", name, "' defined as ", value.ToString());
+                        DebugInfo(typ, "'", name, "' defined as ", value.ToString());
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (!double.IsNaN(result)) {
@@ -340,11 +341,11 @@ namespace WhenPlugin.When {
                                 keys.Add(name, result);
                             } catch (Exception) {
                                 // Multiply defined...
-                                sc.DuplicateName = true;
+                                sc.IsDuplicate(true);
                             }
-                            DebugInfo("Constant '", name, "': ", val, " evaluated to ", result.ToString());
+                            DebugInfo(typ, "'", name, "': ", val, " evaluated to ", result.ToString());
                         } else {
-                            DebugInfo("Constant '", name, "' evaluated as NaN");
+                            DebugInfo(typ, "'", name, "' evaluated as NaN");
                         }
                     }
                 } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {

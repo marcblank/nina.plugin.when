@@ -74,7 +74,7 @@ namespace WhenPlugin.When {
             this.profileService = profileService;
             CameraInfo = this.cameraMediator.GetInfo();
             Results = new InstructionResult();
-         }
+        }
 
         private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
             CopyMetaData(cloneMe);
@@ -120,8 +120,8 @@ namespace WhenPlugin.When {
                 ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0);
                 RaisePropertyChanged("ExposureTimeExpr");
             }
-        } 
-        
+        }
+
         private double exposureTime;
 
         [JsonProperty]
@@ -142,11 +142,11 @@ namespace WhenPlugin.When {
         private int gain = -1;
 
         [JsonProperty]
-        public int Gain { get => gain; 
+        public int Gain { get => gain;
             set {
-                gain = value; 
+                gain = value;
                 RaisePropertyChanged();
-            } 
+            }
         }
 
         private int offset;
@@ -163,10 +163,10 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public string ImageType { get => imageType; set { imageType = value; RaisePropertyChanged(); } }
-        
+
         private int exposureCount;
 
-         [JsonProperty]
+        [JsonProperty]
         public int ExposureCount { get => exposureCount; set { exposureCount = value; RaisePropertyChanged(); } }
 
         private CameraInfo cameraInfo;
@@ -202,7 +202,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        public InstructionResult GetResults () {
+        public InstructionResult GetResults() {
             Object value;
             while (!Results.TryGetValue("_READY_", out value)) {
                 Thread.Sleep(100);
@@ -231,7 +231,7 @@ namespace WhenPlugin.When {
                 //imageSaveMediator.ImageSaved += ImageSaved;
                 handlerInit = true;
             }
- 
+
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
                 imageParams = new PrepareImageParameters(true, true);
@@ -277,7 +277,7 @@ namespace WhenPlugin.When {
 
         private void ImageSaved(object sender, ImageSavedEventArgs e) {
             Uri fileName = e.PathToImage;
-            try { 
+            try {
                 Results.Add("_ImageUri_", fileName);
             } catch (Exception ex) {
                 return;
@@ -290,7 +290,23 @@ namespace WhenPlugin.When {
                 Results.Add(propName, src.GetType().GetProperty(propName).GetValue(src, null));
             }
         }
-        
+
+
+        private Double GetSDAValue(StarDetectionAnalysis sda, string propName) {
+            if (sda.HasProperty(propName)) {
+                return (Double)sda.GetType().GetProperty(propName).GetValue(sda);
+            }
+            return Double.NaN;
+        }
+
+        private void GetImageValues(object sender, ImagePreparedEventArgs e) {
+            StarDetectionAnalysis sda = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
+            Double fwhm = GetSDAValue(sda, "FWHM");
+            Double ecc = GetSDAValue(sda, "Eccentricity");
+            // etc...
+        }
+
+
         private void ProcessResults(object sender, ImagePreparedEventArgs e) {
             StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
