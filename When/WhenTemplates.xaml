@@ -267,6 +267,27 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:ResetVariable}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,0,10,-2"
+                       Text="{Binding Variable, ValidatesOnExceptions=True}"
+                       TextAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" Text="Value:" />
+                    <local:ConstantControl
+                       Margin="5,0,5,3"
+                       Expr="{Binding CValueExpr, Mode=TwoWay}" 
+                       Validate="ValidateVariable"
+                       Valu="{Binding CValue, Mode=TwoWay}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:Retry}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -907,6 +928,38 @@
                         <TextBlock
                             Foreground="{StaticResource ButtonForegroundBrush}"
                             Text="Stop"
+                            TextWrapping="Wrap" />
+                    </Button>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:Break}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        MinHeight="20"
+                        HorizontalAlignment="Left"
+                        Margin="0,0,0,-20"
+                        Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                        VerticalAlignment="Top"
+                        Opacity="0.9"
+                        MinWidth="250"
+                        Text="Click this button to continue the sequence:" />
+                    <Button
+                        MinHeight="20"
+                        Margin="5,-2,0,0"
+                        Width="150"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                        Command="{Binding StopInstructions}">
+                        <TextBlock
+                            Foreground="{StaticResource ButtonForegroundBrush}"
+                            Margin="0,-2,0,0"
+                            Text="Continue"
                             TextWrapping="Wrap" />
                     </Button>
                 </StackPanel>

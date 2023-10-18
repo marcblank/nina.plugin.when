@@ -33,7 +33,7 @@ namespace WhenPlugin.When {
             return null;
         }
 
-        static private ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
+        static public ConcurrentDictionary<ISequenceEntity, Keys> KeyCache = new ConcurrentDictionary<ISequenceEntity, Keys>();
 
         static private bool Debugging = true;
 
@@ -190,14 +190,21 @@ namespace WhenPlugin.When {
             return k;
         }
 
-       static string FindKey(ISequenceEntity item, string key) {
+        static public string FindKey(ISequenceEntity item, string key) {
+            ISequenceEntity p = FindKeyContainer(item, key);
+            if (p == null) return "??";
+            return (p == item.Parent ? "Here" : p == GlobalContainer ? "Global" : p.Name);
+
+        }
+
+        static public ISequenceEntity FindKeyContainer(ISequenceEntity item, string key) {
             ISequenceContainer root = FindRoot(item.Parent);
             ISequenceEntity p = item.Parent;
             while (p != null) {
                 Keys k = KeyCache.GetValueOrDefault(p, null);
                 if (k != null) {
                     if (k.ContainsKey(key)) {
-                        return (p == item.Parent ? "Here" : p == GlobalContainer ? "Global" : p.Name);
+                        return p;
                     }
                 }
                 if (p == root) {
@@ -208,7 +215,7 @@ namespace WhenPlugin.When {
                     p = p.Parent;
                 }
             }
-            return "??";
+            return null;
         }
 
         static public string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {

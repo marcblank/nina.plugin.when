@@ -21,21 +21,23 @@ using NINA.Sequencer.Container;
 using System.Diagnostics;
 using Castle.Core.Internal;
 using NINA.Core.Enum;
+using NINA.Sequencer;
+using NINA.Core.Utility.Notification;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Define Variable")]
-    [ExportMetadata("Description", "Defines a variable whose numeric value can be used in various instructions")]
+    [ExportMetadata("Name", "Set Variable")]
+    [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetVariable : SequenceItem, IValidatable, ISettable {
+    public class ResetVariable : SequenceItem, IValidatable {
         [ImportingConstructor]
-        public SetVariable() {
+        public ResetVariable() {
             Variable = "";
             Icon = Icon;
         }
-        public SetVariable(SetVariable copyMe) : this() {
+        public ResetVariable(ResetVariable copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
@@ -107,18 +109,34 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Signal that the variable is valid
-            Status = SequenceEntityStatus.FINISHED;
-            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
-            ConstantExpression.FlushKeys();
-            ConstantExpression.UpdateConstants(this);
-            RaisePropertyChanged("CValueExpr");
-            ConstantExpression.GlobalContainer.Validate();
+            // Find the SetVariable for this variable
+            ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
+            if (p == null) {
+                Status = SequenceEntityStatus.FAILED;
+                return Task.CompletedTask;
+            }
+            if (p is ISequenceContainer sc) {
+                foreach (ISequenceEntity item in sc.Items) {
+                    if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
+                        // Found it!
+                        ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+                        sv.CValue = cValue;
+                        sv.CValueExpr = cValue;
+                        Notification.ShowSuccess("Variable " + Variable + " is set to " + cValue);
+                        RaisePropertyChanged("CValueExpr");
+                        RaisePropertyChanged("CValue");
+                        ConstantExpression.UpdateConstants(this);
+                        return Task.CompletedTask;
+                    }
+                }
+            }
+            // Change its CValueExpr or CValue?
+            Status = SequenceEntityStatus.FAILED;
             return Task.CompletedTask;
         }
 
         public override object Clone() {
-            return new SetVariable(this) {
+            return new ResetVariable(this) {
                 Variable = variable,
                 CValueExpr = CValueExpr
             };
@@ -143,7 +161,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetVariable)}, Variable: {variable}, ValueExpr: {CValueExpr}, Value: {CValue}";
+            return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, ValueExpr: {CValueExpr}, Value: {CValue}";
         }
 
         public bool Validate() {
@@ -160,22 +178,6 @@ namespace WhenPlugin.When {
                 cValue = Double.NaN.ToString();
             }
             return Issues.Count == 0;
-        }
-
-        public string GetSettable() {
-            return (Status == SequenceEntityStatus.FINISHED) ? Variable : "";
-        }
-
-        public string GetValueExpression() {
-            return CValueExpr;
-        }
-
-        public void IsDuplicate(bool val) {
-            DuplicateName = val;
-        }
-
-        string ISettable.GetType() {
-            return "Variable";
         }
     }
 }
