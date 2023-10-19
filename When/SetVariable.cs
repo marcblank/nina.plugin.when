@@ -39,6 +39,7 @@ namespace WhenPlugin.When {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
+                OValueExpr = copyMe.OValueExpr;
                 Icon = copyMe.Icon;
             }
         }
@@ -64,7 +65,7 @@ namespace WhenPlugin.When {
         }
 
         public bool DuplicateName { get; set; } = false;
-        
+
         private string cValueExpr = "0";
         [JsonProperty]
         public string CValueExpr {
@@ -74,11 +75,28 @@ namespace WhenPlugin.When {
                     return;
                 }
                 cValueExpr = value;
-                RaisePropertyChanged("CValueExpr");                ConstantExpression.GlobalContainer.Validate();
+                RaisePropertyChanged("OValueExpr");
+                RaisePropertyChanged("CValueExpr");
+                ConstantExpression.GlobalContainer.Validate();
+            }
+        }
+ 
+        private string oValueExpr = "0";
+        [JsonProperty]
+        public string OValueExpr {
+            get => oValueExpr;
+            set {
+                if (oValueExpr == value) {
+                    return;
+                }
+                oValueExpr = value;
+                CValueExpr = value;
+                RaisePropertyChanged("OValueExpr");
+                RaisePropertyChanged("CValueExpr");
+                ConstantExpression.GlobalContainer.Validate();
             }
         }
 
-        private string cValue = "Undefined";
 
         public string ValidateVariable(double var) {
             if (Status != SequenceEntityStatus.FINISHED) {
@@ -87,11 +105,23 @@ namespace WhenPlugin.When {
             return String.Empty;
         }
 
+        private string cValue = "Undefined";
         [JsonProperty]
         public string CValue {
             get => cValue;
             set {
                 cValue = value;
+                RaisePropertyChanged();
+            }
+        }
+
+          
+        private string oValue = "Undefined";
+        [JsonProperty]
+        public string OValue {
+            get => oValue;
+            set {
+                oValue = value;
                 RaisePropertyChanged();
             }
         }

@@ -23,6 +23,7 @@ using Castle.Core.Internal;
 using NINA.Core.Enum;
 using NINA.Sequencer;
 using NINA.Core.Utility.Notification;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -76,17 +77,31 @@ namespace WhenPlugin.When {
                     return;
                 }
                 cValueExpr = value;
-                RaisePropertyChanged("CValueExpr");                ConstantExpression.GlobalContainer.Validate();
+                RaisePropertyChanged("CValueExpr");
+                RaisePropertyChanged("CValue");
+                ConstantExpression.GlobalContainer.Validate();
             }
         }
 
         private string cValue = "Undefined";
 
         public string ValidateVariable(double var) {
-            if (Status != SequenceEntityStatus.FINISHED) {
+            ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
+            if (p == null) {
                 return "Not Yet Defined";
             }
-            return String.Empty;
+            if (p is ISequenceContainer sc) {
+                foreach (ISequenceEntity item in sc.Items) {
+                    if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
+                        if (item.Status == SequenceEntityStatus.FINISHED) {
+                            return String.Empty;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            return "Not Yet Defined";
         }
 
         [JsonProperty]
@@ -112,8 +127,7 @@ namespace WhenPlugin.When {
             // Find the SetVariable for this variable
             ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
             if (p == null) {
-                Status = SequenceEntityStatus.FAILED;
-                return Task.CompletedTask;
+                throw new SequenceEntityFailedException("Variable is undefined.");
             }
             if (p is ISequenceContainer sc) {
                 foreach (ISequenceEntity item in sc.Items) {
@@ -122,7 +136,6 @@ namespace WhenPlugin.When {
                         ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                         sv.CValue = cValue;
                         sv.CValueExpr = cValue;
-                        Notification.ShowSuccess("Variable " + Variable + " is set to " + cValue);
                         RaisePropertyChanged("CValueExpr");
                         RaisePropertyChanged("CValue");
                         ConstantExpression.UpdateConstants(this);
@@ -168,11 +181,15 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
+            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
 
             if (DuplicateName) {
                 i.Add("Duplicate name in the same instruction set!");
             }
 
+            RaisePropertyChanged("CValue");
+            RaisePropertyChanged("CValueExpr");
+            
             Issues = i;
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();
