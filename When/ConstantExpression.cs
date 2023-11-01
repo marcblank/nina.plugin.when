@@ -38,7 +38,6 @@ namespace WhenPlugin.When {
         static private bool Debugging = true;
 
         public class Keys : Dictionary<string, object> {
-
             public override string ToString() {
                 StringBuilder sb = new StringBuilder();
                 foreach (KeyValuePair<string, object> kvp in this) {
@@ -47,6 +46,15 @@ namespace WhenPlugin.When {
                 }
                 return sb.ToString();
             }
+        }
+
+        public class Var {
+            SetVariable svInstruction;
+            public Var (SetVariable item) {
+                svInstruction = item;
+            }
+
+            public SetVariable GetSetVariableInstruction() { return svInstruction; }
         }
 
         private static Stack<Keys> KeysStack = new Stack<Keys>();
@@ -121,17 +129,21 @@ namespace WhenPlugin.When {
 
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
+                    object kvpValue = kvp.Value;
                     if (!mergedKeys.ContainsKey(kvp.Key)) {
-                        if (!Double.IsNaN((double)kvp.Value)) {
-                            mergedKeys.Add(kvp.Key, kvp.Value);
+                        double kvpDouble = (kvpValue is Double d ? d : Double.NaN);
+                        if (!Double.IsNaN(kvpDouble)) {
+                            mergedKeys.Add(kvp.Key, kvpDouble);
                         }
                     }
                 }
             }
+
             if (mergedKeys.Count == 0) {
                 DebugInfo("Expression '", expr, "' not evaluated; no keys");
                 return Double.NaN;
             }
+
             e.Parameters = mergedKeys;
             try {
                 var eval = e.Evaluate();
@@ -343,9 +355,9 @@ namespace WhenPlugin.When {
                         DebugInfo(typ, "'", name, "' defined as ", value.ToString());
                     } else {
                         double result = EvaluateExpression(item, val, KeysStack, null);
-                        if (!double.IsNaN(result)) {
+                        if (!double.IsNaN(result) || item is SetVariable) {
                             try {
-                                keys.Add(name, result);
+                                keys.Add(name, (item is SetVariable) ? item : result);
                             } catch (Exception) {
                                 // Multiply defined...
                                 sc.IsDuplicate(true);
