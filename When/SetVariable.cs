@@ -193,7 +193,7 @@ namespace WhenPlugin.When {
         }
 
         public string GetSettable() {
-            return (Status == SequenceEntityStatus.FINISHED) ? Variable : "";
+            return Variable;
         }
 
         public string GetValueExpression() {
