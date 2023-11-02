@@ -262,8 +262,8 @@
                       Expr="{Binding OValueExpr, Mode=TwoWay}" 
                       Valu="{Binding OValue, Mode=TwoWay}"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="Currently:" />
-                    <local:ConstantControl
-                      Margin="12,0,5,3"
+                    <local:ConstantControlVariable
+                      Margin="5,0,5,3"
                       Expr="{Binding CValueExpr, Mode=TwoWay}" 
                       Validate="ValidateVariable"
                       Valu="{Binding CValue, Mode=TwoWay}"/>

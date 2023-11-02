@@ -215,6 +215,10 @@ namespace WhenPlugin.When {
             RaisePropertyChanged("CValue");
             RaisePropertyChanged("OValueExpr");
             RaisePropertyChanged("OValue");
+
+            if (Issues.Count > 0) {
+                var x = 0; ;
+            }
             
             return Issues.Count == 0;
         }
