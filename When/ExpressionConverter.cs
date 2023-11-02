@@ -32,7 +32,7 @@ namespace WhenPlugin.When {
 
         public static Dictionary<ISequenceItem, bool> ValidityCache = new Dictionary<ISequenceItem, bool>();
 
-        public static string NOT_DEFINED = "Parameter was not defined (";
+        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         private const int VALUE_EXPR = 0;              // The expression to be evaluated
         private const int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
@@ -104,7 +104,7 @@ namespace WhenPlugin.When {
                         // Shorten this common error from NCalc
                         int pos = errorString.IndexOf(NOT_DEFINED);
                         if (pos == 0) {
-                            errorString = "Undefined (" + errorString.Substring(NOT_DEFINED.Length);
+                            errorString = "Undefined: " + errorString.Substring(NOT_DEFINED.Length).TrimEnd(')');
                         }
                         return " {" + errorString + "} ";
                     } else {

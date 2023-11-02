@@ -131,7 +131,18 @@ namespace WhenPlugin.When {
                 foreach (KeyValuePair<string, object> kvp in k) {
                     object kvpValue = kvp.Value;
                     if (!mergedKeys.ContainsKey(kvp.Key)) {
-                        double kvpDouble = (kvpValue is Double d ? d : Double.NaN);
+                        Double kvpDouble;
+                        if (kvpValue is Double d) {
+                            kvpDouble = d;
+                        } else {
+                            // Value is a SetVariable instruction
+                            SetVariable sv = kvpValue as SetVariable;
+                            if (sv.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
+                                IsValid(sv, sv.CValueExpr, sv.CValue, out kvpDouble, null);
+                            } else {
+                                kvpDouble = Double.NaN;
+                            }
+                        }
                         if (!Double.IsNaN(kvpDouble)) {
                             mergedKeys.Add(kvp.Key, kvpDouble);
                         }
@@ -357,7 +368,20 @@ namespace WhenPlugin.When {
                         double result = EvaluateExpression(item, val, KeysStack, null);
                         if (!double.IsNaN(result) || item is SetVariable) {
                             try {
-                                keys.Add(name, (item is SetVariable) ? item : result);
+                                if (item is SetVariable sv) {
+                                    if (item.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
+                                        // If the SetVariable has been executed, use it's actual value
+                                        DebugInfo("SetVariable '" + name + "' set to " + sv.CValue);
+                                        Double d = Double.NaN;
+                                        Double.TryParse(sv.CValue, out d);
+                                        keys.Add(name, d);
+                                    } else {
+                                        // Otherwise, use the SetVariable itself
+                                        keys.Add(name, sv);
+                                    }
+                                } else {
+                                    keys.Add(name, result);
+                                }
                             } catch (Exception) {
                                 // Multiply defined...
                                 sc.IsDuplicate(true);

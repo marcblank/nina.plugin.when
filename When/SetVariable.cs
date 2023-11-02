@@ -138,8 +138,8 @@ namespace WhenPlugin.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Signal that the variable is valid
-            Status = SequenceEntityStatus.FINISHED;
             ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+            Status = SequenceEntityStatus.FINISHED;
             ConstantExpression.FlushKeys();
             ConstantExpression.UpdateConstants(this);
             RaisePropertyChanged("CValueExpr");
