@@ -72,6 +72,8 @@ namespace WhenPlugin.When {
             get => cValueExpr;
             set {
                 if (cValueExpr == value) {
+                    RaisePropertyChanged("CValue");
+                    RaisePropertyChanged("CValueExpr");
                     return;
                 }
                 cValueExpr = value;
@@ -139,19 +141,33 @@ namespace WhenPlugin.When {
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Signal that the variable is valid
             ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+            ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
             Status = SequenceEntityStatus.FINISHED;
             ConstantExpression.FlushKeys();
             ConstantExpression.UpdateConstants(this);
-            RaisePropertyChanged("CValueExpr");
             ConstantExpression.GlobalContainer.Validate();
+            RaisePropertyChanged("CValueExpr");
+            RaisePropertyChanged("CValue");
             return Task.CompletedTask;
         }
 
         public override object Clone() {
             return new SetVariable(this) {
                 Variable = variable,
-                CValueExpr = CValueExpr
+                CValueExpr = CValueExpr,
+                OValueExpr = OValueExpr
             };
+        }
+
+        public override void ResetProgress() {
+            base.ResetProgress();
+            CValueExpr = OValueExpr;
+            CValue = OValue;
+            RaisePropertyChanged("CValueExpr");
+            RaisePropertyChanged("CValue");
+            ConstantExpression.FlushKeys();
+            ConstantExpression.UpdateConstants(this);
+            ConstantExpression.GlobalContainer.Validate();
         }
 
         private bool IsAttachedToRoot() {
@@ -189,6 +205,17 @@ namespace WhenPlugin.When {
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();
             }
+
+            double val;
+            ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
+            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+
+
+            RaisePropertyChanged("CValueExpr");
+            RaisePropertyChanged("CValue");
+            RaisePropertyChanged("OValueExpr");
+            RaisePropertyChanged("OValue");
+            
             return Issues.Count == 0;
         }
 

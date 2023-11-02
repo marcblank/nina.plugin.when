@@ -93,9 +93,9 @@ namespace WhenPlugin.When {
                         DebugInfo("**KeyCache: ", KeyCache.Count.ToString(), " **");
                         foreach (var kvp in KeyCache) {
                             DebugInfo(kvp.Key.Name, ": ", kvp.Value.ToString());
-                            //foreach (var c in kvp.Value) {
-                            //    DebugInfo(c.ToString());
-                            //}
+                            foreach (var c in kvp.Value) {
+                                DebugInfo(c.ToString());
+                            }
                         }
                     }
                 } else if (item.Parent != null) {
@@ -186,6 +186,9 @@ namespace WhenPlugin.When {
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
                     if (!mergedKeys.ContainsKey(kvp.Key)) {
+                        if (kvp.Value is SetVariable) {
+                            continue;
+                        }
                         if (!Double.IsNaN((double)kvp.Value)) {
                             mergedKeys.Add(kvp.Key, kvp.Value);
                         }

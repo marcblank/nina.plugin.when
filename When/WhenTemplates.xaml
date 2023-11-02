@@ -256,7 +256,7 @@
                        Margin="5,0,10,-2"
                        Text="{Binding Variable, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" Text="Value:" />
+                    <TextBlock VerticalAlignment="Center" Text="Initially:" />
                     <local:ConstantControl
                       Margin="5,0,5,3"
                       Expr="{Binding OValueExpr, Mode=TwoWay}" 

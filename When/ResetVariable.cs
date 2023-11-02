@@ -181,7 +181,6 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
-            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "", i);
 
             if (DuplicateName) {
                 i.Add("Duplicate name in the same instruction set!");
