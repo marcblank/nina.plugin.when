@@ -88,7 +88,7 @@ namespace WhenPlugin.When {
         public string ValidateVariable(double var) {
             ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
             if (p == null) {
-                return "Not Yet Defined";
+                return "Undefined: '" + Variable + "'";
             }
             if (p is ISequenceContainer sc) {
                 foreach (ISequenceEntity item in sc.Items) {

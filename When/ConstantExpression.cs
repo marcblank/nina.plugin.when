@@ -109,12 +109,14 @@ namespace WhenPlugin.When {
         static private bool InFlight { get; set; } = false;
 
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
-            // We start from root, but we'll add global constants
-            DebugInfo("Root: #", (++FC).ToString());
-            if (!GlobalContainer.Items.Contains(container)) {
-                GlobalContainer.Items.Add(container);
+            lock (ConstantsLock) {
+                // We start from root, but we'll add global constants
+                DebugInfo("Root: #", (++FC).ToString());
+                if (!GlobalContainer.Items.Contains(container)) {
+                    GlobalContainer.Items.Add(container);
+                }
+                FindConstants(GlobalContainer, keys);
             }
-            FindConstants(GlobalContainer, keys);
         }
 
         static private Double EvaluateExpression(ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
@@ -259,10 +261,10 @@ namespace WhenPlugin.When {
                 var eval = e.Evaluate();
                 // Find the keys used in the expression
                 Keys parsedKeys = GetParsedKeys(e.ParsedExpression, mergedKeys, new Keys());
-                StringBuilder stringBuilder = new StringBuilder("Constants used: ");
+                StringBuilder stringBuilder = new StringBuilder("");
                 int cnt = parsedKeys.Count;
                 if (cnt == 0) {
-                    stringBuilder.Append("None");
+                    stringBuilder.Append("No constants of variables used");
                 } else {
                     foreach (var key in parsedKeys) {
                         string whereDefined = FindKey(item, key.Key);

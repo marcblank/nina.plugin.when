@@ -6,20 +6,9 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Settings = WhenPlugin.When.Properties.Settings;
-using System.Windows.Media;
-using NJsonSchema.Validation.FormatValidators;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using System.Reflection;
-using NINA.Profile;
-using System.Configuration;
-using System.Linq;
 using NINA.Sequencer.Container;
-using System.Diagnostics;
-using Castle.Core.Internal;
 using NINA.Core.Enum;
 
 namespace WhenPlugin.When {
@@ -92,9 +81,9 @@ namespace WhenPlugin.When {
                     return;
                 }
                 oValueExpr = value;
-                CValueExpr = value;
+                //CValueExpr = value;
                 RaisePropertyChanged("OValueExpr");
-                RaisePropertyChanged("CValueExpr");
+                //RaisePropertyChanged("CValueExpr");
                 ConstantExpression.GlobalContainer.Validate();
             }
         }
@@ -140,6 +129,7 @@ namespace WhenPlugin.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Signal that the variable is valid
+            CValueExpr = OValueExpr;
             ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
             ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
             Status = SequenceEntityStatus.FINISHED;
@@ -161,8 +151,8 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            CValueExpr = OValueExpr;
-            CValue = OValue;
+            CValueExpr = "";
+            CValue = "";
             RaisePropertyChanged("CValueExpr");
             RaisePropertyChanged("CValue");
             ConstantExpression.FlushKeys();
@@ -217,7 +207,7 @@ namespace WhenPlugin.When {
             RaisePropertyChanged("OValue");
 
             if (Issues.Count > 0) {
-                var x = 0; ;
+               var x = 0; ;
             }
             
             return Issues.Count == 0;
