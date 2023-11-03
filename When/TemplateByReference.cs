@@ -218,7 +218,7 @@ namespace WhenPlugin.When {
                     try {
                         foreach (var tmp in templateController.Templates) {
                             if (tmp.Container.Name.Equals(name)) {
-                                Logger.Info("TemplateByReference; found template: " + TemplateName);
+                                //Logger.Info("TemplateByReference; found template: " + TemplateName);
                                 return tmp;
                             }
                         }

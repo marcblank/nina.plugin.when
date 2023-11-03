@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.Pkcs;
 using System.Text;
 
 namespace WhenPlugin.When {
@@ -62,14 +63,14 @@ namespace WhenPlugin.When {
         private static int FC = 0;
 
         static public void FlushKeys() {
-            KeyCache.Clear();
+            //KeyCache.Clear();
         }
 
         static public void FlushContainerKeys(ISequenceContainer container) {
             KeyCache.TryRemove(container, out _);
         }
 
-        static public ISequenceContainer GetRoot(ISequenceItem item) {
+        static public ISequenceContainer GetRoot(ISequenceEntity item) {
             if (item == null) return null;
             ISequenceContainer p = item.Parent;
             while (p != null) {
@@ -83,7 +84,7 @@ namespace WhenPlugin.When {
 
         private static readonly object ConstantsLock = new object();
 
-        static public void UpdateConstants(ISequenceItem item) {
+        static public void UpdateConstants(ISequenceEntity item) {
             lock (ConstantsLock) {
                 ISequenceContainer root = GetRoot(item);
                 if (root != null) {
@@ -111,73 +112,76 @@ namespace WhenPlugin.When {
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             lock (ConstantsLock) {
                 // We start from root, but we'll add global constants
-                DebugInfo("Root: #", (++FC).ToString());
+                DebugInfo("\r\nFindConstantsRoot: #", (++FC).ToString());
                 if (!GlobalContainer.Items.Contains(container)) {
+                    DebugInfo("Adding GlobalContainer...");
                     GlobalContainer.Items.Add(container);
                 }
                 FindConstants(GlobalContainer, keys);
             }
         }
 
-        static private Double EvaluateExpression(ISequenceItem item, string expr, Stack<Keys> stack, IList<string> issues) {
-            if (expr.IsNullOrEmpty()) return 0;
+        static private Double EvaluateExpression(ISequenceEntity item, string expr, Stack<Keys> stack, IList<string> issues) {
+            lock (ConstantsLock) {
+                if (expr.IsNullOrEmpty()) return 0;
 
-            if (string.Equals(expr, "true", StringComparison.OrdinalIgnoreCase)) { return 1; }
-            if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
+                if (string.Equals(expr, "true", StringComparison.OrdinalIgnoreCase)) { return 1; }
+                if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
 
-            Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
-            // Consolidate keys
-            Keys mergedKeys = new Keys();
+                Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
+                // Consolidate keys
+                Keys mergedKeys = new Keys();
 
-            foreach (Keys k in stack) {
-                foreach (KeyValuePair<string, object> kvp in k) {
-                    object kvpValue = kvp.Value;
-                    if (!mergedKeys.ContainsKey(kvp.Key)) {
-                        Double kvpDouble;
-                        if (kvpValue is Double d) {
-                            kvpDouble = d;
-                        } else {
-                            // Value is a SetVariable instruction
-                            SetVariable sv = kvpValue as SetVariable;
-                            if (sv.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
-                                IsValid(sv, sv.CValueExpr, sv.CValue, out kvpDouble, null);
+                foreach (Keys k in stack) {
+                    foreach (KeyValuePair<string, object> kvp in k) {
+                        object kvpValue = kvp.Value;
+                        if (!mergedKeys.ContainsKey(kvp.Key)) {
+                            Double kvpDouble;
+                            if (kvpValue is Double d) {
+                                kvpDouble = d;
                             } else {
-                                kvpDouble = Double.NaN;
+                                // Value is a SetVariable instruction
+                                SetVariable sv = kvpValue as SetVariable;
+                                if (sv.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
+                                    IsValid(sv, sv.CValueExpr, sv.CValue, out kvpDouble, null);
+                                } else {
+                                    kvpDouble = Double.NaN;
+                                }
+                            }
+                            if (!Double.IsNaN(kvpDouble)) {
+                                mergedKeys.Add(kvp.Key, kvpDouble);
                             }
                         }
-                        if (!Double.IsNaN(kvpDouble)) {
-                            mergedKeys.Add(kvp.Key, kvpDouble);
-                        }
                     }
                 }
-            }
 
-            if (mergedKeys.Count == 0) {
-                DebugInfo("Expression '", expr, "' not evaluated; no keys");
-                return Double.NaN;
-            }
-
-            e.Parameters = mergedKeys;
-            try {
-                var eval = e.Evaluate();
-                DebugInfo("Expression '", expr, "' in '", item.Name , "' evaluated to " + eval.ToString());
-                if (eval is Boolean b) {
-                    return b ? 1 : 0;
-                }
-                try {
-                    return Convert.ToDouble(eval);
-                } catch (Exception ex) {
+                if (mergedKeys.Count == 0) {
+                    DebugInfo("Expression '", expr, "' not evaluated; no keys");
                     return Double.NaN;
                 }
-            } catch (Exception ex) {
-                if (issues != null) {
-                    if (ex is EvaluationException) {
-                        issues.Add("Syntax error");
-                    } else {
-                        issues.Add(ex.Message);
+
+                e.Parameters = mergedKeys;
+                try {
+                    var eval = e.Evaluate();
+                    DebugInfo("Expression '", expr, "' in '", item.Name, "' evaluated to " + eval.ToString());
+                    if (eval is Boolean b) {
+                        return b ? 1 : 0;
                     }
+                    try {
+                        return Convert.ToDouble(eval);
+                    } catch (Exception ex) {
+                        return Double.NaN;
+                    }
+                } catch (Exception ex) {
+                    if (issues != null) {
+                        if (ex is EvaluationException) {
+                            issues.Add("Syntax error");
+                        } else {
+                            issues.Add(ex.Message);
+                        }
+                    }
+                    return Double.NaN;
                 }
-                return Double.NaN;
             }
         }
 
@@ -226,27 +230,29 @@ namespace WhenPlugin.When {
         }
 
         static public ISequenceEntity FindKeyContainer(ISequenceEntity item, string key) {
-            ISequenceContainer root = FindRoot(item.Parent);
-            ISequenceEntity p = item.Parent;
-            while (p != null) {
-                Keys k = KeyCache.GetValueOrDefault(p, null);
-                if (k != null) {
-                    if (k.ContainsKey(key)) {
-                        return p;
+            lock (ConstantsLock) {
+                ISequenceContainer root = FindRoot(item.Parent);
+                ISequenceEntity p = item.Parent;
+                while (p != null) {
+                    Keys k = KeyCache.GetValueOrDefault(p, null);
+                    if (k != null) {
+                        if (k.ContainsKey(key)) {
+                            return p;
+                        }
+                    }
+                    if (p == root) {
+                        p = GlobalContainer;
+                    } else if (p is IfContainer ifc) {
+                        p = ifc.PseudoParent;
+                    } else {
+                        p = p.Parent;
                     }
                 }
-                if (p == root) {
-                    p = GlobalContainer;
-                } else if (p is IfContainer ifc) {
-                    p = ifc.PseudoParent;
-                } else {
-                    p = p.Parent;
-                }
+                return null;
             }
-            return null;
         }
 
-        static public string DissectExpression(ISequenceItem item, string expr, Stack<Keys> stack) {
+        static public string DissectExpression(ISequenceEntity item, string expr, Stack<Keys> stack) {
             if (expr.IsNullOrEmpty()) return String.Empty;
 
             Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
@@ -334,198 +340,214 @@ namespace WhenPlugin.When {
         }
 
         static private void FindConstants(ISequenceContainer container, Keys keys) {
+            lock (ConstantsLock) {
 
-            if (!Loaded && (container != GlobalContainer)) return;
+                if (!Loaded && (container != GlobalContainer)) {
+                    DebugInfo("Not loaded and not GlobalContainer; returning");
+                    return;
+                }
 
-            if (container == null) return;
-            if (container.Items.IsNullOrEmpty()) return;
+                if (container == null) {
+                    DebugInfo("Container is null; returning");
+                    return;
+                }
 
-            Keys cachedKeys = null;
-            if (KeyCache.TryGetValue(container, out cachedKeys)) {
-                DebugInfo("FindConstants for '", container.Name, "' found in cache: ", cachedKeys.ToString());
-            } else {
-                DebugInfo("FindConstants for '", container.Name, "'");
-            }
+                if (container.Items.IsNullOrEmpty()) {
+                    DebugInfo("No items in container; returning");
+                    return;
+                }
 
-            KeysStack.Push(keys);
+                Keys cachedKeys = null;
+                if (KeyCache.TryGetValue(container, out cachedKeys)) {
+                    DebugInfo("FindConstants for '", container.Name, "' found in cache: ", cachedKeys.ToString());
+                } else {
+                    DebugInfo("FindConstants for '", container.Name, "'");
+                }
+                
+                KeysStack.Push(keys);
 
-            foreach (ISequenceItem item in container.Items) {
-                if (item is ISettable sc && cachedKeys == null) {
-                    string name = sc.GetSettable();
-                    string val = sc.GetValueExpression();
-                    string typ = sc.GetType();
-                    double value;
-                    sc.IsDuplicate(false);
-                    if (item.Parent != container) {
-                        // In this case item has been deleted from parent (but it's still in Parent's Items)
-                    } else if (name.IsNullOrEmpty()) {
-                        DebugInfo("Empty name in ", typ, "; ignore");
-                    } else if (Double.TryParse(val, out value)) {
-                        // The value is a number, so we're good
-                        try {
-                            keys.Add(name, value);
-                        } catch (Exception) {
-                            // Multiply defined...
-                            sc.IsDuplicate(true);
-                        }
-                        DebugInfo(typ, "'", name, "' defined as ", value.ToString());
-                    } else {
-                        double result = EvaluateExpression(item, val, KeysStack, null);
-                        if (!double.IsNaN(result) || item is SetVariable) {
+                foreach (ISequenceEntity item in container.Items) {
+                    if (item is ISettable sc && cachedKeys == null) {
+                        string name = sc.GetSettable();
+                        string val = sc.GetValueExpression();
+                        string typ = sc.GetType();
+                        double value;
+                        sc.IsDuplicate(false);
+                        if (item.Parent != container) {
+                            // In this case item has been deleted from parent (but it's still in Parent's Items)
+                        } else if (name.IsNullOrEmpty()) {
+                            DebugInfo("Empty name in ", typ, "; ignore");
+                        } else if (Double.TryParse(val, out value)) {
+                            // The value is a number, so we're good
                             try {
-                                if (item is SetVariable sv) {
-                                    if (item.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
-                                        // If the SetVariable has been executed, use it's actual value
-                                        DebugInfo("SetVariable '" + name + "' set to " + sv.CValue);
-                                        Double d = Double.NaN;
-                                        Double.TryParse(sv.CValue, out d);
-                                        keys.Add(name, d);
-                                    } else {
-                                        // Otherwise, use the SetVariable itself
-                                        keys.Add(name, sv);
-                                    }
-                                } else {
-                                    keys.Add(name, result);
-                                }
+                                keys.Add(name, value);
                             } catch (Exception) {
                                 // Multiply defined...
                                 sc.IsDuplicate(true);
                             }
-                            DebugInfo(typ, "'", name, "': ", val, " evaluated to ", result.ToString());
+                            DebugInfo(typ, "'", name, "' defined as ", value.ToString());
                         } else {
-                            DebugInfo(typ, "'", name, "' evaluated as NaN");
+                            double result = EvaluateExpression(item, val, KeysStack, null);
+                            if (!double.IsNaN(result) || item is SetVariable) {
+                                try {
+                                    if (item is SetVariable sv) {
+                                        if (item.Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
+                                            // If the SetVariable has been executed, use it's actual value
+                                            DebugInfo("SetVariable '" + name + "' set to " + sv.CValue);
+                                            Double d = Double.NaN;
+                                            Double.TryParse(sv.CValue, out d);
+                                            keys.Add(name, d);
+                                        } else {
+                                            // Otherwise, use the SetVariable itself
+                                            keys.Add(name, sv);
+                                        }
+                                    } else {
+                                        keys.Add(name, result);
+                                    }
+                                } catch (Exception) {
+                                    // Multiply defined...
+                                    sc.IsDuplicate(true);
+                                }
+                                DebugInfo(typ, "'", name, "': ", val, " evaluated to ", result.ToString());
+                            } else {
+                                DebugInfo(typ, "'", name, "' evaluated as NaN");
+                            }
                         }
+                    } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
+                        FindConstants(ifc.Instructions, new Keys());
+                    } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
+                        FindConstants(descendant, new Keys());
                     }
-                } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
-                    FindConstants(ifc.Instructions, new Keys());
-                } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
-                    FindConstants(descendant, new Keys());
                 }
-            }
 
-            if (cachedKeys == null) {
-                if (KeyCache.ContainsKey(container)) {
-                    KeyCache.TryRemove(container, out _);
+                if (cachedKeys == null) {
+                    if (KeyCache.ContainsKey(container)) {
+                        KeyCache.TryRemove(container, out _);
+                    }
+                    if (keys.Count > 0) {
+                        KeyCache.TryAdd(container, keys);
+                    }
                 }
+
+                KeysStack.Pop();
+
                 if (keys.Count > 0) {
-                    KeyCache.TryAdd(container, keys);
+                    DebugInfo("Constants defined in '", container.Name, "': ", keys.ToString());
                 }
-            }
-
-            KeysStack.Pop();
-
-            if (keys.Count > 0) {
-                DebugInfo("Constants defined in '", container.Name, "': ", keys.ToString());
             }
         }
 
         private static bool Loaded { get; set; } = false;
 
         public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
-            val = 0;
-            ISequenceItem item = obj as ISequenceItem;
-            if (item == null || item.Parent == null) return false;
+            lock (ConstantsLock) {
+                val = 0;
+                ISequenceEntity item = obj as ISequenceEntity;
+                if (item == null || item.Parent == null) return false;
 
-            if (expr == null || expr.Length == 0) {
-                DebugInfo("IsValid: ", exprName, " null/empty");
-                return false;
-            }
+                if (expr == null || expr.Length == 0) {
+                    DebugInfo("IsValid: ", exprName, " null/empty");
+                    return false;
+                }
 
-            // We will always process the Global container
-            if (item.Parent != GlobalContainer) {
-                if (!IsAttachedToRoot(item.Parent)) return true;
-                // Say that we have a sequence loaded...
-                Loaded = true;
-            }
+                // We will always process the Global container
+                if (item.Parent != GlobalContainer) {
+                    if (!IsAttachedToRoot(item.Parent)) return true;
+                    // Say that we have a sequence loaded...
+                    Loaded = true;
+                }
 
-            // Make sure we're up-to-date on constants
-            ISequenceContainer parent = item.Parent;
-            ISequenceContainer root = FindRoot(parent);
-            Keys kk;
-            if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
-                UpdateConstants(item);
-            } else if (!(parent is IImmutableContainer) && !KeyCache.ContainsKey(parent)) {
-                // The IImmutableContainer case is for TakeManyExposures and SmartExposure, which are containers and items
-                UpdateConstants(item);
-            }
+                // Make sure we're up-to-date on constants
+                ISequenceContainer parent = item.Parent;
+                ISequenceContainer root = FindRoot(parent);
+                Keys kk;
+                if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
+                    UpdateConstants(item);
+                } else if (!(parent is IImmutableContainer) && !KeyCache.ContainsKey(parent)) {
+                    // The IImmutableContainer case is for TakeManyExposures and SmartExposure, which are containers and items
+                    UpdateConstants(item);
+                }
 
-            // Best case, this is a number a some sort
-            if (double.TryParse(expr, out val)) {
-                DebugInfo("IsValid for ", item.Name, ": '", exprName, "' = ", expr);
-                return true;
-            } else {
-                ISequenceContainer c = item.Parent;
-                // Ok, it's not a number. Let's look for constants
-                if (c != null) {
-                    // Build the keys stack, walking up the ladder of Parents
-                    Stack<Keys> stack = new Stack<Keys>();
-                    ISequenceEntity cc = c;
-                    while (cc != null) {
-                        Keys cachedKeys;
-                        KeyCache.TryGetValue(cc, out cachedKeys);
-                        if (!cachedKeys.IsNullOrEmpty()) {
-                            stack.Push(cachedKeys);
+                // Best case, this is a number a some sort
+                if (double.TryParse(expr, out val)) {
+                    DebugInfo("IsValid for ", item.Name, ": '", exprName, "' = ", expr);
+                    return true;
+                } else {
+                    ISequenceContainer c = item.Parent;
+                    // Ok, it's not a number. Let's look for constants
+                    if (c != null) {
+                        // Build the keys stack, walking up the ladder of Parents
+                        Stack<Keys> stack = new Stack<Keys>();
+                        ISequenceEntity cc = c;
+                        while (cc != null) {
+                            Keys cachedKeys;
+                            KeyCache.TryGetValue(cc, out cachedKeys);
+                            if (!cachedKeys.IsNullOrEmpty()) {
+                                stack.Push(cachedKeys);
+                            }
+                            if (cc is SequenceRootContainer) {
+                                cc = GlobalContainer;
+                            } else {
+                                cc = GetParent(cc);
+                            }
                         }
-                        if (cc is SequenceRootContainer) {
-                            cc = GlobalContainer;
+
+                        // Reverse the stack to maintain proper scoping
+                        Stack<Keys> reverseStack = new Stack<Keys>();
+                        Keys k;
+                        while (stack.TryPop(out k)) {
+                            reverseStack.Push(k);
+                        }
+
+                        if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
+
+                        double result = EvaluateExpression(item, expr, reverseStack, issues);
+                        DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,
+                            ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                        if (Double.IsNaN(result)) {
+                            val = -1;
+                            return false;
                         } else {
-                            cc = GetParent(cc);
+                            val = result;
+                            return true;
                         }
-                    }
-
-                    // Reverse the stack to maintain proper scoping
-                    Stack<Keys> reverseStack = new Stack<Keys>();
-                    Keys k;
-                    while (stack.TryPop(out k)) {
-                        reverseStack.Push(k);
-                    }
-
-                    if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
-
-                    double result = EvaluateExpression(item, expr, reverseStack, issues);
-                    DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr, 
-                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
-                    if (Double.IsNaN(result)) {
-                        val = -1;
-                        return false;
-                    } else {
-                        val = result;
-                        return true;
                     }
                 }
+                return false;
             }
-            return false;
         }
 
-        public static bool Evaluate(ISequenceItem item, string exprName, string valueName, object def) {
+        public static bool Evaluate(ISequenceEntity item, string exprName, string valueName, object def) {
             return Evaluate(item, exprName, valueName, def, null);
         }
 
-        public static bool Evaluate(ISequenceItem item, string exprName, string valueName, object def, IList<string> issues) {
-            double val;
-            string expr = item.TryGetPropertyValue(exprName, "") as string;
+        public static bool Evaluate(ISequenceEntity item, string exprName, string valueName, object def, IList<string> issues) {
+            lock (ConstantsLock) {
+                double val;
+                string expr = item.TryGetPropertyValue(exprName, "") as string;
 
-            PropertyInfo pi = item.GetType().GetProperty(valueName);
-            if (IsValid(item, exprName, expr, out val, issues)) {
+                PropertyInfo pi = item.GetType().GetProperty(valueName);
+                if (IsValid(item, exprName, expr, out val, issues)) {
+                    try {
+                        var conv = Convert.ChangeType(val, pi.PropertyType);
+                        pi.SetValue(item, conv);
+                        return true;
+                    } catch (Exception) {
+                    }
+                }
                 try {
-                    var conv = Convert.ChangeType(val, pi.PropertyType);
-                    pi.SetValue(item, conv);
-                    return true;
+                    pi.SetValue(item, def);
                 } catch (Exception) {
+                    try {
+                        var conv = Convert.ChangeType(def, pi.PropertyType);
+                        pi.SetValue(item, conv);
+                    } catch (Exception ex) {
+                        DebugInfo("Caught exception: ", ex.Message);
+                        Logger.Info("Caught exception: " + ex);
+                    }
                 }
+                return false;
             }
-            try {
-                pi.SetValue(item, def);
-            } catch (Exception) {
-                try {
-                    var conv = Convert.ChangeType(def, pi.PropertyType);
-                    pi.SetValue(item, conv);
-                } catch (Exception ex) {
-                    DebugInfo("Caught exception: ", ex.Message);
-                    Logger.Info("Caught exception: " + ex);
-                }
-            }
-            return false;
         }
 
         private static void DebugInfo(params string[] strs) {

@@ -1,4 +1,5 @@
 ﻿using Castle.Core.Internal;
+using NINA.Sequencer;
 using NINA.Sequencer.SequenceItem;
 using System;
 using System.CodeDom;
@@ -38,7 +39,7 @@ namespace WhenPlugin.When {
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
             TextBox tb = (TextBox)sender;
-            ISequenceItem item = (ISequenceItem)tb.DataContext;
+            ISequenceEntity item = (ISequenceEntity)tb.DataContext;
             var stack = ConstantExpression.GetKeyStack(item);
             if (stack.IsNullOrEmpty()) {
                 tb.ToolTip = "There are no valid, defined constants.";

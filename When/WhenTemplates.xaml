@@ -539,6 +539,73 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+
+
+    <!--<DataTemplate DataType="{x:Type local:TemplateByReference}">
+        <Border BorderBrush="{StaticResource SecondaryBackgroundBrush}" BorderThickness="10,15,0,15">
+            <ninactrl:DetachingExpander>
+                <ninactrl:DetachingExpander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                        MinHeight="30"
+                        Margin="10,10,10,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Opacity="0.4"
+                        Text="Template Name:" />
+                        <ComboBox
+                        Height="24"
+                        Margin="10,-4,0,0"
+                        DisplayMemberPath="Container.Name"
+                        ItemsSource="{Binding SortedTemplates}"
+                        SelectedItem="{Binding SelectedTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValuePath="Container.Name" />
+                    </StackPanel>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Border
+                    MinHeight="35"
+                    Margin="0,20,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                            <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontStyle="Italic"
+                            Opacity="0.4"
+                            Text="The specified template will go here..."
+                            Visibility="{Binding Path=PseudoParent.TemplateNameIsTrue, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
+    </DataTemplate>
+    ```-->
+
+
+
+    <DataTemplate DataType="{x:Type local:LoopWhile}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Enter the expression to be evaluated:" />
+                    <local:ConstantControl 
+                                    Margin="5,4 ,10,5" 
+                                    ToolTip="Foo"
+                                    ToolTipOpening="LoopWhile_PredicateToolTip"
+                                    Validate="ValidateConstant"
+                                    Expr="{Binding Path=Predicate, Mode=TwoWay}"
+                                    Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
+                                    />
+                </StackPanel>
+
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:RepeatUntilAllSucceed}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>

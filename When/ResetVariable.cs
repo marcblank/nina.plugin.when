@@ -186,6 +186,10 @@ namespace WhenPlugin.When {
                 i.Add("Duplicate name in the same instruction set!");
             }
 
+            if (Status != SequenceEntityStatus.FINISHED) {
+                ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+            }
+
             RaisePropertyChanged("CValue");
             RaisePropertyChanged("CValueExpr");
             
