@@ -136,9 +136,9 @@ namespace WhenPlugin.When {
                         ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                         sv.CValue = cValue;
                         sv.CValueExpr = cValue;
+                        ConstantExpression.UpdateConstants(this);
                         RaisePropertyChanged("CValueExpr");
                         RaisePropertyChanged("CValue");
-                        ConstantExpression.UpdateConstants(this);
                         return Task.CompletedTask;
                     }
                 }
