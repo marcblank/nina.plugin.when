@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class LoopWhile : SequenceCondition {
+    public class LoopWhile : SequenceCondition, IValidatable {
 
         [ImportingConstructor]
         public LoopWhile() {
@@ -90,21 +90,20 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
 
-            //var i = new List<string>();
+            var i = new List<string>();
 
-            //if (Predicate.IsNullOrEmpty()) {
-            //    i.Add("Expression cannot be empty!");
-            //}
+            if (Predicate.IsNullOrEmpty()) {
+                i.Add("Expression cannot be empty!");
+            }
 
-            //try {
-            //    ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            //} catch (Exception ex) {
-            //    i.Add("Error in expression: " + ex.Message);
-            //}
+            try {
+                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+            } catch (Exception ex) {
+                i.Add("Error in expression: " + ex.Message);
+            }
 
-            //Issues = i;
-            //return i.Count == 0;
-            return true;
+            Issues = i;
+            return i.Count == 0;
         }
 
         public string ShowCurrentInfo() {

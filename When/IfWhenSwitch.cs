@@ -90,7 +90,7 @@ namespace WhenPlugin.When {
                     double value = 0;
                     double t = weatherInfo.TryGetPropertyValue(dataName, value);
                     if (!Double.IsNaN(t)) {
-                        i.Add("Weather: " + RemoveSpecialCharacters(dataName) + " (" + t + ")");
+                        i.Add("Weather: " + RemoveSpecialCharacters(dataName) + " (" + Math.Round(t, 2) + ")");
                     }
                 }
             }
