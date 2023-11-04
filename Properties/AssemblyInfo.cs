@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("3.9.0.2")]
 [assembly: AssemblyFileVersion("3.9.0.2")]
 
-// [MANDATORY] The name of your plugin
+// [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
 // [MANDATORY] A short description of your plugin
 [assembly: AssemblyDescription("Useful instructions to get the most out of the NINA Advanced Sequencer")]
