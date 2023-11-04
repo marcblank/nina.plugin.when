@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.9.0.0")]
-[assembly: AssemblyFileVersion("3.9.0.0")]
+[assembly: AssemblyVersion("3.9.0.1")]
+[assembly: AssemblyFileVersion("3.9.0.1")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -54,11 +54,15 @@ CONSTANTS ENHANCED (new Category):
 
 Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to eight 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
 
-If Constant - Executes the specified instructions if the provided Constant (or expression) is 'true'
+If (was If Constant) - Executes the specified instructions if the provided Expression is 'true'
 
-Cool Camera - Same as built-in instruction, with the ability to use a constant for temperature
+Cool Camera + - Same as built-in instruction, with the ability to use a constant for temperature
 
-Take Exposure +/Take Many Exposures +/Smart Exposure + -  These three instructions are effectively copies of the built-in instructions, with the ability to use constants for iterations (smart/many), exposure time, gain, and dither.
+Take Exposure +/Take Many Exposures +/Smart Exposure + -  These three instructions are effectively copies of the built-in instructions, with the ability to use Expressions for iterations (smart/many), exposure time, gain, and dither.
+
+Define Variable - New for 3.9, Defines a Variable that can be used in Expressions
+
+Set Variable - New for 3.9, Changes the value of a previously defined Variable.
 
 Screenshot: [Constants Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIEvcjHtr65Jl7W9Q?e=FM4WRF)
 
@@ -92,6 +96,8 @@ Safe Trigger - NEW for 3.7/2.7, This meta-trigger will cause the Trigger you spe
 
 DIY Trigger - NEW for 3.7/2.7, This trigger allows you to split a specified trigger's triggering condition from the action it takes when triggered.  Yes, this is the same instruction as in the DIY Trigger plugin.
 
+Loop While - New for 3.9, This condition allows for looping while the Expression is not false (or zero)
+
 SWITCH:
 
 If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
@@ -106,6 +112,7 @@ UTILITY:
 
 Wait Indefinitely - Waits until you skip the instruction or delete it.  This may be useful if you need your sequence to wait for you to complete some manual task which will take an undetermined amount of time.
 
+Breakpoint - Basically the same as Wait Indefinitely; stops sequence execution until Continue is clicked.
 
 Comments, suggestions, bug reports, etc. are welcomed!  Contact me by DM @chatter on the NINA Discord server, or post in the #plugin-discussions channel.
 ")]

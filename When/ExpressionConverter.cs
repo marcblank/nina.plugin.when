@@ -15,6 +15,7 @@
 using Accord.Diagnostics;
 using Castle.Core.Internal;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using NINA.Sequencer;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -30,7 +31,7 @@ namespace WhenPlugin.When {
 
     public class ExpressionConverter : IMultiValueConverter {
 
-        public static Dictionary<ISequenceItem, bool> ValidityCache = new Dictionary<ISequenceItem, bool>();
+        public static Dictionary<ISequenceEntity, bool> ValidityCache = new Dictionary<ISequenceEntity, bool>();
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
@@ -41,7 +42,7 @@ namespace WhenPlugin.When {
         private const int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
         private const int VALUE_TYPE = 5;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
 
-        private string Validate (ISequenceItem item, double val, object[] values) {
+        private string Validate (ISequenceEntity item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
                 MethodInfo m = item.GetType().GetMethod(validationMethod);
                 if (m != null) {
@@ -61,7 +62,7 @@ namespace WhenPlugin.When {
          
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
-            SequenceItem item = values[VALUE_ITEM] as SequenceItem;
+            ISequenceEntity item = values[VALUE_ITEM] as ISequenceEntity;
             string type = (string)values[VALUE_TYPE];
             if (values[VALUE_EXPR] is string expr) {
                 double val;

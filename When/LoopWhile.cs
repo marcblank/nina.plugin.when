@@ -29,6 +29,7 @@ using System.Diagnostics;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Loop While")]
@@ -38,11 +39,12 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class LoopWhile : SequenceCondition {
+    public class LoopWhile : SequenceCondition, IValidatable {
 
         [ImportingConstructor]
         public LoopWhile() {
             Predicate = "";
+            ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
         }
 
         public LoopWhile(LoopWhile copyMe) : this() {
@@ -90,21 +92,20 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
 
-            //var i = new List<string>();
+            var i = new List<string>();
 
-            //if (Predicate.IsNullOrEmpty()) {
-            //    i.Add("Expression cannot be empty!");
-            //}
+            if (Predicate.IsNullOrEmpty()) {
+                i.Add("Expression cannot be empty!");
+            }
 
-            //try {
-            //    ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            //} catch (Exception ex) {
-            //    i.Add("Error in expression: " + ex.Message);
-            //}
+            try {
+                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+            } catch (Exception ex) {
+                i.Add("Error in expression: " + ex.Message);
+            }
 
-            //Issues = i;
-            //return i.Count == 0;
-            return true;
+            Issues = i;
+            return i.Count == 0;
         }
 
         public string ShowCurrentInfo() {
@@ -149,6 +150,16 @@ namespace WhenPlugin.When {
                 Logger.Info("LoopWhile error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
                 return false;
+            }
+        }
+        private async Task InterruptWhenFails() {
+            if (!Check(null, null)) {
+                if (this.Parent != null) {
+                    if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
+                        Logger.Info("Expression returned false - Interrupting current Instruction Set");
+                        await this.Parent.Interrupt();
+                    }
+                }
             }
         }
 

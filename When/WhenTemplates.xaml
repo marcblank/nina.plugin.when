@@ -913,6 +913,7 @@
                 </ninactrl:DetachingExpander>
     </DataTemplate>
 
+
     <DataTemplate DataType="{x:Type local:WhenUnsafe}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
