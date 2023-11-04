@@ -29,6 +29,7 @@ using System.Diagnostics;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Loop While")]
@@ -43,6 +44,7 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public LoopWhile() {
             Predicate = "";
+            ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
         }
 
         public LoopWhile(LoopWhile copyMe) : this() {
@@ -148,6 +150,16 @@ namespace WhenPlugin.When {
                 Logger.Info("LoopWhile error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
                 return false;
+            }
+        }
+        private async Task InterruptWhenFails() {
+            if (!Check(null, null)) {
+                if (this.Parent != null) {
+                    if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
+                        Logger.Info("Expression returned false - Interrupting current Instruction Set");
+                        await this.Parent.Interrupt();
+                    }
+                }
             }
         }
 
