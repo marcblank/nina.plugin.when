@@ -5,6 +5,10 @@ using NCalc;
 using NCalc.Domain;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment.MySwitch;
+using NINA.Equipment.Equipment.MyWeatherData;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces;
 using NINA.Profile;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
@@ -19,6 +23,8 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
+using NINA.Sequencer.Conditions;
+using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -51,7 +57,7 @@ namespace WhenPlugin.When {
 
         public class Var {
             SetVariable svInstruction;
-            public Var (SetVariable item) {
+            public Var(SetVariable item) {
                 svInstruction = item;
             }
 
@@ -130,7 +136,7 @@ namespace WhenPlugin.When {
 
                 Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
                 // Consolidate keys
-                Keys mergedKeys = new Keys();
+                Keys mergedKeys = ConstantExpression.GetSwitchWeatherKeys();
 
                 foreach (Keys k in stack) {
                     foreach (KeyValuePair<string, object> kvp in k) {
@@ -160,6 +166,8 @@ namespace WhenPlugin.When {
                     return Double.NaN;
                 }
 
+                // Add switch/gauge/weather keys here...
+
                 e.Parameters = mergedKeys;
                 try {
                     var eval = e.Evaluate();
@@ -187,7 +195,7 @@ namespace WhenPlugin.When {
 
         static Keys GetMergedKeys(Stack<Keys> stack) {
             // Consolidate keys
-            Keys mergedKeys = new Keys();
+            Keys mergedKeys = GetSwitchWeatherKeys(); // new Keys();
 
             foreach (Keys k in stack) {
                 foreach (KeyValuePair<string, object> kvp in k) {
@@ -214,7 +222,7 @@ namespace WhenPlugin.When {
                 Logger.Info("LI");
             } else if (e is Function f) {
                 if (f.Expressions != null) {
-                    foreach (LogicalExpression ee in  f.Expressions) {
+                    foreach (LogicalExpression ee in f.Expressions) {
                         GetParsedKeys(ee, mergedKeys, k);
                     }
                 }
@@ -224,7 +232,12 @@ namespace WhenPlugin.When {
 
         static public string FindKey(ISequenceEntity item, string key) {
             ISequenceEntity p = FindKeyContainer(item, key);
-            if (p == null) return "??";
+            if (p == null) {
+                if (SwitchWeatherKeys.ContainsKey(key)) {
+                    return "Switch/Weather";
+                }
+                return "??";
+            }
             return (p == item.Parent ? "Here" : p == GlobalContainer ? "Global" : p.Name);
 
         }
@@ -270,7 +283,7 @@ namespace WhenPlugin.When {
                 StringBuilder stringBuilder = new StringBuilder("");
                 int cnt = parsedKeys.Count;
                 if (cnt == 0) {
-                    stringBuilder.Append("No constants of variables used");
+                    stringBuilder.Append("No constants or variables used");
                 } else {
                     foreach (var key in parsedKeys) {
                         string whereDefined = FindKey(item, key.Key);
@@ -302,7 +315,7 @@ namespace WhenPlugin.When {
                 }
                 if (cc == root) {
                     cc = GlobalContainer;
-               } else {
+                } else {
                     cc = GetParent(cc);
                 }
             }
@@ -363,7 +376,7 @@ namespace WhenPlugin.When {
                 } else {
                     DebugInfo("FindConstants for '", container.Name, "'");
                 }
-                
+
                 KeysStack.Push(keys);
 
                 foreach (ISequenceEntity item in container.Items) {
@@ -558,6 +571,72 @@ namespace WhenPlugin.When {
 
         private static void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             throw new NotImplementedException();
+        }
+
+        private static string[] WeatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
+            "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
+
+        public static string RemoveSpecialCharacters(string str) {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str) {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_') {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+
+        
+        private static ISwitchMediator SwitchMediator { get; set; }
+        private static IWeatherDataMediator WeatherDataMediator { get; set; }
+
+        private static ConditionWatchdog ConditionWatchdog { get; set; }
+
+        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator) {
+            SwitchMediator = switchMediator;
+            WeatherDataMediator = weatherDataMediator;
+            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
+            ConditionWatchdog.Start();
+        }
+
+        public static Keys SwitchWeatherKeys { get; set; } = new Keys();
+
+        public static Keys GetSwitchWeatherKeys () {
+            lock(SwitchMediator) {
+                return SwitchWeatherKeys;
+            }
+        }
+
+        public static Task UpdateSwitchWeatherData() {
+            lock (SwitchMediator) {
+                SwitchWeatherKeys.Clear();
+
+                // Get switch values
+                SwitchInfo switchInfo = SwitchMediator.GetInfo();
+                if (switchInfo.Connected) {
+                    foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
+                        string key = RemoveSpecialCharacters(sw.Name);
+                        SwitchWeatherKeys.Add(key, sw.Value);
+                    }
+                    foreach (ISwitch sw in switchInfo.WritableSwitches) {
+                        string key = RemoveSpecialCharacters(sw.Name);
+                        SwitchWeatherKeys.Add(key, sw.Value);
+                    }
+                }
+
+                // Get weather values
+                WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
+                if (weatherInfo.Connected) {
+                    foreach (string dataName in WeatherData) {
+                        double t = weatherInfo.TryGetPropertyValue(dataName, Double.NaN);
+                        if (!Double.IsNaN(t)) {
+                            SwitchWeatherKeys.TryAdd(RemoveSpecialCharacters(dataName), t);
+                        }
+                    }
+                }
+
+                return Task.CompletedTask;
+            }
         }
     }
 }

@@ -152,6 +152,25 @@ namespace WhenPlugin.When {
                 return false;
             }
         }
+
+        public override void AfterParentChanged() {
+            if (Parent == null) {
+                SequenceBlockTeardown();
+            } else {
+                if (Parent.Status == SequenceEntityStatus.RUNNING) {
+                    SequenceBlockInitialize();
+                }
+            }
+        }
+
+        public override void SequenceBlockTeardown() {
+            try { ConditionWatchdog?.Cancel(); } catch { }
+        }
+
+        public override void SequenceBlockInitialize() {
+            ConditionWatchdog?.Start();
+        }
+
         private async Task InterruptWhenFails() {
             if (!Check(null, null)) {
                 if (this.Parent != null) {

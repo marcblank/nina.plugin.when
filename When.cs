@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Drawing;
 using System.Windows.Media;
 using System.Windows;
+using NINA.Equipment.Interfaces.Mediator;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -45,7 +46,8 @@ namespace WhenPlugin.When {
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
 
         [ImportingConstructor]
-        public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator) {
+        public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator, 
+            ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -70,6 +72,8 @@ namespace WhenPlugin.When {
 
             CreateGlobalSetConstants(this);
             SetConstant.WhenPluginObject = this;
+            ConstantExpression.InitMediators(switchMediator, weatherDataMediator);
+
         }
 
         public override Task Teardown() {
