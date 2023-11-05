@@ -26,6 +26,7 @@ using System.Text;
 using NINA.Sequencer.Conditions;
 using System.Threading.Tasks;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.View.Sequencer.Converter;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -594,6 +595,7 @@ namespace WhenPlugin.When {
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
+        private static IList<string> Switches {  get; set; } = new List<string>();
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator) {
             SwitchMediator = switchMediator;
@@ -611,14 +613,22 @@ namespace WhenPlugin.When {
             }
         }
 
+        public static IList<string> GetSwitches() {
+            lock (SwitchMediator) {
+                return Switches;
+            }
+        }
+
         public static Task UpdateSwitchWeatherData() {
             lock (SwitchMediator) {
+                var i = new List<string>();
                 SwitchWeatherKeys.Clear();
 
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();
                 if (cameraInfo.Connected) {
                     SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
+                    i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
                 }
 
                 // Get switch values
@@ -626,11 +636,13 @@ namespace WhenPlugin.When {
                 if (switchInfo.Connected) {
                     foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
                         string key = RemoveSpecialCharacters(sw.Name);
-                        SwitchWeatherKeys.Add(key, sw.Value);
+                        SwitchWeatherKeys.TryAdd(key, sw.Value);
+                        i.Add("Gauge: " + key + " (" + sw.Value + ")");
                     }
                     foreach (ISwitch sw in switchInfo.WritableSwitches) {
                         string key = RemoveSpecialCharacters(sw.Name);
-                        SwitchWeatherKeys.Add(key, sw.Value);
+                        SwitchWeatherKeys.TryAdd(key, sw.Value);
+                        i.Add("Switch: " + key + " (" + sw.Value + ")");
                     }
                 }
 
@@ -640,11 +652,14 @@ namespace WhenPlugin.When {
                     foreach (string dataName in WeatherData) {
                         double t = weatherInfo.TryGetPropertyValue(dataName, Double.NaN);
                         if (!Double.IsNaN(t)) {
-                            SwitchWeatherKeys.TryAdd(RemoveSpecialCharacters(dataName), t);
+                            string key = RemoveSpecialCharacters(dataName);
+                            SwitchWeatherKeys.TryAdd(key, t);
+                            i.Add("Weather: " + key + " (" + t + ")");
                         }
                     }
                 }
 
+                Switches = i;
                 return Task.CompletedTask;
             }
         }
