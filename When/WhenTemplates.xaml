@@ -1306,7 +1306,7 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    Text="If" />
-                            <TextBlock VerticalAlignment="Center" Margin="8,-4,5,0" Text="Enter the expression to be evaluated:" />
+                            <TextBlock VerticalAlignment="Center" Margin="8,-4,5,0" Text="Expression: " />
                             <local:ConstantControl 
                                    Margin="0,2,10,10" 
                                    ToolTip="Foo"

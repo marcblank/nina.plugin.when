@@ -25,6 +25,7 @@ using System.Security.Cryptography.Pkcs;
 using System.Text;
 using NINA.Sequencer.Conditions;
 using System.Threading.Tasks;
+using NINA.Equipment.Equipment.MyCamera;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -589,12 +590,15 @@ namespace WhenPlugin.When {
         
         private static ISwitchMediator SwitchMediator { get; set; }
         private static IWeatherDataMediator WeatherDataMediator { get; set; }
+        private static ICameraMediator CameraMediator { get; set; }
+
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
 
-        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator) {
+        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
+            CameraMediator = cameraMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -610,6 +614,12 @@ namespace WhenPlugin.When {
         public static Task UpdateSwitchWeatherData() {
             lock (SwitchMediator) {
                 SwitchWeatherKeys.Clear();
+
+                // Get SensorTemp
+                CameraInfo cameraInfo = CameraMediator.GetInfo();
+                if (cameraInfo.Connected) {
+                    SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
+                }
 
                 // Get switch values
                 SwitchInfo switchInfo = SwitchMediator.GetInfo();

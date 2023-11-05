@@ -47,7 +47,7 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator, 
-            ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator) {
+            ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -72,7 +72,7 @@ namespace WhenPlugin.When {
 
             CreateGlobalSetConstants(this);
             SetConstant.WhenPluginObject = this;
-            ConstantExpression.InitMediators(switchMediator, weatherDataMediator);
+            ConstantExpression.InitMediators(switchMediator, weatherDataMediator, cameraMediator);
 
         }
 
