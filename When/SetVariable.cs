@@ -197,8 +197,8 @@ namespace WhenPlugin.When {
             }
 
             double val;
-            ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
-            ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
+            //ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
+            //ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
 
 
             RaisePropertyChanged("CValueExpr");

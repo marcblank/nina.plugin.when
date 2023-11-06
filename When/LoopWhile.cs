@@ -104,6 +104,9 @@ namespace WhenPlugin.When {
                 i.Add("Error in expression: " + ex.Message);
             }
 
+            Switches = ConstantExpression.GetSwitches();
+            RaisePropertyChanged("Switches");
+
             Issues = i;
             return i.Count == 0;
         }
@@ -171,7 +174,10 @@ namespace WhenPlugin.When {
             ConditionWatchdog?.Start();
         }
 
+        public IList<string> Switches { get; set; } = null;
+
         private async Task InterruptWhenFails() {
+ 
             if (!Check(null, null)) {
                 if (this.Parent != null) {
                     if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {

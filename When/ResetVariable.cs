@@ -109,17 +109,25 @@ namespace WhenPlugin.When {
             get => cValue;
             set {
                 cValue = value;
-                RaisePropertyChanged();
+                // We get into trouble here because IsValid is called within IsValid...
+                //RaisePropertyChanged();
             }
         }
 
         private IList<string> issues = new List<string>();
+
+        private static bool Debugging = true;
 
         public IList<string> Issues {
             get => issues;
             set {
                 issues = value;
                 RaisePropertyChanged();
+            }
+        }
+        private static void DebugInfo(params string[] strs) {
+            if (Debugging) {
+                Debug.WriteLine(String.Join("", strs));
             }
         }
 
@@ -132,10 +140,12 @@ namespace WhenPlugin.When {
             if (p is ISequenceContainer sc) {
                 foreach (ISequenceEntity item in sc.Items) {
                     if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
-                        // Found it!
+                        // Found it!;;
+                        DebugInfo("  ** Before SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr);
                         ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                         sv.CValue = cValue;
                         sv.CValueExpr = cValue;
+                        DebugInfo("  ** After SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr);
                         ConstantExpression.UpdateConstants(this);
                         RaisePropertyChanged("CValueExpr");
                         RaisePropertyChanged("CValue");

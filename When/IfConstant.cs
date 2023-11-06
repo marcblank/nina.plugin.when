@@ -28,6 +28,7 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using NINA.Core.Utility;
 using NINA.Sequencer;
+using System.Collections.ObjectModel;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If")]
@@ -125,6 +126,8 @@ namespace WhenPlugin.When {
             return $"Category: {Category}, Item: {nameof(IfConstant)}, Predicate: {Predicate}";
         }
 
+        public IList<string> Switches { get; set; } = null;
+
         public new bool Validate() {
 
             CommonValidate();
@@ -140,6 +143,9 @@ namespace WhenPlugin.When {
             } catch (Exception ex) {
                 i.Add("Error in expression: " + ex.Message);
             }
+
+            Switches = ConstantExpression.GetSwitches();
+            RaisePropertyChanged("Switches");
 
             Issues = i;
             return i.Count == 0;

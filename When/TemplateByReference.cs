@@ -278,6 +278,7 @@ namespace WhenPlugin.When {
         public override void AfterParentChanged() {
             // New; provide link up the chain
             Instructions.AttachNewParent(Parent);
+            Instructions.PseudoParent = this;
         }
         
         public bool Validate() {
