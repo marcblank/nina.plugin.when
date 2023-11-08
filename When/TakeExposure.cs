@@ -285,28 +285,7 @@ namespace WhenPlugin.When {
             }
 
         }
-
-        public void AddResult(object src, string propName) {
-            if (src.HasProperty(propName)) {
-                Results.Add(propName, src.GetType().GetProperty(propName).GetValue(src, null));
-            }
-        }
-
-
-        private Double GetSDAValue(StarDetectionAnalysis sda, string propName) {
-            if (sda.HasProperty(propName)) {
-                return (Double)sda.GetType().GetProperty(propName).GetValue(sda);
-            }
-            return Double.NaN;
-        }
-
-        private void GetImageValues(object sender, ImagePreparedEventArgs e) {
-            StarDetectionAnalysis sda = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
-            Double fwhm = GetSDAValue(sda, "FWHM");
-            Double ecc = GetSDAValue(sda, "Eccentricity");
-            // etc...
-        }
-
+  
         static Object LastImageLock = new Object();
 
         static ConstantExpression.Keys iLastImageResult;
@@ -321,25 +300,29 @@ namespace WhenPlugin.When {
             }
         }
 
+        private void AddOptionalResult(ConstantExpression.Keys results, StarDetectionAnalysis a, string name) {
+            if (a.HasProperty(name)) {
+                var v = a.GetType().GetProperty(name).GetValue(a, null);
+                if (v is double vDouble) {
+                    results.Add(name, Math.Round(vDouble, 2));
+                }
+            }
+        }
+
         private void ProcessResults(object sender, ImagePreparedEventArgs e) {
             lock (LastImageLock) {
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
                 ConstantExpression.Keys results = new ConstantExpression.Keys();
-
+                
                 // These are from AF or HocusFocus
                 results.Add("HFR", Math.Round(a.HFR, 3));
                 results.Add("DetectedStars", a.DetectedStars);
 
                 // Add these if they exist
-                Type at = a.GetType();
-                if (a.HasProperty("Eccentricity")) {
-                    results.Add("Eccentricity", at.GetProperty("Eccentricity").GetValue(a, null));
-                }
-                if (a.HasProperty("FWHM")) {
-                    results.Add("FWHM", at.GetProperty("FWHM").GetValue(a, null));
-                }
+                AddOptionalResult(results, a, "Eccentricity");
+                AddOptionalResult(results, a, "FWHM");
 
                 // We should also get guider info as well...
 

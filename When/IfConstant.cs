@@ -89,7 +89,7 @@ namespace WhenPlugin.When {
                 Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
                 if (result == null) {
                     // Syntax error...
-                    Logger.Info("If: There is a syntax error in your predicate expression.");
+                    Logger.Info("If: There is a syntax error in your expression.");
                     Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                     return;
                 }

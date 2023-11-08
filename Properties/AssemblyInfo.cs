@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 // Your name
 [assembly: AssemblyCompany("Marc Blank")]
-// The product name that this plugin is part of
+// The product name that this plugin is part ofgit 
 [assembly: AssemblyProduct("When")]
 [assembly: AssemblyCopyright("Copyright © 2023 Marc Blank")]
 
