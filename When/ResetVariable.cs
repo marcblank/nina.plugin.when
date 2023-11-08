@@ -116,7 +116,7 @@ namespace WhenPlugin.When {
 
         private IList<string> issues = new List<string>();
 
-        private static bool Debugging = true;
+        private static bool Debugging = false;
 
         public IList<string> Issues {
             get => issues;

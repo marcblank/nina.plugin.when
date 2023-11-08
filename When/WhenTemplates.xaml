@@ -1593,6 +1593,7 @@
                         VerticalAlignment="Top"
                         Opacity="0.9"
                         MinWidth="250"
+                        ToolTip="[See variables and constants here]"
                         Text="Click this button to continue the sequence:" />
                     <Button
                         MinHeight="20"

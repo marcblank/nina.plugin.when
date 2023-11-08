@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.9.1.2")]
-[assembly: AssemblyFileVersion("3.9.1.2")]
+[assembly: AssemblyVersion("3.9.2.1")]
+[assembly: AssemblyFileVersion("3.9.2.1")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("Useful instructions to get the most out of the NINA Advanced Sequencer")]
+[assembly: AssemblyDescription("Get the most out of the NINA Advanced Sequencer!")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 
@@ -44,13 +44,15 @@ using System.Runtime.InteropServices;
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
-[assembly: AssemblyMetadata("LongDescription", @"This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.  (NOTE: This plugin includes all of the functionality of the 'Interrupts' plugin, which is now obsolete; it is also renamed from 'When (and If)').
+[assembly: AssemblyMetadata("LongDescription", @"This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.
+
+Among the more powerful Powerups are those related to Constants, Variables, and Expressions.  Complete documentation for these can be found [Here](https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Constants-Variables.rtf)
+
+** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' and 'Interrupts' plugins.  Instructions from the deprecated plugins will no longer work if you remove that plugin; you will have to replace them with instructions from here! **
 
 These are the instructions that are current in Sequencer Powerups, broken down by the Category in which they appear in the instruction sidebar.
 
 CONSTANTS ENHANCED (new Category):
-
-** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' and 'Interrupts' plugins.  Instructions from the deprecated plugins will no longer work if you remove that plugin; you will have to replace them with instructions from here! **
 
 Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to eight 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
 
@@ -114,7 +116,7 @@ Wait Indefinitely - Waits until you skip the instruction or delete it.  This may
 
 Breakpoint - Basically the same as Wait Indefinitely; stops sequence execution until Continue is clicked.
 
-Comments, suggestions, bug reports, etc. are welcomed!  Contact me by DM @chatter on the NINA Discord server, or post in the #plugin-discussions channel.
+Comments, suggestions, bug reports, etc. are welcomed!  Contact me by DM @chatter on the NINA Discord server, or post in the #sequencer-powerups channel.
 ")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

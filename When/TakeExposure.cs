@@ -46,6 +46,7 @@ using Nikon;
 using Castle.Core.Internal;
 using System.Runtime.CompilerServices;
 using NINA.Profile;
+using System.Windows.Forms;
 
 namespace WhenPlugin.When {
 
@@ -227,7 +228,7 @@ namespace WhenPlugin.When {
             Results.Clear();
 
             if (!handlerInit) {
-                //imagingMediator.ImagePrepared += ProcessResults;
+                imagingMediator.ImagePrepared += ProcessResults;
                 //imageSaveMediator.ImageSaved += ImageSaved;
                 handlerInit = true;
             }
@@ -306,45 +307,66 @@ namespace WhenPlugin.When {
             // etc...
         }
 
+        static Object LastImageLock = new Object();
 
-        private void ProcessResults(object sender, ImagePreparedEventArgs e) {
-            StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
-
-            // Clean out any old results since this instruction may be called many times
-            Results.Clear();
-            
-            // These are from AF or HocusFocus
-            Results.Add("HFR", Math.Round(a.HFR, 3));
-            Results.Add("DetectedStars", a.DetectedStars);
-            // Add these if they exist
-            AddResult(a, "Eccentricity");
-            AddResult(a, "EccentricityMAD");
-            AddResult(a, "FWHM");
-            AddResult(a, "FWHMMAD");  
-            // We should also get guider info as well...
-
-            foreach (var header in e.RenderedImage.RawImageData.MetaData.GenericHeaders) {
-                IGenericMetaDataHeader h = header as IGenericMetaDataHeader;
-                if (h != null) {
-                    string key = h.Key;
-                    try {
-                        if (h is StringMetaDataHeader) { // int double bool DateTime
-                            Results.Add(key, ((StringMetaDataHeader)h).Value);
-                        } else if (h is IntMetaDataHeader) {
-                            Results.Add(key, ((IntMetaDataHeader)h).Value);
-                        } else if (h is DoubleMetaDataHeader) {
-                            Results.Add(key, ((DoubleMetaDataHeader)h).Value);
-                        } else if (h is BoolMetaDataHeader) {
-                            Results.Add(key, ((BoolMetaDataHeader)h).Value);
-                        } else if (h is DateTimeMetaDataHeader) {
-                            Results.Add(key, ((DateTimeMetaDataHeader)h).Value);
-                        }
-                    } catch (Exception ex) {
-                        Console.WriteLine(ex.ToString());
-                    }
+        static ConstantExpression.Keys iLastImageResult;
+        public static ConstantExpression.Keys LastImageResults {
+            get {
+                lock (LastImageLock) {
+                    return iLastImageResult;
                 }
             }
-            Results.Add("_READY_", true);
+            set {
+                iLastImageResult = value;
+            }
+        }
+
+        private void ProcessResults(object sender, ImagePreparedEventArgs e) {
+            lock (LastImageLock) {
+                StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
+
+                // Clean out any old results since this instruction may be called many times
+                ConstantExpression.Keys results = new ConstantExpression.Keys();
+
+                // These are from AF or HocusFocus
+                results.Add("HFR", Math.Round(a.HFR, 3));
+                results.Add("DetectedStars", a.DetectedStars);
+
+                // Add these if they exist
+                Type at = a.GetType();
+                if (a.HasProperty("Eccentricity")) {
+                    results.Add("Eccentricity", at.GetProperty("Eccentricity").GetValue(a, null));
+                }
+                if (a.HasProperty("FWHM")) {
+                    results.Add("FWHM", at.GetProperty("FWHM").GetValue(a, null));
+                }
+
+                // We should also get guider info as well...
+
+                //foreach (var header in e.RenderedImage.RawImageData.MetaData.GenericHeaders) {
+                //    IGenericMetaDataHeader h = header as IGenericMetaDataHeader;
+                //    if (h != null) {
+                //        string key = h.Key;
+                //        try {
+                //            if (h is StringMetaDataHeader) { // int double bool DateTime
+                //                Results.Add(key, ((StringMetaDataHeader)h).Value);
+                //            } else if (h is IntMetaDataHeader) {
+                //                Results.Add(key, ((IntMetaDataHeader)h).Value);
+                //            } else if (h is DoubleMetaDataHeader) {
+                //                Results.Add(key, ((DoubleMetaDataHeader)h).Value);
+                //            } else if (h is BoolMetaDataHeader) {
+                //                Results.Add(key, ((BoolMetaDataHeader)h).Value);
+                //            } else if (h is DateTimeMetaDataHeader) {
+                //                Results.Add(key, ((DateTimeMetaDataHeader)h).Value);
+                //            }
+                //        } catch (Exception ex) {
+                //            Console.WriteLine(ex.ToString());
+                //        }
+                //    }
+                //}
+                LastImageResults = results;
+            }
+
         }
 
         private bool IsLightSequence() {

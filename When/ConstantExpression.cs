@@ -28,6 +28,9 @@ using System.Threading.Tasks;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.View.Sequencer.Converter;
 using System.Collections.ObjectModel;
+using System.Threading;
+using System.Linq;
+using System.Security.Cryptography.Xml;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -45,9 +48,20 @@ namespace WhenPlugin.When {
 
         static public Dictionary<ISequenceEntity, Keys> KeyCache = new Dictionary<ISequenceEntity, Keys>();
 
-        static private bool Debugging = true;
+        static private bool Debugging = false;
+
+        static private Semaphore SEM = new Semaphore(initialCount: 1, maximumCount: 1);
 
         public class Keys : Dictionary<string, object> {
+
+            public Keys Clone() {
+                Keys k = new Keys();
+                foreach (KeyValuePair<string, object> kv in this) {
+                    k.Add(kv.Key, kv.Value);
+                }
+                return k;
+            }
+
             public override string ToString() {
                 StringBuilder sb = new StringBuilder();
                 foreach (KeyValuePair<string, object> kvp in this) {
@@ -107,7 +121,7 @@ namespace WhenPlugin.When {
                         foreach (var kvp in KeyCache) {
                             DebugInfo(kvp.Key.Name, ": ", kvp.Value.ToString());
                             foreach (var c in kvp.Value) {
-                                DebugInfo(c.ToString());
+                                DebugInfo(c.Key, " = ", c.Value is ISequenceEntity ? "Undefined" : c.Value.ToString());
                             }
                         }
                     }
@@ -122,7 +136,7 @@ namespace WhenPlugin.When {
         static private bool InFlight { get; set; } = false;
 
         static private int FCDepth = 0;
-        
+
         static private void FindConstantsRoot(ISequenceContainer container, Keys keys) {
             lock (ConstantsLock) {
                 // We start from root, but we'll add global constants
@@ -138,6 +152,65 @@ namespace WhenPlugin.When {
             }
         }
 
+        static public Keys LastMergedKeys = null;
+
+        static private Double NCalcEvaluate(string expr, Keys mergedKeys, IList<string> issues) {
+            SEM.WaitOne();
+            try {
+                Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
+
+                e.Parameters = mergedKeys;
+                try {
+                    DebugInfo("     ### Evaluating ", expr);
+                    object v;
+                    if (e.Parameters.TryGetValue("Lp", out v)) {
+                        DebugInfo("       ## Lp = ", v.ToString());
+                    }
+                    var eval = e.Evaluate();
+                    DebugInfo("     ### Expression '", expr, " evaluated to " + eval.ToString());
+                    if (eval is Boolean b) {
+                        return b ? 1 : 0;
+                    }
+                    try {
+                        return Convert.ToDouble(eval);
+                    } catch (Exception ex) {
+                        return Double.NaN;
+                    }
+                } catch (Exception ex) {
+                    if (issues != null) {
+                        if (ex is EvaluationException) {
+                            issues.Add("Syntax error");
+                        } else {
+                            issues.Add(ex.Message);
+                        }
+                    }
+                    return Double.NaN;
+                }
+            } finally {
+                SEM.Release();
+            }
+
+        }
+
+        static public bool IsValidConverter(ISequenceEntity item, string expr, out double val, IList<string> issues) {
+            lock (ConstantsLock) {
+                if (LastMergedKeys == null || expr.IsNullOrEmpty()) {
+                    val = 0;
+                    return false;
+                }
+                double result = NCalcEvaluate(expr, LastMergedKeys, issues);
+                DebugInfo("[[    IsValidConverter: ", item.Name, ",  ", expr, " = ",
+                    ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]), "  ]]");
+                if (Double.IsNaN(result)) {
+                    val = -1;
+                    return false;
+                } else {
+                    val = result;
+                    return true;
+                }
+            }
+        }
+
         static private Double EvaluateExpression(ISequenceEntity item, string expr, Stack<Keys> stack, IList<string> issues) {
             lock (ConstantsLock) {
                 if (expr.IsNullOrEmpty()) return 0;
@@ -145,10 +218,9 @@ namespace WhenPlugin.When {
                 if (string.Equals(expr, "true", StringComparison.OrdinalIgnoreCase)) { return 1; }
                 if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
 
-                Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
                 // Consolidate keys
-                Keys mergedKeys = ConstantExpression.GetSwitchWeatherKeys();
-
+                Keys mergedKeys = ConstantExpression.GetSwitchWeatherKeys().Clone();
+                   
                 foreach (Keys k in stack) {
                     foreach (KeyValuePair<string, object> kvp in k) {
                         object kvpValue = kvp.Value;
@@ -168,44 +240,21 @@ namespace WhenPlugin.When {
                             if (!Double.IsNaN(kvpDouble)) {
                                 mergedKeys.Add(kvp.Key, kvpDouble);
                             }
+                        } else {
+                            DebugInfo("&&& &&& merged key already contains ", kvp.Key, " = ", kvpValue.ToString());
                         }
                     }
                 }
 
+                // Save latest merged keys?
+                LastMergedKeys = mergedKeys;
+                
                 if (mergedKeys.Count == 0) {
                     DebugInfo("Expression '", expr, "' not evaluated; no keys");
                     return Double.NaN;
                 }
 
-                // Add switch/gauge/weather keys here...
-
-                e.Parameters = mergedKeys;
-                try {
-                    DebugInfo("     ### Evaluating ", expr);
-                    object v;
-                    if (e.Parameters.TryGetValue("Lp", out v)) {
-                        DebugInfo("       ## Lp = ", v.ToString());
-                    }
-                    var eval = e.Evaluate();
-                    DebugInfo("     ### Expression '", expr, "' in '", item.Name, "' evaluated to " + eval.ToString());
-                    if (eval is Boolean b) {
-                        return b ? 1 : 0;
-                    }
-                    try {
-                        return Convert.ToDouble(eval);
-                    } catch (Exception ex) {
-                        return Double.NaN;
-                    }
-                } catch (Exception ex) {
-                    if (issues != null) {
-                        if (ex is EvaluationException) {
-                            issues.Add("Syntax error");
-                        } else {
-                            issues.Add(ex.Message);
-                        }
-                    }
-                    return Double.NaN;
-                }
+                return NCalcEvaluate(expr, mergedKeys, issues);
             }
         }
 
@@ -381,7 +430,6 @@ namespace WhenPlugin.When {
 
                 if (!Loaded && (container != GlobalContainer)) {
                     DebugInfo("Not loaded and not GlobalContainer; returning");
-
                     return;
                 }
 
@@ -399,7 +447,7 @@ namespace WhenPlugin.When {
                 if (KeyCache.TryGetValue(container, out cachedKeys)) {
                     DebugInfo("FindConstants for '", container.Name, "' found in cache: ", cachedKeys.ToString());
                 } else {
-                    DebugInfo("FindConstants for '", container.Name, "'");
+                    //DebugInfo("FindConstants for '", container.Name, "'");
                 }
 
                 KeysStack.Push(keys);
@@ -479,15 +527,13 @@ namespace WhenPlugin.When {
 
         public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
             lock (ConstantsLock) {
-                DebugInfo(" @@ IsValid: ", exprName, ":", expr);
                 val = 0;
                 ISequenceEntity item = obj as ISequenceEntity;
-                if (item == null || item.Parent == null) return false;
-
-                if (expr == null || expr.Length == 0) {
-                    DebugInfo("IsValid: ", exprName, " null/empty");
+                if (item == null || item.Parent == null || expr == null || expr.Length == 0) {
                     return false;
                 }
+
+                DebugInfo(" @@ IsValid: ", exprName, ":", expr);
 
                 // We will always process the Global container
                 if (item.Parent != GlobalContainer) {
@@ -495,6 +541,12 @@ namespace WhenPlugin.When {
                     // Say that we have a sequence loaded...
                     Loaded = true;
                 }
+                // Best case, this is a number a some sort
+                if (double.TryParse(expr, out val)) {
+                    DebugInfo("IsValid for ", item.Name, ": '", exprName, "' = ", expr);
+                    return true;
+                }
+
 
                 // Make sure we're up-to-date on constants
                 ISequenceContainer parent = item.Parent;
@@ -507,49 +559,42 @@ namespace WhenPlugin.When {
                     UpdateConstants(item);
                 }
 
-                // Best case, this is a number a some sort
-                if (double.TryParse(expr, out val)) {
-                    DebugInfo("IsValid for ", item.Name, ": '", exprName, "' = ", expr);
-                    return true;
-                } else {
-                    ISequenceContainer c = item.Parent;
-                    // Ok, it's not a number. Let's look for constants
-                    if (c != null) {
-                        // Build the keys stack, walking up the ladder of Parents
-                        Stack<Keys> stack = new Stack<Keys>();
-                        ISequenceEntity cc = c;
-                        while (cc != null) {
-                            Keys cachedKeys;
-                            KeyCache.TryGetValue(cc, out cachedKeys);
-                            if (!cachedKeys.IsNullOrEmpty()) {
-                                stack.Push(cachedKeys);
-                            }
-                            if (cc is SequenceRootContainer) {
-                                cc = GlobalContainer;
-                            } else {
-                                cc = GetParent(cc);
-                            }
+                ISequenceContainer c = item.Parent;
+                if (c != null) {
+                    // Build the keys stack, walking up the ladder of Parents
+                    Stack<Keys> stack = new Stack<Keys>();
+                    ISequenceEntity cc = c;
+                    while (cc != null) {
+                        Keys cachedKeys;
+                        KeyCache.TryGetValue(cc, out cachedKeys);
+                        if (!cachedKeys.IsNullOrEmpty()) {
+                            stack.Push(cachedKeys);
                         }
-
-                        // Reverse the stack to maintain proper scoping
-                        Stack<Keys> reverseStack = new Stack<Keys>();
-                        Keys k;
-                        while (stack.TryPop(out k)) {
-                            reverseStack.Push(k);
-                        }
-
-                        if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
-
-                        double result = EvaluateExpression(item, expr, reverseStack, issues);
-                        DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,
-                            ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
-                        if (Double.IsNaN(result)) {
-                            val = -1;
-                            return false;
+                        if (cc is SequenceRootContainer) {
+                            cc = GlobalContainer;
                         } else {
-                            val = result;
-                            return true;
+                            cc = GetParent(cc);
                         }
+                    }
+
+                    // Reverse the stack to maintain proper scoping
+                    Stack<Keys> reverseStack = new Stack<Keys>();
+                    Keys k;
+                    while (stack.TryPop(out k)) {
+                        reverseStack.Push(k);
+                    }
+
+                    if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
+
+                    double result = EvaluateExpression(item, expr, reverseStack, issues);
+                    DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,
+                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                    if (Double.IsNaN(result)) {
+                        val = -1;
+                        return false;
+                    } else {
+                        val = result;
+                        return true;
                     }
                 }
                 return false;
@@ -683,6 +728,14 @@ namespace WhenPlugin.When {
                             SwitchWeatherKeys.TryAdd(key, t);
                             i.Add("Weather: " + key + " (" + t + ")");
                         }
+                    }
+                }
+
+                Keys imageKeys = TakeExposure.LastImageResults;
+                if (imageKeys != null) {
+                    foreach (KeyValuePair<string, object> kvp in imageKeys) {
+                        SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
+                        i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 }
 

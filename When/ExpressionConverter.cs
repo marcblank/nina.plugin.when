@@ -88,7 +88,7 @@ namespace WhenPlugin.When {
                 } else {
                     double result;
                     IList<string> issues = new List<string>();
-                    if (ConstantExpression.IsValid(item, "*Converter*", expr, out result, issues)) {
+                    if (ConstantExpression.IsValidConverter(item, expr, out result, issues)) {
                         ValidityCache.Remove(item);
                         if (item != null) {
                             string valid = Validate(item, result, values);
