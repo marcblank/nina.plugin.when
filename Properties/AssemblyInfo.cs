@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.9.2.1")]
-[assembly: AssemblyFileVersion("3.9.2.1")]
+[assembly: AssemblyVersion("3.9.3.0")]
+[assembly: AssemblyFileVersion("3.9.3.0")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2023 Marc Blank")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible withq
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1022")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1056")]
 
 // The license your plugin code is using
 [assembly: AssemblyMetadata("License", "MPL-2.0")]

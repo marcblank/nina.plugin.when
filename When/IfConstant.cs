@@ -85,6 +85,15 @@ namespace WhenPlugin.When {
             }
 
             try {
+                //// See if Predicate contains image parameters?
+                //NCalc.Expression e = new NCalc.Expression(Predicate);
+                //ConstantExpression.Keys k = new ConstantExpression.Keys();
+                //ConstantExpression.GetParsedKeys(e.ParsedExpression, new ConstantExpression.Keys(), k);
+                //if (k.ContainsKey("FWHM") || k.ContainsKey("HFR") || k.ContainsKey("Eccentricity") || k.ContainsKey("StarCount")) {
+                //    // We need to wait...
+                //    Logger.Info("Waiting for image data...");
+                //}
+
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
                 Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
                 if (result == null) {

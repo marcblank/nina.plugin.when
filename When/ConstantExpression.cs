@@ -279,7 +279,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        static Keys GetParsedKeys(LogicalExpression e, Keys mergedKeys, Keys k) {
+        static public Keys GetParsedKeys(LogicalExpression e, Keys mergedKeys, Keys k) {
             lock (ConstantsLock) {
                 if (e is BinaryExpression b) {
                     GetParsedKeys(b.LeftExpression, mergedKeys, k);
@@ -303,7 +303,7 @@ namespace WhenPlugin.When {
             ISequenceEntity p = FindKeyContainer(item, key);
             if (p == null) {
                 if (SwitchWeatherKeys.ContainsKey(key)) {
-                    return "Switch/Weather";
+                    return "Switch/Weather/Image";
                 }
                 return "??";
             }
@@ -737,6 +737,12 @@ namespace WhenPlugin.When {
                         SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
                         i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
+                } else {
+                    SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("StarCount", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("FWHM", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("Eccentricity", Double.NaN);
+                    i.Add("No image data");
                 }
 
                 Switches = i;

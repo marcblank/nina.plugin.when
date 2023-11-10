@@ -47,6 +47,8 @@ using Castle.Core.Internal;
 using System.Runtime.CompilerServices;
 using NINA.Profile;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using Google.Protobuf.WellKnownTypes;
 
 namespace WhenPlugin.When {
 
@@ -56,12 +58,13 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Constants Enhanced")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeExposure : SequenceItem, IExposureItem, IValidatable, IInstructionResults {
+    public class TakeExposure : SequenceItem, IExposureItem, IValidatable {
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IImageSaveMediator imageSaveMediator;
         private IImageHistoryVM imageHistoryVM;
         private IProfileService profileService;
+        Task imageProcessingTask;
 
         [ImportingConstructor]
         public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
@@ -74,7 +77,6 @@ namespace WhenPlugin.When {
             this.imageHistoryVM = imageHistoryVM;
             this.profileService = profileService;
             CameraInfo = this.cameraMediator.GetInfo();
-            Results = new InstructionResult();
         }
 
         private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
@@ -91,7 +93,6 @@ namespace WhenPlugin.When {
                 Gain = Gain,
                 Offset = Offset,
                 ImageType = ImageType,
-                Results = new InstructionResult()
             };
 
             if (clone.Binning == null) {
@@ -180,8 +181,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        public InstructionResult Results { get; set; }
-
         private ObservableCollection<string> _imageTypes;
 
         public ObservableCollection<string> ImageTypes {
@@ -189,7 +188,7 @@ namespace WhenPlugin.When {
                 if (_imageTypes == null) {
                     _imageTypes = new ObservableCollection<string>();
 
-                    Type type = typeof(CaptureSequence.ImageTypes);
+                    System.Type type = typeof(CaptureSequence.ImageTypes);
                     foreach (var p in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)) {
                         var v = p.GetValue(null);
                         _imageTypes.Add(v.ToString());
@@ -203,89 +202,109 @@ namespace WhenPlugin.When {
             }
         }
 
-        public InstructionResult GetResults() {
-            Object value;
-            while (!Results.TryGetValue("_READY_", out value)) {
-                Thread.Sleep(100);
-            }
-            while (!Results.TryGetValue("_ImageUri_", out value)) {
-                Thread.Sleep(100);
-            }
-            return Results;
-        }
+        private bool HandlerInit = false;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            var capture = new CaptureSequence() {
+           var count = ExposureCount;
+           var dsoContainer = RetrieveTarget(this.Parent);
+           var specificDSOContainer = dsoContainer as DeepSkyObjectContainer;
+           if (specificDSOContainer != null) {                
+               count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
+           }
+           var capture = new CaptureSequence() {
                 ExposureTime = ExposureTime,
                 Binning = Binning,
                 Gain = Gain,
                 Offset = Offset,
                 ImageType = ImageType,
-                ProgressExposureCount = ExposureCount,
-                TotalExposureCount = ExposureCount + 1,
+                ProgressExposureCount = count,
+                TotalExposureCount = count + 1,
             };
 
-            Results.Clear();
+            
+            var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
-            if (!handlerInit) {
+            if (!HandlerInit) {
                 imagingMediator.ImagePrepared += ProcessResults;
-                //imageSaveMediator.ImageSaved += ImageSaved;
-                handlerInit = true;
+                HandlerInit = true;
             }
 
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
-                imageParams = new PrepareImageParameters(true, true);
+                imageHistoryVM.Add(exposureData.MetaData.Image.Id, ImageType);
             }
 
-            var target = RetrieveTarget(this.Parent);
-
-            var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
-
-            var imageData = await exposureData.ToImageData(progress, token);
-
-            var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);
-
-            if (target != null) {
-                imageData.MetaData.Target.Name = target.DeepSkyObject.Name; /// NameAsAscii;
-                imageData.MetaData.Target.Coordinates = target.InputCoordinates.Coordinates;
-                imageData.MetaData.Target.PositionAngle = target.PositionAngle;
+            if (imageProcessingTask != null) {
+                await imageProcessingTask;
             }
+            imageProcessingTask = ProcessImageData(dsoContainer, exposureData, progress, token);
 
-            ISequenceContainer parent = Parent;
-            while (parent != null && !(parent is SequenceRootContainer)) {
-                parent = parent.Parent;
+            if (specificDSOContainer != null) {
+                specificDSOContainer.IncrementExposureCountForItemAndCurrentFilter(this, 1);
             }
-            if (parent is SequenceRootContainer item) {
-                imageData.MetaData.Sequence.Title = item.SequenceTitle;
-            }
-
-            await imageSaveMediator.Enqueue(imageData, prepareTask, progress, token);
-
-            if (IsLightSequence()) {
-                imageHistoryVM.Add(imageData.MetaData.Image.Id, await imageData.Statistics, ImageType);
-            }
-
             ExposureCount++;
-
         }
 
-        private bool handlerInit = false;
-
-        private void BeforeFinalizeImageSaved(object sender, BeforeFinalizeImageSavedEventArgs e, Task t) {
-
-        }
-
-        private void ImageSaved(object sender, ImageSavedEventArgs e) {
-            Uri fileName = e.PathToImage;
+        private async Task ProcessImageData(IDeepSkyObjectContainer dsoContainer, IExposureData exposureData, IProgress<ApplicationStatus> progress, CancellationToken token) {
             try {
-                Results.Add("_ImageUri_", fileName);
-            } catch (Exception ex) {
-                return;
-            }
+                var imageParams = new PrepareImageParameters(null, false);
+                if (IsLightSequence()) {
+                    imageParams = new PrepareImageParameters(true, true);
+                }
 
+                var imageData = await exposureData.ToImageData(progress, token);
+
+                var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);
+
+                if (IsLightSequence()) {
+                    imageHistoryVM.PopulateStatistics(imageData.MetaData.Image.Id, await imageData.Statistics);
+                }
+
+                if (dsoContainer != null) {
+                    var target = dsoContainer.Target;
+                    if (target != null) {
+                        imageData.MetaData.Target.Name = target.DeepSkyObject.NameAsAscii;
+                        imageData.MetaData.Target.Coordinates = target.InputCoordinates.Coordinates;
+                        imageData.MetaData.Target.PositionAngle = target.PositionAngle;
+                    }
+                }
+
+                ISequenceContainer parent = Parent;
+                while (parent != null && !(parent is SequenceRootContainer)) {
+                    parent = parent.Parent;
+                }
+                if (parent is SequenceRootContainer item) {
+                    imageData.MetaData.Sequence.Title = item.SequenceTitle;
+                }
+
+                await imageSaveMediator.Enqueue(imageData, prepareTask, progress, token);
+
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
-  
+
+        private bool IsLightSequence() {
+            return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
+        }
+
+        public override void AfterParentChanged() {
+            Validate();
+        }
+
+        private IDeepSkyObjectContainer RetrieveTarget(ISequenceContainer parent) {
+            if (parent != null) {
+                var container = parent as IDeepSkyObjectContainer;
+                if (container != null) {
+                    return container;
+                } else {
+                    return RetrieveTarget(parent.Parent);
+                }
+            } else {
+                return null;
+            }
+        }
+
         static Object LastImageLock = new Object();
 
         static ConstantExpression.Keys iLastImageResult;
@@ -315,7 +334,7 @@ namespace WhenPlugin.When {
 
                 // Clean out any old results since this instruction may be called many times
                 ConstantExpression.Keys results = new ConstantExpression.Keys();
-                
+
                 // These are from AF or HocusFocus
                 results.Add("HFR", Math.Round(a.HFR, 3));
                 results.Add("DetectedStars", a.DetectedStars);
@@ -349,28 +368,6 @@ namespace WhenPlugin.When {
                 //}
                 LastImageResults = results;
             }
-
-        }
-
-        private bool IsLightSequence() {
-            return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
-        }
-
-        public override void AfterParentChanged() {
-            Validate();
-        }
-
-        private InputTarget RetrieveTarget(ISequenceContainer parent) {
-            if (parent != null) {
-                var container = parent as IDeepSkyObjectContainer;
-                if (container != null) {
-                    return container.Target;
-                } else {
-                    return RetrieveTarget(parent.Parent);
-                }
-            } else {
-                return null;
-            }
         }
 
         public string ValidateGain(double gain) {
@@ -400,7 +397,6 @@ namespace WhenPlugin.When {
   
         public bool Validate() {
             var i = new List<string>();
-            
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
@@ -414,6 +410,7 @@ namespace WhenPlugin.When {
             }
 
             var fileSettings = profileService.ActiveProfile.ImageFileSettings;
+
             if (string.IsNullOrWhiteSpace(fileSettings.FilePath)) {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathEmpty"]);
             } else if (!Directory.Exists(fileSettings.FilePath)) {
@@ -430,7 +427,7 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            Results.Clear();
+            LastImageResults?.Clear();
         }
 
         public override TimeSpan GetEstimatedDuration() {
@@ -438,7 +435,9 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(TakeExposure)}, ExposureTime {ExposureTime}, Gain {Gain}, Offset {Offset}, ImageType {ImageType}, Binning {Binning?.Name}";
+            var currentGain = Gain == -1 ? CameraInfo.DefaultGain : Gain;
+            var currentOffset = Offset == -1 ? CameraInfo.DefaultOffset : Offset;
+            return $"Category: {Category}, Item: {nameof(TakeExposure)}, ExposureTime {ExposureTime}, Gain {currentGain}, Offset {currentOffset}, ImageType {ImageType}, Binning {Binning?.Name ?? "1x1"}";
         }
     }
 }
