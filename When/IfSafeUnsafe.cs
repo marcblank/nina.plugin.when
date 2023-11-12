@@ -45,10 +45,10 @@ namespace WhenPlugin.When {
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
             while (true) {
-                SafetyMonitorInfo info = safetyMediator.GetInfo();
+                bool safe = WhenUnsafe.CheckSafe(this, safetyMediator);
 
-                if (isSafe && !info.IsSafe) return;
-                if (!isSafe && info.IsSafe) return;
+                if (isSafe && !safe) return;
+                if (!isSafe && safe) return;
 
                 Logger.Info(Name + " true; triggered.");
 

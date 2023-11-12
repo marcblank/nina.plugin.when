@@ -82,13 +82,11 @@ namespace WhenPlugin.When {
 
         public TimeSpan WaitInterval { get; set; } = TimeSpan.FromSeconds(5);
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            var info = safetyMonitorMediator.GetInfo();
-            IsSafe = info.Connected && info.IsSafe;
+            bool IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             while (!IsSafe && !(Parent == null)) {
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["Lbl_SequenceItem_SafetyMonitor_WaitUntilSafe_Waiting"] });
                 await CoreUtil.Wait(WaitInterval, token, default);
-                info = safetyMonitorMediator.GetInfo();
-                IsSafe = info.Connected && info.IsSafe;
+                IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             }
 
             // Execute instructions now

@@ -45,6 +45,7 @@ using System.Management;
 using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
+using System.Windows.Media.Converters;
 
 namespace WhenPlugin.When {
 
@@ -175,9 +176,25 @@ namespace WhenPlugin.When {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
 
-        public bool Check() {
+        public static bool CheckSafe(ISequenceEntity item, ISafetyMonitorMediator safetyMediator) {
             var info = safetyMediator.GetInfo();
-            IsSafe = info.Connected && info.IsSafe;
+            bool safe = info.Connected && info.IsSafe;
+
+            // SAFE means IsSafe && SAFE != false
+            double safeValue = Double.NaN;
+            bool valid = ConstantExpression.IsValidConverter(item, "SAFE", out safeValue, null);
+
+            if (safe && valid && safeValue == 0) {
+                safe = false;
+            }
+            return safe;
+        }
+
+        public bool Check() {
+
+            bool IsSafe = CheckSafe(this, safetyMediator);
+
+
             if (!IsSafe && IsActive()) {
                 Logger.Info($"{nameof(SafetyMonitorCondition)} finished. Status=Unsafe");
             }
