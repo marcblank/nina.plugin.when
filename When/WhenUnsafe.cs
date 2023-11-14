@@ -238,7 +238,7 @@ namespace WhenPlugin.When {
             if (!(CanContinue(Parent, null, null))) {
                 PerformStopInstructions();
                 LoopWatchdog?.Cancel();
-                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(FindTargetContainer());
+                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
             }
         }
 
@@ -293,7 +293,7 @@ namespace WhenPlugin.When {
                             Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
                             Status = SequenceEntityStatus.CREATED;
                             InFlight = false;
-                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
                         }
                         cts.Dispose();
                         // Don't keep starting the sequence

@@ -699,6 +699,9 @@ namespace WhenPlugin.When {
                 var i = new List<string>();
                 SwitchWeatherKeys.Clear();
 
+                SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
+
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();
                 if (cameraInfo.Connected) {

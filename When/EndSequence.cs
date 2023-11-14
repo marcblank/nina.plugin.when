@@ -89,7 +89,7 @@ namespace WhenPlugin.When {
                 item.Status = SequenceEntityStatus.FINISHED;
             }
 
-            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(this);
+            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
 
             return true;
         }
