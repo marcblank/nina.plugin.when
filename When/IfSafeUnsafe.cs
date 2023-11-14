@@ -74,9 +74,6 @@ namespace WhenPlugin.When {
             CommonValidate();
 
             bool valid = base.Validate();
-            if (safetyMediator == null || !safetyMediator.GetInfo().Connected) {
-                Issues.Add("Safety Monitor must be connected");
-            }
             return Issues.Count == 0;
         }
 

@@ -285,9 +285,13 @@ namespace WhenPlugin.When {
                     GetParsedKeys(b.LeftExpression, mergedKeys, k);
                     GetParsedKeys(b.RightExpression, mergedKeys, k);
                 } else if (e is Identifier i) {
-                    k.Add(i.Name, mergedKeys.GetValueOrDefault(i.Name));
+                    try {
+                        k.Add(i.Name, mergedKeys.GetValueOrDefault(i.Name));
+                    } catch (Exception ex) {
+                        //Logger.Info("Key used multiple times: " + i.Name);
+                    }
                 } else if (e is TernaryExpression t) {
-                    Logger.Info("LI");
+                    //Logger.Info("LI");
                 } else if (e is Function f) {
                     if (f.Expressions != null) {
                         foreach (LogicalExpression ee in f.Expressions) {

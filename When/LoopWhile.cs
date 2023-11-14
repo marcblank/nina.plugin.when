@@ -30,6 +30,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Utility;
+using System.Diagnostics.Eventing.Reader;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Loop While")]
@@ -124,33 +125,41 @@ namespace WhenPlugin.When {
             }
         }
 
+        private bool Debugging = false;
+
+        private void LogInfo(string str) {
+            if (Debugging) {
+                Logger.Info(str);
+            }
+        }
+
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
 
             if (Predicate.IsNullOrEmpty()) {
                 Status = SequenceEntityStatus.FAILED;
-                Logger.Info("LoopWhile: Check, Predicate is null or empty");
+                LogInfo("LoopWhile: Check, Predicate is null or empty");
                 return false;
             }
 
             try {
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                Logger.Info("LoopWhile: Check, PredicateValue = " + PredicateValue);
+                //Logger.Info("LoopWhile: Check, PredicateValue = " + PredicateValue);
                 if (result == null) {
                     // Syntax error...
-                    Logger.Info("LoopWhile: There is a syntax error in your predicate expression.");
+                    LogInfo("LoopWhile: There is a syntax error in your predicate expression.");
                     Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                     return false;
                 }
 
                 if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                    Logger.Info("LoopWhile: Predicate is true!");
+                    LogInfo("LoopWhile: Predicate is true!");
                     return true;
                 } else {
-                    Logger.Info("LoopWhile: Predicate is false!");
+                    LogInfo("LoopWhile: Predicate is false!");
                     return false;
                 }
             } catch (ArgumentException ex) {
-                Logger.Info("LoopWhile error: " + ex.Message);
+                LogInfo("LoopWhile error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
                 return false;
             }

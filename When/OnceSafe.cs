@@ -103,14 +103,6 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
 
-            
-            if (safetyMonitorMediator.GetInfo().Connected) { }
-            else {
-                i.Add("Safety monitor is not connected");
-                Issues = i;
-                return false;
-            }
-
             Issues = i;
             return i.Count == 0;
         }

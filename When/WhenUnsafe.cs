@@ -155,14 +155,7 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            var info = safetyMediator.GetInfo();
-
-            if (!info.Connected) {
-                i.Add(Loc.Instance["LblSafetyMonitorNotConnected"]);
-            } else {
-                IsSafe = info.IsSafe;
-            }
-
+ 
             foreach (ISequenceItem item in Instructions.Items) {
                 if (item is IValidatable v) {
                     _ = v.Validate();
@@ -193,7 +186,6 @@ namespace WhenPlugin.When {
         public bool Check() {
 
             bool IsSafe = CheckSafe(this, safetyMediator);
-
 
             if (!IsSafe && IsActive()) {
                 Logger.Info($"{nameof(SafetyMonitorCondition)} finished. Status=Unsafe");
@@ -346,11 +338,10 @@ namespace WhenPlugin.When {
             InFlight = true;
 
             while (true) {
-                SafetyMonitorInfo info = safetyMediator.GetInfo();
-                if (info.IsSafe) {
+                if (WhenUnsafe.CheckSafe(this, safetyMediator)) {
                     return;
                 }
-
+ 
                 Logger.Info("WhenUnsafe: Conditions unsafe.");
 
                 // We'll attach ourselves to the sequence that was running
