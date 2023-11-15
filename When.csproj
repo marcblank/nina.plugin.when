@@ -21,7 +21,6 @@
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
-    <Compile Remove="When\When.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
