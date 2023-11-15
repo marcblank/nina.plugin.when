@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "When")]
     [ExportMetadata("Description", "Runs a customizable set of instructions when the specified Expression is true.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
+    [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceTrigger))]
 
     public class WhenSwitch : When {

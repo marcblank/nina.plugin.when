@@ -57,7 +57,8 @@ namespace WhenPlugin.When {
             return new CoolCamera(this) {
                 Temperature = Temperature,
                 TemperatureExpr = TemperatureExpr,
-                Duration = Duration
+                Duration = Duration,
+                DurationExpr = DurationExpr
             };
         }
 
@@ -104,8 +105,28 @@ namespace WhenPlugin.When {
         }
         // *** ADDED FOR CONSTANTS SUPPORT ***
 
+
+        private double duration = 0;
+
+        public double Duration {
+            get => duration;
+            set {
+                duration = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string durationExpr = "0";
+
         [JsonProperty]
-        public double Duration { get; set; } = 0;
+        public string DurationExpr {
+            get => durationExpr;
+            set {
+                durationExpr = value;
+                ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0);
+                RaisePropertyChanged("DurationExpr");
+            }
+        }
 
         private IList<string> issues = new List<string>();
 
@@ -135,6 +156,7 @@ namespace WhenPlugin.When {
 
             CameraSettings = profileService.ActiveProfile.CameraSettings;
             ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature, i);
+            ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0, i);
 
             if (ValidateTemperature(temperature) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);

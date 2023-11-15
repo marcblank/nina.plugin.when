@@ -205,15 +205,18 @@
                         Margin="2.5,0,7.5,2 "
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Text="°C |" />
+                        Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalContentAlignment="Center"
-                        Text="{Binding Duration}"
-                        TextAlignment="Right"
-                        Unit="min" />
+                    <local:ConstantControl
+                       Margin="5,0,5,3"
+                       MinWidth="25"
+                       Expr="{Binding DurationExpr, Mode=TwoWay}" 
+                       Valu="{Binding Duration, Mode=TwoWay}"/>
+                    <TextBlock
+                       Margin="2.5,0,7.5,2 "
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="min" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -579,7 +582,7 @@
                 <ninactrl:DetachingExpander>
                     <ninactrl:DetachingExpander.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Enter an expression:" />
+                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="Expression:" />
                             <TextBox
                                     MinWidth="300"
                                     Margin="5,5,10,0"

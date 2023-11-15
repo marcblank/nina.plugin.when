@@ -31,6 +31,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Linq;
 using System.Security.Cryptography.Xml;
+using NINA.Equipment.Equipment.MyDome;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -667,15 +668,17 @@ namespace WhenPlugin.When {
         private static ISwitchMediator SwitchMediator { get; set; }
         private static IWeatherDataMediator WeatherDataMediator { get; set; }
         private static ICameraMediator CameraMediator { get; set; }
+        private static IDomeMediator DomeMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches {  get; set; } = new List<string>();
 
-        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator) {
+        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
+            DomeMediator = domeMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -699,14 +702,24 @@ namespace WhenPlugin.When {
                 var i = new List<string>();
                 SwitchWeatherKeys.Clear();
 
-                SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
+                //SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                double timeSeconds = Math.Floor(time.TotalSeconds);
+                SwitchWeatherKeys.Add("TIME", timeSeconds);
+                //i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
+                i.Add("TIME: " + timeSeconds);
 
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();
                 if (cameraInfo.Connected) {
                     SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
                     i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
+                }
+
+                DomeInfo domeInfo = DomeMediator.GetInfo();
+                if (domeInfo.Connected) {
+                    SwitchWeatherKeys.Add("ShutterStatus", domeInfo.ShutterStatus);
+                    i.Add("Dome: ShutterStatus (" + domeInfo.ShutterStatus + ")");
                 }
 
                 // Get switch values

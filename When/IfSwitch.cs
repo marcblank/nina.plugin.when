@@ -29,7 +29,7 @@ using System.Diagnostics;
 using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "If Switch/Weather")]
+    [ExportMetadata("Name", "If Switch/Weather (Deprecated; use If)")]
     [ExportMetadata("Description", "Executes an instruction set if the expression, based on current switch and/or weather values, is true")]
     [ExportMetadata("Icon", "SwitchesSVG")]
     [ExportMetadata("Category", "Switch")]
