@@ -622,7 +622,7 @@
                                     MinWidth="40"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
-                                    IsChecked="{Binding OnceOnly}"
+                                    IsChecked="{Binding OnceOnly, Mode=TwoWay}"
                                     ToolTip="If set, this instruction will only run one time and then be disabled.  This can prevent looping behavior that may not be desirable." />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>

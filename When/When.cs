@@ -52,10 +52,10 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Runs a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
-    [Export(typeof(ISequenceTrigger))]
+    //[ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
+    //[Export(typeof(ISequenceTrigger))]
 
-    public abstract class When : SequenceTrigger, IValidatable {
+    public abstract class When : SequenceTrigger, IValidatable, IIfWhenSwitch {
         protected ISafetyMonitorMediator safetyMediator;
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
@@ -69,6 +69,8 @@ namespace WhenPlugin.When {
             this.safetyMediator = safetyMediator;
             this.sequenceMediator = sequenceMediator;
             this.applicationStatusMediator = applicationStatusMediator;
+            this.switchMediator = switchMediator;
+            this.weatherMediator = weatherMediator;
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
@@ -152,7 +154,27 @@ namespace WhenPlugin.When {
             }
         }
 
+        protected void CommonValidate() {
+            if (Instructions.PseudoParent == null) {
+                Instructions.PseudoParent = this;
+            }
+
+            // Avoid infinite loop by checking first...
+            if (Instructions.Parent != Parent) {
+                Instructions.AttachNewParent(Parent);
+            }
+
+            foreach (ISequenceItem item in Instructions.Items) {
+                if (item is IValidatable val) {
+                    //item.AttachNewParent(Parent);
+                    _ = val.Validate();
+                }
+            }
+        }
+
         public bool Validate() {
+            CommonValidate();
+
             var i = new List<string>();
 
             foreach (ISequenceItem item in Instructions.Items) {

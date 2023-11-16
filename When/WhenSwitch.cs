@@ -79,7 +79,7 @@ namespace WhenPlugin.When {
         public bool Disabled { get; set; } = false;
         
         [JsonProperty]
-        public bool OnceOnly { get; set; } = true;
+        public bool OnceOnly { get; set; } = false;
 
         private string iPredicate = "";
 
@@ -111,18 +111,22 @@ namespace WhenPlugin.When {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
 
+
         public override bool Check() {
             if (Disabled) return false;
-            
-            object result = IfWhenSwitch.EvaluatePredicate(Predicate, switchMediator, weatherMediator);
+
+            object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+
+            Logger.Info("When: Check, PredicateValue = " + PredicateValue);
             if (result == null) {
-                if (OnceOnly) {
-                    Disabled = true;
-                }
+                return false;
+            }
+            if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
-            return (result != null && result is Boolean && (Boolean)result);
+            return false;
         }
+
         public string ShowCurrentInfo() {
             try {
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);

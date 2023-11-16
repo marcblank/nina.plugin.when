@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class IfConstant : IfCommand, IValidatable {
+    public class IfConstant : IfCommand, IValidatable, IIfWhenSwitch {
 
         [ImportingConstructor]
         public IfConstant() {
@@ -74,6 +74,20 @@ namespace WhenPlugin.When {
                 return "True";
             }
             return string.Empty;
+        }
+
+        public bool Check() {
+
+            object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+
+            Logger.Info("IfConstant: Check, PredicateValue = " + PredicateValue);
+            if (result == null) {
+               return false;
+            }
+            if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
+            return false;
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
