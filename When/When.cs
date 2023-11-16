@@ -48,6 +48,7 @@ using NINA.Sequencer;
 using System.Windows.Media.Converters;
 using NINA.WPF.Base.Mediator;
 using NINA.View.Sequencer.Converter;
+using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
 
@@ -57,7 +58,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Sequencer")]
     [Export(typeof(ISequenceTrigger))]
 
-    public class WhenSwitch : When {
+    public class WhenSwitch : When, IValidatable {
 
         [ImportingConstructor]
         public WhenSwitch(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
@@ -146,6 +147,29 @@ namespace WhenPlugin.When {
             } catch (Exception ex) {
                 return "Error: " + ex.Message;
             }
+        }
+        public IList<string> Switches { get; set; } = null;
+        public new bool Validate() {
+
+            CommonValidate();
+
+            var i = new List<string>();
+
+            if (Predicate.IsNullOrEmpty()) {
+                i.Add("Expression cannot be empty!");
+            }
+
+            try {
+                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+            } catch (Exception ex) {
+                i.Add("Error in expression: " + ex.Message);
+            }
+
+            Switches = ConstantExpression.GetSwitches();
+            RaisePropertyChanged("Switches");
+
+            Issues = i;
+            return i.Count == 0;
         }
     }
 }

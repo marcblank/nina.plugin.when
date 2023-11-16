@@ -718,9 +718,15 @@ namespace WhenPlugin.When {
 
                 DomeInfo domeInfo = DomeMediator.GetInfo();
                 if (domeInfo.Connected) {
-                    SwitchWeatherKeys.Add("ShutterStatus", domeInfo.ShutterStatus);
+                    SwitchWeatherKeys.Add("ShutterStatus", (int)domeInfo.ShutterStatus);
                     i.Add("Dome: ShutterStatus (" + domeInfo.ShutterStatus + ")");
-                }
+                    SwitchWeatherKeys.Add("ShutterNone", -1);
+                    SwitchWeatherKeys.Add("ShutterOpen", 0);
+                    SwitchWeatherKeys.Add("ShutterClosed", 1);
+                    SwitchWeatherKeys.Add("ShutterOpening", 2);
+                    SwitchWeatherKeys.Add("ShutterClosing", 3);
+                    SwitchWeatherKeys.Add("ShutterError", 4);
+               }
 
                 // Get switch values
                 SwitchInfo switchInfo = SwitchMediator.GetInfo();
