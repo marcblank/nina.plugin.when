@@ -1922,6 +1922,13 @@
                                   Expr="{Binding Path=Predicate, Mode=TwoWay}"
                                   Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
                                   />
+                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only" />
+                            <CheckBox
+                                  MinWidth="40"
+                                  Margin="5,0,0,0"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding OnceOnly, Mode=TwoWay}"
+                                  ToolTip="If set, this instruction will only run one time and then be disabled.  This can prevent looping behavior that may not be desirable." />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

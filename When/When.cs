@@ -120,17 +120,19 @@ namespace WhenPlugin.When {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
 
-
         public override bool Check() {
             if (Disabled) return false;
 
             object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
 
-            Logger.Info("When: Check, PredicateValue = " + PredicateValue);
             if (result == null) {
                 return false;
             }
             if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
+                Logger.Info("When: Check, PredicateValue = " + PredicateValue);
+                if (OnceOnly) {
+                    Disabled = true;
+                }
                 return true;
             }
             return false;
