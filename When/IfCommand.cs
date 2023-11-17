@@ -79,16 +79,20 @@ namespace WhenPlugin.When {
         }
 
         protected void CommonValidate() {
-            if (Instructions.PseudoParent == null) {
-                Instructions.PseudoParent = this;
+            ValidateInstructions(Instructions);
+        }
+
+        protected void ValidateInstructions(IfContainer instructions) {
+            if (instructions.PseudoParent == null) {
+                instructions.PseudoParent = this;
             }
 
             // Avoid infinite loop by checking first...
-            if (Instructions.Parent != Parent) {
-                Instructions.AttachNewParent(Parent);
+            if (instructions.Parent != Parent) {
+                instructions.AttachNewParent(Parent);
             }
 
-            foreach (ISequenceItem item in Instructions.Items) {
+            foreach (ISequenceItem item in instructions.Items) {
                 if (item is IValidatable val) {
                     //item.AttachNewParent(Parent);
                     _ = val.Validate();

@@ -506,6 +506,9 @@ namespace WhenPlugin.When {
                         }
                     } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
                         FindConstants(ifc.Instructions, new Keys());
+                        if (item is IfThenElse ec && ec.ElseInstructions.Items.Count > 0) {
+                            FindConstants(ec.ElseInstructions, new Keys());
+                        }
                     } else if (item is ISequenceContainer descendant && descendant.Items.Count > 0) {
                         FindConstants(descendant, new Keys());
                     }

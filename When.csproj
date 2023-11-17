@@ -23,6 +23,10 @@
     <Compile Remove="When\UserControl1.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="When\TakeExposure.cs.bak" />
+    <None Remove="When\TakeExposureNINA.cs.bak" />
+  </ItemGroup>
+  <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
     <Page Remove="When\SetConstantView.xaml" />
     <Page Remove="When\UserControl1.xaml" />
