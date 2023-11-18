@@ -34,7 +34,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "If")]
     [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Constants Enhanced")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

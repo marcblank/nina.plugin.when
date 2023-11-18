@@ -32,7 +32,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Move Focuser Relative +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Focuser_MoveFocuserRelative_Description")]
     [ExportMetadata("Icon", "MoveFocuserRelativeSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_Focuser")]
+    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class MoveFocuserRelative : SequenceItem, IValidatable {

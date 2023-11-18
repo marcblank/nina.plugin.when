@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Wait Until False")]
+    [ExportMetadata("Name", "Wait Until False (Deprecated)")]
     [ExportMetadata("Description", "Waits until the When Switch/Weather expression becomes false.")]
     [ExportMetadata("Icon", "SwitchesSVG")]
     [ExportMetadata("Category", "Switch")]

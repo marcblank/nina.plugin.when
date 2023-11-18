@@ -35,7 +35,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Repeat Until All Succeed")]
     [ExportMetadata("Description", "Retry the included instructions until all of them have finished successfully.")]
     [ExportMetadata("Icon", "LoopSVG")]
-    [ExportMetadata("Category", "Sequencer")]
+    [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class RepeatUntilAllSucceed : IfCommand, IValidatable {

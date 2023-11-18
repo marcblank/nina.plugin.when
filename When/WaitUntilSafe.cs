@@ -35,7 +35,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Wait Until Safe +")]
     [ExportMetadata("Description", "Waits until the Safety Monitor reports safe; delete this instruction to end the current sequence.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
+    [ExportMetadata("Category", "Powerups (Safety)")]
     [Export(typeof(ISequenceItem))]
     public class WaitUntilSafe : SequenceItem, IValidatable {
         private ISafetyMonitorMediator safetyMonitorMediator;

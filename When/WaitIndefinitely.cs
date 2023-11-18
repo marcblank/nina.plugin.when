@@ -29,7 +29,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Wait Indefinitely")]
     [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
+    [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class WaitIndefinitely : SequenceItem {

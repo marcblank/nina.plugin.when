@@ -12,42 +12,18 @@
 
 #endregion "copyright"
 
-using GalaSoft.MvvmLight.Command;
-using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Core.Locale;
 using NINA.Core.Enum;
 using NINA.Sequencer.Utility;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Container;
-using NINA.Core.Model;
-using NINA.Sequencer.Conditions;
 using Newtonsoft.Json;
-using NINA.Core.Utility.Notification;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using System.ComponentModel;
-using System.Reflection;
-using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
-using NINA.ViewModel.Sequencer;
-using System.Windows.Input;
-using System.Management;
-using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Sequencer;
-using System.Windows.Media.Converters;
-using NINA.WPF.Base.Mediator;
-using NINA.View.Sequencer.Converter;
 using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
@@ -55,8 +31,9 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "When")]
     [ExportMetadata("Description", "Runs a customizable set of instructions when the specified Expression is true.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Sequencer")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceTrigger))]
+    [JsonObject(MemberSerialization.OptIn)]
 
     public class WhenSwitch : When, IValidatable {
 
@@ -74,6 +51,8 @@ namespace WhenPlugin.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
+                Predicate = Predicate;
+                OnceOnly = OnceOnly;
             }
         }
 
@@ -100,7 +79,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("Predicate");
             }
         }
-        [JsonProperty]
+
         private string iPredicateValue;
 
         public string PredicateValue {
@@ -112,6 +91,14 @@ namespace WhenPlugin.When {
             }
         }
 
+        public string ValidateConstant(double temp) {
+            if ((int)temp == 0) {
+                return "False";
+            } else if ((int)temp == 1) {
+                return "True";
+            }
+            return string.Empty;
+        }
         public override object Clone() {
             return new WhenSwitch(this);
         }
@@ -121,21 +108,21 @@ namespace WhenPlugin.When {
         }
 
         public override bool Check() {
-            if (Disabled) return false;
+            if (Disabled) return true;
 
             object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
 
             if (result == null) {
-                return false;
+                return true;
             }
             if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
                 Logger.Info("When: Check, PredicateValue = " + PredicateValue);
                 if (OnceOnly) {
                     Disabled = true;
                 }
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         public string ShowCurrentInfo() {

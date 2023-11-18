@@ -52,7 +52,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Runs a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
+    [ExportMetadata("Category", "Powerups (Safety)")]
     [Export(typeof(ISequenceTrigger))]
 
     public class WhenUnsafe : When { 
@@ -99,10 +99,10 @@ namespace WhenPlugin.When {
         public override bool Check() {
             bool IsSafe = CheckSafe(this, safetyMediator);
 
-            if (!IsSafe && IsActive()) {
-                Logger.Info($"{nameof(SafetyMonitorCondition)} finished. Status=Unsafe");
-            }
-            return IsSafe;
+            //if (!IsSafe && IsActive()) {
+            //    Logger.Info($"{nameof(SafetyMonitorCondition)} finished. Status=Unsafe");
+            //}
+            return IsSafe && IsActive();
         }
     }
 }

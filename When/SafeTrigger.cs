@@ -23,7 +23,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Safe Trigger")]
     [ExportMetadata("Description", "The specified trigger will run ONLY if the safety monitor reports 'Safe' conditions.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Sequencer")]
+    [ExportMetadata("Category", "Powerups (Safety)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SafeTrigger : SequenceTrigger, IValidatable {

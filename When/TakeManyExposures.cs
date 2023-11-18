@@ -34,7 +34,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Take Many Exposures +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeManyExposures_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
-    [ExportMetadata("Category", "Constants Enhanced")]
+    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]

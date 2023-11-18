@@ -19,7 +19,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Interrupt Trigger")]
     [ExportMetadata("Description", "This trigger will stop execution after the currently running instruction, allowing you to add whatever instructions you want before proceeding.")]
     [ExportMetadata("Icon", "SequenceSVG")]
-    [ExportMetadata("Category", "Sequencer")]
+    [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]

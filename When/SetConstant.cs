@@ -26,7 +26,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Constants Enhanced")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SetConstant : SequenceItem, IValidatable, ISettable {
@@ -190,6 +190,11 @@ namespace WhenPlugin.When {
 
             if (DuplicateName) {
                 i.Add("Duplicate name in the same instruction set!");
+            }
+ 
+            ConstantExpression.Keys k = ConstantExpression.GetSwitchWeatherKeys();
+            if (k.ContainsKey(Constant)) {
+                i.Add("The name '" + Constant + "' is reserved.");
             }
 
             Issues = i;

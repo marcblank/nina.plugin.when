@@ -10,12 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Sequencer.Container;
 using NINA.Core.Enum;
+using System.Windows.Forms;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Variable")]
     [ExportMetadata("Description", "Defines a variable whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Constants Enhanced")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SetVariable : SequenceItem, IValidatable, ISettable {
@@ -191,15 +192,15 @@ namespace WhenPlugin.When {
                 i.Add("Duplicate name in the same instruction set!");
             }
 
+            ConstantExpression.Keys k = ConstantExpression.GetSwitchWeatherKeys();
+                if (k.ContainsKey(Variable)) {
+                i.Add("The name '" + Variable + "' is reserved.");
+            }
+
             Issues = i;
             if (Issues.Count > 0) {
                 cValue = Double.NaN.ToString();
             }
-
-            double val;
-            //ConstantExpression.Evaluate(this, "OValueExpr", "OValue", "");
-            //ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
-
 
             RaisePropertyChanged("CValueExpr");
             RaisePropertyChanged("CValue");

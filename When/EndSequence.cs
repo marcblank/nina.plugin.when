@@ -28,7 +28,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "End Sequence")]
     [ExportMetadata("Description", "Ends the currenty running sequence; the End Sequence instructions will run")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Sequencer")]
+    [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class EndSequence : SequenceItem, IValidatable {

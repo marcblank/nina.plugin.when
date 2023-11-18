@@ -361,6 +361,7 @@ namespace WhenPlugin.When {
                         // Allow this to be run multiple times
                         Instructions.ResetProgress();
                         Status = SequenceEntityStatus.CREATED;
+                        InFlight = false;
                     }
                 }
 
