@@ -69,8 +69,8 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
-                Instructions.Name = Name;
-                Instructions.Icon = Icon;
+                Instructions.Name = cloneMe.Name;
+                Instructions.Icon = cloneMe.Icon;
             }
         }
 

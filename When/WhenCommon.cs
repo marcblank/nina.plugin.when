@@ -54,6 +54,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Icon", "ShieldSVG")]
     //[ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
     //[Export(typeof(ISequenceTrigger))]
+    [JsonObject(MemberSerialization.OptIn)]
 
     public abstract class When : SequenceTrigger, IValidatable, IIfWhenSwitch {
         protected ISafetyMonitorMediator safetyMediator;
@@ -95,8 +96,8 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
-                Instructions.Name = Name;
-                Instructions.Icon = Icon;
+                Instructions.Name = cloneMe.Name;
+                Instructions.Icon = cloneMe.Icon;
             }
         }
 
@@ -109,7 +110,6 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-
 
         public ConditionWatchdog ConditionWatchdog { get; set; }
 

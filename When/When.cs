@@ -49,10 +49,10 @@ namespace WhenPlugin.When {
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
-                Instructions.Name = Name;
-                Instructions.Icon = Icon;
-                Predicate = Predicate;
-                OnceOnly = OnceOnly;
+                Instructions.Name = cloneMe.Name;
+                Instructions.Icon = cloneMe.Icon;
+                Predicate = cloneMe.Predicate;
+                OnceOnly = cloneMe.OnceOnly;
             }
         }
 
@@ -68,7 +68,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-
+        
         private string iPredicate = "";
 
         [JsonProperty]
