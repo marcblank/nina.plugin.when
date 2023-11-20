@@ -335,77 +335,7 @@
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
-
-    <DataTemplate DataType="{x:Type local:IfResults}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <ninactrl:DetachingExpander>
-                    <ninactrl:DetachingExpander.Header>
-                        <Border
-                                MinHeight="35"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontStyle="Italic"
-                                Opacity="0.4"
-                                Text="Instruction providing results goes here"
-                                TextAlignment="Center"
-                                MinWidth="400"
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
-                            <i:Interaction.Behaviors>
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="WhenPlugin.When.IInstructionResults, WhenPlugin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null" OnDropCommand="DropIntoIfCommand" />
-                            </i:Interaction.Behaviors>
-                        </Border>
-                    </ninactrl:DetachingExpander.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Margin="0,10,10,10" Text="Enter an expression using the results of the instruction:" />
-                            <TextBox
-                                    MinWidth="300"
-                                    Margin="5,0,10,0"
-                                    Text="{Binding Predicate}"
-                                    VerticalAlignment="Center"
-                                    TextAlignment="Left" />
-                        </StackPanel>
-                        <Border
-                        Grid.Row="1"
-                        MinHeight="35"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontStyle="Italic"
-                                Opacity="0.4"
-                                Text="Conditional instructions go here"
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem;" OnDropCommand="DropIntoCommand" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </ninactrl:DetachingExpander>
-
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>-->
+    -->
 
     <DataTemplate DataType="{x:Type local:IfSwitch}">
         <nina:SequenceBlockView DataContext="{Binding}">
@@ -1724,6 +1654,241 @@
         </Border>
     </DataTemplate>
 
+    <WrapPanel
+       x:Key="TakeFlatExposureDetails"
+       x:Shared="false"
+       Orientation="Horizontal">
+        <TextBlock
+           Margin="5,0,0,0"
+           VerticalAlignment="Center"
+           Text="#" />
+
+        <local:ConstantControl 
+                       Margin="0,0,10,5" 
+                       Expr="{Binding Path=Parent.IterationsExpr, Mode=TwoWay}"
+                       Valu="{Binding Path=Parent.IterationCount, Mode=TwoWay}"
+                       Type="Integer"
+                       />
+        <TextBlock
+           Margin="7.5,0,7.5,0"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           Text="|" />
+
+        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+
+        <ComboBox
+           Margin="5,0,0,0"
+           DisplayMemberPath="Name"
+           SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nina:SequenceBlockView}}, Path=DataContext.Items[2].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
+           SelectedValuePath="Name">
+            <ComboBox.Resources>
+                <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+            </ComboBox.Resources>
+            <ComboBox.ItemsSource>
+                <CompositeCollection>
+                    <x:Static Member="filter:NullFilter.Instance" />
+                    <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                </CompositeCollection>
+            </ComboBox.ItemsSource>
+        </ComboBox>
+
+        <TextBlock
+           Margin="7.5,0,7.5,0"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           Text="|" />
+
+        <StackPanel DataContext="{Binding Items[0]}" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
+            </StackPanel.Resources>
+
+            <TextBlock
+               Margin="7.5,0,7.5,0"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Text="|" />
+
+            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
+            <ComboBox
+               Margin="5,0,0,0"
+               DisplayMemberPath="Name"
+               ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
+               SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+               SelectedValuePath="Name" />
+
+            <!--  List of Gain  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <PriorityBinding>
+                        <Binding
+                           Converter="{StaticResource CollectionContainsItemsToVisibilityConverter}"
+                           Path="Data.Gains"
+                           Source="{StaticResource CameraInfo}" />
+                        <Binding
+                           Converter="{StaticResource BooleanToVisibilityCollapsedConverter}"
+                           Path="Data.Connected"
+                           Source="{StaticResource CameraInfo}" />
+                    </PriorityBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                   Margin="7.5,0,7.5,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                <ComboBox
+                   Margin="5,0,0,0"
+                   DisplayMemberPath="Text"
+                   IsSynchronizedWithCurrentItem="True"
+                   SelectedValuePath="Text">
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <TextBlock Text="{Binding Source={StaticResource CameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource CameraInfo}, Path=Data.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                    <ComboBox.SelectedValue>
+                        <MultiBinding
+                           Converter="{StaticResource MinusOneToBaseValueConverter}"
+                           Mode="TwoWay"
+                           UpdateSourceTrigger="PropertyChanged">
+                            <Binding
+                               Mode="TwoWay"
+                               Path="Gain"
+                               UpdateSourceTrigger="PropertyChanged" />
+                            <Binding
+                               Mode="OneWay"
+                               Path="Data.DefaultGain"
+                               Source="{StaticResource CameraInfo}"
+                               UpdateSourceTrigger="PropertyChanged" />
+                        </MultiBinding>
+                    </ComboBox.SelectedValue>
+                </ComboBox>
+            </WrapPanel>
+
+            <!--  Free Gain  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <PriorityBinding FallbackValue="Visible">
+                        <Binding
+                           Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
+                           Path="Data.Gains"
+                           Source="{StaticResource CameraInfo}" />
+                    </PriorityBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                   Margin="7.5,0,7.5,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
+                <local:ConstantHintControl 
+                    Margin="8,1,10,5" 
+                    Expr="{Binding Path=GainExpr, Mode=TwoWay}"
+                    Valu="{Binding Path=Gain, Mode=TwoWay}"
+                    Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                    Validate="ValidateGain"
+                />
+            </WrapPanel>
+
+            <!--  Offset  -->
+            <WrapPanel Orientation="Horizontal">
+                <WrapPanel.Visibility>
+                    <MultiBinding Converter="{StaticResource BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                        <Binding
+                           Converter="{StaticResource InverseBooleanConverter}"
+                           Path="Data.Connected"
+                           Source="{StaticResource CameraInfo}" />
+                        <Binding Path="Data.CanSetOffset" Source="{StaticResource CameraInfo}" />
+                    </MultiBinding>
+                </WrapPanel.Visibility>
+                <TextBlock
+                   Margin="7.5,0,7.5,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="|" />
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
+                <ninactrl:HintTextBox
+                   MinWidth="40"
+                   Margin="5,0,0,0"
+                   VerticalAlignment="Center"
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   Foreground="{StaticResource PrimaryBrush}"
+                   TextAlignment="Right">
+                    <ninactrl:HintTextBox.HintText>
+                        <Binding
+                           Converter="{StaticResource CameraDefaultValueConverter}"
+                           Mode="OneWay"
+                           Path="Data.DefaultOffset"
+                           Source="{StaticResource CameraInfo}"
+                           UpdateSourceTrigger="PropertyChanged" />
+                    </ninactrl:HintTextBox.HintText>
+                    <ninactrl:HintTextBox.Text>
+                        <Binding
+                           Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                           Mode="TwoWay"
+                           Path="Offset"
+                           UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <util:ShortRangeRule>
+                                    <util:ShortRangeRule.ValidRange>
+                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
+                                    </util:ShortRangeRule.ValidRange>
+                                </util:ShortRangeRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ninactrl:HintTextBox.Text>
+                </ninactrl:HintTextBox>
+            </WrapPanel>
+        </StackPanel>
+    </WrapPanel>
+
+    <ControlTemplate x:Key="TrainedFlatExposureTemplate">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <WrapPanel Orientation="Horizontal">
+
+                    <ContentPresenter Content="{StaticResource TakeFlatExposureDetails}" DataContext="{Binding Items[4]}" />
+
+                    <TextBlock
+                       Margin="7.5,0,7.5,0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="|" />
+
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                    <CheckBox
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       IsChecked="{Binding KeepPanelClosed}" />
+                </WrapPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+            <nina:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </nina:SequenceBlockView.SequenceItemProgressContent>
+        </nina:SequenceBlockView>
+    </ControlTemplate>
+
+    <DataTemplate DataType="{x:Type local:TrainedFlatExposure}">
+        <nina:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
+    </DataTemplate>
+
+    <!--<DataTemplate DataType="{x:Type local:TrainedDarkFlatExposure}">
+        <nina:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
+    </DataTemplate>-->
+
+
     <DataTemplate DataType="{x:Type local:WhenSwitch}">
         <Border>
             <Border.Resources>
@@ -2423,7 +2588,7 @@
                 MinWidth="40"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Right"
+                HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
                 TextAlignment="Right">
