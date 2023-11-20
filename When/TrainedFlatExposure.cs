@@ -230,8 +230,10 @@ namespace WhenPlugin.When {
             get => GetIterations().Iterations;
             set {
                 //
-                if (Conditions.Count == 0) return;
-                GetIterations().Iterations = value;
+                LoopCondition loop = GetIterations();
+                if (loop != null) {
+                    loop.Iterations = value;
+                }
                 RaisePropertyChanged("IterationCount");
             }
         }
@@ -242,7 +244,7 @@ namespace WhenPlugin.When {
             get => gainExpr;
             set {
                 gainExpr = value;
-                //ConstantExpression.Evaluate(this, "GainExpr", "Gain", cameraMediator.GetInfo().DefaultGain);
+                ConstantExpression.Evaluate(this, "GainExpr", "Gain", cameraMediator.GetInfo().DefaultGain);
                 RaisePropertyChanged("GainExpr");
             }
         }
@@ -309,6 +311,7 @@ namespace WhenPlugin.When {
 
             GetSetBrightnessItem().Brightness = info.Brightness;
             takeExposure.ExposureTime = info.Time;
+            takeExposure.ExposureTimeExpr = info.Time.ToString();
 
             if (KeepPanelClosed) {
                 GetOpenCoverItem().Skip();
