@@ -1884,9 +1884,9 @@
         <nina:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
     </DataTemplate>
 
-    <!--<DataTemplate DataType="{x:Type local:TrainedDarkFlatExposure}">
+    <DataTemplate DataType="{x:Type local:TrainedDarkFlatExposure}">
         <nina:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
-    </DataTemplate>-->
+    </DataTemplate>
 
 
     <DataTemplate DataType="{x:Type local:WhenSwitch}">
