@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using NINA.Sequencer.Container;
 using NINA.Core.Enum;
 using System.Windows.Forms;
+using NINA.Core.Utility;
+using System.Text;
+using Accord;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Variable")]
@@ -193,8 +196,15 @@ namespace WhenPlugin.When {
             }
 
             ConstantExpression.Keys k = ConstantExpression.GetSwitchWeatherKeys();
-                if (k.ContainsKey(Variable)) {
+            if (k.ContainsKey(Variable)) {
                 i.Add("The name '" + Variable + "' is reserved.");
+                Logger.Info("Attempt to define reserved name: " + Variable);
+                StringBuilder sb = new StringBuilder();
+                foreach(var kk in k) {
+                    sb.Append(kk.Key);
+                    sb.Append(" ");
+                }
+                Logger.Info("Keys: " + sb.ToString());
             }
 
             Issues = i;

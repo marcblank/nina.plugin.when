@@ -300,7 +300,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Condition: {nameof(SafetyMonitorCondition)}";
+            return $"Condition: {nameof(When)}";
         }
 
         private ISequenceContainer Container { get; set; }

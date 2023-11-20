@@ -21,6 +21,8 @@ using NINA.Sequencer.Container;
 using System.Diagnostics;
 using Castle.Core.Internal;
 using Accord.Collections;
+using System.Text;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -195,6 +197,13 @@ namespace WhenPlugin.When {
             ConstantExpression.Keys k = ConstantExpression.GetSwitchWeatherKeys();
             if (k.ContainsKey(Constant)) {
                 i.Add("The name '" + Constant + "' is reserved.");
+                Logger.Info("Attempt to define reserved name: " + Constant);
+                StringBuilder sb = new StringBuilder();
+                foreach (var kk in k) {
+                    sb.Append(kk.Key);
+                    sb.Append(" ");
+                }
+                Logger.Info("Keys: " + sb.ToString());
             }
 
             Issues = i;

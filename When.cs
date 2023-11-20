@@ -143,6 +143,8 @@ namespace WhenPlugin.When {
             Globals.Items.Add(new SetConstant() { Constant = def.Name6, CValueExpr = def.Value6, GlobalName = "Name6", GlobalValue = "Value6" });
             Globals.Items.Add(new SetConstant() { Constant = def.Name7, CValueExpr = def.Value7, GlobalName = "Name7", GlobalValue = "Value7" });
             Globals.Items.Add(new SetConstant() { Constant = def.Name8, CValueExpr = def.Value8, GlobalName = "Name8", GlobalValue = "Value8" });
+            Globals.Items.Add(new SetConstant() { Constant = def.Name9, CValueExpr = def.Value9, GlobalName = "Name9", GlobalValue = "Value9" });
+            Globals.Items.Add(new SetConstant() { Constant = def.Name10, CValueExpr = def.Value10, GlobalName = "Name10", GlobalValue = "Value10" });
 
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);
@@ -312,6 +314,46 @@ namespace WhenPlugin.When {
             }
             set {
                 Settings.Default.Value8 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Name9 {
+            get {
+                return Settings.Default.Name9;
+            }
+            set {
+                Settings.Default.Name9 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value9 {
+            get {
+                return Settings.Default.Value9;
+            }
+            set {
+                Settings.Default.Value9 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Name10 {
+            get {
+                return Settings.Default.Name10;
+            }
+            set {
+                Settings.Default.Name10 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string Value10 {
+            get {
+                return Settings.Default.Value10;
+            }
+            set {
+                Settings.Default.Value10 = value;
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }

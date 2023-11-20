@@ -15,6 +15,7 @@
 using Accord.Math.Comparers;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem;
 using System;
 using System.ComponentModel.Composition;
@@ -75,6 +76,7 @@ namespace WhenPlugin.When {
             InFlight = true;
             cts = new CancellationTokenSource();
             try {
+                Notification.ShowWarning("Breakpoint hit!");
                 await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, cts.Token, progress, "");
             } finally {
                 InFlight = false;

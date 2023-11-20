@@ -262,7 +262,7 @@ namespace WhenPlugin.When {
         static Keys GetMergedKeys(Stack<Keys> stack) {
             lock (ConstantsLock) {
                 // Consolidate keys
-                Keys mergedKeys = GetSwitchWeatherKeys(); // new Keys();
+                Keys mergedKeys = GetSwitchWeatherKeys().Clone(); // new Keys();
 
                 foreach (Keys k in stack) {
                     foreach (KeyValuePair<string, object> kvp in k) {
@@ -308,7 +308,7 @@ namespace WhenPlugin.When {
             ISequenceEntity p = FindKeyContainer(item, key);
             if (p == null) {
                 if (SwitchWeatherKeys.ContainsKey(key)) {
-                    return "Switch/Weather/Image";
+                    return "Device Data";
                 }
                 return "??";
             }
