@@ -1810,38 +1810,13 @@
                    VerticalAlignment="Center"
                    Text="|" />
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-                <ninactrl:HintTextBox
-                   MinWidth="40"
-                   Margin="5,0,0,0"
-                   VerticalAlignment="Center"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Foreground="{StaticResource PrimaryBrush}"
-                   TextAlignment="Right">
-                    <ninactrl:HintTextBox.HintText>
-                        <Binding
-                           Converter="{StaticResource CameraDefaultValueConverter}"
-                           Mode="OneWay"
-                           Path="Data.DefaultOffset"
-                           Source="{StaticResource CameraInfo}"
-                           UpdateSourceTrigger="PropertyChanged" />
-                    </ninactrl:HintTextBox.HintText>
-                    <ninactrl:HintTextBox.Text>
-                        <Binding
-                           Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                           Mode="TwoWay"
-                           Path="Offset"
-                           UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <util:ShortRangeRule>
-                                    <util:ShortRangeRule.ValidRange>
-                                        <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                    </util:ShortRangeRule.ValidRange>
-                                </util:ShortRangeRule>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </ninactrl:HintTextBox.Text>
-                </ninactrl:HintTextBox>
+                <local:ConstantHintControl 
+                    Margin="8,1,10,5" 
+                    Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
+                    Valu="{Binding Path=Offset, Mode=TwoWay}"
+                    Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                    Validate="ValidateOffset"
+                />
             </WrapPanel>
         </StackPanel>
     </WrapPanel>
@@ -2584,38 +2559,13 @@
                 VerticalAlignment="Center"
                 Text="|" />
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-            <ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="5,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                Foreground="{StaticResource PrimaryBrush}"
-                TextAlignment="Right">
-                <ninactrl:HintTextBox.HintText>
-                    <Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultOffset"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />
-                </ninactrl:HintTextBox.HintText>
-                <ninactrl:HintTextBox.Text>
-                    <Binding
-                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
-                        Mode="TwoWay"
-                        Path="Offset"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:ShortRangeRule>
-                                <util:ShortRangeRule.ValidRange>
-                                    <util:ShortRangeChecker Maximum="32767" Minimum="-1" />
-                                </util:ShortRangeRule.ValidRange>
-                            </util:ShortRangeRule>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </ninactrl:HintTextBox.Text>
-            </ninactrl:HintTextBox>
+            <local:ConstantHintControl 
+                Margin="8,1,10,5" 
+                Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
+                Valu="{Binding Path=Offset, Mode=TwoWay}"
+                Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
+                Validate="ValidateOffset"
+            />
         </WrapPanel>
     </WrapPanel>
 

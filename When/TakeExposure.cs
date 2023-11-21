@@ -151,10 +151,50 @@ namespace WhenPlugin.When {
             }
         }
 
-        private int offset;
+        private string offsetExpr = "";
+        [JsonProperty]
+        public string OffsetExpr {
+            get => offsetExpr;
+            set {
+                offsetExpr = value;
+                ConstantExpression.Evaluate(this, "OffsetExpr", "Offset", cameraMediator.GetInfo().DefaultOffset);
+                RaisePropertyChanged("GainExpr");
+            }
+        }
+
+        private int offset = -1;
 
         [JsonProperty]
-        public int Offset { get => offset; set { offset = value; RaisePropertyChanged(); } }
+        public int Offset {
+            get => offset;
+            set {
+                offset = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string ValidateOffset(double offset) {
+            return iValidateOffset(offset, new List<string>());
+        }
+
+        public string iValidateOffset(double gain, List<string> i) {
+            var iCount = i.Count;
+
+            CameraInfo = this.cameraMediator.GetInfo();
+            if (!CameraInfo.Connected) {
+                i.Add(Loc.Instance["LblCameraNotConnected"]);
+            } else if (Offset < 0) {
+                i.Add("Offset cannot be less than 0");
+            } else if (CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin | Offset > CameraInfo.OffsetMax)) {
+                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset));
+            }
+
+            if (iCount == i.Count) {
+                return String.Empty;
+            } else {
+                return i[iCount];
+            }
+        }
 
         private BinningMode binning;
 
@@ -419,6 +459,7 @@ namespace WhenPlugin.When {
 
             ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0, i);
             ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, i);
+            ConstantExpression.Evaluate(this, "OffsetExpr", "Offset", -1, i);
 
             RaisePropertyChanged("ExposureTimeExpr");
             Issues = i;

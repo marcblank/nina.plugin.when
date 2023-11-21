@@ -260,7 +260,6 @@ namespace WhenPlugin.When {
             }
         }
 
-
         public string ValidateGain(double gain) {
             return iValidateGain(gain, new List<string>());
         }
@@ -284,6 +283,7 @@ namespace WhenPlugin.When {
             }
         }
 
+ 
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
