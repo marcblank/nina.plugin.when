@@ -16,7 +16,7 @@
 
             <TextBlock Margin="0,0,0,10">
                 <TextBlock.Inlines>
-                    <Run FontWeight="Bold" FontSize="13pt"  Text="Global Constants (applicable in any Constant expression). Note that these are now per profile!" />
+                    <Run FontWeight="Bold" FontSize="13pt"  Text="Global Constants (applicable in any Constant expression). Note that these are optionally per profile!" />
                 </TextBlock.Inlines>
             </TextBlock>
 
@@ -33,7 +33,14 @@
                                     <local:GlobalConstantView>
                                         <local:GlobalConstantView.SequenceItemContent>
                                             <StackPanel Orientation="Horizontal" Visibility="Visible">
-                                                <TextBlock VerticalAlignment="Center" Text="Name:"/>
+                                                <TextBlock VerticalAlignment="Center" Margin="0,0,0,0" Text="All Profiles" />
+                                                <CheckBox
+                                                    MinWidth="40"
+                                                    Margin="0,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    IsChecked="{Binding AllProfiles, Mode=TwoWay}"
+                                                    ToolTip="If set, this Global Constant will apply to ALL profiles; otherwise, just for the current profile." />
+                                                <TextBlock Margin="50,0,0,0" VerticalAlignment="Center" Text="Name:"/>
                                                 <TextBox
                                                     MinWidth="100"
                                                     Margin="5,0,10,-2"

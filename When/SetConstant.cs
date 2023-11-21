@@ -36,9 +36,25 @@ namespace WhenPlugin.When {
         public string GlobalName { get; set; }
         public string GlobalValue { get; set; }
 
+        public string GlobalAll {  get; set; }
+
+
         public string Dummy;
 
         public static WhenPlugin WhenPluginObject { get; set; }
+
+        private bool allProfiles = true;
+
+        public bool AllProfiles {
+            get => allProfiles;
+            set {
+                if (GlobalName != null) {
+                    PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalAll);
+                    pi?.SetValue(WhenPluginObject, value, null);
+                }
+                allProfiles = value;
+            }
+        }
 
         private string constant;
 

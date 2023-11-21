@@ -114,16 +114,16 @@ namespace WhenPlugin.When {
         private void CreateGlobalSetConstants (WhenPlugin plugin) {
             Globals.Name = "Global Constants";
             var def = Properties.Settings.Default;
-            Globals.Items.Add(new SetConstant() { Constant = Name1, CValueExpr = Value1, GlobalName = "Name1", GlobalValue = "Value1" });
-            Globals.Items.Add(new SetConstant() { Constant = Name2, CValueExpr = Value2, GlobalName = "Name2", GlobalValue = "Value2" });
-            Globals.Items.Add(new SetConstant() { Constant = Name3, CValueExpr = Value3, GlobalName = "Name3", GlobalValue = "Value3" });
-            Globals.Items.Add(new SetConstant() { Constant = Name4, CValueExpr = Value4, GlobalName = "Name4", GlobalValue = "Value4" });
-            Globals.Items.Add(new SetConstant() { Constant = Name5, CValueExpr = Value5, GlobalName = "Name5", GlobalValue = "Value5" });
-            Globals.Items.Add(new SetConstant() { Constant = Name6, CValueExpr = Value6, GlobalName = "Name6", GlobalValue = "Value6" });
-            Globals.Items.Add(new SetConstant() { Constant = Name7, CValueExpr = Value7, GlobalName = "Name7", GlobalValue = "Value7" });
-            Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, GlobalName = "Name8", GlobalValue = "Value8" });
-            Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, GlobalName = "Name9", GlobalValue = "Value9" });
-            Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, GlobalName = "Name10", GlobalValue = "Value10" });
+            Globals.Items.Add(new SetConstant() { Constant = Name1, CValueExpr = Value1, AllProfiles = All1, GlobalName = "Name1", GlobalValue = "Value1", GlobalAll = "All1" });
+            Globals.Items.Add(new SetConstant() { Constant = Name2, CValueExpr = Value2, AllProfiles = All2, GlobalName = "Name2", GlobalValue = "Value2", GlobalAll = "All2" });
+            Globals.Items.Add(new SetConstant() { Constant = Name3, CValueExpr = Value3, AllProfiles = All3, GlobalName = "Name3", GlobalValue = "Value3", GlobalAll = "All3" });
+            Globals.Items.Add(new SetConstant() { Constant = Name4, CValueExpr = Value4, AllProfiles = All4, GlobalName = "Name4", GlobalValue = "Value4", GlobalAll = "All4" });
+            Globals.Items.Add(new SetConstant() { Constant = Name5, CValueExpr = Value5, AllProfiles = All5, GlobalName = "Name5", GlobalValue = "Value5", GlobalAll = "All5" });
+            Globals.Items.Add(new SetConstant() { Constant = Name6, CValueExpr = Value6, AllProfiles = All6, GlobalName = "Name6", GlobalValue = "Value6", GlobalAll = "All6" });
+            Globals.Items.Add(new SetConstant() { Constant = Name7, CValueExpr = Value7, AllProfiles = All7, GlobalName = "Name7", GlobalValue = "Value7", GlobalAll = "All7" });
+            Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, AllProfiles = All8, GlobalName = "Name8", GlobalValue = "Value8", GlobalAll = "All8" });
+            Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, AllProfiles = All9, GlobalName = "Name9", GlobalValue = "Value9", GlobalAll = "All9" });
+            Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, AllProfiles = All10, GlobalName = "Name10", GlobalValue = "Value10", GlobalAll = "All10" });
 
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);
@@ -137,204 +137,487 @@ namespace WhenPlugin.When {
 
         public string Name1 {
             get {
-                return pluginSettings.GetValueString(nameof(Name1), Settings.Default.Name1);
+                if (!All1) {
+                    return pluginSettings.GetValueString(nameof(Name1), Settings.Default.Name1);
+                } else {
+                    return Settings.Default.Name1;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name1), value);
+                if (!All1) {
+                    pluginSettings.SetValueString(nameof(Name1), value);
+                } else {
+                    Settings.Default.Name1 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value1 {
             get {
-                return pluginSettings.GetValueString(nameof(Value1), Settings.Default.Value1);
+                if (!All1) {
+                    return pluginSettings.GetValueString(nameof(Value1), Settings.Default.Value1);
+                } else {
+                    return Settings.Default.Value1;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value1), value);
+                if (!All1) {
+                    pluginSettings.SetValueString(nameof(Value1), value);
+                } else {
+                    Settings.Default.Value1 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name2 {
             get {
-                return pluginSettings.GetValueString(nameof(Name2), Settings.Default.Name2); //Settings.Default.Name10;
+                if (!All2) {
+                    return pluginSettings.GetValueString(nameof(Name2), Settings.Default.Name2);
+                } else {
+                    return Settings.Default.Name2;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name2), value);
+                if (!All2) {
+                    pluginSettings.SetValueString(nameof(Name2), value);
+                } else {
+                    Settings.Default.Name2 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value2 {
             get {
-                return pluginSettings.GetValueString(nameof(Value2), Settings.Default.Value2); ; //Settings.Default.Name10;
+                if (!All2) {
+                    return pluginSettings.GetValueString(nameof(Value2), Settings.Default.Value2);
+                } else {
+                    return Settings.Default.Value2;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value2), value);
+                if (!All2) {
+                    pluginSettings.SetValueString(nameof(Value2), value);
+                } else {
+                    Settings.Default.Value2 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name3 {
             get {
-                return pluginSettings.GetValueString(nameof(Name3), Settings.Default.Name3); //Settings.Default.Name10;
+                if (!All3) {
+                    return pluginSettings.GetValueString(nameof(Name3), Settings.Default.Name3);
+                } else {
+                    return Settings.Default.Name3;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name3), value);
+                if (!All3) {
+                    pluginSettings.SetValueString(nameof(Name3), value);
+                } else {
+                    Settings.Default.Name3 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value3 {
             get {
-                return pluginSettings.GetValueString(nameof(Value3), Settings.Default.Value3); //Settings.Default.Name10;
+                if (!All3) {
+                    return pluginSettings.GetValueString(nameof(Value3), Settings.Default.Value4);
+                } else {
+                    return Settings.Default.Value3;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value3), value);
+                if (!All3) {
+                    pluginSettings.SetValueString(nameof(Value3), value);
+                } else {
+                    Settings.Default.Value3 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name4 {
             get {
-                return pluginSettings.GetValueString(nameof(Name4), Settings.Default.Name4); //Settings.Default.Name10;
+                if (!All4) {
+                    return pluginSettings.GetValueString(nameof(Name4), Settings.Default.Name4);
+                } else {
+                    return Settings.Default.Name4;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name4), value);
+                if (!All4) {
+                    pluginSettings.SetValueString(nameof(Name4), value);
+                } else {
+                    Settings.Default.Name4 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value4 {
             get {
-                return pluginSettings.GetValueString(nameof(Value4), Settings.Default.Value4); //Settings.Default.Name10;
+                if (!All4) {
+                    return pluginSettings.GetValueString(nameof(Value4), Settings.Default.Value4);
+                } else {
+                    return Settings.Default.Value4;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value4), value);
+                if (!All4) {
+                    pluginSettings.SetValueString(nameof(Value4), value);
+                } else {
+                    Settings.Default.Value4 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name5 {
             get {
-                return pluginSettings.GetValueString(nameof(Name5), Settings.Default.Name5); //Settings.Default.Name10;
+                if (!All5) {
+                    return pluginSettings.GetValueString(nameof(Name5), Settings.Default.Name5);
+                } else {
+                    return Settings.Default.Name5;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name5), value);
+                if (!All5) {
+                    pluginSettings.SetValueString(nameof(Name5), value);
+                } else {
+                    Settings.Default.Name5 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value5 {
             get {
-                return pluginSettings.GetValueString(nameof(Value5), Settings.Default.Value5); //Settings.Default.Name10;
+                if (!All5) {
+                    return pluginSettings.GetValueString(nameof(Value5), Settings.Default.Value5);
+                } else {
+                    return Settings.Default.Value5;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value5), value);
+                if (!All5) {
+                    pluginSettings.SetValueString(nameof(Value5), value);
+                } else {
+                    Settings.Default.Value5 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name6 {
             get {
-                return pluginSettings.GetValueString(nameof(Name6), Settings.Default.Name6); //Settings.Default.Name10;
+                if (!All6) {
+                    return pluginSettings.GetValueString(nameof(Name6), Settings.Default.Name6);
+                } else {
+                    return Settings.Default.Name6;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name6), value);
+                if (!All6) {
+                    pluginSettings.SetValueString(nameof(Name6), value);
+                } else {
+                    Settings.Default.Name6 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value6 {
             get {
-                return pluginSettings.GetValueString(nameof(Value6), Settings.Default.Value6); //Settings.Default.Name10;
+                if (!All6) {
+                    return pluginSettings.GetValueString(nameof(Value6), Settings.Default.Value6);
+                } else {
+                    return Settings.Default.Value6;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value6), value);
+                if (!All6) {
+                    pluginSettings.SetValueString(nameof(Value6), value);
+                } else {
+                    Settings.Default.Value6 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name7 {
             get {
-                return pluginSettings.GetValueString(nameof(Name7), Settings.Default.Name7); //Settings.Default.Name10;
+                if (!All7) {
+                    return pluginSettings.GetValueString(nameof(Name7), Settings.Default.Name7);
+                } else {
+                    return Settings.Default.Name7;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name7), value);
+                if (!All7) {
+                    pluginSettings.SetValueString(nameof(Name7), value);
+                } else {
+                    Settings.Default.Name7 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value7 {
             get {
-                return pluginSettings.GetValueString(nameof(Value7), Settings.Default.Value7); //Settings.Default.Name10;
+                if (!All7) {
+                    return pluginSettings.GetValueString(nameof(Value7), Settings.Default.Value7);
+                } else {
+                    return Settings.Default.Value7;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value7), value);
+                if (!All7) {
+                    pluginSettings.SetValueString(nameof(Value7), value);
+                } else {
+                    Settings.Default.Value7 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name8 {
             get {
-                return pluginSettings.GetValueString(nameof(Name8), Settings.Default.Name8);
+                if (!All8) {
+                    return pluginSettings.GetValueString(nameof(Name8), Settings.Default.Name8);
+                } else {
+                    return Settings.Default.Name8;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name8), value);
+                if (!All8) {
+                    pluginSettings.SetValueString(nameof(Name8), value);
+                } else {
+                    Settings.Default.Name8 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value8 {
             get {
-                return pluginSettings.GetValueString(nameof(Value8), Settings.Default.Value8); //Settings.Default.Name10;
+                if (!All8) {
+                    return pluginSettings.GetValueString(nameof(Value8), Settings.Default.Value8);
+                } else {
+                    return Settings.Default.Value8;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value8), value);
+                if (!All8) {
+                    pluginSettings.SetValueString(nameof(Value8), value);
+                } else {
+                    Settings.Default.Value8 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name9 {
             get {
-                return pluginSettings.GetValueString(nameof(Name9), Settings.Default.Name9); //Setings.Default.Name10;
+                if (!All9) {
+                    return pluginSettings.GetValueString(nameof(Name9), Settings.Default.Name9);
+                } else {
+                    return Settings.Default.Name9;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name9), value);
+                if (!All9) {
+                    pluginSettings.SetValueString(nameof(Name9), value);
+                } else {
+                    Settings.Default.Name9 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value9 {
             get {
-                return pluginSettings.GetValueString(nameof(Value9), Settings.Default.Value9); //Settings.Default.Name10;
+                if (!All9) {
+                    return pluginSettings.GetValueString(nameof(Value9), Settings.Default.Value9);
+                } else {
+                    return Settings.Default.Value9;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value9), value);
+                if (!All9) {
+                    pluginSettings.SetValueString(nameof(Value9), value);
+                } else {
+                    Settings.Default.Value9 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Name10 {
             get {
-                return pluginSettings.GetValueString(nameof(Name10), Settings.Default.Name10); //Settings.Default.Name10;
+                if (!All10) {
+                    return pluginSettings.GetValueString(nameof(Name10), Settings.Default.Name10);
+                } else {
+                    return Settings.Default.Name10;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Name10), value);
+                if (!All10) {
+                    pluginSettings.SetValueString(nameof(Name10), value);
+                } else {
+                    Settings.Default.Name10 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
         public string Value10 {
             get {
-                return pluginSettings.GetValueString(nameof(Value10), Settings.Default.Value10); // Default.Value10;
+                if (!All10) {
+                    return pluginSettings.GetValueString(nameof(Value10), Settings.Default.Value10);
+                } else {
+                    return Settings.Default.Value10;
+                }
             }
             set {
-                pluginSettings.SetValueString(nameof(Value10), value);
+                if (!All10) {
+                    pluginSettings.SetValueString(nameof(Value10), value);
+                } else {
+                    Settings.Default.Value10 = value;
+                }
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
+
+
+        public bool All1 {
+            get { 
+                return Settings.Default.All1;
+            }
+            set {
+                Settings.Default.All1 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All2 {
+            get {
+                return Settings.Default.All2;
+            }
+            set {
+                Settings.Default.All2 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All3 {
+            get {
+                return Settings.Default.All3;
+            }
+            set {
+                Settings.Default.All3 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All4 {
+            get {
+                return Settings.Default.All4;
+            }
+            set {
+                Settings.Default.All4 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All5 {
+            get {
+                return Settings.Default.All5;
+            }
+            set {
+                Settings.Default.All5 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All6 {
+            get {
+                return Settings.Default.All6;
+            }
+            set {
+                Settings.Default.All6 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All7 {
+            get {
+                return Settings.Default.All7;
+            }
+            set {
+                Settings.Default.All7 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All8 {
+            get {
+                return Settings.Default.All8;
+            }
+            set {
+                Settings.Default.All8 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All9 {
+            get {
+                return Settings.Default.All9;
+            }
+            set {
+                Settings.Default.All9 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public bool All10 {
+            get {
+                return Settings.Default.All10;
+            }
+            set {
+                Settings.Default.All10 = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
 
         private string GetValue(string name) {
             return pluginSettings.GetValueString(name, string.Empty);
