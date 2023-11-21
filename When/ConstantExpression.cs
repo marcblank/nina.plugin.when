@@ -4,33 +4,21 @@ using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Notification;
 using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces;
-using NINA.Profile;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem;
-using Nito.Mvvm;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Reflection;
-using System.Security.Cryptography.Pkcs;
 using System.Text;
 using NINA.Sequencer.Conditions;
 using System.Threading.Tasks;
 using NINA.Equipment.Equipment.MyCamera;
-using NINA.View.Sequencer.Converter;
-using System.Collections.ObjectModel;
 using System.Threading;
-using System.Linq;
-using System.Security.Cryptography.Xml;
 using NINA.Equipment.Equipment.MyDome;
 
 namespace WhenPlugin.When {
@@ -647,6 +635,7 @@ namespace WhenPlugin.When {
         private static void DebugInfo(params string[] strs) {
             if (Debugging) {
                 Debug.WriteLine(String.Join("", strs));
+                Logger.Info(String.Join("", strs));
             }
         }
 

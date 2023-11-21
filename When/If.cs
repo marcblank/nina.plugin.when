@@ -151,6 +151,12 @@ namespace WhenPlugin.When {
 
         public IList<string> Switches { get; set; } = null;
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            ConstantExpression.UpdateConstants(this);
+            ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+        }
+
         public new bool Validate() {
 
             CommonValidate();
