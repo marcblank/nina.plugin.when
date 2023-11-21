@@ -9,31 +9,19 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Utility.Notification;
-using NINA.Equipment.Interfaces.Mediator;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using WhenPlugin.When;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
 using NINA.Sequencer;
-using System.Runtime.CompilerServices;
 using NINA.Sequencer.Container;
-using Castle.Core.Internal;
 using NINA.Core.Utility;
-using NINA.Sequencer.DragDrop;
-using System.Windows.Input;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using Accord.Math;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Serialization;
 using System.Diagnostics;
-using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
-using System.Windows;
 using System.Runtime.Serialization;
-using CsvHelper.Configuration.Attributes;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]

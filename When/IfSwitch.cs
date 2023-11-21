@@ -1,31 +1,14 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using NCalc;
-using Castle.Core.Internal;
-using NINA.Core.Utility.Notification;
 using NINA.Core.Enum;
-using System.Linq;
-using System.Text;
-using Accord.IO;
-using Namotion.Reflection;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.Equipment.Equipment.MySwitch;
-using NINA.Equipment.Interfaces;
-using NINA.Sequencer.SequenceItem.Utility;
-using System.Windows;
-using NINA.Equipment.Equipment.MyWeatherData;
-using System.Windows.Controls;
-using System.Diagnostics;
 using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
@@ -67,7 +50,7 @@ namespace WhenPlugin.When {
 
          public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
  
-            if (Predicate.IsNullOrEmpty()) {
+            if (string.IsNullOrEmpty(Predicate)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
             }
@@ -118,7 +101,7 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
 
-            if (Predicate.IsNullOrEmpty()) {
+            if (string.IsNullOrEmpty(Predicate)) {
                 i.Add("Expression cannot be empty!");
             }
 

@@ -12,20 +12,13 @@
 
 #endregion "copyright"
 
-using Accord.Diagnostics;
-using Castle.Core.Internal;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NINA.Sequencer;
-using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
-using System.Windows.Markup;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WhenPlugin.When {
 
@@ -66,7 +59,7 @@ namespace WhenPlugin.When {
             string type = (string)values[VALUE_TYPE];
             if (values[VALUE_EXPR] is string expr) {
                 double val;
-                if (expr.IsNullOrEmpty() && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
+                if (string.IsNullOrEmpty(expr) && parameter != null && parameter.GetType() == typeof(String) && parameter.Equals("Hint")) {
                     ValidityCache.Remove(item);
                     ValidityCache.Add(item, true);
                     return 0;
@@ -112,7 +105,7 @@ namespace WhenPlugin.When {
                         if (item != null) {
                             ValidityCache.Remove(item);
                         }
-                        if (ValidityCache.IsNullOrEmpty()) return ""; // "There are no valid constants defined.";
+                        if (ValidityCache == null || ValidityCache.Count == 0) return ""; // "There are no valid constants defined.";
                         return ""; // return " {Error} ";
                     }
                  }

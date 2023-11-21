@@ -16,7 +16,7 @@
 
             <TextBlock Margin="0,0,0,10">
                 <TextBlock.Inlines>
-                    <Run FontWeight="Bold" FontSize="13pt"  Text="Global Constants (applicable in any Constant expression)" />
+                    <Run FontWeight="Bold" FontSize="13pt"  Text="Global Constants (applicable in any Constant expression). Note that these are now per profile!" />
                 </TextBlock.Inlines>
             </TextBlock>
 

@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using NCalc;
-using Castle.Core.Internal;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Enum;
 using System.Linq;

@@ -796,19 +796,22 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock 
-                                   MinHeight="30"
+                                     Foreground="{StaticResource ButtonForegroundBrush}"
+                                  MinHeight="30"
                                    Margin="10,10,10,0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    Text="Template By Reference" />
                                 <TextBlock
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
                                     MinHeight="30"
                                     Margin="10,10,10,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Opacity="0.4"
+                                    Opacity="0.9"
                                     Text="Template Name:" />
                                 <ComboBox
+                                    Foreground="{StaticResource ButtonForegroundBrush}"
                                     Height="24"
                                     Margin="10,-4,0,0"
                                     DisplayMemberPath="Container.Name"

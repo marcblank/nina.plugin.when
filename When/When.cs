@@ -24,7 +24,6 @@ using NINA.Sequencer.Trigger;
 using Newtonsoft.Json;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
-using Castle.Core.Internal;
 
 namespace WhenPlugin.When {
 
@@ -144,7 +143,7 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
 
-            if (Predicate.IsNullOrEmpty()) {
+            if (string.IsNullOrEmpty(Predicate)) {
                 i.Add("Expression cannot be empty!");
             }
 

@@ -1,6 +1,4 @@
-﻿using Accord;
-using Castle.Core.Internal;
-using Namotion.Reflection;
+﻿using Namotion.Reflection;
 using NCalc;
 using NCalc.Domain;
 using NINA.Core.Utility;
@@ -183,13 +181,13 @@ namespace WhenPlugin.When {
 
         static public bool IsValidConverter(ISequenceEntity item, string expr, out double val, IList<string> issues) {
             lock (ConstantsLock) {
-                if (LastMergedKeys == null || expr.IsNullOrEmpty()) {
+                if (LastMergedKeys == null || string.IsNullOrEmpty(expr)) {
                     val = 0;
                     return false;
                 }
                 double result = NCalcEvaluate(expr, LastMergedKeys, issues);
                 DebugInfo("[[    IsValidConverter: ", item.Name, ",  ", expr, " = ",
-                    ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]), "  ]]");
+                    ((issues == null || issues.Count == 0) ? (" (" + result + ")") : " issue: " + issues[0]), "  ]]");
                 if (Double.IsNaN(result)) {
                     val = -1;
                     return false;
@@ -202,7 +200,7 @@ namespace WhenPlugin.When {
 
         static private Double EvaluateExpression(ISequenceEntity item, string expr, Stack<Keys> stack, IList<string> issues) {
             lock (ConstantsLock) {
-                if (expr.IsNullOrEmpty()) return 0;
+                if (string.IsNullOrEmpty(expr)) return 0;
 
                 if (string.Equals(expr, "true", StringComparison.OrdinalIgnoreCase)) { return 1; }
                 if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
@@ -329,7 +327,7 @@ namespace WhenPlugin.When {
 
         static public string DissectExpression(ISequenceEntity item, string expr, Stack<Keys> stack) {
             lock (ConstantsLock) {
-                if (expr.IsNullOrEmpty()) return String.Empty;
+                if (string.IsNullOrEmpty(expr)) return String.Empty;
 
                 Expression e = new Expression(expr, EvaluateOptions.IgnoreCase);
                 // Consolidate keys
@@ -375,7 +373,7 @@ namespace WhenPlugin.When {
                 while (cc != null) {
                     Keys cachedKeys;
                     KeyCache.TryGetValue(cc, out cachedKeys);
-                    if (!cachedKeys.IsNullOrEmpty()) {
+                    if (!(cachedKeys == null || cachedKeys.Count == 0)) {
                         stack.Push(cachedKeys);
                     }
                     if (cc == root) {
@@ -431,7 +429,7 @@ namespace WhenPlugin.When {
                     return;
                 }
 
-                if (container.Items.IsNullOrEmpty()) {
+                if (container.Items == null || container.Items.Count == 0) {
                     DebugInfo("No items in container; returning");
                     return;
                 }
@@ -454,7 +452,7 @@ namespace WhenPlugin.When {
                         sc.IsDuplicate(false);
                         if (item.Parent != container) {
                             // In this case item has been deleted from parent (but it's still in Parent's Items)
-                        } else if (name.IsNullOrEmpty()) {
+                        } else if (string.IsNullOrEmpty(name)) {
                             //DebugInfo("Empty name in ", typ, "; ignore");
                         } else if (Double.TryParse(val, out value)) {
                             // The value is a number, so we're good
@@ -548,7 +546,7 @@ namespace WhenPlugin.When {
                 ISequenceContainer parent = item.Parent;
                 ISequenceContainer root = FindRoot(parent);
                 Keys kk;
-                if (root != null && (KeyCache.IsNullOrEmpty() || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
+                if (root != null && (KeyCache == null || KeyCache.Count == 0 || (KeyCache.Count == 1 && KeyCache.TryGetValue(GlobalContainer, out kk)))) {
                     UpdateConstants(item);
                 } else if (!(parent is IImmutableContainer) && !KeyCache.ContainsKey(parent)) {
                     // The IImmutableContainer case is for TakeManyExposures and SmartExposure, which are containers and items
@@ -563,7 +561,7 @@ namespace WhenPlugin.When {
                     while (cc != null) {
                         Keys cachedKeys;
                         KeyCache.TryGetValue(cc, out cachedKeys);
-                        if (!cachedKeys.IsNullOrEmpty()) {
+                        if (!(cachedKeys == null || cachedKeys.Count == 0)) {
                             stack.Push(cachedKeys);
                         }
                         if (cc is SequenceRootContainer) {
@@ -580,11 +578,11 @@ namespace WhenPlugin.When {
                         reverseStack.Push(k);
                     }
 
-                    if (reverseStack.IsNullOrEmpty() && issues != null) issues.Add("There are no valid constants defined.");
+                    if ((reverseStack == null || reverseStack.Count == 0) && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
                     DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,
-                        ((issues.IsNullOrEmpty()) ? (" (" + result + ")") : " issue: " + issues[0]));
+                        ((issues == null || issues.Count == 0) ? (" (" + result + ")") : " issue: " + issues[0]));
                     if (Double.IsNaN(result)) {
                         val = -1;
                         return false;

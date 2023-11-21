@@ -39,10 +39,8 @@ namespace WhenPlugin.When {
     public class WhenPlugin : PluginBase, INotifyPropertyChanged {
         private readonly IPluginOptionsAccessor pluginSettings;
         private readonly IProfileService profileService;
-        private readonly IImageSaveMediator imageSaveMediator;
 
         // Implementing a file pattern
-        private readonly ImagePattern exampleImagePattern = new ImagePattern("$$EXAMPLEPATTERN$$", "An example of an image pattern implementation", "When");
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
 
         [ImportingConstructor]
@@ -61,15 +59,6 @@ namespace WhenPlugin.When {
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
             // Hook into image saving for adding FITS keywords or image file patterns
-            this.imageSaveMediator = imageSaveMediator;
-
-            // Run these handlers when an image is being saved
-            this.imageSaveMediator.BeforeImageSaved += ImageSaveMediator_BeforeImageSaved;
-            this.imageSaveMediator.BeforeFinalizeImageSaved += ImageSaveMediator_BeforeFinalizeImageSaved;
-
-            // Register a new image file pattern for the Options > Imaging > File Patterns area
-            options.AddImagePattern(exampleImagePattern);
-
             CreateGlobalSetConstants(this);
             SetConstant.WhenPluginObject = this;
             ConstantExpression.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator);
@@ -79,14 +68,13 @@ namespace WhenPlugin.When {
         public override Task Teardown() {
             // Make sure to unregister an event when the object is no longer in use. Otherwise garbage collection will be prevented.
             profileService.ProfileChanged -= ProfileService_ProfileChanged;
-            imageSaveMediator.BeforeImageSaved -= ImageSaveMediator_BeforeImageSaved;
-            imageSaveMediator.BeforeFinalizeImageSaved -= ImageSaveMediator_BeforeFinalizeImageSaved;
-
             return base.Teardown();
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
             // Rase the event that this profile specific value has been changed due to the profile switch
+            Globals.Items.Clear();
+            CreateGlobalSetConstants(this);
             RaisePropertyChanged(nameof(ProfileSpecificNotificationMessage));
         }
 
@@ -118,15 +106,6 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
-        private Task ImageSaveMediator_BeforeFinalizeImageSaved(object sender, BeforeFinalizeImageSavedEventArgs e) {
-            // Populate the example image pattern with data. This can provide data that may not be immediately available
-            e.AddImagePattern(new ImagePattern(exampleImagePattern.Key, exampleImagePattern.Description, exampleImagePattern.Category) {
-                Value = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ss.ffffffK}"
-            });
-
-            return Task.CompletedTask;
-        }
-
         public SequenceContainer Globals {
             get => ConstantExpression.GlobalContainer;
             set { }
@@ -135,16 +114,16 @@ namespace WhenPlugin.When {
         private void CreateGlobalSetConstants (WhenPlugin plugin) {
             Globals.Name = "Global Constants";
             var def = Properties.Settings.Default;
-            Globals.Items.Add(new SetConstant() { Constant = def.Name1, CValueExpr = def.Value1, GlobalName = "Name1", GlobalValue = "Value1" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name2, CValueExpr = def.Value2, GlobalName = "Name2", GlobalValue = "Value2" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name3, CValueExpr = def.Value3, GlobalName = "Name3", GlobalValue = "Value3" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name4, CValueExpr = def.Value4, GlobalName = "Name4", GlobalValue = "Value4" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name5, CValueExpr = def.Value5, GlobalName = "Name5", GlobalValue = "Value5" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name6, CValueExpr = def.Value6, GlobalName = "Name6", GlobalValue = "Value6" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name7, CValueExpr = def.Value7, GlobalName = "Name7", GlobalValue = "Value7" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name8, CValueExpr = def.Value8, GlobalName = "Name8", GlobalValue = "Value8" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name9, CValueExpr = def.Value9, GlobalName = "Name9", GlobalValue = "Value9" });
-            Globals.Items.Add(new SetConstant() { Constant = def.Name10, CValueExpr = def.Value10, GlobalName = "Name10", GlobalValue = "Value10" });
+            Globals.Items.Add(new SetConstant() { Constant = Name1, CValueExpr = Value1, GlobalName = "Name1", GlobalValue = "Value1" });
+            Globals.Items.Add(new SetConstant() { Constant = Name2, CValueExpr = Value2, GlobalName = "Name2", GlobalValue = "Value2" });
+            Globals.Items.Add(new SetConstant() { Constant = Name3, CValueExpr = Value3, GlobalName = "Name3", GlobalValue = "Value3" });
+            Globals.Items.Add(new SetConstant() { Constant = Name4, CValueExpr = Value4, GlobalName = "Name4", GlobalValue = "Value4" });
+            Globals.Items.Add(new SetConstant() { Constant = Name5, CValueExpr = Value5, GlobalName = "Name5", GlobalValue = "Value5" });
+            Globals.Items.Add(new SetConstant() { Constant = Name6, CValueExpr = Value6, GlobalName = "Name6", GlobalValue = "Value6" });
+            Globals.Items.Add(new SetConstant() { Constant = Name7, CValueExpr = Value7, GlobalName = "Name7", GlobalValue = "Value7" });
+            Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, GlobalName = "Name8", GlobalValue = "Value8" });
+            Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, GlobalName = "Name9", GlobalValue = "Value9" });
+            Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, GlobalName = "Name10", GlobalValue = "Value10" });
 
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);
@@ -154,210 +133,219 @@ namespace WhenPlugin.When {
 
             Globals.Validate();
             RaisePropertyChanged("Globals");
-        } 
+        }
 
         public string Name1 {
             get {
-                return Settings.Default.Name1;
+                return pluginSettings.GetValueString(nameof(Name1), Settings.Default.Name1);
             }
             set {
-                Settings.Default.Name1 = value;
+                pluginSettings.SetValueString(nameof(Name1), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
-
         public string Value1 {
             get {
-                return Settings.Default.Value1;
+                return pluginSettings.GetValueString(nameof(Value1), Settings.Default.Value1);
             }
             set {
-                Settings.Default.Value1 = value;
+                pluginSettings.SetValueString(nameof(Value1), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
-
         public string Name2 {
             get {
-                return Settings.Default.Name2;
+                return pluginSettings.GetValueString(nameof(Name2), Settings.Default.Name2); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name2 = value;
+                pluginSettings.SetValueString(nameof(Name2), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value2 {
             get {
-                return Settings.Default.Value2;
+                return pluginSettings.GetValueString(nameof(Value2), Settings.Default.Value2); ; //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value2 = value;
+                pluginSettings.SetValueString(nameof(Value2), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name3 {
             get {
-                return Settings.Default.Name3;
+                return pluginSettings.GetValueString(nameof(Name3), Settings.Default.Name3); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name3 = value;
+                pluginSettings.SetValueString(nameof(Name3), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value3 {
             get {
-                return Settings.Default.Value3;
+                return pluginSettings.GetValueString(nameof(Value3), Settings.Default.Value3); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value3 = value;
+                pluginSettings.SetValueString(nameof(Value3), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name4 {
             get {
-                return Settings.Default.Name4;
+                return pluginSettings.GetValueString(nameof(Name4), Settings.Default.Name4); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name4 = value;
+                pluginSettings.SetValueString(nameof(Name4), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value4 {
             get {
-                return Settings.Default.Value4;
+                return pluginSettings.GetValueString(nameof(Value4), Settings.Default.Value4); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value4 = value;
+                pluginSettings.SetValueString(nameof(Value4), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name5 {
             get {
-                return Settings.Default.Name5;
+                return pluginSettings.GetValueString(nameof(Name5), Settings.Default.Name5); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name5 = value;
+                pluginSettings.SetValueString(nameof(Name5), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value5 {
             get {
-                return Settings.Default.Value5;
+                return pluginSettings.GetValueString(nameof(Value5), Settings.Default.Value5); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value5 = value;
+                pluginSettings.SetValueString(nameof(Value5), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name6 {
             get {
-                return Settings.Default.Name6;
+                return pluginSettings.GetValueString(nameof(Name6), Settings.Default.Name6); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name6 = value;
+                pluginSettings.SetValueString(nameof(Name6), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value6 {
             get {
-                return Settings.Default.Value6;
+                return pluginSettings.GetValueString(nameof(Value6), Settings.Default.Value6); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value6 = value;
+                pluginSettings.SetValueString(nameof(Value6), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name7 {
             get {
-                return Settings.Default.Name7;
+                return pluginSettings.GetValueString(nameof(Name7), Settings.Default.Name7); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name7 = value;
+                pluginSettings.SetValueString(nameof(Name7), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value7 {
             get {
-                return Settings.Default.Value7;
+                return pluginSettings.GetValueString(nameof(Value7), Settings.Default.Value7); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value7 = value;
+                pluginSettings.SetValueString(nameof(Value7), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name8 {
             get {
-                return Settings.Default.Name8;
+                return pluginSettings.GetValueString(nameof(Name8), Settings.Default.Name8);
             }
             set {
-                Settings.Default.Name8 = value;
+                pluginSettings.SetValueString(nameof(Name8), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value8 {
             get {
-                return Settings.Default.Value8;
+                return pluginSettings.GetValueString(nameof(Value8), Settings.Default.Value8); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value8 = value;
+                pluginSettings.SetValueString(nameof(Value8), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name9 {
             get {
-                return Settings.Default.Name9;
+                return pluginSettings.GetValueString(nameof(Name9), Settings.Default.Name9); //Setings.Default.Name10;
             }
             set {
-                Settings.Default.Name9 = value;
+                pluginSettings.SetValueString(nameof(Name9), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value9 {
             get {
-                return Settings.Default.Value9;
+                return pluginSettings.GetValueString(nameof(Value9), Settings.Default.Value9); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Value9 = value;
+                pluginSettings.SetValueString(nameof(Value9), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Name10 {
             get {
-                return Settings.Default.Name10;
+                return pluginSettings.GetValueString(nameof(Name10), Settings.Default.Name10); //Settings.Default.Name10;
             }
             set {
-                Settings.Default.Name10 = value;
+                pluginSettings.SetValueString(nameof(Name10), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
         public string Value10 {
             get {
-                return Settings.Default.Value10;
+                return pluginSettings.GetValueString(nameof(Value10), Settings.Default.Value10); // Default.Value10;
             }
             set {
-                Settings.Default.Value10 = value;
+                pluginSettings.SetValueString(nameof(Value10), value);
                 CoreUtil.SaveSettings(Settings.Default);
                 RaisePropertyChanged();
             }
         }
+
+        private string GetValue(string name) {
+            return pluginSettings.GetValueString(name, string.Empty);
+        }
+
+        private void SetValue(string name, string value) {
+            pluginSettings.SetValueString(name, value);
+            CoreUtil.SaveSettings(Settings.Default);
+        }
+
+
         public string ProfileSpecificNotificationMessage {
             get {
                 return pluginSettings.GetValueString(nameof(ProfileSpecificNotificationMessage), string.Empty);

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // [MANDATORY] The following GUID is used as a unique identifier of the plugin. Generate a fresh one for your plugin!
@@ -7,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.10.4.0")]
-[assembly: AssemblyFileVersion("3.10.4.0")]
+[assembly: AssemblyVersion("3.10.6.0")]
+[assembly: AssemblyFileVersion("3.10.6.0")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -44,49 +43,16 @@ using System.Runtime.InteropServices;
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
-[assembly: AssemblyMetadata("LongDescription", @"This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.
+[assembly: AssemblyMetadata("LongDescription", @"## This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.
 
-Among the more powerful Powerups are those related to Constants, Variables, and Expressions.  Complete documentation for these can be found [Here](https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Constants-Variables.rtf)
+## Among the more powerful Powerups are those related to Constants, Variables, and Expressions, and the Template by Reference instruction.
 
-** NOTE: Sequencer Powerups now supercedes the 'Constants for Exposures' and 'Interrupts' plugins.  Instructions from the deprecated plugins will no longer work if you remove that plugin; you will have to replace them with instructions from here! **
 
-These are the instructions that are current in Sequencer Powerups, broken down by the Category in which they appear in the instruction sidebar.
+# Complete documentation for Sequencer Powerups (in progress) is at [Powerups Docs](https://marcblank.github.io)
 
-CONSTANTS ENHANCED (new Category):
 
-Define Constant - Define a Constant that can be used in the other 'Constants Enhanced' instructions.  The value of constants can include references to other, previously defined, constants.  In the plugin options page, there is the option to add up to eight 'global' constants; constants that will be available in all sequences.  Values for constants can be arbitrarily complex arithmetic expressions, including the use of parentheses, not that I see any value in this...
+The following instructions are *not* yet documented in the 'complete' docs: 
 
-If (was If Constant) - Executes the specified instructions if the provided Expression is 'true'
-
-Cool Camera + - Same as built-in instruction, with the ability to use a constant for temperature
-
-Take Exposure +/Take Many Exposures +/Smart Exposure + -  These three instructions are effectively copies of the built-in instructions, with the ability to use Expressions for iterations (smart/many), exposure time, gain, and dither.
-
-Define Variable - New for 3.9, Defines a Variable that can be used in Expressions
-
-Set Variable - New for 3.9, Changes the value of a previously defined Variable.
-
-Screenshot: [Constants Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIEvcjHtr65Jl7W9Q?e=FM4WRF)
-
-FOCUSER:
-
-Move Focuser Relative + has the same functionality as NINA's Move Focuser Relative, but with the ability to use Constants
-
-SAFETY MONITOR:
-
-When Becomes Unsafe - This trigger is activated within SECONDS of your Safety Monitor registering an 'Unsafe' condition.  You specify the actions (instructions) to be taken in that circumstance - for example, you might want to ""Close Dome Shutter"", send yourself a message using the Ground Station plugin, and then ""Wait for Safe"".  After that, you might ""Open Dome Shutter"", send yourself another message, ""Run Autofocus"", and ""Slew and Center"".  When your instructions have finished executing, NINA will continue from where it left off!  And this instruction can be used repeatedly (the rain might start and stop and then start again...)  This instruction is likely to be much simpler to understand than multiple loops based on the 'safe' status of your gear.
-
-Once Safe - Intended for use within a 'When Becomes Unsafe' instruction, this instruction will run the included instructions once conditions become safe again. If an 'Unsafe' condition occurs while running those instructions, they will terminate immediately and the 'When Becomes Unsafe' instructions will run again.
-
-If Safe - Specify instructions to execute if your Safety Monitor is currently reporting 'Safe'
-
-If Unsafe - Specify instructions to execute if your Safety Monitor is currently reporting 'Unsafe'
-
-Screnshot: [When Becomes Unsafe Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF)
-
-SEQUENCER (new Category):
-
-Template By Reference - This powerful instruction incorporates the specified (by name) Template into your sequence/target/template at the time it is brought into the Advanced Sequencer screen.  A sequence/target/template that has one (or more) of this instruction, when saved, saves ONLY the name of the Template; in that way, you can update any of your Templates and have the updates reflected in ALL of the sequences/targets/templates that use that Template!
 
 Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
 
@@ -98,17 +64,15 @@ Safe Trigger - NEW for 3.7/2.7, This meta-trigger will cause the Trigger you spe
 
 DIY Trigger - NEW for 3.7/2.7, This trigger allows you to split a specified trigger's triggering condition from the action it takes when triggered.  Yes, this is the same instruction as in the DIY Trigger plugin.
 
-Loop While - New for 3.9, This condition allows for looping while the Expression is not false (or zero)
 
 SWITCH:
 
-If Switch/Weather - This instruction executes the actions you specify when an expression evaluates to true.  The expression can contain the names of Switches, Gauges, and Weather information; the accepted names are shown if you hover over the 'i' icon.  Note that any kind of arithmetic or logical operators can be used in the expression.  Hover over the expression to see its current value.
+If Switch/Weather - (Deprecated; use the 'If' instruction)
 
-When Switch/Weather - This is the trigger equivalent of 'If Switch/Weather'; it will trigger within 5 seconds of your expression becoming true (see above).  The 'Once Only' switch indicates whether you want this instruction to be limited to a single use (remember that the instruction might be triggered repeatedly depending on what steps have been taken to make the expression 'false').
+When Switch/Weather (Deprecated; use the 'When' instruction)
 
-Wait until False - When used within a 'When Switch/Weather' or 'If Switch/Weather' instruction, will wait until the triggering condition becomes false.
+Wait until False - (Deprecated)
 
-Screenshot: [If Switch/Weather Example](https://1drv.ms/u/s!AjBSqKNCEWOTgfN26vDK79WD1gUWBw?e=31xqYu)
 
 UTILITY:
 

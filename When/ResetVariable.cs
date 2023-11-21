@@ -1,29 +1,16 @@
-﻿using WhenPlugin.When;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Settings = WhenPlugin.When.Properties.Settings;
-using System.Windows.Media;
-using NJsonSchema.Validation.FormatValidators;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using System.Reflection;
-using NINA.Profile;
-using System.Configuration;
-using System.Linq;
 using NINA.Sequencer.Container;
 using System.Diagnostics;
-using Castle.Core.Internal;
 using NINA.Core.Enum;
 using NINA.Sequencer;
-using NINA.Core.Utility.Notification;
-using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]

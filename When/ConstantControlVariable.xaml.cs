@@ -1,11 +1,5 @@
-﻿using Castle.Core.Internal;
-using NINA.Sequencer.SequenceItem;
+﻿using NINA.Sequencer.SequenceItem;
 using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -40,7 +34,7 @@ namespace WhenPlugin.When {
             TextBox tb = (TextBox)sender;
             ISequenceItem item = (ISequenceItem)tb.DataContext;
             var stack = ConstantExpression.GetKeyStack(item);
-            if (stack.IsNullOrEmpty()) {
+            if (stack == null || stack.Count == 0) {
                 tb.ToolTip = "There are no valid, defined constants.";
             } else {
                 tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);

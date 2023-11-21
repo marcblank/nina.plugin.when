@@ -30,25 +30,13 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Locale;
 using NINA.Equipment.Model;
-using NINA.Astrometry;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.SequenceItem;
-using System.Windows.Media;
-using Accord;
 using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
-using NINA.Core.Utility.Notification;
-using System.Windows.Media.Converters;
-using Nikon;
-using Castle.Core.Internal;
-using System.Runtime.CompilerServices;
-using NINA.Profile;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using Google.Protobuf.WellKnownTypes;
 
 namespace WhenPlugin.When {
 

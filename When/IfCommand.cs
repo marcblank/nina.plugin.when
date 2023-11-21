@@ -1,15 +1,10 @@
-﻿using Castle.Core.Internal;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Notification;
-using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
     public abstract class IfCommand : SequenceItem, IValidatable {
@@ -52,7 +47,7 @@ namespace WhenPlugin.When {
             foreach (ISequenceItem item in Instructions.Items) {
                 item.ResetProgress();
             }
-            if (Condition != null && !Condition.Items.IsNullOrEmpty()) {
+            if (Condition != null && !(Condition.Items == null || Condition.Items.Count == 0)) {
                 Condition.Items[0].Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
             }
         }
@@ -105,7 +100,7 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
             if (Condition == null) { }
-            else if (Condition.Items.IsNullOrEmpty()) {
+            else if (Condition.Items == null || Condition.Items.Count == 0) {
                 i.Add("The instruction to check must not be empty!");
             } else if (Condition.Items[0] is IValidatable val) {
                 _ = val.Validate();
