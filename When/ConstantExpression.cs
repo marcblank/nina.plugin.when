@@ -179,25 +179,6 @@ namespace WhenPlugin.When {
 
         }
 
-        static public bool IsValidConverter(ISequenceEntity item, string expr, out double val, IList<string> issues) {
-            lock (ConstantsLock) {
-                if (LastMergedKeys == null || string.IsNullOrEmpty(expr)) {
-                    val = 0;
-                    return false;
-                }
-                double result = NCalcEvaluate(expr, LastMergedKeys, issues);
-                DebugInfo("[[    IsValidConverter: ", item.Name, ",  ", expr, " = ",
-                    ((issues == null || issues.Count == 0) ? (" (" + result + ")") : " issue: " + issues[0]), "  ]]");
-                if (Double.IsNaN(result)) {
-                    val = -1;
-                    return false;
-                } else {
-                    val = result;
-                    return true;
-                }
-            }
-        }
-
         static private Double EvaluateExpression(ISequenceEntity item, string expr, Stack<Keys> stack, IList<string> issues) {
             lock (ConstantsLock) {
                 if (string.IsNullOrEmpty(expr)) return 0;

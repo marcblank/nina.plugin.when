@@ -88,7 +88,7 @@ namespace WhenPlugin.When {
 
             // SAFE means IsSafe && SAFE != false
             double safeValue = Double.NaN;
-            bool valid = ConstantExpression.IsValidConverter(item, "SAFE", out safeValue, null);
+            bool valid = ConstantExpression.IsValid(item, "*Converter*", "SAFE", out safeValue, null);
 
             if (safe && valid && safeValue == 0) {
                 safe = false;

@@ -82,7 +82,7 @@
                     </Style>
                 </Grid.Style>
                 <Border
-                    MinWidth="200"
+                    MinWidth="50"
                     MinHeight="30"
                     Padding="0,0,5,0"
                     VerticalAlignment="Stretch">
@@ -104,16 +104,7 @@
                             Data="{Binding Icon}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="10,0,0,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource ButtonForegroundBrush}"
-                            Text="{Binding Name}"
-                            TextDecorations="{Binding Status, Converter={StaticResource DisabledStatusToStrikethroughConverter}}" />
-
-                        <Grid Grid.Column="2" Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
+                         <Grid Grid.Column="2" Visibility="{Binding Status, Converter={StaticResource DisabledStatusToInvisibleConverter}}">
                             <Border
                                 Width="20"
                                 Height="20"
