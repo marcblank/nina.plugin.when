@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.10.8.1")]
-[assembly: AssemblyFileVersion("3.10.8.1")]
+[assembly: AssemblyVersion("3.10.9.0")]
+[assembly: AssemblyFileVersion("3.10.9.0")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -48,39 +48,9 @@ using System.Runtime.InteropServices;
 ## Among the more powerful Powerups are those related to Constants, Variables, and Expressions, and the Template by Reference instruction.
 
 
-# Complete documentation for Sequencer Powerups (in progress) is at [Powerups Docs](https://marcblank.github.io)
+# Complete documentation for Sequencer Powerups is at [Powerups Docs](https://marcblank.github.io)
 
-
-The following instructions are *not* yet documented in the 'complete' docs: 
-
-
-Interrupt Trigger - This instruction, when dragged into a running sequence, will STOP execution after the current instruction is finished and wait for you to add any instructions you wish to execute at that time.
-
-Autofocus Trigger - Like the above, but this will run an Autofocus instruction after the currently running instruction has finished executing (let's say you want to run an Autofocus NOW, for example)
-
-Repeat Until All Succeed - This instruction will execute each included instruction in turn; if any fails, the sequence will wait the specified amount of time, and then start again (repeating each instruction).  This will continue until all instructions 'succeed'; consider this instruction as a series of prerequisites for the sequence to continue.
-
-Safe Trigger - NEW for 3.7/2.7, This meta-trigger will cause the Trigger you specify to be active ONLY if a connected Safety Monitor reports 'Safe'. This instruction is intended to be used with 'When Becomes Unsafe' to prevennt unwanted Triggers from running while conditions are 'Unsafe'.
-
-DIY Trigger - NEW for 3.7/2.7, This trigger allows you to split a specified trigger's triggering condition from the action it takes when triggered.  Yes, this is the same instruction as in the DIY Trigger plugin.
-
-
-SWITCH:
-
-If Switch/Weather - (Deprecated; use the 'If' instruction)
-
-When Switch/Weather (Deprecated; use the 'When' instruction)
-
-Wait until False - (Deprecated)
-
-
-UTILITY:
-
-Wait Indefinitely - Waits until you skip the instruction or delete it.  This may be useful if you need your sequence to wait for you to complete some manual task which will take an undetermined amount of time.
-
-Breakpoint - Basically the same as Wait Indefinitely; stops sequence execution until Continue is clicked.
-
-Comments, suggestions, bug reports, etc. are welcomed!  Contact me by DM @chatter on the NINA Discord server, or post in the #sequencer-powerups channel.
+## Comments, suggestions, bug reports, etc. are welcomed!  Contact me by DM @chatter on the NINA Discord server, or post in the #sequencer-powerups channel.
 ")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

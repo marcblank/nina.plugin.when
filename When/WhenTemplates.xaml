@@ -278,9 +278,9 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock
                                 HorizontalAlignment="Left"
-                                Margin="0,0,0,-10"
-                                VerticalAlignment="Bottom"
-                                Opacity="0.4"
+                                Margin="0,6,0,-10"
+                                VerticalAlignment="Center"
+                                Opacity="0.6"
                                 Text="Instructions when triggered:"/>
                         <Border
                         MinHeight="35"
