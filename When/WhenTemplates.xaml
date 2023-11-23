@@ -294,7 +294,7 @@
                                 VerticalAlignment="Center"
                                 FontStyle="Italic"
                                 Opacity="0.4"
-                                Text="Instructions go here"
+                                Text="Instructions will go here..."
                                 Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
@@ -385,7 +385,7 @@
                                 VerticalAlignment="Center"
                                 FontStyle="Italic"
                                 Opacity="0.4"
-                                Text="Interrupt instructions go here"
+                                Text="Instructions will go here..."
                                 Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
@@ -830,41 +830,81 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:OnceSafe}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <ninactrl:DetachingExpander>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock
-                               MinHeight="30"
-                               HorizontalAlignment="Left"
-                               Margin="0,10,0,-20"
-                               VerticalAlignment="Center"
-                               Text="Instructions to execute once your gear is again 'safe':" />
-                        <Border
-                       MinHeight="35"
-                       Margin="0,20,0,0"
-                       BorderBrush="{StaticResource BorderBrush}"
-                       BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontStyle="Italic"
-                               Text="Instructions go here"
-                               Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
+        <Border>
+            <Border.Resources>
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </Border.Resources>
+            <i:Interaction.Behaviors>
+                <!--  Drop area above and below the Sequence Container  -->
+                <behaviors:DragOverBehavior
+                    AllowDragCenter="False"
+                    DragAboveSize="25"
+                    DragBelowSize="15" />
+            </i:Interaction.Behaviors>
+            <ninactrl:DetachingExpander>
+                <ninactrl:DetachingExpander.Header>
+                    <Grid
+                        MinHeight="35"
+                        Margin="0"
+                        HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                        Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock 
+                                 MinHeight="25"
+                                 Margin="10,10,10,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="Once Safe" />
+                            </StackPanel>
+                        </Grid>
+                        <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                                Margin="2,0,10,0"
+                                HorizontalAlignment="Right"
+                                Content="{Binding}"
+                                DockPanel.Dock="Right"
+                                Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                    </StackPanel>
-                </ninactrl:DetachingExpander>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
+                        <Border
+                           x:Name="ButtonCommands"
+                           Grid.Column="2"
+                           HorizontalAlignment="Stretch"
+                           Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Border
+                        MinHeight="35"
+                        Margin="0,20,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1">
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                Opacity="0.4"
+                                Text="The specified template will go here..."
+                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />
+                            </i:Interaction.Behaviors>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
     </DataTemplate>
-
 
     <DataTemplate DataType="{x:Type local:TemplateByReference}">
         <Border>
@@ -948,7 +988,7 @@
                                 FontStyle="Italic"
                                 Opacity="0.4"
                                 Text="The specified template will go here..."
-                                Visibility="{Binding Path=PseudoParent.TemplateNameIsTrue, Converter={StaticResource BooleanToVisibilityHiddenConverter}}" />
+                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
                                 <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />
@@ -1527,19 +1567,40 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:WhenUnsafe}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <ninactrl:DetachingExpander>
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                MinHeight="20"
-                                HorizontalAlignment="Left"
-                                Margin="0,10,0,-20"
-                                VerticalAlignment="Center"
-                                MinWidth="400"
-                                Text="Instructions to execute when your gear becomes 'unsafe':" />
-                            <Button
+        <Border>
+            <Border.Resources>
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </Border.Resources>
+            <i:Interaction.Behaviors>
+                <!--  Drop area above and below the Sequence Container  -->
+                <behaviors:DragOverBehavior
+                   AllowDragCenter="False"
+                   DragAboveSize="25"
+                   DragBelowSize="15" />
+            </i:Interaction.Behaviors>
+            <ninactrl:DetachingExpander>
+                <ninactrl:DetachingExpander.Header>
+                    <Grid
+                       MinHeight="35"
+                       Margin="0"
+                       HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                       Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock 
+                                  MinHeight="25"
+                                  Margin="10,10,10,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  Text="When Becomes Unsafe" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                 <Button
                                 MinHeight="20"
                                 Margin="5,20,0,0"
                                 Width="100"
@@ -1547,38 +1608,56 @@
                                 HorizontalAlignment="Stretch"
                                 Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
                                 Command="{Binding StopInstructions}">
-                                <TextBlock
+                                    <TextBlock
                                     Foreground="{StaticResource ButtonForegroundBrush}"
                                     Text="{Binding StartStop}"
                                     TextWrapping="Wrap"
                                     ToolTip="Foo"
                                     ToolTipOpening="WhenSwitch_StopStartToolTip" />
-                            </Button>
-                        </StackPanel>
-                        <Border
-                        MinHeight="35"
-                        Margin="0,20,0,0"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontStyle="Italic"
-                                Opacity="0.4"
-                                Text="Instructions go here"
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                               Margin="2,0,10,0"
+                               HorizontalAlignment="Right"
+                               Content="{Binding}"
+                               DockPanel.Dock="Right"
+                               Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                    </StackPanel>
-                </ninactrl:DetachingExpander>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
+                        <Border
+                          x:Name="ButtonCommands"
+                          Grid.Column="2"
+                          HorizontalAlignment="Stretch"
+                          Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Border
+                       MinHeight="35"
+                       Margin="0,20,0,0"
+                       BorderBrush="{StaticResource BorderBrush}"
+                       BorderThickness="1">
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                            <TextBlock
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontStyle="Italic"
+                               Opacity="0.4"
+                               Text="Instructions will go here..."
+                               Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />
+                            </i:Interaction.Behaviors>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:WaitIndefinitely}">
@@ -1671,7 +1750,7 @@
                                 VerticalAlignment="Center"
                                 FontStyle="Italic"
                                 Opacity="0.4"
-                                Text="Instructions go here"
+                                Text="Instructions will go here..."
                                 Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                                 <i:Interaction.Behaviors>
                                     <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
