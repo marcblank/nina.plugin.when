@@ -1491,7 +1491,13 @@
                                DockPanel.Dock="Right"
                                Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                        <Control Template="{StaticResource PowerupsButtons}" />
+                        <Border
+                            x:Name="ButtonCommands"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
