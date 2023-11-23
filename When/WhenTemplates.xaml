@@ -615,7 +615,6 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-
                         <Border
                         Grid.Row="1"
                         MinHeight="35"
@@ -674,13 +673,13 @@
                     </Border>
                     <TextBlock VerticalAlignment="Center" Margin="10,3,0,0" Text="Expression:" />
                     <local:ConstantControl 
-                                    Margin="5,4 ,10,5" 
-                                    ToolTip="Foo"
-                                    ToolTipOpening="LoopWhile_PredicateToolTip"
-                                    Validate="ValidateConstant"
-                                    Expr="{Binding Path=Predicate, Mode=TwoWay}"
-                                    Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
-                                    />
+                        Margin="5,4 ,10,5"
+                        ToolTip="Foo"
+                        ToolTipOpening="LoopWhile_PredicateToolTip"
+                        Validate="ValidateConstant"
+                        Expr="{Binding Path=Predicate, Mode=TwoWay}"
+                        Valu="{Binding Path=PredicateValue, Mode=TwoWay}"
+                        />
                 </StackPanel>
 
             </nina:SequenceBlockView.SequenceItemContent>
@@ -707,7 +706,6 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-
                         <Border
                         Grid.Row="1"
                         MinHeight="35"
@@ -1027,7 +1025,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
-                                  MinHeight="30"
+                                  MinHeight="25"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1035,7 +1033,7 @@
                             <Border
                                Width="20"
                                Height="20"
-                               Margin="5,-3,5,0"
+                               Margin="5,0,5,0"
                                Background="{StaticResource NotificationErrorBrush}"
                                BorderBrush="Transparent"
                                CornerRadius="10">
@@ -1056,7 +1054,7 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,-4,5,0" Text="Expression: ">
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
                             <local:ConstantControl 
                                   Margin="0,2,10,10" 
@@ -1136,7 +1134,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
-                                  MinHeight="30"
+                                  MinHeight="25"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1144,7 +1142,7 @@
                             <Border
                                Width="20"
                                Height="20"
-                               Margin="5,-3,5,0"
+                               Margin="5,0,5,0"
                                Background="{StaticResource NotificationErrorBrush}"
                                BorderBrush="Transparent"
                                CornerRadius="10">
@@ -1165,10 +1163,10 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,-4,5,0" Text="Expression: ">
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
                             <local:ConstantControl 
-                                  Margin="0,2,10,10" 
+                                  Margin="0,5,10,10" 
                                   ToolTip="Foo"
                                   ToolTipOpening="IfConstant_PredicateToolTip"
                                   Validate="ValidateConstant"
@@ -1206,7 +1204,7 @@
                                VerticalAlignment="Center"
                                FontStyle="Italic"
                                Opacity="0.4"
-                               Text="Conditional instructions go here"
+                               Text="Then instructions go here"
                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
@@ -1214,7 +1212,7 @@
                             </i:Interaction.Behaviors>
                         </Grid>
                     </Border>
-                    <TextBlock Text="Else" Margin="0,10,0,0" MinHeight="35" VerticalAlignment="Bottom" />
+                    <TextBlock Text="Else" Margin="10,10,0,0" MinHeight="35" VerticalAlignment="Bottom" />
                     <Border
                        MinHeight="35"
                        Margin="0,-10,0,0"
@@ -1476,7 +1474,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
-                                  MinHeight="30"
+                                  MinHeight="25"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1484,7 +1482,7 @@
                             <Border
                                Width="20"
                                Height="20"
-                               Margin="5,-3,5,0"
+                               Margin="5,0,5,0"
                                Background="{StaticResource NotificationErrorBrush}"
                                BorderBrush="Transparent"
                                CornerRadius="10">
@@ -1505,7 +1503,7 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,-4,5,0" Text="Expression: ">
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
                             <local:ConstantControl 
                                   Margin="0,2,10,10" 
@@ -1593,27 +1591,27 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock 
-                                  MinHeight="25"
-                                  Margin="10,10,10,0"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Center"
-                                  Text="When Becomes Unsafe" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                 <Button
-                                MinHeight="20"
-                                Margin="5,20,0,0"
-                                Width="100"
-                                VerticalAlignment="Bottom"
-                                HorizontalAlignment="Stretch"
-                                Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
-                                Command="{Binding StopInstructions}">
+                                    MinHeight="25"
+                                    Margin="10,10,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="When Becomes Unsafe" />
+                                <Button
+                                    MinHeight="20"
+                                    Margin="50,0,0,0"
+                                    Width="125"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
+                                    Visibility="{Binding InFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                                    Command="{Binding StopInstructions}">
                                     <TextBlock
-                                    Foreground="{StaticResource ButtonForegroundBrush}"
-                                    Text="{Binding StartStop}"
-                                    TextWrapping="Wrap"
-                                    ToolTip="Foo"
-                                    ToolTipOpening="WhenSwitch_StopStartToolTip" />
+                                        Margin="0,-1,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource ButtonForegroundBrush}"
+                                        Text="{Binding StartStop}"
+                                        TextWrapping="Wrap"
+                                        ToolTip="Foo"
+                                        ToolTipOpening="WhenSwitch_StopStartToolTip" />
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -1626,10 +1624,10 @@
                                Style="{StaticResource ProgressPresenter}" />
                         </Border>
                         <Border
-                          x:Name="ButtonCommands"
-                          Grid.Column="2"
-                          HorizontalAlignment="Stretch"
-                          Background="{StaticResource SecondaryBackgroundBrush}">
+                            x:Name="ButtonCommands"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
                             <Control Template="{StaticResource PowerupsButtons}" />
                         </Border>
                     </Grid>
@@ -1643,11 +1641,11 @@
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
                             <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                             <TextBlock
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontStyle="Italic"
-                               Opacity="0.4"
-                               Text="Instructions will go here..."
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontStyle="Italic"
+                                Opacity="0.4"
+                                Text="Instructions will go here..."
                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
