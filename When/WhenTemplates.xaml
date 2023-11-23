@@ -17,11 +17,6 @@
     <local:ExpressionConverter x:Key="ec" />
 
     <ControlTemplate x:Key="PowerupsButtons">
-        <Border
-            x:Name="ButtonCommands"
-            Grid.Column="2"
-            HorizontalAlignment="Stretch"
-            Background="{StaticResource SecondaryBackgroundBrush}">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
                     Width="25"
@@ -118,7 +113,6 @@
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
-        </Border>
     </ControlTemplate>
 
     <Style x:Name="PowerupsStyle" TargetType="{x:Type ninactrl:DetachingExpander}">
@@ -931,7 +925,13 @@
                                 DockPanel.Dock="Right"
                                 Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                        <Control Template="{StaticResource PowerupsButtons}" />
+                        <Border
+                           x:Name="ButtonCommands"
+                           Grid.Column="2"
+                           HorizontalAlignment="Stretch"
+                           Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
@@ -1035,7 +1035,13 @@
                                DockPanel.Dock="Right"
                                Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                        <Control Template="{StaticResource PowerupsButtons}" />
+                        <Border
+                            x:Name="ButtonCommands"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
@@ -1138,7 +1144,13 @@
                                DockPanel.Dock="Right"
                                Style="{StaticResource ProgressPresenter}" />
                         </Border>
-                        <Control Template="{StaticResource PowerupsButtons}" />
+                        <Border
+                            x:Name="ButtonCommands"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
