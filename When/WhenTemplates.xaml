@@ -18,27 +18,27 @@
 
     <ControlTemplate x:Key="PowerupsButtons">
         <Border
-                           x:Name="ButtonCommands"
-                           Grid.Column="2"
-                           HorizontalAlignment="Stretch"
-                           Background="{StaticResource SecondaryBackgroundBrush}">
+            x:Name="ButtonCommands"
+            Grid.Column="2"
+            HorizontalAlignment="Stretch"
+            Background="{StaticResource SecondaryBackgroundBrush}">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
-                                   Width="25"
-                                   Height="25"
-                                   Margin="25,0,0,0"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   Command="{Binding DetachCommand}"
-                                   Style="{StaticResource SecondaryBackgroundButton}"
-                                   Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding DetachCommand}"
+                    Style="{StaticResource SecondaryBackgroundButton}"
+                    Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
                         <Path
-                                           Margin="5"
-                                           Data="{StaticResource TrashCanSVG}"
-                                           Fill="{StaticResource ButtonForegroundBrush}"
-                                           Stretch="Uniform"
-                                           UseLayoutRounding="True" />
+                            Margin="5"
+                            Data="{StaticResource TrashCanSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -47,22 +47,22 @@
                     </Button.ToolTip>
                 </Button>
                 <Button
-                                   x:Name="CloneContainerButton"
-                                   Width="25"
-                                   Height="25"
-                                   Margin="25,0,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Command="{Binding AddCloneToParentCommand}"
-                                   Style="{StaticResource SecondaryBackgroundButton}"
-                                   Visibility="{Binding AddCloneToParentCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    x:Name="CloneContainerButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddCloneToParentCommand}"
+                    Style="{StaticResource SecondaryBackgroundButton}"
+                    Visibility="{Binding AddCloneToParentCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
                         <Path
-                                           Margin="5"
-                                           Data="{StaticResource CopySVG}"
-                                           Fill="{StaticResource ButtonForegroundBrush}"
-                                           Stretch="Uniform"
-                                           UseLayoutRounding="True" />
+                            Margin="5"
+                            Data="{StaticResource CopySVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -71,21 +71,21 @@
                     </Button.ToolTip>
                 </Button>
                 <Button
-                                   x:Name="MoveUpButton"
-                                   Width="25"
-                                   Height="25"
-                                   Margin="25,0,0,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Command="{Binding MoveUpCommand}"
-                                   Style="{StaticResource SecondaryBackgroundButton}">
+                    x:Name="MoveUpButton"
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding MoveUpCommand}"
+                    Style="{StaticResource SecondaryBackgroundButton}">
                     <Grid>
                         <Path
-                                           Margin="5"
-                                           Data="{StaticResource ArrowUpSVG}"
-                                           Fill="{StaticResource ButtonForegroundBrush}"
-                                           Stretch="Uniform"
-                                           UseLayoutRounding="True" />
+                            Margin="5"
+                            Data="{StaticResource ArrowUpSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
@@ -93,24 +93,23 @@
                         </ToolTip>
                     </Button.ToolTip>
                 </Button>
-
                 <Button
-                                   x:Name="MoveDownButton"
-                                   Width="25"
-                                   Height="25"
-                                   Margin="10,0,5,0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Command="{Binding MoveDownCommand}"
-                                   Style="{StaticResource SecondaryBackgroundButton}"
-                                   Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    x:Name="MoveDownButton"
+                    Width="25"
+                    Height="25"
+                    Margin="10,0,5,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding MoveDownCommand}"
+                    Style="{StaticResource SecondaryBackgroundButton}"
+                    Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid>
                         <Path
-                                           Margin="5"
-                                           Data="{StaticResource ArrowDownSVG}"
-                                           Fill="{StaticResource ButtonForegroundBrush}"
-                                           Stretch="Uniform"
-                                           UseLayoutRounding="True" />
+                            Margin="5"
+                            Data="{StaticResource ArrowDownSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
                     </Grid>
                     <Button.ToolTip>
                         <ToolTip>
