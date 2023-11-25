@@ -46,7 +46,15 @@ namespace WhenPlugin.When {
         public override void ResetProgress() {
             base.ResetProgress();
         }
- 
+
+        public override void Initialize() {
+            base.Initialize();
+            foreach (ISequenceItem item in Items) {
+                item.Initialize();
+            }
+            
+        }
+
         public new void MoveUp(ISequenceItem item) {
             lock (lockObj) {
                 var index = Items.IndexOf(item);

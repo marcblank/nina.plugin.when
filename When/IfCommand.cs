@@ -95,6 +95,12 @@ namespace WhenPlugin.When {
             }
         }
 
+        public override void Initialize() {
+            base.Initialize();
+            Instructions.Initialize();
+            Condition.Initialize();
+        }
+
         public virtual bool Validate() {
             CommonValidate();
 
