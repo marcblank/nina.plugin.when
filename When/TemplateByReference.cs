@@ -251,7 +251,7 @@ namespace WhenPlugin.When {
                 if (item is ISequenceContainer sc) {
                     UpdateChangedTemplate(sc, name);
                 } else if (item is TemplateByReference tbr) {
-                    if (tbr.TemplateName.Equals(name)) {
+                    if (tbr != null && tbr.TemplateName.Equals(name)) {
                         // Update instruction set if user wants
                         if (MyMessageBox.Show("An instruction set named '" + tbr.Parent.Name + "' includes a reference to template '" + name + "', which has just been changed.  Do you want this instruction set to be updated as well?", "Update instruction set?", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                             tbr.SelectedTemplate = FindTemplate(name);
