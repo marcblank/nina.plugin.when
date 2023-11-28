@@ -22,6 +22,7 @@ using NINA.Sequencer.Serialization;
 using System.Diagnostics;
 using NINA.Core.MyMessageBox;
 using System.Runtime.Serialization;
+using System.Windows.Navigation;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Template by Reference")]
@@ -112,8 +113,17 @@ namespace WhenPlugin.When {
             }
         }
 
+        private string iTemplateName = null;
         [JsonProperty]
-        public string TemplateName { get; set; }
+        public string TemplateName { 
+            get {
+                return iTemplateName;
+            }
+            set {
+                iTemplateName = value;
+                RaisePropertyChanged("TemplateName");
+            }
+        }
 
         public bool TemplateNameIsTrue {
             get {
