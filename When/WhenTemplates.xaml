@@ -1031,6 +1031,31 @@
                                   VerticalAlignment="Center"
                                   Text="If" />
                             <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+
+                            <Border
                                Width="20"
                                Height="20"
                                Margin="5,0,5,0"
@@ -1139,7 +1164,6 @@
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
                                   Text="If/Then/Else" />
-
                             <Border
                                 Width="20"
                                 Height="20"
@@ -1164,7 +1188,6 @@
                                     <ItemsControl ItemsSource="{Binding Issues}" />
                                 </Border.ToolTip>
                             </Border>
-
                             <Border
                                Width="20"
                                Height="20"
@@ -1506,6 +1529,30 @@
                                   VerticalAlignment="Center"
                                   Text="When" />
                             <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+                            <Border
                                Width="20"
                                Height="20"
                                Margin="5,0,5,0"
@@ -1622,6 +1669,31 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Text="When Becomes Unsafe" />
+                                <Border
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,5,0"
+                                Background="{StaticResource NotificationErrorBrush}"
+                                BorderBrush="Transparent"
+                                CornerRadius="10">
+                                    <Border.Visibility>
+                                        <PriorityBinding>
+                                            <Binding
+                                            Converter="{StaticResource ZeroToVisibilityConverter}"
+                                            FallbackValue="Collapsed"
+                                            Path="Issues.Count" />
+                                        </PriorityBinding>
+                                    </Border.Visibility>
+                                    <Path
+                                    HorizontalAlignment="Right"
+                                    Data="{StaticResource ExclamationCircledSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                    <Border.ToolTip>
+                                        <ItemsControl ItemsSource="{Binding Issues}" />
+                                    </Border.ToolTip>
+                                </Border>
+
                                 <Button
                                     MinHeight="20"
                                     Margin="50,0,0,0"
