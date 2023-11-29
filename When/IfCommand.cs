@@ -1,13 +1,18 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Utility;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
+using NINA.Sequencer.Container.ExecutionStrategy;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
-    public abstract class IfCommand : SequenceItem, IValidatable {
+    public abstract class IfCommand : SequenceItem, ISequenceContainer, IValidatable {
 
         [JsonProperty]
         public IfContainer Condition { get; protected set; }
@@ -24,6 +29,13 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
+        public IList<ISequenceItem> Items => ((ISequenceContainer)Instructions).Items;
+
+        public bool IsExpanded { get => ((ISequenceContainer)Instructions).IsExpanded; set => ((ISequenceContainer)Instructions).IsExpanded = value; }
+        public int Iterations { get => ((ISequenceContainer)Instructions).Iterations; set => ((ISequenceContainer)Instructions).Iterations = value; }
+
+        public IExecutionStrategy Strategy => ((ISequenceContainer)Instructions).Strategy;
 
         public  static object lockObj = new object();
 
@@ -113,6 +125,42 @@ namespace WhenPlugin.When {
  
             Issues = i;
             return i.Count == 0;
+        }
+
+        public void Add(ISequenceItem item) {
+            ((ISequenceContainer)Instructions).Add(item);
+        }
+
+        public void MoveUp(ISequenceItem item) {
+            ((ISequenceContainer)Instructions).MoveUp(item);
+        }
+
+        public void MoveDown(ISequenceItem item) {
+            ((ISequenceContainer)Instructions).MoveDown(item);
+        }
+
+        public bool Remove(ISequenceItem item) {
+            return ((ISequenceContainer)Instructions).Remove(item);
+        }
+
+        public bool Remove(ISequenceCondition item) {
+            return ((ISequenceContainer)Instructions).Remove(item);
+        }
+
+        public bool Remove(ISequenceTrigger item) {
+            return ((ISequenceContainer)Instructions).Remove(item);
+        }
+
+        public void ResetAll() {
+            ((ISequenceContainer)Instructions).ResetAll();
+        }
+
+        public Task Interrupt() {
+            return ((ISequenceContainer)Instructions).Interrupt();
+        }
+
+        public ICollection<ISequenceItem> GetItemsSnapshot() {
+            return ((ISequenceContainer)Instructions).GetItemsSnapshot();
         }
     }
 }
