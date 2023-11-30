@@ -705,7 +705,7 @@ namespace WhenPlugin.When {
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
                 if (flatInfo.Connected) {
                     SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
-                    i.Add("Flat Panel: CoverState (" + flatInfo.CoverState + ")");
+                    i.Add("Flat Panel: CoverState (Cover" + flatInfo.CoverState + ")");
                     SwitchWeatherKeys.Add("CoverUnknown", 0);
                     SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
                     SwitchWeatherKeys.Add("CoverClosed", 2);
