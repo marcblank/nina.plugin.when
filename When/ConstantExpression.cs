@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using NINA.Equipment.Equipment.MyCamera;
 using System.Threading;
 using NINA.Equipment.Equipment.MyDome;
+using NINA.Equipment.Equipment.MyFlatDevice;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -640,16 +641,18 @@ namespace WhenPlugin.When {
         private static IWeatherDataMediator WeatherDataMediator { get; set; }
         private static ICameraMediator CameraMediator { get; set; }
         private static IDomeMediator DomeMediator { get; set; }
+        private static IFlatDeviceMediator FlatMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches {  get; set; } = new List<string>();
 
-        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator) {
+        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator, IFlatDeviceMediator flatMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
             DomeMediator = domeMediator;
+            FlatMediator = flatMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -697,7 +700,18 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("ShutterOpening", 2);
                     SwitchWeatherKeys.Add("ShutterClosing", 3);
                     SwitchWeatherKeys.Add("ShutterError", 4);
-               }
+                }
+
+                FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
+                if (flatInfo.Connected) {
+                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
+                    i.Add("Flat Panel: CoverState (" + flatInfo.CoverState + ")");
+                    SwitchWeatherKeys.Add("CoverUnknown", 0);
+                    SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
+                    SwitchWeatherKeys.Add("CoverClosed", 2);
+                    SwitchWeatherKeys.Add("CoverOpen", 3);
+                    SwitchWeatherKeys.Add("CoverError", 4);
+                }
 
                 // Get switch values
                 SwitchInfo switchInfo = SwitchMediator.GetInfo();
