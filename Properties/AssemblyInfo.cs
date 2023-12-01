@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.10.13.1")]
-[assembly: AssemblyFileVersion("3.10.13.1")]
+[assembly: AssemblyVersion("3.10.13.2")]
+[assembly: AssemblyFileVersion("3.10.13.2")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]

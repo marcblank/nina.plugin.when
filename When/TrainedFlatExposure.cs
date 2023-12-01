@@ -244,6 +244,7 @@ namespace WhenPlugin.When {
         public string GainExpr {
             get => gainExpr;
             set {
+                if (cameraMediator == null) return;
                 gainExpr = value;
                 ConstantExpression.Evaluate(this, "GainExpr", "Gain", cameraMediator.GetInfo().DefaultGain);
                 RaisePropertyChanged("GainExpr");

@@ -153,6 +153,7 @@ namespace WhenPlugin.When {
 
         public void ResetAll() {
             ((ISequenceContainer)Instructions).ResetAll();
+            Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
         }
 
         public Task Interrupt() {
