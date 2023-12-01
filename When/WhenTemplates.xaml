@@ -505,7 +505,7 @@
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
                        MinWidth="40"
-                       Margin="5,0g,10,-2"
+                       Margin="5,0,10,-2"
                        Text="{Binding Variable, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
