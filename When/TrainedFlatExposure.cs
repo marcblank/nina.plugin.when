@@ -238,53 +238,6 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("IterationCount");
             }
         }
-
-        private string gainExpr = "";
-        [JsonProperty]
-        public string GainExpr {
-            get => gainExpr;
-            set {
-                if (cameraMediator == null) return;
-                gainExpr = value;
-                ConstantExpression.Evaluate(this, "GainExpr", "Gain", cameraMediator.GetInfo().DefaultGain);
-                RaisePropertyChanged("GainExpr");
-            }
-        }
-
-        private int gain = -1;
-
-        [JsonProperty]
-        public int Gain {
-            get => gain;
-            set {
-                gain = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ValidateGain(double gain) {
-            return iValidateGain(gain, new List<string>());
-        }
-
-        public string iValidateGain(double gain, List<string> i) {
-            var iCount = i.Count;
-
-            CameraInfo = this.cameraMediator.GetInfo();
-            if (!CameraInfo.Connected) {
-                i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (Gain < -1) {
-                i.Add("Gain cannot be less than -1");
-            } else if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
-            }
-
-            if (iCount == i.Count) {
-                return String.Empty;
-            } else {
-                return i[iCount];
-            }
-        }
-
  
         private CameraInfo cameraInfo;
 

@@ -80,6 +80,7 @@ namespace WhenPlugin.When {
                 GainExpr = GainExpr,
                 Gain = Gain,
                 Offset = Offset,
+                OffsetExpr = OffsetExpr,
                 ImageType = ImageType,
             };
 
@@ -146,7 +147,7 @@ namespace WhenPlugin.When {
             set {
                 offsetExpr = value;
                 ConstantExpression.Evaluate(this, "OffsetExpr", "Offset", cameraMediator.GetInfo().DefaultOffset);
-                RaisePropertyChanged("GainExpr");
+                RaisePropertyChanged("OffsetExpr");
             }
         }
 
