@@ -219,6 +219,7 @@ namespace WhenPlugin.When {
             get => GetIterations().Iterations;
             set {
                 //
+                if (Items.Count == 0) return;
                 LoopCondition loop = GetIterations();
                 if (loop != null) {
                     loop.Iterations = value;

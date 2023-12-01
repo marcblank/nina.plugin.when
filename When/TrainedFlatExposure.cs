@@ -229,7 +229,8 @@ namespace WhenPlugin.When {
         public int IterationCount {
             get => GetIterations().Iterations;
             set {
-                //
+                // Items might be empty
+                if (Items.Count == 0) return;
                 LoopCondition loop = GetIterations();
                 if (loop != null) {
                     loop.Iterations = value;
