@@ -459,12 +459,12 @@
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
                        MinWidth="40"
-                       Margin="5,0,10,-2"
+                       Margin="5,1,10,-2"
                        Text="{Binding Constant, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
-                       Margin="5,0,5,3"
+                       Margin="5,-2,5,3"
                        Expr="{Binding CValueExpr, Mode=TwoWay}" 
                        Valu="{Binding CValue, Mode=TwoWay}"/>
                 </StackPanel>
@@ -479,12 +479,12 @@
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
                        MinWidth="40"
-                       Margin="5,0,10,-2"
+                       Margin="5,1,10,-2"
                        Text="{Binding Variable, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Initially:" />
                     <local:ConstantControl
-                      Margin="5,0,5,3"
+                      Margin="5,-2,5,3"
                       Expr="{Binding OValueExpr, Mode=TwoWay}" 
                       Valu="{Binding OValue, Mode=TwoWay}"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="Currently:" />
@@ -510,7 +510,7 @@
                        TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
-                       Margin="5,0,5,3"
+                       Margin="5,-4,5,3"
                        Expr="{Binding CValueExpr, Mode=TwoWay}" 
                        Validate="ValidateVariable"
                        Valu="{Binding CValue, Mode=TwoWay}"/>
