@@ -18,7 +18,30 @@
 
     <ControlTemplate x:Key="PowerupsButtons">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button
+            <Button
+                    Width="25"
+                    Height="25"
+                    Margin="25,0,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding ResetProgressCommand}"
+                    Style="{StaticResource SecondaryBackgroundButton}"
+                    Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                <Grid>
+                    <Path
+                            Margin="5"
+                            Data="{StaticResource RefreshSVG}"
+                            Fill="{StaticResource ButtonForegroundBrush}"
+                            Stretch="Uniform"
+                            UseLayoutRounding="True" />
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Reset_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button
                     Width="25"
                     Height="25"
                     Margin="25,0,0,0"
@@ -27,21 +50,21 @@
                     Command="{Binding DetachCommand}"
                     Style="{StaticResource SecondaryBackgroundButton}"
                     Visibility="{Binding DetachCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-                    <Grid>
-                        <Path
+                <Grid>
+                    <Path
                             Margin="5"
                             Data="{StaticResource TrashCanSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
-                    </Grid>
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Delete_Tooltip}" />
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Button
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Delete_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button
                     x:Name="CloneContainerButton"
                     Width="25"
                     Height="25"
@@ -673,7 +696,7 @@
                     </Border>
                     <TextBlock VerticalAlignment="Center" Margin="10,3,0,0" Text="Expression:" />
                     <local:ConstantControl 
-                        Margin="5,4 ,10,5"
+                        Margin="5,4,10,5"
                         ToolTip="Foo"
                         ToolTipOpening="LoopWhile_PredicateToolTip"
                         Validate="ValidateConstant"
