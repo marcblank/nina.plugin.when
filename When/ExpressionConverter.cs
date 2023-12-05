@@ -34,6 +34,7 @@ namespace WhenPlugin.When {
         private const int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
         private const int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
         private const int VALUE_TYPE = 5;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
+        private const int VALUE_COMBO = 6;             // If present, a IList<string> of combo box values
 
         private string Validate (ISequenceEntity item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
@@ -75,7 +76,7 @@ namespace WhenPlugin.When {
                         ValidityCache.Add(item, true);
                     }
                     if ("Integer".Equals(type) && Double.Floor(val) != val) {
-                        return " {" + (int)val + "}  ";
+                         return " {" + (int)val + "}  ";
                     }
                     return val;
                 } else {
@@ -90,6 +91,15 @@ namespace WhenPlugin.When {
                         }
                         if ("Integer".Equals(type)) {
                             result = (int)result;
+                            if (values[VALUE_COMBO] != null) {
+                                IList<string> combo = (IList<string>)values[VALUE_COMBO];
+                                if (combo.Count > 0) {
+                                    int idx = (int)result;
+                                    if (idx >= 0 && idx < combo.Count) {
+                                        return combo[idx];
+                                    }
+                                }
+                            }
                         }
                         return " {" + result.ToString() + "}";
                     } else if (issues.Count > 0) {

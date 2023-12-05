@@ -39,6 +39,7 @@ using System.Windows;
 using NINA.Profile;
 using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using Google.Protobuf.WellKnownTypes;
 
 namespace WhenPlugin.When {
 
@@ -176,9 +177,15 @@ namespace WhenPlugin.When {
             }
         }
 
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
+            }
+        }
+
         public bool CVFilter { get; set; } = false;
-
-
         
         private string iFilterExpr;
         [JsonProperty]
@@ -210,7 +217,7 @@ namespace WhenPlugin.When {
                         CVFilter = true;
                     }
                 }
-
+                RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
             }
         }
@@ -275,7 +282,15 @@ namespace WhenPlugin.When {
   
             ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
             ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
-            //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+            ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+
+            if (FilterNames.Count == 0) {
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (var fw in fwi) {
+                    FilterNames.Add(fw.Name);
+                }
+                RaisePropertyChanged("FilterNames");
+            }
 
             Issues = i;
             RaisePropertyChanged("Issues");

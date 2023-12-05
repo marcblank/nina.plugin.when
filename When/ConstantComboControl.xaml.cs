@@ -1,5 +1,6 @@
 ﻿using NINA.Sequencer;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,11 +25,16 @@ namespace WhenPlugin.When {
              DependencyProperty.Register("Validate", typeof(String), typeof(ConstantComboControl), null);
 
         public String Validate { get; set; }
- 
+
         public static readonly DependencyProperty TypeProperty =
               DependencyProperty.Register("Type", typeof(String), typeof(ConstantComboControl), null);
 
         public String Type { get; set; }
+
+        public static readonly DependencyProperty CombboProperty =
+               DependencyProperty.Register("Combo", typeof(List<string>), typeof(ConstantComboControl), null);
+
+        public List<string> Combo { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
             TextBox tb = (TextBox)sender;

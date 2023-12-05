@@ -16,6 +16,7 @@
                     <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}"/>
                     <Binding Path="."/>
                     <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}"/>
+                    <Binding Path="Combo" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>

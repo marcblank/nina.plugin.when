@@ -2188,10 +2188,12 @@
                         </ComboBox.ItemsSource>
                     </ComboBox>
                     <local:ConstantComboControl
+                        Visibility="{Binding NonCVFilter, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
                         Margin="0,-7,10,5"
                         Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
                         Valu="{Binding Path=Filter, Mode=TwoWay}"
-                        Type="Integer" />
+                        Type="Integer"
+                        Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
                     <TextBlock
                         Margin="7.5,-5,7.5,0"
                         HorizontalAlignment="Center"
