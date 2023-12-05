@@ -96,7 +96,7 @@ namespace WhenPlugin.When {
                                 if (combo.Count > 0) {
                                     int idx = (int)result;
                                     if (idx >= 0 && idx < combo.Count) {
-                                        return combo[idx];
+                                        return " {" + combo[idx] + "}";
                                     }
                                 }
                             }

@@ -2188,7 +2188,7 @@
                         </ComboBox.ItemsSource>
                     </ComboBox>
                     <local:ConstantComboControl
-                        Visibility="{Binding NonCVFilter, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                        Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                         Margin="0,-7,10,5"
                         Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
                         Valu="{Binding Path=Filter, Mode=TwoWay}"

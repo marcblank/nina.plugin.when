@@ -13,7 +13,7 @@
                     <Binding Path="Expr" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}" />
                     <Binding Path="."/>
                     <Binding Path="Valu" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}" />
-                    <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantControl}}"/>
+                    <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}"/>
                     <Binding Path="."/>
                     <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}"/>
                     <Binding Path="Combo" RelativeSource="{RelativeSource AncestorType={x:Type local:ConstantComboControl}}" />

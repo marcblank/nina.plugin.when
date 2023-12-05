@@ -201,13 +201,13 @@ namespace WhenPlugin.When {
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
+                CVFilter = false;
                 foreach (var fw in fwi) {
                     if (fw.Name.Equals(value)) {
                         Filter = fw.Position;
                         break;
                     }
                 }
-                CVFilter = false;
                 if (Filter == -1) {
                     if (value.Equals("{Current}")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
