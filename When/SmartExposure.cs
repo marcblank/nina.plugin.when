@@ -40,6 +40,8 @@ using NINA.Profile;
 using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using Google.Protobuf.WellKnownTypes;
+using NINA.Core.Model;
+using NINA.Core.Model.Equipment;
 
 namespace WhenPlugin.When {
 
@@ -209,14 +211,19 @@ namespace WhenPlugin.When {
                     }
                 }
                 if (Filter == -1) {
-                    if (value.Equals("{Current}")) {
+                    if (value.Equals("(Current)")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
                         Filter = filterWheelInfo.SelectedFilter.Position;
+                        GetSwitchFilter().Filter = filterWheelInfo.SelectedFilter;
                     } else {
                         ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                        if (Filter >= 0 && Filter < fwi.Count) {
+                            GetSwitchFilter().Filter = fwi[Filter];
+                        }
                         CVFilter = true;
                     }
                 }
+               
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
             }
@@ -275,14 +282,11 @@ namespace WhenPlugin.When {
                 i.AddRange(dither.Issues);
             }
 
-            if (Filter == -1) {
-                valid = false;
-                i.Add("No valid filter specified");
-            }
-  
             ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
             ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
-            ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+            if (CVFilter) {
+                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+            }
 
             if (FilterNames.Count == 0) {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
