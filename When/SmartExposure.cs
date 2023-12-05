@@ -176,6 +176,10 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool CVFilter { get; set; } = false;
+
+
+        
         private string iFilterExpr;
         [JsonProperty]
         public string FilterExpr {
@@ -196,12 +200,14 @@ namespace WhenPlugin.When {
                         break;
                     }
                 }
+                CVFilter = false;
                 if (Filter == -1) {
                     if (value.Equals("{Current}")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
                         Filter = filterWheelInfo.SelectedFilter.Position;
                     } else {
                         ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                        CVFilter = true;
                     }
                 }
 
@@ -261,9 +267,15 @@ namespace WhenPlugin.When {
                 valid = dither.Validate() && valid;
                 i.AddRange(dither.Issues);
             }
+
+            if (Filter == -1) {
+                valid = false;
+                i.Add("No valid filter specified");
+            }
   
             ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
             ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
+            //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
 
             Issues = i;
             RaisePropertyChanged("Issues");

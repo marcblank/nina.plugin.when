@@ -1899,9 +1899,9 @@
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
 
-        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTime}" />
+        <TextBlock VerticalAlignment="Center" Margin="0,1,0,0" Text="{ns:Loc LblTime}" />
         <local:ConstantControl 
-            Margin = "8,1,10,5" 
+            Margin = "8,-1,10,5" 
             Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
             Valu="{Binding Path=ExposureTime, Mode=TwoWay}" 
 
@@ -2187,8 +2187,13 @@
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
                     </ComboBox>
+                    <local:ConstantComboControl
+                        Margin="0,-7,10,5"
+                        Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=Filter, Mode=TwoWay}"
+                        Type="Integer" />
                     <TextBlock
-                        Margin="7.5,0,7.5,0"
+                        Margin="7.5,-5,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
