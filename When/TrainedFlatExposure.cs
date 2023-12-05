@@ -257,7 +257,7 @@ namespace WhenPlugin.When {
             }
 
             /* Lookup trained values and set brightness and exposure time accordingly */
-            var filter = (Items[2] as SwitchFilter)?.Filter;
+            var filter = (Items[2] as SwitchFilter)?.FInfo;
             var takeExposure = ((Items[4] as SequentialContainer).Items[0] as TakeExposure);
             var binning = takeExposure.Binning;
             var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
@@ -307,7 +307,7 @@ namespace WhenPlugin.When {
             var issues = new List<string>();
 
             if (valid) {
-                var filter = switchFilter?.Filter;
+                var filter = switchFilter?.FInfo;
                 var binning = takeExposure.Binning;
                 var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
                 var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;

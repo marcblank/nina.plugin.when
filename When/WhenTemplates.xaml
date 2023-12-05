@@ -1334,10 +1334,11 @@
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
 
         <ComboBox
-           Margin="5,0,0,0"
-           DisplayMemberPath="Name"
-           SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nina:SequenceBlockView}}, Path=DataContext.Items[2].Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FilterWheelFilterConverter}}"
-           SelectedValuePath="Name">
+            Margin="5,0,0,0"
+            IsEditable="True"
+            DisplayMemberPath="Name"
+            Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+            >
             <ComboBox.Resources>
                 <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
             </ComboBox.Resources>
@@ -1348,6 +1349,13 @@
                 </CompositeCollection>
             </ComboBox.ItemsSource>
         </ComboBox>
+        <local:ConstantComboControl
+            Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+            Margin="0,-3,10,5"
+            Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
+            Valu="{Binding Path=Filter, Mode=TwoWay}"
+            Type="Integer"
+            Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
 
         <TextBlock
            Margin="7.5,0,7.5,0"
@@ -1517,6 +1525,52 @@
 
     <DataTemplate DataType="{x:Type local:TrainedDarkFlatExposure}">
         <nina:SequenceBlockView Template="{StaticResource TrainedFlatExposureTemplate}" />
+    </DataTemplate>
+
+    <!--<DataTemplate x:Key="NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Filter, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Filter.Name}" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>-->
+    
+    <DataTemplate DataType="{x:Type local:SwitchFilter}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
+                    <ComboBox
+                       Margin="5,0,0,0"
+                       IsEditable="True"
+                       DisplayMemberPath="Name"
+                       Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                       >
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <x:Static Member="filter:NullFilter.Instance" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <local:ConstantComboControl
+                       Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                       Margin="0,-3,10,5"
+                       Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
+                       Valu="{Binding Path=Filter, Mode=TwoWay}"
+                       Type="Integer"
+                       Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
+                </StackPanel>
+
+ 
+
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
     </DataTemplate>
 
 

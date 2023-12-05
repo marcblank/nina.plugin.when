@@ -42,6 +42,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using Google.Protobuf.WellKnownTypes;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
 
@@ -189,16 +190,18 @@ namespace WhenPlugin.When {
 
         public bool CVFilter { get; set; } = false;
         
-        private string iFilterExpr;
+        private string iFilterExpr = "";
         [JsonProperty]
         public string FilterExpr {
             get => iFilterExpr;
             set {
+
                 if (value == null) return;
                 // Have to massage this...
                 // If begins with Filter_ then we look it up via ConstantExpression
                 // Otherwise, we look it up in FilterWheelInfo
                 iFilterExpr = value;
+                SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
 
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
@@ -214,14 +217,21 @@ namespace WhenPlugin.When {
                     if (value.Equals("(Current)")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
                         Filter = filterWheelInfo.SelectedFilter.Position;
-                        GetSwitchFilter().Filter = filterWheelInfo.SelectedFilter;
+                        if (sw != null) {
+                            //sw.FInfo = filterWheelInfo.SelectedFilter;
+                            sw.FilterExpr = FilterExpr;
+                        }
                     } else {
                         ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
-                        if (Filter >= 0 && Filter < fwi.Count) {
-                            GetSwitchFilter().Filter = fwi[Filter];
+                        if (Filter >= 0 && Filter < fwi.Count && sw != null) {
+                            //sw.FInfo = fwi[Filter];
+                            sw.FilterExpr = FilterExpr;
                         }
                         CVFilter = true;
                     }
+                } else if (sw != null) {
+                    sw.FilterExpr = FilterExpr;
+                    //sw.FInfo = fwi[Filter];
                 }
                
                 RaisePropertyChanged(nameof(CVFilter));
@@ -262,43 +272,48 @@ namespace WhenPlugin.When {
         }
 
         public override bool Validate() {
-            var i = new List<string>();
-            var sw = GetSwitchFilter();
-            var te = GetTakeExposure();
-            var dither = GetDitherAfterExposures();
+            try {
+                var i = new List<string>();
+                var sw = GetSwitchFilter();
+                var te = GetTakeExposure();
+                var dither = GetDitherAfterExposures();
 
-            bool valid = true;
+                bool valid = true;
 
-            valid = te.Validate() && valid;
-            i.AddRange(te.Issues);
-            
-            if (sw.Filter != null) {
-                valid = sw.Validate() && valid;
-                i.AddRange(sw.Issues);
-            }
+                valid = te.Validate() && valid;
+                i.AddRange(te.Issues);
 
-            if (dither.AfterExposures > 0) {
-                valid = dither.Validate() && valid;
-                i.AddRange(dither.Issues);
-            }
-
-            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
-            ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
-            if (CVFilter) {
-                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
-            }
-
-            if (FilterNames.Count == 0) {
-                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-                foreach (var fw in fwi) {
-                    FilterNames.Add(fw.Name);
+                if (sw != null && sw.FInfo != null) {
+                    valid = sw.Validate() && valid;
+                    i.AddRange(sw.Issues);
                 }
-                RaisePropertyChanged("FilterNames");
-            }
 
-            Issues = i;
-            RaisePropertyChanged("Issues");
-            return (Issues.Count == 0) && valid;
+                if (dither.AfterExposures > 0) {
+                    valid = dither.Validate() && valid;
+                    i.AddRange(dither.Issues);
+                }
+
+                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
+                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
+                if (CVFilter) {
+                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+                }
+
+                if (FilterNames.Count == 0) {
+                    var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                    foreach (var fw in fwi) {
+                        FilterNames.Add(fw.Name);
+                    }
+                    RaisePropertyChanged("FilterNames");
+                }
+
+                Issues = i;
+                RaisePropertyChanged("Issues");
+                return (Issues.Count == 0) && valid;
+            } catch (Exception ex) {
+                Logger.Info("Foo");
+                return false;
+            }
         }
 
         public override object Clone() {
