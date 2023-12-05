@@ -36,6 +36,9 @@ using NINA.Sequencer.SequenceItem;
 using System.Windows.Media;
 using NINA.Core.Utility.ColorSchema;
 using System.Windows;
+using NINA.Profile;
+using NINA.WPF.Base.Mediator;
+using NINA.Equipment.Equipment.MyFilterWheel;
 
 namespace WhenPlugin.When {
 
@@ -47,6 +50,9 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SmartExposure : SequentialContainer, IImmutableContainer {
+
+        private static IProfileService ProfileService;
+        private static IFilterWheelMediator FilterWheelMediator;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -70,6 +76,8 @@ namespace WhenPlugin.When {
                     new LoopCondition(),
                     new DitherAfterExposures(guiderMediator, imageHistoryVM, profileService)
                 ) {
+            ProfileService = profileService;
+            FilterWheelMediator = filterWheelMediator;
         }
 
         /// <summary>
@@ -86,13 +94,14 @@ namespace WhenPlugin.When {
             this.Add(takeExposure);
             this.Add(loopCondition);
             this.Add(ditherAfterExposures);
-
+ 
             IsExpanded = false;
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 IterationsExpr = cloneMe.IterationsExpr;
                 DitherExpr = cloneMe.DitherExpr;
+                FilterExpr = cloneMe.FilterExpr;
             }
         }
 
@@ -164,6 +173,48 @@ namespace WhenPlugin.When {
                 LoopCondition lc = Conditions[0] as LoopCondition;
                 iterationCount = lc.Iterations = value;
                 RaisePropertyChanged("IterationCount");
+            }
+        }
+
+        private string iFilterExpr;
+        [JsonProperty]
+        public string FilterExpr {
+            get => iFilterExpr;
+            set {
+                if (value == null) return;
+                // Have to massage this...
+                // If begins with Filter_ then we look it up via ConstantExpression
+                // Otherwise, we look it up in FilterWheelInfo
+                iFilterExpr = value;
+
+                // Find in FilterWheelInfo
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                Filter = -1;
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        break;
+                    }
+                }
+                if (Filter == -1) {
+                    if (value.Equals("{Current}")) {
+                        FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+                        Filter = filterWheelInfo.SelectedFilter.Position;
+                    } else {
+                        ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                    }
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        private int iFilter = -1;
+        public int Filter {
+            get => iFilter;
+            set {
+                iFilter = value;
+                RaisePropertyChanged();
             }
         }
 
