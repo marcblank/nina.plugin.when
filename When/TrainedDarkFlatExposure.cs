@@ -41,6 +41,8 @@ using NINA.Equipment.Equipment.MyCamera;
 using WhenPlugin.When;
 using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Sequencer.SequenceItem;
+using NINA.WPF.Base.Mediator;
+using NINA.Equipment.Equipment.MyFilterWheel;
 
 namespace WhenPlugin.When {
 
@@ -60,7 +62,8 @@ namespace WhenPlugin.When {
             this.Triggers.Clear();
         }
 
-        private IProfileService profileService;
+        public IProfileService ProfileService;
+        public IFilterWheelMediator FilterWheelMediator;
         private ICameraMediator cameraMediator;
         private bool keepPanelClosed;
 
@@ -76,8 +79,8 @@ namespace WhenPlugin.When {
                 new SetBrightness(flatDeviceMediator),
                 new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARKFLAT },
                 new LoopCondition() { Iterations = 1 },
-                new OpenCover(flatDeviceMediator)
-
+                new OpenCover(flatDeviceMediator),
+                filterWheelMediator
             ) {
         }
 
@@ -91,9 +94,11 @@ namespace WhenPlugin.When {
             SetBrightness setBrightness,
             TakeExposure takeExposure,
             LoopCondition loopCondition,
-            OpenCover openCover
+            OpenCover openCover,
+            IFilterWheelMediator filterWheelMediator
             ) {
-            this.profileService = profileService;
+            ProfileService = profileService;
+            FilterWheelMediator = filterWheelMediator;
 
             this.Add(closeCover);
             this.Add(toggleLightOff);
@@ -188,7 +193,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             var clone = new TrainedDarkFlatExposure(
                 this,
-                profileService,
+                ProfileService,
                 cameraMediator,
                 (CloseCover)this.GetCloseCoverItem().Clone(),
                 (ToggleLight)this.GetToggleLightOffItem().Clone(),
@@ -196,7 +201,8 @@ namespace WhenPlugin.When {
                 (SetBrightness)this.GetSetBrightnessItem().Clone(),
                 (TakeExposure)this.GetExposureItem().Clone(),
                 (LoopCondition)this.GetIterations().Clone(),
-                (OpenCover)this.GetOpenCoverItem().Clone()
+                (OpenCover)this.GetOpenCoverItem().Clone(),
+                FilterWheelMediator
             ) {
                 KeepPanelClosed = KeepPanelClosed,
             };
@@ -294,9 +300,9 @@ namespace WhenPlugin.When {
             var filter = GetSwitchFilterItem()?.FInfo;
             var takeExposure = GetExposureItem();
             var binning = takeExposure.Binning;
-            var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-            var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
-            var info = profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
+            var gain = takeExposure.Gain == -1 ? ProfileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
+            var offset = takeExposure.Offset == -1 ? ProfileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+            var info = ProfileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
 
             (Items[3] as SetBrightness).Brightness = 0;
             takeExposure.ExposureTime = info.Time;
@@ -339,11 +345,11 @@ namespace WhenPlugin.When {
             if (valid) {
                 var filter = switchFilter?.FInfo;
                 var binning = takeExposure.Binning;
-                var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-                var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+                var gain = takeExposure.Gain == -1 ? ProfileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
+                var offset = takeExposure.Offset == -1 ? ProfileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
 
 
-                if (profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset) == null) {
+                if (ProfileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset) == null) {
                     issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_FlatDeviceTrainedExposureNotFound"], filter?.Name, gain, binning?.Name));
                     valid = false;
                 }

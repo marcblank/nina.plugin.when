@@ -41,6 +41,8 @@ using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Equipment.Equipment.MyCamera;
+using NINA.WPF.Base.Mediator;
+using NINA.Equipment.Equipment.MyFilterWheel;
 
 namespace WhenPlugin.When {
 
@@ -60,7 +62,8 @@ namespace WhenPlugin.When {
             this.Triggers.Clear();
         }
 
-        private IProfileService profileService;
+        private IProfileService ProfileService;
+        public IFilterWheelMediator FilterWheelMediator;
         private ICameraMediator cameraMediator;
         private bool keepPanelClosed;
 
@@ -77,7 +80,8 @@ namespace WhenPlugin.When {
                 new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.FLAT },
                 new LoopCondition() { Iterations = 1 },
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
-                new OpenCover(flatDeviceMediator)
+                new OpenCover(flatDeviceMediator),
+                filterWheelMediator
 
             ) {
         }
@@ -93,9 +97,11 @@ namespace WhenPlugin.When {
             TakeExposure takeExposure,
             LoopCondition loopCondition,
             ToggleLight toggleLightOff,
-            OpenCover openCover
+            OpenCover openCover,
+            IFilterWheelMediator filterWheelMediator
             ) {
-            this.profileService = profileService;
+            ProfileService = profileService;
+            FilterWheelMediator = filterWheelMediator;
             this.cameraMediator = cameraMediator;
 
             this.Add(closeCover);
@@ -198,7 +204,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             var clone = new TrainedFlatExposure(
                 this,
-                profileService,
+                ProfileService,
                 cameraMediator,
                 (CloseCover)this.GetCloseCoverItem().Clone(),
                 (ToggleLight)this.GetToggleLightOnItem().Clone(),
@@ -207,9 +213,11 @@ namespace WhenPlugin.When {
                 (TakeExposure)this.GetExposureItem().Clone(),
                 (LoopCondition)this.GetIterations().Clone(),
                 (ToggleLight)this.GetToggleLightOffItem().Clone(),
-                (OpenCover)this.GetOpenCoverItem().Clone()
+                (OpenCover)this.GetOpenCoverItem().Clone(),
+                FilterWheelMediator
             ) {
-                KeepPanelClosed = KeepPanelClosed
+                KeepPanelClosed = KeepPanelClosed,
+                FilterExpr = FilterExpr
             };
             return clone;
         }
@@ -238,7 +246,68 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("IterationCount");
             }
         }
- 
+
+
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
+            }
+        }
+
+        public bool CVFilter { get; set; } = false;
+
+        private string iFilterExpr = "";
+        [JsonProperty]
+        public string FilterExpr {
+            get => iFilterExpr;
+            set {
+
+                if (value == null) return;
+                iFilterExpr = value;
+                SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilterItem();
+
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                Filter = -1;
+                CVFilter = false;
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        break;
+                    }
+                }
+                if (Filter == -1) {
+                    if (value.Equals("(Current)")) {
+                        FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+                        Filter = filterWheelInfo.SelectedFilter.Position;
+                        if (sw != null) {
+                            sw.FilterExpr = FilterExpr;
+                        }
+                    } else {
+                        ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                        if (Filter >= 0 && Filter < fwi.Count && sw != null) {
+                            sw.FilterExpr = FilterExpr;
+                        }
+                        CVFilter = true;
+                    }
+                } else if (sw != null) {
+                    sw.FilterExpr = FilterExpr;
+                }
+
+                RaisePropertyChanged(nameof(CVFilter));
+                RaisePropertyChanged();
+            }
+        }
+
+        private int iFilter = -1;
+        public int Filter {
+            get => iFilter;
+            set {
+                iFilter = value;
+                RaisePropertyChanged();
+            }
+        }
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
@@ -260,9 +329,9 @@ namespace WhenPlugin.When {
             var filter = (Items[2] as SwitchFilter)?.FInfo;
             var takeExposure = ((Items[4] as SequentialContainer).Items[0] as TakeExposure);
             var binning = takeExposure.Binning;
-            var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-            var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
-            var info = profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
+            var gain = takeExposure.Gain == -1 ? ProfileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
+            var offset = takeExposure.Offset == -1 ? ProfileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+            var info = ProfileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
 
             GetSetBrightnessItem().Brightness = info.Brightness;
             takeExposure.ExposureTime = info.Time;
@@ -309,17 +378,28 @@ namespace WhenPlugin.When {
             if (valid) {
                 var filter = switchFilter?.FInfo;
                 var binning = takeExposure.Binning;
-                var gain = takeExposure.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
-                var offset = takeExposure.Offset == -1 ? profileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
+                var gain = takeExposure.Gain == -1 ? ProfileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
+                var offset = takeExposure.Offset == -1 ? ProfileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
 
-                if (profileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset) == null) {
+                if (ProfileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset) == null) {
                     issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_FlatDeviceTrainedExposureNotFound"], filter?.Name, gain, binning?.Name));
                     valid = false;
                 }
             }
 
+            if (FilterNames.Count == 0) {
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (var fw in fwi) {
+                    FilterNames.Add(fw.Name);
+                }
+                RaisePropertyChanged("FilterNames");
+            }
+
             ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
             ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, issues);
+            if (CVFilter) {
+                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
+            }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));

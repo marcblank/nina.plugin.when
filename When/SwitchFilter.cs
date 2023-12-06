@@ -132,7 +132,9 @@ namespace WhenPlugin.When {
                 if (Filter == -1) {
                     if (value.Equals("(Current)")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-                        Filter = filterWheelInfo.SelectedFilter.Position;
+                        if (filterWheelInfo.Connected) {
+                            Filter = filterWheelInfo.SelectedFilter.Position;
+                        }
                         FInfo = filterWheelInfo.SelectedFilter;
                     } else {
                         ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
@@ -177,6 +179,10 @@ namespace WhenPlugin.When {
                     FilterNames.Add(fw.Name);
                 }
                 RaisePropertyChanged("FilterNames");
+            }
+
+            if (CVFilter) {
+                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
             }
 
             Issues = i;

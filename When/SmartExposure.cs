@@ -197,13 +197,9 @@ namespace WhenPlugin.When {
             set {
 
                 if (value == null) return;
-                // Have to massage this...
-                // If begins with Filter_ then we look it up via ConstantExpression
-                // Otherwise, we look it up in FilterWheelInfo
                 iFilterExpr = value;
                 SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
 
-                // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
@@ -216,22 +212,21 @@ namespace WhenPlugin.When {
                 if (Filter == -1) {
                     if (value.Equals("(Current)")) {
                         FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-                        Filter = filterWheelInfo.SelectedFilter.Position;
+                        if (filterWheelInfo.Connected) {
+                            Filter = filterWheelInfo.SelectedFilter.Position;
+                        }
                         if (sw != null) {
-                            //sw.FInfo = filterWheelInfo.SelectedFilter;
                             sw.FilterExpr = FilterExpr;
                         }
                     } else {
                         ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                         if (Filter >= 0 && Filter < fwi.Count && sw != null) {
-                            //sw.FInfo = fwi[Filter];
                             sw.FilterExpr = FilterExpr;
                         }
                         CVFilter = true;
                     }
                 } else if (sw != null) {
                     sw.FilterExpr = FilterExpr;
-                    //sw.FInfo = fwi[Filter];
                 }
                
                 RaisePropertyChanged(nameof(CVFilter));
