@@ -1,4 +1,5 @@
-﻿using NINA.Sequencer.SequenceItem;
+﻿using NINA.Sequencer;
+using NINA.Sequencer.SequenceItem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -54,6 +55,18 @@ namespace WhenPlugin.When {
             }
 
         }
+
+        public void ShowConstants(object sender, ToolTipEventArgs e) {
+            TextBox tb = (TextBox)sender;
+            ISequenceEntity item = (ISequenceEntity)tb.DataContext;
+            var stack = ConstantExpression.GetKeyStack(item);
+            if (stack == null || stack.Count == 0) {
+                tb.ToolTip = "There are no valid, defined constants.";
+            } else {
+                tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
+            }
+        }
+
 
     }
 }

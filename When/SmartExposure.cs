@@ -189,17 +189,31 @@ namespace WhenPlugin.When {
         }
 
         public bool CVFilter { get; set; } = false;
-        
+        private void SetFInfo() {
+            SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
+            if (sw != null) {
+                FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                if (Filter == -1) {
+                    if (filterWheelInfo.Connected) {
+                        Filter = filterWheelInfo.SelectedFilter.Position;
+                    }
+                    sw.FInfo = filterWheelInfo.SelectedFilter;
+                } else if (Filter < fwi.Count) {
+                    sw.FInfo = fwi[Filter];
+                }
+            }
+        }
+
         private string iFilterExpr = "";
         [JsonProperty]
         public string FilterExpr {
             get => iFilterExpr;
             set {
-
                 if (value == null) return;
                 iFilterExpr = value;
-                SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
 
+                // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
@@ -209,26 +223,13 @@ namespace WhenPlugin.When {
                         break;
                     }
                 }
-                if (Filter == -1) {
-                    if (value.Equals("(Current)")) {
-                        FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-                        if (filterWheelInfo.Connected) {
-                            Filter = filterWheelInfo.SelectedFilter.Position;
-                        }
-                        if (sw != null) {
-                            sw.FilterExpr = FilterExpr;
-                        }
-                    } else {
-                        ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
-                        if (Filter >= 0 && Filter < fwi.Count && sw != null) {
-                            sw.FilterExpr = FilterExpr;
-                        }
-                        CVFilter = true;
-                    }
-                } else if (sw != null) {
-                    sw.FilterExpr = FilterExpr;
+
+                if (Filter == -1 && !value.Equals("(Current)")) {
+                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                    CVFilter = true;
                 }
-               
+
+                SetFInfo();
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
             }
@@ -292,6 +293,7 @@ namespace WhenPlugin.When {
                 ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
                 if (CVFilter) {
                     ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+                    SetFInfo();
                 }
 
                 if (FilterNames.Count == 0) {

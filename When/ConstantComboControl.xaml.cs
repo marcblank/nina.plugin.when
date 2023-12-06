@@ -46,6 +46,7 @@ namespace WhenPlugin.When {
                 tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
             }
         }
+
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
             TextBox predicateText = (TextBox)sender;
             IfConstant ifConstant = (IfConstant)(predicateText.DataContext);

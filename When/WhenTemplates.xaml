@@ -1335,6 +1335,7 @@
 
         <ComboBox
             Margin="5,0,0,0"
+            HorizontalAlignment="Center"
             IsEditable="True"
             DisplayMemberPath="Name"
             Text="{Binding Parent.FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
