@@ -205,12 +205,12 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string iFilterExpr = "";
+        private string iFilterExpr = null;
         [JsonProperty]
         public string FilterExpr {
             get => iFilterExpr;
             set {
-                if (value == null) return;
+                value ??= "(Current)";
                 iFilterExpr = value;
 
                 // Find in FilterWheelInfo

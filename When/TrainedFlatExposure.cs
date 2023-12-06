@@ -279,7 +279,7 @@ namespace WhenPlugin.When {
         public string FilterExpr {
             get => iFilterExpr;
             set {
-                if (value == null) return;
+                value ??= "(Current)";
                 iFilterExpr = value;
 
                 // Find in FilterWheelInfo
