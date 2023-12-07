@@ -103,7 +103,7 @@ namespace WhenPlugin.When {
                 List<string> list = new List<string>();
                 ISequenceContainer p = Parent;
                 while (p != null) {
-                    if (p.Parent is ISequenceRootContainer) break;
+                    //if (p.Parent is ISequenceRootContainer) break;
                     list.Add(p.Name);
                     p = p.Parent;
                 }
@@ -114,7 +114,6 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-
 
             if (InstructionSetName == null || InstructionSetName.Length == 0) {
                 InstructionSetName = InstructionSetNames[0];
