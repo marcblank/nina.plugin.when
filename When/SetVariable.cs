@@ -60,7 +60,7 @@ namespace WhenPlugin.When {
         public bool DuplicateName { get; set; } = false;
 
         private string cValueExpr = "0";
-        [JsonProperty]
+        //[JsonProperty]
         public string CValueExpr {
             get => cValueExpr;
             set {

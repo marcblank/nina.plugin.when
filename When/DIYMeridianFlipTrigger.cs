@@ -50,7 +50,7 @@ using NINA.Core.Utility.WindowService;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "DIY Meridian Flip Trigger")]
-    [ExportMetadata("Description", "Trigger for DYI Meridian Flip")]
+    [ExportMetadata("Description", "Trigger for DYI Meridian Flip; CANNOT BE USED AS A GLOBAL TRIGGER!")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
     [ExportMetadata("Category", "Powerups (Meridian Flip)")]
     [Export(typeof(ISequenceTrigger))]
@@ -487,12 +487,18 @@ namespace WhenPlugin.When {
         public virtual bool Validate() {
             // Validate the Items (this will update their status)
             if (TriggerRunner == null) return true;
+            bool valid = true;
             foreach (ISequenceItem item in TriggerRunner.Items) {
                 if (item is IValidatable vitem) {
-                    _ = vitem.Validate();
+                    valid &= vitem.Validate();
                 }
             }
-            return true;
+            if (!valid) {
+                Issues.Clear();
+                Issues.Add("Expand the trigger to see the problematic instructions.");
+            }
+            RaisePropertyChanged("Issues");
+            return valid;
         }
     }
 }

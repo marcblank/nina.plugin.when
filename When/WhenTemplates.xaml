@@ -1752,12 +1752,12 @@
                                     VerticalAlignment="Center"
                                     Text="When Becomes Unsafe" />
                                 <Border
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,5,0"
-                                Background="{StaticResource NotificationErrorBrush}"
-                                BorderBrush="Transparent"
-                                CornerRadius="10">
+                                    Width="20"
+                                    Height="20"
+                                    Margin="5,0,5,0"
+                                    Background="{StaticResource NotificationErrorBrush}"
+                                    BorderBrush="Transparent"
+                                    CornerRadius="10">
                                     <Border.Visibility>
                                         <PriorityBinding>
                                             <Binding
@@ -2426,7 +2426,7 @@
                                 <Border
                                    Width="20"
                                    Height="20"
-                                   Margin="5,0,5,0"
+                                   Margin="5,0,15,0"
                                    Background="{StaticResource NotificationErrorBrush}"
                                    BorderBrush="Transparent"
                                    CornerRadius="10">
