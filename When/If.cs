@@ -89,7 +89,7 @@ namespace WhenPlugin.When {
                 //}
 
                 object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
+                Logger.Info("If: Execute, PredicateValue = " + PredicateValue);
                 if (result == null) {
                     // Syntax error...
                     Logger.Info("If: There is a syntax error in your expression.");
