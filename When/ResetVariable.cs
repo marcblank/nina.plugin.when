@@ -120,7 +120,7 @@ namespace WhenPlugin.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Find the SetVariable for this variable
-            ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
+            ISequenceEntity p = ConstantExpression.FindKeyContainer(this, Variable);
             if (p == null) {
                 throw new SequenceEntityFailedException("Variable is undefined.");
             }

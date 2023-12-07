@@ -521,6 +521,11 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <!--
+    We want validation of the variable name, but Validate=ValidateVariable will cause the
+    validation warning to appear with the new value of the variable, which is WRONG
+    -->
+    
     <DataTemplate DataType="{x:Type local:ResetVariable}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -535,7 +540,6 @@
                     <local:ConstantControl
                        Margin="5,-4,5,3"
                        Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                       Validate="ValidateVariable"
                        Valu="{Binding CValue, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
