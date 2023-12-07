@@ -11,6 +11,7 @@ using NINA.Sequencer.Container;
 using System.Diagnostics;
 using NINA.Core.Enum;
 using NINA.Sequencer;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -128,11 +129,11 @@ namespace WhenPlugin.When {
                 foreach (ISequenceEntity item in sc.Items) {
                     if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
                         // Found it!;;
-                        DebugInfo("  ** Before SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr);
+                        //Logger.Info(String.Join("", "  ** Before SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr));
                         ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
                         sv.CValue = cValue;
                         sv.CValueExpr = cValue;
-                        DebugInfo("  ** After SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr);
+                        //Logger.Info(String.Join("", "  ** After SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr));
                         ConstantExpression.UpdateConstants(this);
                         RaisePropertyChanged("CValueExpr");
                         RaisePropertyChanged("CValue");

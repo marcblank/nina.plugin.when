@@ -154,9 +154,8 @@ namespace WhenPlugin.When {
                 e.Parameters = mergedKeys;
                 try {
                     DebugInfo("     ### Evaluating ", expr);
-                    object v;
-                    if (e.Parameters.TryGetValue("Lp", out v)) {
-                        DebugInfo("       ## Lp = ", v.ToString());
+                    foreach (KeyValuePair<string, object> x in mergedKeys) {
+                        //Logger.Info("Key: " + x.Key + ", Value: " +  x.Value);
                     }
                     var eval = e.Evaluate();
                     DebugInfo("     ### Expression '", expr, " evaluated to " + eval.ToString());
