@@ -98,10 +98,6 @@ namespace WhenPlugin.When {
 
         public override bool Check() {
             bool IsSafe = CheckSafe(this, safetyMediator);
-
-            //if (!IsSafe && IsActive()) {
-            //    Logger.Info($"{nameof(SafetyMonitorCondition)} finished. Status=Unsafe");
-            //}
             return IsSafe && IsActive();
         }
     }
