@@ -91,7 +91,7 @@ namespace WhenPlugin.When {
                         }
                         if ("Integer".Equals(type)) {
                             result = (int)result;
-                            if (values[VALUE_COMBO] != null) {
+                            if (values.Length > VALUE_COMBO && values[VALUE_COMBO] != null) {
                                 IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                 if (combo.Count > 0) {
                                     int idx = (int)result;
