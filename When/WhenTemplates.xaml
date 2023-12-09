@@ -2525,4 +2525,51 @@
         </Border>
     </DataTemplate>
 
+    <DataTemplate x:Key="WhenPlugin.When.MoveRotatorMechanical_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding MechanicalPosition}" />
+                    <TextBlock VerticalAlignment="Center" Text="°" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMechanicalPosition}" />
+                    <local:ConstantControl 
+                        Margin = "8,1,10,5" 
+                        Expr="{Binding Path=MechanicalPositionExpr, Mode=TwoWay}"
+                        Valu="{Binding Path=MechanicalPosition, Mode=TwoWay}" 
+                        />
+                    <TextBlock Margin="-10,0,0,0" VerticalAlignment="Center" Text="°" />
+                    <!--<ninactrl:UnitTextBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Unit="°">
+
+                        <ninactrl:UnitTextBox.Text>
+                            <Binding Path="MechanicalPosition" UpdateSourceTrigger="LostFocus">
+                                <Binding.ValidationRules>
+                                    <rules:FloatRangeRule>
+                                        <rules:FloatRangeRule.ValidRange>
+                                            <rules:FloatRangeChecker Maximum="359.99" Minimum="0" />
+                                        </rules:FloatRangeRule.ValidRange>
+                                    </rules:FloatRangeRule>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </ninactrl:UnitTextBox.Text>
+                    </ninactrl:UnitTextBox>-->
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+
 </ResourceDictionary>

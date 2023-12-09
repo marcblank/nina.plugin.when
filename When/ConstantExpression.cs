@@ -23,6 +23,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Core.Model.Equipment;
+using NINA.Equipment.Equipment.MyRotator;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -647,12 +648,14 @@ namespace WhenPlugin.When {
         private static IFlatDeviceMediator FlatMediator { get; set; }
         private static IFilterWheelMediator FilterWheelMediator { get; set; }
         private static IProfileService ProfileService {  get; set; }
+        private static IRotatorMediator RotatorMediator { get; set; }
+
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches {  get; set; } = new List<string>();
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService) {
+            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -660,6 +663,7 @@ namespace WhenPlugin.When {
             FlatMediator = flatMediator;
             FilterWheelMediator = filterWheelMediator;
             ProfileService = profileService;
+            RotatorMediator = rotatorMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -718,6 +722,12 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("CoverClosed", 2);
                     SwitchWeatherKeys.Add("CoverOpen", 3);
                     SwitchWeatherKeys.Add("CoverError", 4);
+                }
+
+                RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
+                if (rotatorInfo.Connected) {
+                    SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
+                    i.Add("Rotator: RotatorMechanicalPosition (" + rotatorInfo.MechanicalPosition + ")");
                 }
 
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
