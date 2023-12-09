@@ -2542,7 +2542,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMechanicalPosition}" />
                     <local:ConstantControl 
-                        Margin = "8,1,10,5" 
+                        Margin = "8,-2,10,5" 
                         Expr="{Binding Path=MechanicalPositionExpr, Mode=TwoWay}"
                         Valu="{Binding Path=MechanicalPosition, Mode=TwoWay}" 
                         />
