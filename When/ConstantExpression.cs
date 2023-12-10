@@ -145,8 +145,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        static public Keys LastMergedKeys = null;
-
         static private Double NCalcEvaluate(string expr, Keys mergedKeys, IList<string> issues) {
             SEM.WaitOne();
             try {
@@ -218,9 +216,6 @@ namespace WhenPlugin.When {
                         }
                     }
                 }
-
-                // Save latest merged keys?
-                LastMergedKeys = mergedKeys;
                 
                 if (mergedKeys.Count == 0) {
                     DebugInfo("Expression '", expr, "' not evaluated; no keys");
@@ -564,7 +559,7 @@ namespace WhenPlugin.When {
                         reverseStack.Push(k);
                     }
 
-                    if ((reverseStack == null || reverseStack.Count == 0) && issues != null) issues.Add("There are no valid constants defined.");
+                    //if ((reverseStack == null || reverseStack.Count == 0) && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
                     DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,

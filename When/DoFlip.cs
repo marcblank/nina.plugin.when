@@ -44,7 +44,7 @@ namespace WhenPlugin.When {
 
         public DoFlip(DoFlip copyMe) : this(copyMe.telescopeMediator, copyMe.domeMediator, copyMe.domeFollower) {
             if (copyMe != null) {
-                CopyMetaData(copyMe);
+                CopyMetaData(copyMe);           
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
                 FlipStatus = copyMe.FlipStatus;
