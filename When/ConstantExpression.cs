@@ -190,7 +190,7 @@ namespace WhenPlugin.When {
                 if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
 
                 // Consolidate keys
-                Keys mergedKeys = ConstantExpression.GetSwitchWeatherKeys().Clone();
+                Keys mergedKeys = GetSwitchWeatherKeys().Clone();
                    
                 foreach (Keys k in stack) {
                     foreach (KeyValuePair<string, object> kvp in k) {
@@ -363,6 +363,8 @@ namespace WhenPlugin.When {
                         cc = GetParent(cc);
                     }
                 }
+
+                stack.Push(GetSwitchWeatherKeys().Clone());
 
                 // Reverse the stack to maintain proper scoping
                 Stack<Keys> reverseStack = new Stack<Keys>();

@@ -30,12 +30,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Utility;
+using System.Windows.Input;
 
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Log")]
-    [ExportMetadata("Description", "This instruction always fails; for experimenting with 'If Fails'!")]
-    [ExportMetadata("Icon", "HourglassSVG")]
+    [ExportMetadata("Description", "Add your own entry into NINA's log")]
+    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -49,17 +50,21 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new LogThis(this) {
-            };
+            return new LogThis() { Name = this.Name, Icon = this.Icon };
         }
 
         public string LogText { get; set; }
 
         public void AddToLog() {
-            Logger.Error(LogText);
+            Logger.Error("!!! User says: " + LogText);
             LogText = "";
+            RaisePropertyChanged("LogText");
             
         }
+        private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
+
+        public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(AddToLog);
+
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
         }

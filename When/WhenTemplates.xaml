@@ -575,24 +575,42 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <!--  The definition of the plugin test instruction style  -->
-    <!--  The DataType has to be defined as the instruction in context  -->
-    <!--
-    <DataTemplate DataType="{x:Type local:PrependToLastImage}">
+    <DataTemplate DataType="{x:Type local:LogThis}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Prefix:" />
+                    <TextBlock VerticalAlignment="Center" Text="Text:" />
                     <TextBox
-                        MinWidth="100"
+                        MinWidth="400"
                         Margin="5,0,10,0"
-                        Text="{Binding Prepend}"
-                        TextAlignment="Center" />
+                        Text="{Binding LogText}"
+                        TextAlignment="Left" />
+                    <Button
+                       Width="35"
+                       Height="35"
+                       Margin="10,2,0,0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Command="{Binding SendInstruction}"
+                       Style="{StaticResource SecondaryBackgroundButton}">
+                        <Grid>
+                            <Path
+                               Margin="5"
+                               Data="{StaticResource Pen_NoFill_SVG}"
+                               Fill="{StaticResource ButtonForegroundBrush}"
+                               Stretch="Uniform"
+                               UseLayoutRounding="True" />
+                        </Grid>
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="Add the text to the NINA log" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
-    -->
 
     <DataTemplate DataType="{x:Type local:IfSwitch}">
         <nina:SequenceBlockView DataContext="{Binding}">
