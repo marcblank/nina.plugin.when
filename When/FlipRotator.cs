@@ -26,55 +26,32 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using NINA.Profile;
+using NINA.Equipment.Equipment.MyRotator;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Rotate by Mechanical Angle +")]
+    [ExportMetadata("Name", "FlipRotator")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Description")]
     [ExportMetadata("Icon", "RotatorSVG")]
-    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
+    [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class MoveRotatorMechanical : SequenceItem, IValidatable {
+    public class FlipRotator : SequenceItem, IValidatable {
+
+        private IRotatorMediator rotatorMediator;
 
         [ImportingConstructor]
-        public MoveRotatorMechanical(IRotatorMediator RotatorMediator) {
+        public FlipRotator(IRotatorMediator RotatorMediator) {
             this.rotatorMediator = RotatorMediator;
         }
 
-        private MoveRotatorMechanical(MoveRotatorMechanical cloneMe) : this(cloneMe.rotatorMediator) {
+        private FlipRotator(FlipRotator cloneMe) : this(cloneMe.rotatorMediator) {
             CopyMetaData(cloneMe);
         }
 
         public override object Clone() {
-            return new MoveRotatorMechanical(this) {
-                MechanicalPosition = MechanicalPosition
+            return new FlipRotator(this) {
             };
-        }
-
-        private IRotatorMediator rotatorMediator;
-
-        private double mechanicalPosition = 0;
-
-        [JsonProperty]
-        public double MechanicalPosition {
-            get => mechanicalPosition;
-            set {
-                mechanicalPosition = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string mechanicalPositionExpr = "";
-
-        [JsonProperty]
-        public string MechanicalPositionExpr {
-            get => mechanicalPositionExpr;
-            set {
-                mechanicalPositionExpr = value;
-                ConstantExpression.Evaluate(this, "MechanicalPositionExpr", "MechanicalPosition", 0);
-                RaisePropertyChanged("MechanicalPositionExpr");
-            }
         }
 
         private IList<string> issues = new List<string>();
@@ -87,17 +64,31 @@ namespace WhenPlugin.When {
             }
         }
 
+        public string MechanicalPosition { get; set; } = "Unknown";
+
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return rotatorMediator.MoveMechanical((float)MechanicalPosition, token);
+            RotatorInfo info = rotatorMediator.GetInfo();
+
+            if (info.Connected) {
+                float pos = info.MechanicalPosition;
+                pos = pos > 180 ? pos - 180 : pos + 180;
+                rotatorMediator.MoveMechanical(pos, token);
+                MechanicalPosition = info.MechanicalPosition.ToString();
+                RaisePropertyChanged("MechanicalPosition");
+                return Task.CompletedTask;
+            }
+            throw new SequenceEntityFailedException();
         }
 
         public bool Validate() {
             var i = new List<string>();
             if (!rotatorMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblRotatorNotConnected"]);
+                MechanicalPosition = "Unknown";
+            } else {
+                MechanicalPosition = rotatorMediator.GetInfo().MechanicalPosition.ToString();
             }
-            ConstantExpression.Evaluate(this, "MechanicalPositionExpr", "MechanicalPosition", 0, i);
-
+            RaisePropertyChanged("MechanicalPosition");
             Issues = i;
             return i.Count == 0;
         }
@@ -107,7 +98,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(MoveRotatorMechanical)}, Mechanical Position: {MechanicalPosition}";
+            return $"Category: {Category}, Item: {nameof(FlipRotator)}, Mechanical Position: {MechanicalPosition}";
         }
     }
 }

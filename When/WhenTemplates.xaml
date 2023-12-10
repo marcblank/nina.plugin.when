@@ -579,15 +579,15 @@
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Text:" />
+                    <TextBlock VerticalAlignment="Bottom" Text="Text:" />
                     <TextBox
                         MinWidth="400"
                         Margin="5,0,10,0"
                         Text="{Binding LogText}"
                         TextAlignment="Left" />
                     <Button
-                       Width="35"
-                       Height="35"
+                       Width="25"
+                       Height="25"
                        Margin="10,2,0,0"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
@@ -2543,7 +2543,7 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="WhenPlugin.When.MoveRotatorMechanical_Mini">
+    <DataTemplate x:Key="WhenPlugin.When.FlipRotator_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -2554,36 +2554,12 @@
         </mini:MiniSequenceItem>
     </DataTemplate>
     
-    <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
+    <DataTemplate DataType="{x:Type local:FlipRotator}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMechanicalPosition}" />
-                    <local:ConstantControl 
-                        Margin = "8,-2,10,5" 
-                        Expr="{Binding Path=MechanicalPositionExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=MechanicalPosition, Mode=TwoWay}" 
-                        />
-                    <TextBlock Margin="-10,0,0,0" VerticalAlignment="Center" Text="°" />
-                    <!--<ninactrl:UnitTextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Unit="°">
-
-                        <ninactrl:UnitTextBox.Text>
-                            <Binding Path="MechanicalPosition" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:FloatRangeRule>
-                                        <rules:FloatRangeRule.ValidRange>
-                                            <rules:FloatRangeChecker Maximum="359.99" Minimum="0" />
-                                        </rules:FloatRangeRule.ValidRange>
-                                    </rules:FloatRangeRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </ninactrl:UnitTextBox.Text>
-                    </ninactrl:UnitTextBox>-->
+                    <TextBlock VerticalAlignment="Center" Text="Mechanical Position: " />
+                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding MechanicalPosition}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
