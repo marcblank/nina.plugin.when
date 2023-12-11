@@ -205,6 +205,7 @@ namespace WhenPlugin.When {
                 FilterWheelMediator
             ) {
                 KeepPanelClosed = KeepPanelClosed,
+                FilterExpr = FilterExpr
             };
             return clone;
         }
@@ -281,6 +282,72 @@ namespace WhenPlugin.When {
             }
         }
 
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
+            }
+        }
+
+        public bool CVFilter { get; set; } = false;
+
+        private void SetFInfo() {
+            SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilterItem();
+            if (sw != null) {
+                FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                if (Filter == -1) {
+                    if (filterWheelInfo.Connected) {
+                        Filter = filterWheelInfo.SelectedFilter.Position;
+                    }
+                    sw.FInfo = filterWheelInfo.SelectedFilter;
+                } else if (Filter < fwi.Count) {
+                    sw.FInfo = fwi[Filter];
+                }
+            }
+        }
+
+        private string iFilterExpr = "";
+        [JsonProperty]
+        public string FilterExpr {
+            get => iFilterExpr;
+            set {
+                value ??= "(Current)";
+                iFilterExpr = value;
+
+                // Find in FilterWheelInfo
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                Filter = -1;
+                CVFilter = false;
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        break;
+                    }
+                }
+
+                if (Filter == -1 && !value.Equals("(Current)")) {
+                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                    CVFilter = true;
+                }
+
+                SetFInfo();
+                RaisePropertyChanged(nameof(CVFilter));
+                RaisePropertyChanged();
+
+            }
+        }
+
+        private int iFilter = -1;
+        public int Filter {
+            get => iFilter;
+            set {
+                iFilter = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private CameraInfo cameraInfo;
         public CameraInfo CameraInfo {
             get => cameraInfo;
@@ -353,6 +420,21 @@ namespace WhenPlugin.When {
                     issues.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_FlatDeviceTrainedExposureNotFound"], filter?.Name, gain, binning?.Name));
                     valid = false;
                 }
+            }
+
+
+            if (FilterNames.Count == 0) {
+                var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                foreach (var fw in fwi) {
+                    FilterNames.Add(fw.Name);
+                }
+                RaisePropertyChanged("FilterNames");
+            }
+
+            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
+            if (CVFilter) {
+                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
+                SetFInfo();
             }
 
             Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();

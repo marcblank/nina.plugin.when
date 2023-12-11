@@ -247,7 +247,6 @@ namespace WhenPlugin.When {
             }
         }
 
-
         private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
@@ -313,6 +312,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
