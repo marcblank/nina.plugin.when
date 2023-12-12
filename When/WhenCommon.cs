@@ -79,9 +79,6 @@ namespace WhenPlugin.When {
             Instructions.Name = Name;
             Instructions.Icon = Icon;
 
-
-
-            // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
                 if (fi.Name.Equals("sequenceNavigation")) {
@@ -115,24 +112,6 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public IfContainer Instructions { get; protected set; }
-
-        private ApplicationStatus _status;
-
-        public ApplicationStatus AppStatus {
-            get {
-                return _status;
-            }
-            set {
-                _status = value;
-                if (string.IsNullOrWhiteSpace(_status.Source)) {
-                    _status.Source = Loc.Instance["LblSequence"];
-                }
-
-                RaisePropertyChanged();
-
-                applicationStatusMediator.StatusUpdate(_status);
-            }
-        }
 
         private bool isSafe;
 
@@ -242,32 +221,16 @@ namespace WhenPlugin.When {
 
                     var root = ItemUtility.GetRootContainer(Parent);
                     await root?.Interrupt();
-                    await Task.Delay(100);
+                    await Task.Delay(200);
 
                     sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
+                    await Task.Delay(1000);
                 }
             }
         }
 
         public override string ToString() {
             return $"Condition: {nameof(When)}";
-        }
-
-        private bool CanContinue(ISequenceContainer container, ISequenceItem previousItem, ISequenceItem nextItem) {
-            var conditionable = container as IConditionable;
-            var canContinue = false;
-            var conditions = conditionable?.GetConditionsSnapshot()?.Where(x => x.Status != SequenceEntityStatus.DISABLED).ToList();
-            if (conditions != null && conditions.Count > 0) {
-                canContinue = conditionable.CheckConditions(previousItem, nextItem);
-            } else {
-                canContinue = container.Iterations < 1;
-            }
-
-            if (container.Parent != null) {
-                canContinue = canContinue && CanContinue(container.Parent, previousItem, nextItem);
-            }
-
-            return canContinue;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -287,6 +250,7 @@ namespace WhenPlugin.When {
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
+                InterruptWhenUnsafe();
             }
         }
 
