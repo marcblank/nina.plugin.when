@@ -376,7 +376,12 @@ namespace WhenPlugin.When {
             var takeExposure = GetExposureItem();
             var setBrightness = GetSetBrightnessItem();
 
-            var valid = takeExposure.Validate() && switchFilter.Validate() && setBrightness.Validate();
+            var valid = takeExposure.Validate() && setBrightness.Validate();
+            if (switchFilter == null) {
+                valid = false;
+            } else {
+                valid = valid && switchFilter.Validate();
+            }
 
             var issues = new List<string>();
 

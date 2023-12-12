@@ -41,7 +41,7 @@ namespace WhenPlugin.When {
 
         static public Dictionary<ISequenceEntity, Keys> KeyCache = new Dictionary<ISequenceEntity, Keys>();
 
-        static private bool Debugging = true;
+        static private bool Debugging = false;
 
         static private Semaphore SEM = new Semaphore(initialCount: 1, maximumCount: 1);
 
