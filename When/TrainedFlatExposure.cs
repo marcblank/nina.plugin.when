@@ -412,7 +412,11 @@ namespace WhenPlugin.When {
                 SetFInfo();
             }
 
-            Issues = issues.Concat(takeExposure.Issues).Concat(switchFilter.Issues).Concat(setBrightness.Issues).Distinct().ToList();
+            IList<string> sfi = new List<string>();
+            if (switchFilter != null) {
+                sfi = switchFilter.Issues;
+            }
+            Issues = issues.Concat(takeExposure.Issues).Concat(sfi).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
 
             return valid;
