@@ -27,35 +27,21 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Enum;
 using NINA.Sequencer.Utility;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Container;
 using NINA.Core.Model;
 using NINA.Sequencer.Conditions;
 using Newtonsoft.Json;
-using NINA.Core.Utility.Notification;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using System.ComponentModel;
 using System.Reflection;
-using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
-using System.Windows.Input;
-using System.Management;
-using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Sequencer;
-using System.Windows.Media.Converters;
-using NINA.WPF.Base.Mediator;
-using Accord.IO;
 
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Runs a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    //[ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
-    //[Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public abstract class When : SequenceTrigger, IValidatable, IIfWhenSwitch {

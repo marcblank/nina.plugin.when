@@ -24,7 +24,6 @@ using NINA.Sequencer.Trigger;
 using Newtonsoft.Json;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Equipment.Equipment.MyCamera;
 
 namespace WhenPlugin.When {
 
@@ -35,13 +34,12 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class WhenSwitch : When, IValidatable, ICameraConsumer {
+    public class WhenSwitch : When, IValidatable {
 
         [ImportingConstructor]
         public WhenSwitch(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
                 IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator)
             : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator, cameraMediator) {
-            cameraMediator.RegisterConsumer(this);
         }
 
         public ICameraConsumer cameraConsumer {  get; set; } 
@@ -162,14 +160,6 @@ namespace WhenPlugin.When {
 
             Issues = i;
             return i.Count == 0;
-        }
-
-        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose() {
-            throw new NotImplementedException();
         }
     }
 }
