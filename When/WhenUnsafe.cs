@@ -59,11 +59,11 @@ namespace WhenPlugin.When {
  
         [ImportingConstructor]
         public WhenUnsafe (ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
-                IWeatherDataMediator weatherMediator) 
-            : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator) {
+                IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator) 
+            : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator, cameraMediator) {
         }
 
-        protected WhenUnsafe(WhenUnsafe cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator) {
+        protected WhenUnsafe(WhenUnsafe cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();

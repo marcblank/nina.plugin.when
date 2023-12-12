@@ -46,6 +46,8 @@ using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
 using System.Windows.Media.Converters;
+using NINA.WPF.Base.Mediator;
+using Accord.IO;
 
 namespace WhenPlugin.When {
 
@@ -63,31 +65,38 @@ namespace WhenPlugin.When {
         protected IApplicationStatusMediator applicationStatusMediator;
         protected ISwitchMediator switchMediator;
         protected IWeatherDataMediator weatherMediator;
+        protected ICameraMediator cameraMediator;
 
         [ImportingConstructor]
         public When(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
-                IWeatherDataMediator weatherMediator) {
+                IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator) {
             this.safetyMediator = safetyMediator;
             this.sequenceMediator = sequenceMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
+            this.cameraMediator = cameraMediator;
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
             Instructions.Name = Name;
             Instructions.Icon = Icon;
-
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
                 if (fi.Name.Equals("sequenceNavigation")) {
+
                     sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
                 }
             }
         }
 
-        protected When(When cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator) {
+        public void Exex (object foo, EventArgs args) {
+            Logger.Info("Foo");
+
+        }
+
+        protected When(When cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
@@ -221,10 +230,19 @@ namespace WhenPlugin.When {
 
                     var root = ItemUtility.GetRootContainer(Parent);
                     await root?.Interrupt();
-                    await Task.Delay(200);
+                    //sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(true);
+                    await Task.Delay(2000);
 
-                    sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
-                    await Task.Delay(1000);
+                    while (!cameraMediator.IsFreeToCapture(this)) {
+                        Logger.Error("Wait 1");
+                        await Task.Delay(1000);
+                    };
+
+                    _ = sequenceNavigationVM.Sequence2VM.StartSequenceCommand.ExecuteAsync(true);
+
+                    //await Task.Delay(1000);
+                    //sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
+                    //await Task.Delay(1000);
                 }
             }
         }
@@ -250,10 +268,10 @@ namespace WhenPlugin.When {
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
+                Triggered = false;
                 InterruptWhenUnsafe();
             }
         }
-
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             return Execute(progress, token);

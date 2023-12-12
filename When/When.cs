@@ -24,6 +24,7 @@ using NINA.Sequencer.Trigger;
 using Newtonsoft.Json;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Equipment.Equipment.MyCamera;
 
 namespace WhenPlugin.When {
 
@@ -34,15 +35,18 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class WhenSwitch : When, IValidatable {
+    public class WhenSwitch : When, IValidatable, ICameraConsumer {
 
         [ImportingConstructor]
         public WhenSwitch(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
-                IWeatherDataMediator weatherMediator)
-            : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator) {
+                IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator)
+            : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator, cameraMediator) {
+            cameraMediator.RegisterConsumer(this);
         }
 
-        protected WhenSwitch(WhenSwitch cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator) {
+        public ICameraConsumer cameraConsumer {  get; set; } 
+
+        protected WhenSwitch(WhenSwitch cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
@@ -158,6 +162,14 @@ namespace WhenPlugin.When {
 
             Issues = i;
             return i.Count == 0;
+        }
+
+        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose() {
+            throw new NotImplementedException();
         }
     }
 }
