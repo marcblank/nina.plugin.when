@@ -247,7 +247,6 @@ namespace WhenPlugin.When {
             }
         }
 
-
         private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
@@ -313,6 +312,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
@@ -376,7 +376,12 @@ namespace WhenPlugin.When {
             var takeExposure = GetExposureItem();
             var setBrightness = GetSetBrightnessItem();
 
-            var valid = takeExposure.Validate() && switchFilter.Validate() && setBrightness.Validate();
+            var valid = takeExposure.Validate() && setBrightness.Validate();
+            if (switchFilter == null) {
+                valid = false;
+            } else {
+                valid = valid && switchFilter.Validate();
+            }
 
             var issues = new List<string>();
 

@@ -98,7 +98,7 @@ namespace WhenPlugin.When {
             this.Add(takeExposure);
             this.Add(loopCondition);
             this.Add(ditherAfterExposures);
- 
+
             IsExpanded = false;
 
             if (cloneMe != null) {
@@ -106,6 +106,7 @@ namespace WhenPlugin.When {
                 IterationsExpr = cloneMe.IterationsExpr;
                 DitherExpr = cloneMe.DitherExpr;
                 FilterExpr = cloneMe.FilterExpr;
+
             }
         }
 
@@ -140,6 +141,16 @@ namespace WhenPlugin.When {
         }
 
         public SwitchFilter GetSwitchFilter() {
+            SwitchFilter sw = Items[0] as SwitchFilter;
+            if (sw == null) {
+                sw = new SwitchFilter(ProfileService, FilterWheelMediator);
+                if (Items[0] is NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter oldSw) {
+                    if (oldSw.Filter != null) {
+                        sw.FilterExpr = oldSw.Filter.Name;
+                    }
+                }
+                Items[0] = sw;
+            }
             return Items[0] as SwitchFilter;
         }
 
@@ -314,6 +325,11 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
+            if (GetSwitchFilter() == null) {
+                Logger.Warning("Where is SwitchFilter?");
+                Items[0] = new SwitchFilter(ProfileService, FilterWheelMediator);
+
+            }
             var clone = new SmartExposure(
                     this,
                     (SwitchFilter)this.GetSwitchFilter().Clone(),

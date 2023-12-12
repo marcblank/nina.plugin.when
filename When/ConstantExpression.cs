@@ -23,6 +23,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Core.Model.Equipment;
+using NINA.Equipment.Equipment.MyRotator;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -144,8 +145,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        static public Keys LastMergedKeys = null;
-
         static private Double NCalcEvaluate(string expr, Keys mergedKeys, IList<string> issues) {
             SEM.WaitOne();
             try {
@@ -191,7 +190,7 @@ namespace WhenPlugin.When {
                 if (string.Equals(expr, "false", StringComparison.OrdinalIgnoreCase)) { return 0; }
 
                 // Consolidate keys
-                Keys mergedKeys = ConstantExpression.GetSwitchWeatherKeys().Clone();
+                Keys mergedKeys = GetSwitchWeatherKeys().Clone();
                    
                 foreach (Keys k in stack) {
                     foreach (KeyValuePair<string, object> kvp in k) {
@@ -217,9 +216,6 @@ namespace WhenPlugin.When {
                         }
                     }
                 }
-
-                // Save latest merged keys?
-                LastMergedKeys = mergedKeys;
                 
                 if (mergedKeys.Count == 0) {
                     DebugInfo("Expression '", expr, "' not evaluated; no keys");
@@ -367,6 +363,8 @@ namespace WhenPlugin.When {
                         cc = GetParent(cc);
                     }
                 }
+
+                stack.Push(GetSwitchWeatherKeys().Clone());
 
                 // Reverse the stack to maintain proper scoping
                 Stack<Keys> reverseStack = new Stack<Keys>();
@@ -563,7 +561,7 @@ namespace WhenPlugin.When {
                         reverseStack.Push(k);
                     }
 
-                    if ((reverseStack == null || reverseStack.Count == 0) && issues != null) issues.Add("There are no valid constants defined.");
+                    //if ((reverseStack == null || reverseStack.Count == 0) && issues != null) issues.Add("There are no valid constants defined.");
 
                     double result = EvaluateExpression(item, expr, reverseStack, issues);
                     DebugInfo("IsValid: ", item.Name, ", ", exprName, " = ", expr,
@@ -617,8 +615,7 @@ namespace WhenPlugin.When {
 
         private static void DebugInfo(params string[] strs) {
             if (Debugging) {
-                Debug.WriteLine(String.Join("", strs));
-                Logger.Info(String.Join("", strs));
+                Logger.Debug(String.Join("", strs));
             }
         }
 
@@ -647,12 +644,14 @@ namespace WhenPlugin.When {
         private static IFlatDeviceMediator FlatMediator { get; set; }
         private static IFilterWheelMediator FilterWheelMediator { get; set; }
         private static IProfileService ProfileService {  get; set; }
+        private static IRotatorMediator RotatorMediator { get; set; }
+
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches {  get; set; } = new List<string>();
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService) {
+            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -660,6 +659,7 @@ namespace WhenPlugin.When {
             FlatMediator = flatMediator;
             FilterWheelMediator = filterWheelMediator;
             ProfileService = profileService;
+            RotatorMediator = rotatorMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -718,6 +718,12 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("CoverClosed", 2);
                     SwitchWeatherKeys.Add("CoverOpen", 3);
                     SwitchWeatherKeys.Add("CoverError", 4);
+                }
+
+                RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
+                if (rotatorInfo.Connected) {
+                    SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
+                    i.Add("Rotator: RotatorMechanicalPosition (" + rotatorInfo.MechanicalPosition + ")");
                 }
 
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
