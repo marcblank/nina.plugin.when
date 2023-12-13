@@ -73,8 +73,8 @@ namespace WhenPlugin.When {
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
-            cts = new CancellationTokenSource();
             try {
+                cts = new CancellationTokenSource();
                 await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, cts.Token, progress, "");
             } finally {
                 InFlight = false;

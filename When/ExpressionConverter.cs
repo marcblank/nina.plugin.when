@@ -12,6 +12,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Validations;
 using System;
@@ -53,7 +54,7 @@ namespace WhenPlugin.When {
             }
             return string.Empty;
         }
-         
+
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             // value will be a string
             ISequenceEntity item = values[VALUE_ITEM] as ISequenceEntity;
@@ -76,7 +77,7 @@ namespace WhenPlugin.When {
                         ValidityCache.Add(item, true);
                     }
                     if ("Integer".Equals(type) && Double.Floor(val) != val) {
-                         return " {" + (int)val + "}  ";
+                        return " {" + (int)val + "}  ";
                     }
                     return val;
                 } else {
@@ -118,7 +119,7 @@ namespace WhenPlugin.When {
                         if (ValidityCache == null || ValidityCache.Count == 0) return ""; // "There are no valid constants defined.";
                         return ""; // return " {Error} ";
                     }
-                 }
+                }
             }
             if (item != null) {
                 ValidityCache.Remove(item);
@@ -126,7 +127,7 @@ namespace WhenPlugin.When {
             return "Illegal";
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
             throw new NotImplementedException();
         }
     }

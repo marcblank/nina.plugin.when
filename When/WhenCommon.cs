@@ -27,33 +27,21 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Enum;
 using NINA.Sequencer.Utility;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Container;
 using NINA.Core.Model;
 using NINA.Sequencer.Conditions;
 using Newtonsoft.Json;
-using NINA.Core.Utility.Notification;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using System.ComponentModel;
 using System.Reflection;
-using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
-using System.Windows.Input;
-using System.Management;
-using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Sequencer;
-using System.Windows.Media.Converters;
 
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Runs a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    //[ExportMetadata("Category", "Lbl_SequenceCategory_SafetyMonitor")]
-    //[Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public abstract class When : SequenceTrigger, IValidatable, IIfWhenSwitch {
@@ -63,34 +51,38 @@ namespace WhenPlugin.When {
         protected IApplicationStatusMediator applicationStatusMediator;
         protected ISwitchMediator switchMediator;
         protected IWeatherDataMediator weatherMediator;
+        protected ICameraMediator cameraMediator;
 
         [ImportingConstructor]
         public When(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
-                IWeatherDataMediator weatherMediator) {
+                IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator) {
             this.safetyMediator = safetyMediator;
             this.sequenceMediator = sequenceMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
+            this.cameraMediator = cameraMediator;
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
             Instructions.Name = Name;
             Instructions.Icon = Icon;
-
-
-
-            // GetField() returns null, so iterate?
             var fields = sequenceMediator.GetType().GetRuntimeFields();
             foreach (FieldInfo fi in fields) {
                 if (fi.Name.Equals("sequenceNavigation")) {
+
                     sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
                 }
             }
         }
 
-        protected When(When cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator) {
+        public void Exex (object foo, EventArgs args) {
+            Logger.Info("Foo");
+
+        }
+
+        protected When(When cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
@@ -115,24 +107,6 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public IfContainer Instructions { get; protected set; }
-
-        private ApplicationStatus _status;
-
-        public ApplicationStatus AppStatus {
-            get {
-                return _status;
-            }
-            set {
-                _status = value;
-                if (string.IsNullOrWhiteSpace(_status.Source)) {
-                    _status.Source = Loc.Instance["LblSequence"];
-                }
-
-                RaisePropertyChanged();
-
-                applicationStatusMediator.StatusUpdate(_status);
-            }
-        }
 
         private bool isSafe;
 
@@ -230,72 +204,27 @@ namespace WhenPlugin.When {
 
         private ConditionWatchdog LoopWatchdog { get; set; }
 
-        private async Task InterruptToCheckConditions() {
-            if (!(CanContinue(Parent, null, null))) {
-                PerformStopInstructions();
-                LoopWatchdog?.Cancel();
-                sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
-            }
-        }
-
-        private ISequenceContainer FindTargetContainer() {
-            ISequenceContainer container = Parent;
-            while (container != null) {
-                if (container is TargetAreaContainer) return container;
-                container = container.Parent;
-            }
-            return Parent;
-        }
-
-        private IProgress<ApplicationStatus> _progress;
+        private bool Triggered { get; set; } = false;
 
         private async Task InterruptWhenUnsafe() {
-            // Don't even think of it...
-            if (Stopped) {
-                //Logger.Info("WhenUnsafe: Stopped");
-                return;
-            }
+            if (InFlight || Triggered) return;
 
-            if (InFlight) return;
-
-            if (!Check() && Parent != null) {
+            if (ShouldTrigger(null, null) && Parent != null) {
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
+                    Triggered = true;
                     Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
 
                     var root = ItemUtility.GetRootContainer(Parent);
                     await root?.Interrupt();
-                    await Task.Delay(100);
+                    await Task.Delay(2000);
 
-                    ISequenceEntity pp = Parent;
-                    Status = SequenceEntityStatus.RUNNING;
-                    cts = new CancellationTokenSource();
-                    try {
-                        // Wait a short time for the sequence to be canceled...
-                        Thread.Sleep(1500);
-                        Logger.Info("WhenUnsafe: " + "Starting unsafe sequence.");
-                        LoopWatchdog = new ConditionWatchdog(InterruptToCheckConditions, TimeSpan.FromSeconds(5));
-                        LoopWatchdog.Start();
-                        await Execute(new Progress<ApplicationStatus>(p => AppStatus = p), cts.Token);
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
-                    } finally {
-                        if (cts.IsCancellationRequested) {
-                            Logger.Info("WhenUnsafe: " + "Cancellation requested; stopping");
-                            Status = SequenceEntityStatus.FINISHED;
-                            Stopped = true;
-                            InFlight = true;
-                        }
-                        if (!Stopped) {
-                            Logger.Info("WhenUnsafe: " + "Finishing unsafe sequence; restarting interrupted sequence.");
-                            Status = SequenceEntityStatus.CREATED;
-                            InFlight = false;
-                            sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
-                        }
-                        cts.Dispose();
-                        // Don't keep starting the sequence
-                        LoopWatchdog?.Cancel();
-                    }
-                }
+                    while (!cameraMediator.IsFreeToCapture(this)) {
+                        Logger.Error("Wait 1");
+                        await Task.Delay(1000);
+                    };
+
+                    _ = sequenceNavigationVM.Sequence2VM.StartSequenceCommand.ExecuteAsync(true);
+              }
             }
         }
 
@@ -303,96 +232,30 @@ namespace WhenPlugin.When {
             return $"Condition: {nameof(When)}";
         }
 
-        private ISequenceContainer Container { get; set; }
-        private bool CanContinue(ISequenceContainer container, ISequenceItem previousItem, ISequenceItem nextItem) {
-            var conditionable = container as IConditionable;
-            var canContinue = false;
-            var conditions = conditionable?.GetConditionsSnapshot()?.Where(x => x.Status != SequenceEntityStatus.DISABLED).ToList();
-            if (conditions != null && conditions.Count > 0) {
-                canContinue = conditionable.CheckConditions(previousItem, nextItem);
-            } else {
-                canContinue = container.Iterations < 1;
-            }
-
-            if (container.Parent != null) {
-                canContinue = canContinue && CanContinue(container.Parent, previousItem, nextItem);
-            }
-
-            return canContinue;
-        }
-
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) return false;
-            Container = previousItem?.Parent;
-            if (Container == null) Container = nextItem?.Parent;
+            if (!Check()) {
+                TriggerRunner = Instructions;
+                return true;
+            }
             return false;
         }
 
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-
             if (InFlight) return;
-            InFlight = true;
-
-            while (true) {
-                if (WhenUnsafe.CheckSafe(this, safetyMediator)) {
-                    return;
-                }
-
-                Logger.Info("WhenUnsafe: Conditions unsafe.");
-
-                // We'll attach ourselves to the sequence that was running
-                Instructions.AttachNewParent(Container);
-                // And make sure each of our instructions knows it (I'm looking at you, Center and others that inherit coordinates)
-                foreach (ISequenceItem item in Instructions.Items) {
-                    item.AttachNewParent(Instructions);
-                }
-                Runner runner = new Runner(Instructions, null, progress, token);
-                runner.cts = cts;
-                try {
-                    // No retries at this point
-                    await runner.RunConditional();
-                } finally {
-                    if (!Stopped) {
-                        // Clean up
-                        Instructions.AttachNewParent(Parent);
-                        foreach (ISequenceItem item in Instructions.Items) {
-                            item.AttachNewParent(Instructions);
-                        }
-                        // Allow this to be run multiple times
-                        Instructions.ResetProgress();
-                        Status = SequenceEntityStatus.CREATED;
-                        InFlight = false;
-                    }
-                }
-
-                return;
+            try {
+                InFlight = true;
+                Triggered = false;
+                await TriggerRunner.Run(progress, token);
+            } finally {
+                InFlight = false;
+                Triggered = false;
+                InterruptWhenUnsafe();
             }
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return Task.CompletedTask; // return Execute(progress, token);
-        }
-
-        private GalaSoft.MvvmLight.Command.RelayCommand stopInstructions;
-
-        public ICommand StopInstructions => stopInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformStopInstructions);
-
-        private void PerformStopInstructions() {
-            if (!Stopped) {
-                if (InFlight && cts != null) {
-                    Logger.Info("Start/Stop pressed while not stopped; cancel cts");
-                    cts.Cancel();
-                    Stopped = true;
-                }
-            } else {
-                Logger.Info("Start/Stop pressed, when stopped; start interrupts");
-                Stopped = false;
-                InFlight = false;
-                // Don't set pparent status so that the trigger can run again...
-                Status = SequenceEntityStatus.CREATED;
-                _ = InterruptWhenUnsafe();
-            }
-            RaisePropertyChanged("StartStop");
+            return Execute(progress, token);
         }
     }
 }
