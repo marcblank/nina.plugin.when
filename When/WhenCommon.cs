@@ -214,16 +214,12 @@ namespace WhenPlugin.When {
                     Triggered = true;
                     Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
 
-                    var root = ItemUtility.GetRootContainer(Parent);
-                    await root?.Interrupt();
-                    await Task.Delay(2000);
-
-                    while (!cameraMediator.IsFreeToCapture(this)) {
-                        Logger.Error("Wait 1");
+                    sequenceMediator.CancelAdvancedSequence();
+                    await Task.Delay(1000);
+                    while (sequenceMediator.IsAdvancedSequenceRunning()) {
                         await Task.Delay(1000);
-                    };
-
-                    _ = sequenceNavigationVM.Sequence2VM.StartSequenceCommand.ExecuteAsync(true);
+                    }
+                    await sequenceMediator.StartAdvancedSequence(true);
               }
             }
         }
