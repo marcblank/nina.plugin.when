@@ -216,7 +216,6 @@ namespace WhenPlugin.When {
 
                     var root = ItemUtility.GetRootContainer(Parent);
                     await root?.Interrupt();
-                    //sequenceNavigationVM.Sequence2VM.CancelSequenceCommand.Execute(true);
                     await Task.Delay(2000);
 
                     while (!cameraMediator.IsFreeToCapture(this)) {
@@ -225,11 +224,7 @@ namespace WhenPlugin.When {
                     };
 
                     _ = sequenceNavigationVM.Sequence2VM.StartSequenceCommand.ExecuteAsync(true);
-
-                    //await Task.Delay(1000);
-                    //sequenceNavigationVM.Sequence2VM.StartSequenceCommand.Execute(true);
-                    //await Task.Delay(1000);
-                }
+              }
             }
         }
 
