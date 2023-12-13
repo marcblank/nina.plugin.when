@@ -75,9 +75,11 @@ namespace WhenPlugin.When {
             InFlight = true;
             try {
                 cts = new CancellationTokenSource();
-                await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, cts.Token, progress, "");
+                CancellationTokenSource ls = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, token);
+                await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromHours(12), true, ls.Token, progress, "");
             } finally {
                 InFlight = false;
+                if (cts != null) cts.Cancel();
             }
         }
 

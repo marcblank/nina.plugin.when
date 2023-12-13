@@ -719,7 +719,7 @@
                     </Border>
                     <TextBlock VerticalAlignment="Center" Margin="10,3,0,0" Text="Expression:" />
                     <local:ConstantControl 
-                        Margin="5,4,10,5"
+                        Margin="5,0,10,5"
                         ToolTip="Foo"
                         ToolTipOpening="LoopWhile_PredicateToolTip"
                         Validate="ValidateConstant"
