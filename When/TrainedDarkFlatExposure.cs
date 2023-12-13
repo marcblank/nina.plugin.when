@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new SwitchFilter(profileService, filterWheelMediator),
                 new SetBrightness(flatDeviceMediator),
-                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARKFLAT },
+                new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM) { ImageType = CaptureSequence.ImageTypes.DARK},
                 new LoopCondition() { Iterations = 1 },
                 new OpenCover(flatDeviceMediator),
                 filterWheelMediator
