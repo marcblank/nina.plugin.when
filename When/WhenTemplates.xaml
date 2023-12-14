@@ -307,7 +307,7 @@
                                 Text="Instructions when triggered:"/>
                         <Border
                         MinHeight="35"
-                        Margin="0,20,0,0"
+                        Margin="0,0,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                             <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">
@@ -816,7 +816,7 @@
                                 Text="Instructions to execute if the instruction fails:" />
                         <Border
                         MinHeight="35"
-                        Margin="0,20,0,0"
+                        Margin="0,0,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                             <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -850,7 +850,7 @@
                                Text="Instructions to execute if your gear is 'safe':" />
                         <Border
                        MinHeight="35"
-                       Margin="0,20,0,0"
+                       Margin="0,0,0,0"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                             <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -927,7 +927,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                         MinHeight="35"
-                        Margin="0,20,0,0"
+                        Margin="0,0,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -1021,7 +1021,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                         MinHeight="35"
-                        Margin="0,20,0,0"
+                        Margin="0,0,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -1053,17 +1053,17 @@
             <i:Interaction.Behaviors>
                 <!--  Drop area above and below the Sequence Container  -->
                 <behaviors:DragOverBehavior
-                   AllowDragCenter="False"
-                   DragAboveSize="25"
-                   DragBelowSize="15" />
+                  AllowDragCenter="False"
+                  DragAboveSize="25"
+                  DragBelowSize="15" />
             </i:Interaction.Behaviors>
             <ninactrl:DetachingExpander>
                 <ninactrl:DetachingExpander.Header>
                     <Grid
-                       MinHeight="35"
-                       Margin="0"
-                       HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
-                       Background="{StaticResource SecondaryBackgroundBrush}">
+                      MinHeight="35"
+                      Margin="0"
+                      HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                      Background="{StaticResource SecondaryBackgroundBrush}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
@@ -1071,36 +1071,11 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
-                                  MinHeight="25"
-                                  Margin="10,10,10,0"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Center"
-                                  Text="If" />
-                            <Border
-                                Width="20"
-                                Height="20"
-                                Margin="5,0,5,0"
-                                Background="{StaticResource NotificationErrorBrush}"
-                                BorderBrush="Transparent"
-                                CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
-                                            Converter="{StaticResource ZeroToVisibilityConverter}"
-                                            FallbackValue="Collapsed"
-                                            Path="Issues.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
-                                    HorizontalAlignment="Right"
-                                    Data="{StaticResource ExclamationCircledSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Issues}" />
-                                </Border.ToolTip>
-                            </Border>
-
+                                 MinHeight="25"
+                                 Margin="10,10,10,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="If" />
                             <Border
                                Width="20"
                                Height="20"
@@ -1113,14 +1088,39 @@
                                         <Binding
                                            Converter="{StaticResource ZeroToVisibilityConverter}"
                                            FallbackValue="Collapsed"
-                                           Path="Switches.Count" />
+                                           Path="Issues.Count" />
                                     </PriorityBinding>
                                 </Border.Visibility>
                                 <Path
                                    HorizontalAlignment="Right"
-                                   Data="{StaticResource AboutSVG}"
+                                   Data="{StaticResource ExclamationCircledSVG}"
                                    Fill="{StaticResource ButtonForegroundBrush}"
                                    Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+
+                            <Border
+                              Width="20"
+                              Height="20"
+                              Margin="5,0,5,0"
+                              Background="{StaticResource NotificationErrorBrush}"
+                              BorderBrush="Transparent"
+                              CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                          Converter="{StaticResource ZeroToVisibilityConverter}"
+                                          FallbackValue="Collapsed"
+                                          Path="Switches.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                  HorizontalAlignment="Right"
+                                  Data="{StaticResource AboutSVG}"
+                                  Fill="{StaticResource ButtonForegroundBrush}"
+                                  Stretch="Uniform" />
                                 <Border.ToolTip>
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
@@ -1128,46 +1128,145 @@
                             <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
                             <local:ConstantControl 
-                                  Margin="0,2,10,10" 
-                                  ToolTip="Foo"
-                                  ToolTipOpening="IfConstant_PredicateToolTip"
-                                  Validate="ValidateConstant"
-                                  Expr="{Binding Path=Predicate, Mode=TwoWay}"
-                                  Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
-                                  />
+                                 Margin="0,2,10,10" 
+                                 ToolTip="Foo"
+                                 ToolTipOpening="IfConstant_PredicateToolTip"
+                                 Validate="ValidateConstant"
+                                 Expr="{Binding Path=Predicate, Mode=TwoWay}"
+                                 Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
+                                 />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
-                               Margin="2,0,10,0"
-                               HorizontalAlignment="Right"
-                               Content="{Binding}"
-                               DockPanel.Dock="Right"
-                               Style="{StaticResource ProgressPresenter}" />
+                              Margin="2,0,10,0"
+                              HorizontalAlignment="Right"
+                              Content="{Binding}"
+                              DockPanel.Dock="Right"
+                              Style="{StaticResource ProgressPresenter}" />
                         </Border>
                         <Border
-                            x:Name="ButtonCommands"
-                            Grid.Column="2"
-                            HorizontalAlignment="Stretch"
-                            Background="{StaticResource SecondaryBackgroundBrush}">
+                           x:Name="ButtonCommands"
+                           Grid.Column="2"
+                           HorizontalAlignment="Stretch"
+                           Background="{StaticResource SecondaryBackgroundBrush}">
                             <Control Template="{StaticResource PowerupsButtons}" />
                         </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
-                       MinHeight="35"
-                       Margin="0,20,0,0"
-                       BorderBrush="{StaticResource BorderBrush}"
-                       BorderThickness="1">
+                      MinHeight="35"
+                      Margin="0,0,0,0"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
                             <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                             <TextBlock
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontStyle="Italic"
-                               Opacity="0.4"
-                               Text="Conditional instructions go here"
-                               Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              FontStyle="Italic"
+                              Opacity="0.4"
+                              Text="Conditional instructions go here"
+                              Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                            </i:Interaction.Behaviors>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ninactrl:DetachingExpander>
+        </Border>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type local:CVContainer}">
+        <Border>
+            <Border.Resources>
+                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+            </Border.Resources>
+            <i:Interaction.Behaviors>
+                <!--  Drop area above and below the Sequence Container  -->
+                <behaviors:DragOverBehavior
+                  AllowDragCenter="False"
+                  DragAboveSize="25"
+                  DragBelowSize="15" />
+            </i:Interaction.Behaviors>
+            <ninactrl:DetachingExpander>
+                <ninactrl:DetachingExpander.Header>
+                    <Grid
+                      MinHeight="35"
+                      Margin="0"
+                      HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
+                      Background="{StaticResource SecondaryBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock 
+                                 MinHeight="25"
+                                 Margin="10,10,10,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Text="Constants/Variables Container" />
+                            <Border
+                               Width="20"
+                               Height="20"
+                               Margin="5,0,5,0"
+                               Background="{StaticResource NotificationErrorBrush}"
+                               BorderBrush="Transparent"
+                               CornerRadius="10">
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
+                                           Converter="{StaticResource ZeroToVisibilityConverter}"
+                                           FallbackValue="Collapsed"
+                                           Path="Issues.Count" />
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
+                                   HorizontalAlignment="Right"
+                                   Data="{StaticResource ExclamationCircledSVG}"
+                                   Fill="{StaticResource ButtonForegroundBrush}"
+                                   Stretch="Uniform" />
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
+                        </StackPanel>
+                        <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
+                              Margin="2,0,10,0"
+                              HorizontalAlignment="Right"
+                              Content="{Binding}"
+                              DockPanel.Dock="Right"
+                              Style="{StaticResource ProgressPresenter}" />
+                        </Border>
+                        <Border
+                           x:Name="ButtonCommands"
+                           Grid.Column="2"
+                           HorizontalAlignment="Stretch"
+                           Background="{StaticResource SecondaryBackgroundBrush}">
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
+                    </Grid>
+                </ninactrl:DetachingExpander.Header>
+                <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <Border
+                      MinHeight="35"
+                      Margin="0,0,0,0"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      BorderThickness="1">
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                            <TextBlock
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              FontStyle="Italic"
+                              Opacity="0.4"
+                              Text="Conditional instructions go here"
+                              Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
                                 <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
@@ -1264,7 +1363,7 @@
                                   Margin="0,5,10,10" 
                                   ToolTip="Foo"
                                   ToolTipOpening="IfConstant_PredicateToolTip"
-                                  Validate="ValidateConstant"
+                                  Validate="alidateConstant"
                                   Expr="{Binding Path=Predicate, Mode=TwoWay}"
                                   Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
                                   />
@@ -1289,7 +1388,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                        MinHeight="35"
-                       Margin="0,20,0,0"
+                       Margin="0,0,0,0"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -1715,7 +1814,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                        MinHeight="35"
-                       Margin="0,20,0,0"
+                       Margin="0,0,0,0"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -1816,7 +1915,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                        MinHeight="35"
-                       Margin="0,20,0,0"
+                       Margin="0,0,0,0"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -1938,7 +2037,7 @@
                                 Text="Instructions to execute if your gear is 'unssafe':" />
                         <Border
                         MinHeight="35"
-                        Margin="0,20,0,0"
+                        Margin="0,0,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
                             <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
@@ -2503,7 +2602,7 @@
                 <StackPanel Grid.Row="1" Orientation="Vertical">
                     <Border
                        MinHeight="35"
-                       Margin="0,20,0,0"
+                       Margin="0,0,0,0"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">

@@ -474,7 +474,7 @@ namespace WhenPlugin.When {
                             }
                         }
                     } else if (item is IfCommand ifc && ifc.Instructions.Items.Count > 0) {
-                        FindConstants(ifc.Instructions, new Keys());
+                        FindConstants(ifc.Instructions, item is CVContainer ? keys : new Keys());
                         if (item is IfThenElse ec && ec.ElseInstructions.Items.Count > 0) {
                             FindConstants(ec.ElseInstructions, new Keys());
                         }
