@@ -11,12 +11,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Utility;
 using System.Diagnostics;
+using NINA.Core.Utility.Notification;
 
 namespace WhenPlugin.When {
     public class Runner: SequentialContainer {
 
         public Runner(SequentialContainer runner, IInstructionResults cmd, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            AttachNewParent(runner.Parent);
+            if (runner.Parent == this) {
+                Notification.ShowError("TBR RECURSION!");
+                Logger.Error("TBR recursing");
+                Logger.Error(new StackTrace(true).ToString());
+            } else {
+                AttachNewParent(runner.Parent);
+            }
             RunInstructions = runner;
             RunInstructions.AttachNewParent(this);
             ConditionalCommand = cmd;
