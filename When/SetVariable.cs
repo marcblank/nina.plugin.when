@@ -14,6 +14,8 @@ using System.Windows.Forms;
 using NINA.Core.Utility;
 using System.Text;
 using Accord;
+using NINA.Sequencer.Mediator;
+using NINA.Sequencer.Interfaces.Mediator;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Variable")]
@@ -23,12 +25,16 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SetVariable : SequenceItem, IValidatable, ISettable {
+
+        private ISequenceMediator _mediator;
+
         [ImportingConstructor]
-        public SetVariable() {
+        public SetVariable(ISequenceMediator sequenceMediator) {
             Variable = "";
             Icon = Icon;
+            _mediator = sequenceMediator;
         }
-        public SetVariable(SetVariable copyMe) : this() {
+        public SetVariable(SetVariable copyMe) : this(copyMe._mediator) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
@@ -59,11 +65,12 @@ namespace WhenPlugin.When {
 
         public bool DuplicateName { get; set; } = false;
 
-        private string cValueExpr = "0";
+        private string cValueExpr = "";
         //[JsonProperty]
         public string CValueExpr {
             get => cValueExpr;
             set {
+                if (!_mediator.IsAdvancedSequenceRunning()) return;
                 if (cValueExpr == value) {
                     RaisePropertyChanged("CValue");
                     RaisePropertyChanged("CValueExpr");
