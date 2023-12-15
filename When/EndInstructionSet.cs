@@ -80,8 +80,13 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            InstructionSetName = "";
-            RaisePropertyChanged("InstructionSetName");
+            if (InstructionSetName != null) {
+                ISequenceContainer p = FindInstructionSet();
+                if (p == null) {
+                    InstructionSetName = null;
+                    RaisePropertyChanged("InstructionSetName");
+                }
+            }
         }
 
         public ISequenceContainer FindInstructionSet() {
