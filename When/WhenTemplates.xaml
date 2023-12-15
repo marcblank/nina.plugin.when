@@ -1363,7 +1363,7 @@
                                   Margin="0,5,10,10" 
                                   ToolTip="Foo"
                                   ToolTipOpening="IfConstant_PredicateToolTip"
-                                  Validate="alidateConstant"
+                                  Validate="ValidateConstant"
                                   Expr="{Binding Path=Predicate, Mode=TwoWay}"
                                   Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
                                   />
