@@ -212,7 +212,7 @@ namespace WhenPlugin.When {
             Logger.Info("InterruptWhenUnsafe");
             if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (InFlight || Triggered) {
-                Logger.Info("Not InFlight or Triggered");
+                //Logger.Info("Not InFlight or Triggered");
                 return;
             }
 
@@ -220,29 +220,29 @@ namespace WhenPlugin.When {
                 Logger.Info("ShouldTrigger: true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Triggered = true;
-                    Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
+                    //Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
 
                     Critical = true;
                     try {
 
                         sequenceMediator.CancelAdvancedSequence();
-                        Logger.Info("Canceling sequence...");
+                        //Logger.Info("Canceling sequence...");
 
                         await Task.Delay(1000);
                         while (sequenceMediator.IsAdvancedSequenceRunning()) {
                             Logger.Info("Delay 1000");
                             await Task.Delay(1000);
                         }
-                        Logger.Info("Sequence longer running");
+                        //Logger.Info("Sequence longer running");
                     } finally {
                         Critical = false;
                     }
                     
                     await sequenceMediator.StartAdvancedSequence(true);
-                    Logger.Info("Starting sequence, Triggered -> true");
+                    //Logger.Info("Starting sequence, Triggered -> true");
               }
             } else {
-                Logger.Info("Should trigger: false");
+                //Logger.Info("Should trigger: false");
             }
         }
 
@@ -262,19 +262,19 @@ namespace WhenPlugin.When {
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Logger.Info("Execute");
             if (Critical) {
-                Logger.Info("Execute in critical section; return");
+                //Logger.Info("Execute in critical section; return");
                 return;
             }
             if (InFlight) return;
             try {
-                Logger.Info("InFlight -> true, Triggered -> false");
+                //Logger.Info("InFlight -> true, Triggered -> false");
                 InFlight = true;
                 Triggered = false;
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
                 Triggered = false;
-                Logger.Info("Execute done; InFlight -> false, Triggered false");
+                //Logger.Info("Execute done; InFlight -> false, Triggered false");
                 //InterruptWhenUnsafe();
             }
         }
