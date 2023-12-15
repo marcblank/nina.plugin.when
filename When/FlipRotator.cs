@@ -72,9 +72,11 @@ namespace WhenPlugin.When {
             if (info.Connected) {
                 float pos = info.MechanicalPosition;
                 pos = pos > 180 ? pos - 180 : pos + 180;
+                if (pos == 360) pos = 0;
                 rotatorMediator.MoveMechanical(pos, token);
                 MechanicalPosition = info.MechanicalPosition.ToString();
                 RaisePropertyChanged("MechanicalPosition");
+
                 return Task.CompletedTask;
             }
             throw new SequenceEntityFailedException();
