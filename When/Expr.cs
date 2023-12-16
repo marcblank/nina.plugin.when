@@ -2,6 +2,7 @@
 using NCalc.Domain;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
+using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
-    public class Expr {
+    public class Expr : BaseINPC {
 
         public Expr (string expr, ISequenceContainer context) {
             Expression = expr;
@@ -48,9 +49,13 @@ namespace WhenPlugin.When {
                     
                     // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
-                }
+
+                 }
             }
         }
+
+        // Where we associate Symbols with the container they live in
+        public static Dictionary<ISequenceContainer, Symbol> SymbolCache = new Dictionary<ISequenceContainer, Symbol>();
 
         private ISequenceContainer _context;
         public ISequenceContainer Context { get; set; }
@@ -106,7 +111,29 @@ namespace WhenPlugin.When {
             }
         }
 
+        public void Evaluate() {
+            // First, validate References
+
+            // Then
+            Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+
+            try {
+                object eval = e.Evaluate();
+                // We got an actual value
+                if (eval is Boolean b) {
+                    Value = b ? 1 : 0;
+                } else {
+                    Value = Convert.ToDouble(eval);
+                }
+                RaisePropertyChanged("Value");
+
+            } catch (Exception) {
+                // What kind of Exception is this??
+            }
+        }
     }
-
-
 }
+
+// Symbols go into a cache re: container
+// Exprs have symbols attached
+
