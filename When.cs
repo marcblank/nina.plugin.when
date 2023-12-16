@@ -63,6 +63,7 @@ namespace WhenPlugin.When {
             CreateGlobalSetConstants(this);
             SetConstant.WhenPluginObject = this;
             ConstantExpression.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator);
+
         }
 
         public override Task Teardown() {

@@ -157,6 +157,7 @@ namespace WhenPlugin.When {
                         //Logger.Info("Key: " + x.Key + ", Value: " +  x.Value);
                     }
                     var eval = e.Evaluate();
+                    Expr a = new Expr("A + (H * C) / lll");
                     DebugInfo("     ### Expression '", expr, " evaluated to " + eval.ToString());
                     if (eval is Boolean b) {
                         return b ? 1 : 0;

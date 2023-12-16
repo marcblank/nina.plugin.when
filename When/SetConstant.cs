@@ -89,6 +89,9 @@ namespace WhenPlugin.When {
                 }
                 // Force every expression to re-evaluate
                 ConstantExpression.GlobalContainer.Validate();
+
+                //
+                //Expr c = new Expr("A + G");
             }
         }
 
