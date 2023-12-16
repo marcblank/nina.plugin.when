@@ -123,6 +123,9 @@ namespace WhenPlugin.When {
                     }
                 }
                 ConstantExpression.GlobalContainer.Validate();
+
+                //
+                //new Expr("foo + bar / bletch", null);
             }
         }
 

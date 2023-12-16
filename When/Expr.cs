@@ -1,5 +1,7 @@
 ﻿using NCalc;
 using NCalc.Domain;
+using NINA.Core.Utility;
+using NINA.Sequencer.Container;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,9 @@ using System.Threading.Tasks;
 namespace WhenPlugin.When {
     public class Expr {
 
-        public Expr (string expr) {
+        public Expr (string expr, ISequenceContainer context) {
             Expression = expr;
+            Context = context;
         }
 
         private string _expression;
@@ -24,26 +27,42 @@ namespace WhenPlugin.When {
                     Value = result;
                 } else {
                     IsExpression = true;
+                    
+                    // Evaluate just so that we can parse the expression
                     Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
-                    e.Parameters = new Dictionary<string, object>();
+                    e.Parameters = EmptyDictionary;
+                    IsSyntaxError = false;
                     try {
                         e.Evaluate();
-                    } catch (Exception ex) {
-
+                    } catch (NCalc.EvaluationException) {
+                        // We should expect this, since we're just trying to find the parameters used
+                        IsSyntaxError = true;
+                    } catch (Exception) {
+                        // That's ok
                     }
 
+                    // Find the parameters used
                     var pe = e.ParsedExpression;
                     ParameterExtractionVisitor visitor = new ParameterExtractionVisitor();
                     pe.Accept(visitor);
+                    
+                    // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
                 }
             }
         }
 
+        private ISequenceContainer _context;
+        public ISequenceContainer Context { get; set; }
+        
+        private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
+
         private double _value;
         public double Value { get; set; }
 
         public bool IsExpression { get; set; } = false;
+
+        public bool IsSyntaxError { get; set; } = false;
 
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
