@@ -68,6 +68,8 @@ namespace WhenPlugin.When {
 
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
+        public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
+
         class ParameterExtractionVisitor : LogicalExpressionVisitor {
             public HashSet<string> Parameters = new HashSet<string>();
 
@@ -108,9 +110,19 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool Dirty { get; set; } = false;
+
         public void Evaluate() {
+
             // First, validate References
             foreach (string r in References) {
+                if (!Resolved.ContainsKey(r)) {
+                    // Find the symbol here or above
+                    Symbol s = Symbol.FindSymbol(r, Context);
+                    if (s != null) {
+                        Resolved.Add(r, s);
+                    }
+                }
 
             }
 

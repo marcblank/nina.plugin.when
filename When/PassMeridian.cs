@@ -71,7 +71,7 @@ namespace WhenPlugin.When {
         private DIYMeridianFlipTrigger FindTrigger() {
             ISequenceContainer p = Parent;
             while (p != null) {
-                if (p is DeepSkyObjectContainer c) {
+                if (p is SequenceContainer c) {
                     // Found the DSO container; look at triggers
                     foreach (SequenceTrigger t in c.Triggers) {
                         if (t is DIYMeridianFlipTrigger diyTrigger) {
@@ -180,26 +180,31 @@ namespace WhenPlugin.When {
                     return false;
             }
 
-            var target = ItemUtility.RetrieveContextCoordinates(Parent).Coordinates;
             var telescopeInfo = telescopeMediator.GetInfo();
             if (Status == NINA.Core.Enum.SequenceEntityStatus.FINISHED) {
                 FlipStatus = "Completed";
             } else if (!telescopeInfo.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
                 FlipStatus = "";
-            }
-            else if (target == null) {
-                FlipStatus = "Not in a Deep Sky Object sequence!";
-                i.Add("DIY Meridian Flip must be inside a Deep Sky Sequence!");
-            } else if (!Waiting) {
-                TimeSpan ttm = NINA.Astrometry.MeridianFlip.TimeToMeridian(target, Angle.ByHours(AstroUtil.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude)));
-                TimeSpan plusMinutes = TimeSpan.FromMinutes(Math.Max(MinutesAfterMeridian, MaxMinutesAfterMeridian));
-                if (plusMinutes == TimeSpan.Zero) {
-                    FlipStatus = $"Expected at {TimeString(ttm)}.";
-                } else if (MinutesAfterMeridian == MaxMinutesAfterMeridian) {
-                    FlipStatus = $"Expected at {TimeString(ttm + TimeSpan.FromMinutes(MinutesAfterMeridian))}, {plusMinutes.Minutes} minutes after transit.";
+            } else {
+                Coordinates target;
+                var t = ItemUtility.RetrieveContextCoordinates(Parent);
+                if (t != null) {
+                    target = t.Coordinates;
                 } else {
-                    FlipStatus = $"Expected {TimeString(ttm + TimeSpan.FromMinutes(MinutesAfterMeridian))} - {TimeString(ttm + plusMinutes)}, up to {plusMinutes.Minutes} minutes after transit.";
+                    target = telescopeInfo.Coordinates;
+                }
+
+                if (!Waiting && target != null) {
+                    TimeSpan ttm = NINA.Astrometry.MeridianFlip.TimeToMeridian(target, Angle.ByHours(AstroUtil.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude)));
+                    TimeSpan plusMinutes = TimeSpan.FromMinutes(Math.Max(MinutesAfterMeridian, MaxMinutesAfterMeridian));
+                    if (plusMinutes == TimeSpan.Zero) {
+                        FlipStatus = $"Expected at {TimeString(ttm)}.";
+                    } else if (MinutesAfterMeridian == MaxMinutesAfterMeridian) {
+                        FlipStatus = $"Expected at {TimeString(ttm + TimeSpan.FromMinutes(MinutesAfterMeridian))}, {plusMinutes.Minutes} minutes after transit.";
+                    } else {
+                        FlipStatus = $"Expected {TimeString(ttm + TimeSpan.FromMinutes(MinutesAfterMeridian))} - {TimeString(ttm + plusMinutes)}, up to {plusMinutes.Minutes} minutes after transit.";
+                    }
                 }
             }
             RaisePropertyChanged("FlipStatus");

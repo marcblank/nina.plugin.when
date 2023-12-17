@@ -104,18 +104,26 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FlipStatus");
                 return true;
             }
-            
-            Coordinates targetCoordinates = ItemUtility.RetrieveContextCoordinates(Parent).Coordinates;
-            if (targetCoordinates != null) {
-                FlipStatus = $"Scope will flip to coordinates RA: {targetCoordinates.RAString} Dec: {targetCoordinates.DecString} Epoch: {targetCoordinates.Epoch}";
-                RaisePropertyChanged("FlipStatus");
-            }
 
             var telescopeInfo = telescopeMediator.GetInfo();
             if (!telescopeInfo.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
-            }
+            } else {
+                Coordinates target;
+                var t = ItemUtility.RetrieveContextCoordinates(Parent);
+                if (t != null) {
+                    target = t.Coordinates;
+                } else {
+                    target = telescopeMediator.GetInfo().Coordinates;
+                }
 
+
+                if (target != null) {
+                    FlipStatus = $"Scope will flip to coordinates RA: {target.RAString} Dec: {target.DecString} Epoch: {target.Epoch}";
+                    RaisePropertyChanged("FlipStatus");
+                }
+            }
+  
             Issues = i;
             return i.Count == 0;
         }

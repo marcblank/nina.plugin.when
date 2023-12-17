@@ -33,11 +33,11 @@ namespace WhenPlugin.When {
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
                 if (copyMe.Parent != null) {
-                    List<Symbol> cached;
+                    SymbolDictionary cached;
                     if (SymbolCache.TryGetValue(copyMe.Parent, out cached)) {
-                        cached.Add(this);
+                        cached.Add(Identifier, this);
                     } else {
-                        List<Symbol> newSymbols = [this];
+                        SymbolDictionary newSymbols = new SymbolDictionary();
                         SymbolCache.Add(copyMe.Parent, newSymbols);
                     }
                 }

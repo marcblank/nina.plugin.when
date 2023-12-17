@@ -505,7 +505,7 @@ namespace WhenPlugin.When {
         public static bool IsValid(object obj, string exprName, string expr, out double val, IList<string> issues) {
             lock (ConstantsLock) {
                 val = 0;
-                ISequenceEntity item = obj as ISequenceEntity;
+                 ISequenceEntity item = obj as ISequenceEntity;
                 if (item == null || item.Parent == null || expr == null || expr.Length == 0) {
                     return false;
                 }
@@ -584,8 +584,14 @@ namespace WhenPlugin.When {
             }
         }
 
+        
+        public static int EvaluateCount = 0;
+
+
         public static bool Evaluate(ISequenceEntity item, string exprName, string valueName, object def, IList<string> issues) {
             lock (ConstantsLock) {
+                EvaluateCount++;
+
                 double val;
                 string expr = item.TryGetPropertyValue(exprName, "") as string;
 
@@ -675,6 +681,31 @@ namespace WhenPlugin.When {
         public static IList<string> GetSwitches() {
             lock (SwitchMediator) {
                 return Switches;
+            }
+        }
+
+        public static Symbol.SymbolDictionary DataSymbols { get; set; } = new Symbol.SymbolDictionary();
+
+        public Dictionary<string, Symbol> GetDataSymbols() {
+            lock (SwitchMediator) {
+                return DataSymbols;
+            }
+        }
+
+        public static void AddSymbolData(string id, double value) {
+            if (DataSymbols.ContainsKey(id)) {
+
+            }
+        }
+
+        public static void UpdateDataSymbols() {
+            lock (SwitchMediator) {
+                DomeInfo domeInfo = DomeMediator.GetInfo();
+                if (domeInfo.Connected) {
+                    AddSymbolData("ShutterStatus", (int)domeInfo.ShutterStatus);
+                    AddSymbolData("ShutterNone", -1);
+                    AddSymbolData("ShutterOpen", 0);
+                }
             }
         }
 

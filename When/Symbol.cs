@@ -18,7 +18,9 @@ namespace WhenPlugin.When {
 
     public abstract class Symbol : SequenceItem, IValidatable {
 
-        public static Dictionary<ISequenceContainer, List<Symbol>> SymbolCache = new Dictionary<ISequenceContainer, List<Symbol>>();
+        public class SymbolDictionary : Dictionary<string, Symbol> { };
+
+        public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
 
         [ImportingConstructor]
         public Symbol() {
@@ -31,11 +33,12 @@ namespace WhenPlugin.When {
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
                 if (Parent != null) {
-                    List<Symbol> cached;
+                    SymbolDictionary cached;
                     if (SymbolCache.TryGetValue(Parent, out cached)) {
-                        cached.Add(this);
+                        cached.Add(copyMe.Identifier, this);
                     } else {
-                        List<Symbol> newSymbols = [this];
+                        SymbolDictionary newSymbols = new SymbolDictionary();
+                        newSymbols.Add(copyMe.Identifier, this);
                         SymbolCache.Add(Parent, newSymbols);
                     }
                 }
@@ -88,6 +91,24 @@ namespace WhenPlugin.When {
                 p = p.Parent;
             }
             return false;
+        }
+
+        public HashSet<Expr> COnsumers = new HashSet<Expr>();
+
+        public static Symbol FindSymbol(string s, ISequenceContainer context) {
+            while (context != null) {
+                SymbolDictionary cached;
+                if (SymbolCache.TryGetValue(context, out cached)) {
+                    //foreach (Symbol sym in cached) {
+                    //    if (s.Equals(sym.Identifier)) {
+                    //        return sym;
+                     ////   }
+                    //}
+                }
+                ConstantExpression.GetSwitchWeatherKeys();
+                context = context.Parent;
+            }
+            return null;
         }
 
         public override void AfterParentChanged() {
