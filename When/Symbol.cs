@@ -13,13 +13,10 @@ using System.Text;
 using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Define Symbol")]
-    [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
-    [Export(typeof(ISequenceItem))]
+  
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class Symbol : SequenceItem {
+
+    public abstract class Symbol : SequenceItem, IValidatable {
 
         public Dictionary<ISequenceContainer, List<Symbol>> SymbolCache = new Dictionary<ISequenceContainer, List<Symbol>>();
 
@@ -80,7 +77,9 @@ namespace WhenPlugin.When {
             }
         }
 
-        private bool IsAttachedToRoot() {
+        public IList<string> Issues => new List<string>();
+
+        protected bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
                 if (p is SequenceRootContainer) {
@@ -95,12 +94,7 @@ namespace WhenPlugin.When {
             base.AfterParentChanged();
         }
 
-        public bool Validate() {
-            if (!IsAttachedToRoot()) return true;
+        public abstract bool Validate();
 
-            var i = new List<string>();
-
-            return true;
-        }
     }
 }

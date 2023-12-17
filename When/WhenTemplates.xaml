@@ -481,15 +481,40 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
-                       MinWidth="40"
-                       Margin="5,1,10,-2"
-                       Text="{Binding Constant, ValidatesOnExceptions=True}"
-                       TextAlignment="Center" />
+                      MinWidth="40"
+                      Margin="5,1,10,-2"
+                      Text="{Binding Constant, ValidatesOnExceptions=True}"
+                      TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <local:ConstantControl
-                       Margin="5,-2,5,3"
-                       Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                       Valu="{Binding CValue, Mode=TwoWay}"/>
+                      Margin="5,-2,5,3"
+                      Expr="{Binding CValueExpr, Mode=TwoWay}" 
+                      Valu="{Binding CValue, Mode=TwoWay}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type local:Cx}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,1,10,-2"
+                      Text="{Binding Identifier, ValidatesOnExceptions=True}"
+                      TextAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" Text="Value:" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,1,10,-2"
+                       Text="{Binding Definition, ValidatesOnExceptions=True}"
+                       TextAlignment="Center" />
+                    <!--<local:ConstantControl
+                      Margin="5,-2,5,3"
+                      Expr="{Binding CValueExpr, Mode=TwoWay}" 
+                      Valu="{Binding CValue, Mode=TwoWay}"/>-->
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
