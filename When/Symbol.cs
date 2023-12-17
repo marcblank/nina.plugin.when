@@ -18,7 +18,7 @@ namespace WhenPlugin.When {
 
     public abstract class Symbol : SequenceItem, IValidatable {
 
-        public Dictionary<ISequenceContainer, List<Symbol>> SymbolCache = new Dictionary<ISequenceContainer, List<Symbol>>();
+        public static Dictionary<ISequenceContainer, List<Symbol>> SymbolCache = new Dictionary<ISequenceContainer, List<Symbol>>();
 
         [ImportingConstructor]
         public Symbol() {

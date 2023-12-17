@@ -49,7 +49,7 @@ namespace WhenPlugin.When {
                     
                     // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
-
+                    Evaluate();
                  }
             }
         }
@@ -110,6 +110,9 @@ namespace WhenPlugin.When {
 
         public void Evaluate() {
             // First, validate References
+            foreach (string r in References) {
+
+            }
 
             // Then
             Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);

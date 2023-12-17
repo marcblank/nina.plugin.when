@@ -32,13 +32,13 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
-                if (Parent != null) {
+                if (copyMe.Parent != null) {
                     List<Symbol> cached;
-                    if (SymbolCache.TryGetValue(Parent, out cached)) {
+                    if (SymbolCache.TryGetValue(copyMe.Parent, out cached)) {
                         cached.Add(this);
                     } else {
                         List<Symbol> newSymbols = [this];
-                        SymbolCache.Add(Parent, newSymbols);
+                        SymbolCache.Add(copyMe.Parent, newSymbols);
                     }
                 }
             }
@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Cx: , Identifier: {nameof(Identifier)}, Expr {Expr}, Parent {Parent?.Name}";
+            return $"Cx: , Identifier: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
         }
 
         public override bool Validate() {
