@@ -19,7 +19,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class Symbol : SequenceItem {
+    public abstract class Symbol : SequenceItem {
 
         public Dictionary<ISequenceContainer, List<Symbol>> SymbolCache = new Dictionary<ISequenceContainer, List<Symbol>>();
 
@@ -80,14 +80,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        public override object Clone() {
-            return new Symbol(this) {
-                Identifier = Identifier,
-                Definition = Definition,
-                Expr = Expr
-            };
-        }
-
         private bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
@@ -103,21 +95,12 @@ namespace WhenPlugin.When {
             base.AfterParentChanged();
         }
 
-        public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetConstant)}, Identifier: {Identifier}";
-        }
-
         public bool Validate() {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
 
             return true;
-       }
-
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Doesn't Execute
-            return Task.CompletedTask;
         }
     }
 }

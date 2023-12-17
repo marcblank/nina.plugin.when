@@ -54,9 +54,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        // Where we associate Symbols with the container they live in
-        public static Dictionary<ISequenceContainer, Symbol> SymbolCache = new Dictionary<ISequenceContainer, Symbol>();
-
         private ISequenceContainer _context;
         public ISequenceContainer Context { get; set; }
         
