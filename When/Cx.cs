@@ -54,6 +54,8 @@ namespace WhenPlugin.When {
                 Issues.Add("A name and a value must be specified");
                 return false;
             }
+            // For now...
+            Expr.Evaluate();
             return true;
         }
 

@@ -115,6 +115,7 @@ namespace WhenPlugin.When {
         public bool Dirty { get; set; } = false;
 
         public void Evaluate() {
+            if (!IsExpression) return;
 
             // First, validate References
             foreach (string symReference in References) {
@@ -122,7 +123,7 @@ namespace WhenPlugin.When {
                     // Find the symbol here or above
                     Symbol sym = Symbol.FindSymbol(symReference, SymContext);
                     if (sym != null) {
-                        Resolved.Add(symReference, sym);
+                        Resolved.Add(symReference, sym.Expr.Value);
                     }
                 }
             }
