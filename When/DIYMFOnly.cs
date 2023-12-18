@@ -26,18 +26,19 @@ namespace WhenPlugin.When {
                 // Found the DSO container; look at triggers
                 foreach (SequenceTrigger t in p.Triggers) {
                     if (t is DIYMeridianFlipTrigger diyTrigger) {
-                        SequenceContainer pp = diyTrigger.Parent as SequenceContainer;
-                        while (pp != null) {
-                            if (pp is IDeepSkyObjectContainer) return true;
-                            pp = (SequenceContainer)pp.Parent;
-                        }
+                        return true;
+                        //SequenceContainer pp = diyTrigger.Parent as SequenceContainer;
+                        //while (pp != null) {
+                        //    if (pp is IDeepSkyObjectContainer) return true;
+                         //   pp = (SequenceContainer)pp.Parent;
+                        //}
                     }
                 }
                 p = (SequenceContainer)p.Parent;
             }
             var i = new List<string>();
-            i.Add("This instruction MUST be inside a DIY Meridian Flip trigger that is inside a Deep Sky Object sequence");
-            FlipStatus = "This instruction must be within a DIY Meridian Flip trigger inside a DSO sequence";
+            i.Add("This instruction MUST be inside a DIY Meridian Flip trigger");
+            FlipStatus = "This instruction must be within a DIY Meridian Flip trigger";
             RaisePropertyChanged("FlipStatus");
             Issues = i;
             return false;

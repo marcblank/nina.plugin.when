@@ -119,7 +119,8 @@ namespace WhenPlugin.When {
             Center c = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
                 domeMediator, domeFollower, plateSolverFactory, windowServiceFactory) { Name = "Center", Icon = PlatesolveIcon };
             AddItem(TriggerRunner, c);
-            SetCoords(c);
+            MFCenter = c;
+            //SetCoords(c);
             //AddItem(new AutoselectGuideStar(guiderMediator) { Name = "Autoselect Guide Star", Icon = GuiderIcon });
             AddItem(TriggerRunner, new StartGuiding(guiderMediator) { Name = "Start Guiding", Icon = GuiderIcon });
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 5 });
@@ -136,15 +137,7 @@ namespace WhenPlugin.When {
             item.AttachNewParent(runner);
         }
 
-        private void SetCoords(Center c) {
-            var cc = ItemUtility.RetrieveContextCoordinates(Parent);
-            if (cc != null) {
-                Coordinates coord = cc.Coordinates;
-                if (coord != null) {
-                    c.Coordinates = new InputCoordinates(coord);
-                }
-            }
-         }
+        private Center MFCenter {  get; set; }
 
         private DIYMeridianFlipTrigger(DIYMeridianFlipTrigger copyMe) : this(copyMe.profileService,
                                                                copyMe.cameraMediator,
@@ -484,6 +477,22 @@ namespace WhenPlugin.When {
             }
          }
 
+
+        private void SetCoords(Center c) {
+            var cc = ItemUtility.RetrieveContextCoordinates(Parent);
+            if (cc != null) {
+                Coordinates coord = cc.Coordinates;
+                if (coord != null) {
+                    c.Coordinates = new InputCoordinates(coord);
+                }
+            } else if (telescopeMediator.GetInfo() != null) {
+                Coordinates x = telescopeMediator.GetInfo().Coordinates;
+                c.Coordinates = new InputCoordinates(x);
+            } else {
+                c.Coordinates = new InputCoordinates();
+            }
+        }
+
         public virtual bool Validate() {
             // Validate the Items (this will update their status)
             if (TriggerRunner == null) return true;
@@ -493,6 +502,10 @@ namespace WhenPlugin.When {
                     valid &= vitem.Validate();
                 }
             }
+
+
+            SetCoords(MFCenter);
+
             if (!valid) {
                 Issues.Clear();
                 Issues.Add("Expand the trigger to see the problematic instructions.");
