@@ -12,6 +12,7 @@ using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Sequencer;
+using Google.Protobuf.WellKnownTypes;
 
 namespace WhenPlugin.When {
   
@@ -116,6 +117,10 @@ namespace WhenPlugin.When {
                     return;
                 }
                 _definition = value;
+                if (Parent != null) {
+                    Expr.Expression = value;
+                }
+                RaisePropertyChanged("Expr");
             }
         }
 
@@ -124,6 +129,7 @@ namespace WhenPlugin.When {
             get => _expr;
             set {
                 _expr = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -141,11 +147,17 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        public HashSet<Expr> COnsumers = new HashSet<Expr>();
+        public HashSet<Expr> Consumers = new HashSet<Expr>();
 
         public void AddConsumer (Expr expr) {
-            if (!COnsumers.Contains(expr)) {
-                COnsumers.Add(expr);
+            if (!Consumers.Contains(expr)) {
+                Consumers.Add(expr);
+            }
+        }
+
+        public void RemoveConsumer (Expr expr) {
+            if (!Consumers.Remove(expr)) {
+                Logger.Warning("RemoveConsumer: " + expr + " not found in " + this);
             }
         }
 
@@ -164,6 +176,11 @@ namespace WhenPlugin.When {
         }
 
         public abstract bool Validate();
+
+        public override string ToString() {
+            return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
+        }
+
 
     }
 }

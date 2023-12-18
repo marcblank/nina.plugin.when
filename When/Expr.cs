@@ -15,19 +15,30 @@ namespace WhenPlugin.When {
     public class Expr : BaseINPC {
 
         public Expr (string exp, Symbol sym) {
+            ExprSym = sym;
             Expression = exp;
-            Symbol Sym = sym;
         }
 
         private string _expression;
         public string Expression {
             get => _expression;
             set {
-                if (value == null) return;
+                if (value == null || value.Length == 0) return;
                 Double result;
+                
+                if (value != _expression && IsExpression) {
+                    // The value has changed.  Clear what we had...
+                    Resolved.Clear();
+                    // Remove references?
+                    foreach (var symKvp in Resolved) {
+                        symKvp.Value.RemoveConsumer(this);
+                    }
+                }
+                
                 _expression = value;
                 if (Double.TryParse(value, out result)) {
                     Value = result;
+                    IsExpression = false;
                 } else {
                     IsExpression = true;
                     
@@ -51,13 +62,14 @@ namespace WhenPlugin.When {
                     
                     // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
+                    Parameters.Clear();
                     Evaluate();
                  }
             }
         }
 
-        private ISequenceContainer _sym;
-        public Symbol Sym { get; set; }
+        private ISequenceContainer _ExprSym;
+        public Symbol ExprSym { get; set; }
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -70,7 +82,9 @@ namespace WhenPlugin.When {
 
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, object> Resolved = new Dictionary<string, object>();
+        public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
+        
+        public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
         class ParameterExtractionVisitor : LogicalExpressionVisitor {
             public HashSet<string> Parameters = new HashSet<string>();
@@ -121,10 +135,11 @@ namespace WhenPlugin.When {
             foreach (string symReference in References) {
                 if (!Resolved.ContainsKey(symReference)) {
                     // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, Sym.Parent);
+                    Symbol sym = Symbol.FindSymbol(symReference, ExprSym.Parent);
                     if (sym != null) {
                         // Link Expression to the Symbol
-                        Resolved.Add(symReference, sym.Expr.Value);
+                        Resolved.Add(symReference, sym);
+                        Parameters.Add(symReference, sym.Expr.Value);
                         sym.AddConsumer(this);
                     }
                 }
@@ -132,7 +147,7 @@ namespace WhenPlugin.When {
 
             // Then evaluate
             Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
-            e.Parameters = Resolved;
+            e.Parameters = Parameters;
 
             try {
                 object eval = e.Evaluate();
