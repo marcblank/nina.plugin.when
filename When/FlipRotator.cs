@@ -74,8 +74,9 @@ namespace WhenPlugin.When {
                 pos = pos > 180 ? pos - 180 : pos + 180;
                 if (pos == 360) pos = 0;
                 return rotatorMediator.MoveMechanical(pos, token);
+            } else {
+                throw new SequenceEntityFailedException();
             }
-            throw new SequenceEntityFailedException();
         }
 
         public bool Validate() {
