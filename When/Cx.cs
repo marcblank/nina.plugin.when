@@ -23,24 +23,15 @@ namespace WhenPlugin.When {
     public class Cx : Symbol {
 
         [ImportingConstructor]
-        public Cx() {
+        public Cx() : base() {
             Name = Name;
             Icon = Icon;
         }
-        public Cx(Cx copyMe) : this() {
+        public Cx(Cx copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
-                Icon = copyMe.Icon;
-                if (copyMe.Parent != null) {
-                    SymbolDictionary cached;
-                    if (SymbolCache.TryGetValue(copyMe.Parent, out cached)) {
-                        cached.Add(Identifier, this);
-                    } else {
-                        SymbolDictionary newSymbols = new SymbolDictionary();
-                        SymbolCache.Add(copyMe.Parent, newSymbols);
-                    }
-                }
+                Icon = copyMe.Icon;               
             }
         }
 
@@ -53,7 +44,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Cx: , Identifier: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
+            return $"Cx: Identifier: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
         }
 
         public override bool Validate() {

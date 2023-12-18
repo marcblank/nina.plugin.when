@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using CsvHelper;
+using NCalc;
 using NCalc.Domain;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
@@ -8,13 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static WhenPlugin.When.Symbol;
 
 namespace WhenPlugin.When {
     public class Expr : BaseINPC {
 
-        public Expr (string expr, ISequenceContainer context) {
-            Expression = expr;
-            Context = context;
+        public Expr (string exp, ISequenceContainer symContext) {
+            Expression = exp;
+            SymContext = symContext;
         }
 
         private string _expression;
@@ -54,13 +56,13 @@ namespace WhenPlugin.When {
             }
         }
 
-        private ISequenceContainer _context;
-        public ISequenceContainer Context { get; set; }
+        private ISequenceContainer _symContext;
+        public ISequenceContainer SymContext { get; set; }
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
         private double _value;
-        public double Value { get; set; }
+        public double Value { get; set; } = 0;
 
         public bool IsExpression { get; set; } = false;
 
@@ -68,7 +70,7 @@ namespace WhenPlugin.When {
 
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
-        public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
+        public Dictionary<string, object> Resolved = new Dictionary<string, object>();
 
         class ParameterExtractionVisitor : LogicalExpressionVisitor {
             public HashSet<string> Parameters = new HashSet<string>();
@@ -115,19 +117,19 @@ namespace WhenPlugin.When {
         public void Evaluate() {
 
             // First, validate References
-            foreach (string r in References) {
-                if (!Resolved.ContainsKey(r)) {
+            foreach (string symReference in References) {
+                if (!Resolved.ContainsKey(symReference)) {
                     // Find the symbol here or above
-                    Symbol s = Symbol.FindSymbol(r, Context);
-                    if (s != null) {
-                        Resolved.Add(r, s);
+                    Symbol sym = Symbol.FindSymbol(symReference, SymContext);
+                    if (sym != null) {
+                        Resolved.Add(symReference, sym);
                     }
                 }
-
             }
 
-            // Then
+            // Then evaluate
             Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+            e.Parameters = Resolved;
 
             try {
                 object eval = e.Evaluate();
@@ -142,6 +144,10 @@ namespace WhenPlugin.When {
             } catch (Exception) {
                 // What kind of Exception is this??
             }
+        }
+
+        public override string ToString() {
+            return $"Expr: Expression: {Expression}, References: {References.Count}, Value: {Value}";
         }
     }
 }

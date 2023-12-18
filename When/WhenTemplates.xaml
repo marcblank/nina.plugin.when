@@ -511,6 +511,11 @@
                        Margin="5,1,10,-2"
                        Text="{Binding Definition, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,1,10,-2"
+                       Text="{Binding Expr.Value, ValidatesOnExceptions=True}"
+                       TextAlignment="Center" />
                     <!--<local:ConstantControl
                       Margin="5,-2,5,3"
                       Expr="{Binding CValueExpr, Mode=TwoWay}" 

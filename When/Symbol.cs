@@ -11,6 +11,7 @@ using System.Reflection;
 using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
+using NINA.Sequencer;
 
 namespace WhenPlugin.When {
   
@@ -18,7 +19,7 @@ namespace WhenPlugin.When {
 
     public abstract class Symbol : SequenceItem, IValidatable {
 
-        public class SymbolDictionary : Dictionary<string, Symbol> { };
+        public class SymbolDictionary : Dictionary<string, Symbol> { public static explicit operator Dictionary<object, object>(SymbolDictionary v) { throw new NotImplementedException(); } };
 
         public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
 
@@ -27,21 +28,47 @@ namespace WhenPlugin.When {
             Name = Name;
             Icon = Icon;
         }
+
         public Symbol(Symbol copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
-                if (Parent != null) {
-                    SymbolDictionary cached;
-                    if (SymbolCache.TryGetValue(Parent, out cached)) {
-                        cached.Add(copyMe.Identifier, this);
-                    } else {
-                        SymbolDictionary newSymbols = new SymbolDictionary();
-                        newSymbols.Add(copyMe.Identifier, this);
-                        SymbolCache.Add(Parent, newSymbols);
-                    }
+                Identifier = copyMe.Identifier;
+                Definition = copyMe.Definition;
+             }
+        }
+
+        static private bool IsAttachedToRoot(ISequenceContainer container) {
+            ISequenceEntity p = container;
+            while (p != null) {
+                if (p is SequenceRootContainer) {
+                    return true;
+                } else {
+                    p = p.Parent;
                 }
+            }
+            return false;
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            if (!IsAttachedToRoot(Parent)) return;
+
+            Expr = new Expr(Definition, Parent);
+
+            try {
+
+                SymbolDictionary cached;
+                if (SymbolCache.TryGetValue(Parent, out cached)) {
+                    cached.Add(Identifier, this);
+                } else {
+                    SymbolDictionary newSymbols = new SymbolDictionary();
+                    newSymbols.Add(Identifier, this);
+                    SymbolCache.Add(Parent, newSymbols);
+                }
+            } catch (Exception ex) {
+                Logger.Info("Ex");
             }
         }
 
@@ -51,10 +78,28 @@ namespace WhenPlugin.When {
         public string Identifier {
             get => _identifier;
             set {
+                SymbolDictionary cached = null;
                 if (value == _identifier || value.Length == 0) {
                     return;
+                } else if (_identifier.Length != 0) {
+                    // If there was an old value, remove it from Parent's dictionary
+                    if (SymbolCache.TryGetValue(Parent, out cached)) {
+                        cached.Remove(_identifier);
+                    }
                 }
+                
                 _identifier = value;
+                
+                // Store the symbol in the SymbolCache for this Parent
+                if (Parent != null) {
+                    if (cached != null || SymbolCache.TryGetValue(Parent, out cached)) {
+                        cached.Add(Identifier, this);
+                    } else {
+                        SymbolDictionary newSymbols = new SymbolDictionary();
+                        SymbolCache.Add(Parent, newSymbols);
+                        newSymbols.Add(Identifier, this);
+                    }
+                }
             }
         }
 
@@ -68,7 +113,6 @@ namespace WhenPlugin.When {
                     return;
                 }
                 _definition = value;
-                Expr = new Expr(Definition, Parent);
             }
         }
 
@@ -79,6 +123,7 @@ namespace WhenPlugin.When {
                 _expr = value;
             }
         }
+
 
         public IList<string> Issues => new List<string>();
 
@@ -95,24 +140,18 @@ namespace WhenPlugin.When {
 
         public HashSet<Expr> COnsumers = new HashSet<Expr>();
 
-        public static Symbol FindSymbol(string s, ISequenceContainer context) {
+        public static Symbol FindSymbol(string identifier, ISequenceContainer context) {
             while (context != null) {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(context, out cached)) {
-                    //foreach (Symbol sym in cached) {
-                    //    if (s.Equals(sym.Identifier)) {
-                    //        return sym;
-                     ////   }
-                    //}
+                    if (cached.ContainsKey(identifier)) {
+                        return cached[identifier];
+                    }
                 }
                 ConstantExpression.GetSwitchWeatherKeys();
                 context = context.Parent;
             }
             return null;
-        }
-
-        public override void AfterParentChanged() {
-            base.AfterParentChanged();
         }
 
         public abstract bool Validate();
