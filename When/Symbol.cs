@@ -55,7 +55,7 @@ namespace WhenPlugin.When {
             base.AfterParentChanged();
             if (!IsAttachedToRoot(Parent)) return;
 
-            Expr = new Expr(Definition, Parent);
+            Expr = new Expr(Definition, this);
 
             try {
 
@@ -63,9 +63,12 @@ namespace WhenPlugin.When {
                 if (SymbolCache.TryGetValue(Parent, out cached)) {
                     cached.Add(Identifier, this);
                 } else {
-                    SymbolDictionary newSymbols = new SymbolDictionary();
-                    newSymbols.Add(Identifier, this);
+                    SymbolDictionary newSymbols = new SymbolDictionary {
+                        { Identifier, this }
+                    };
                     SymbolCache.Add(Parent, newSymbols);
+                    // Can we see if the Parent moves?
+                    // Parent.AfterParentChanged += ??
                 }
             } catch (Exception ex) {
                 Logger.Info("Ex");
@@ -139,6 +142,12 @@ namespace WhenPlugin.When {
         }
 
         public HashSet<Expr> COnsumers = new HashSet<Expr>();
+
+        public void AddConsumer (Expr expr) {
+            if (!COnsumers.Contains(expr)) {
+                COnsumers.Add(expr);
+            }
+        }
 
         public static Symbol FindSymbol(string identifier, ISequenceContainer context) {
             while (context != null) {

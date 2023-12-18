@@ -14,9 +14,9 @@ using static WhenPlugin.When.Symbol;
 namespace WhenPlugin.When {
     public class Expr : BaseINPC {
 
-        public Expr (string exp, ISequenceContainer symContext) {
+        public Expr (string exp, Symbol sym) {
             Expression = exp;
-            SymContext = symContext;
+            Symbol Sym = sym;
         }
 
         private string _expression;
@@ -56,8 +56,8 @@ namespace WhenPlugin.When {
             }
         }
 
-        private ISequenceContainer _symContext;
-        public ISequenceContainer SymContext { get; set; }
+        private ISequenceContainer _sym;
+        public Symbol Sym { get; set; }
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -121,9 +121,11 @@ namespace WhenPlugin.When {
             foreach (string symReference in References) {
                 if (!Resolved.ContainsKey(symReference)) {
                     // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, SymContext);
+                    Symbol sym = Symbol.FindSymbol(symReference, Sym.Parent);
                     if (sym != null) {
+                        // Link Expression to the Symbol
                         Resolved.Add(symReference, sym.Expr.Value);
+                        sym.AddConsumer(this);
                     }
                 }
             }
@@ -142,8 +144,10 @@ namespace WhenPlugin.When {
                 }
                 RaisePropertyChanged("Value");
 
-            } catch (Exception) {
+            } catch (ArgumentException) {
                 // What kind of Exception is this??
+            } catch (Exception ex) {
+                Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }
         }
 
