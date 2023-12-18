@@ -13,6 +13,7 @@ using System.Text;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using Google.Protobuf.WellKnownTypes;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
   
@@ -39,6 +40,8 @@ namespace WhenPlugin.When {
                 Definition = copyMe.Definition;
              }
         }
+
+        private bool Debugging = true;
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
@@ -119,6 +122,9 @@ namespace WhenPlugin.When {
                 _definition = value;
                 if (Parent != null) {
                     Expr.Expression = value;
+                    if (Debugging) {
+                        ShowSymbols();
+                    }
                 }
                 RaisePropertyChanged("Expr");
             }
@@ -179,6 +185,17 @@ namespace WhenPlugin.When {
 
         public override string ToString() {
             return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
+        }
+        private static void ShowSymbols () {
+            Debug.WriteLine("Symbols");
+            foreach (var k in SymbolCache) {
+                ISequenceContainer c = k.Key;
+                SymbolDictionary syms = k.Value;
+                Debug.WriteLine("Container: " + c.Name);
+                foreach (var kv in syms) {
+                    Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
+                }
+            }
         }
 
 
