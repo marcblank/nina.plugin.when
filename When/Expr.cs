@@ -163,6 +163,7 @@ namespace WhenPlugin.When {
             Resolved.Remove(identifier);
         }
 
+        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
         public void Evaluate() {
             if (!IsExpression) return;
 
@@ -197,7 +198,13 @@ namespace WhenPlugin.When {
 
             } catch (ArgumentException ex) {
                 // What kind of Exception is this??
-                Error = ex.Message;
+                string error = ex.Message;
+                // Shorten this common error from NCalc
+                int pos = error.IndexOf(NOT_DEFINED);
+                if (pos == 0) {
+                    error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
+                }
+                Error = error;
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }
