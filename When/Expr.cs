@@ -177,7 +177,7 @@ namespace WhenPlugin.When {
         public void ReferenceRemoved (Symbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
-            //Parameters.Remove(identifier);
+            Parameters.Remove(identifier);
             Resolved.Remove(identifier);
             Evaluate();
         }
@@ -195,7 +195,9 @@ namespace WhenPlugin.When {
                         // Link Expression to the Symbol
                         Resolved.Add(symReference, sym);
                         Parameters.Remove(symReference);
-                        Parameters.Add(symReference, sym.Expr.Value);
+                        if (sym.Expr.Error == null) {
+                            Parameters.Add(symReference, sym.Expr.Value);
+                        }
                         sym.AddConsumer(this);
                     }
                 }
