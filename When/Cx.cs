@@ -11,6 +11,7 @@ using System.Reflection;
 using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
+using System.Windows.Input;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant")]
@@ -44,7 +45,12 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
+            if (Expr != null) {
+                return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Dirty: {Expr.Dirty}";
+
+            } else {
+                return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Expr: null";
+            }
         }
 
         public override bool Validate() {
@@ -63,5 +69,15 @@ namespace WhenPlugin.When {
             // Doesn't Execute
             return Task.CompletedTask;
         }
+
+
+        // DEBUGGING
+        public void WriteSymbols() {
+            ShowSymbols();
+        }
+        private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
+        public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(WriteSymbols);
+
+
     }
 }

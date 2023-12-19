@@ -504,9 +504,11 @@
                       MinWidth="40"
                       Margin="5,1,10,-2"
                       Text="{Binding Identifier, ValidatesOnExceptions=True}"
+                      VerticalAlignment="Center"
                       TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
                     <TextBox
+                       VerticalAlignment="Center"
                        MinWidth="40"
                        Margin="5,1,10,-2"
                        Text="{Binding Definition, ValidatesOnExceptions=True}"
@@ -515,7 +517,30 @@
                        MinWidth="40"
                        Margin="5,1,10,-2"
                        Text="{Binding Expr.ValueString, ValidatesOnExceptions=True}"
+                        VerticalAlignment="Center"
                        TextAlignment="Center" />
+                    <Button
+                        Width="25"
+                        Height="25"
+                        Margin="10,2,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding SendInstruction}"
+                        Style="{StaticResource SecondaryBackgroundButton}">
+                        <Grid>
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource Pen_NoFill_SVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
+                        </Grid>
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="Add the text to the NINA log" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
                     <!--<local:ConstantControl
                       Margin="5,-2,5,3"
                       Expr="{Binding CValueExpr, Mode=TwoWay}" 

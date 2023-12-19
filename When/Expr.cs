@@ -40,6 +40,8 @@ namespace WhenPlugin.When {
                 if (Double.TryParse(value, out result)) {
                     Value = result;
                     IsExpression = false;
+                    // Notify consumers
+                    Symbol.SymbolDirty(ExprSym);
                 } else {
                     IsExpression = true;
                     
@@ -155,6 +157,17 @@ namespace WhenPlugin.When {
             }
         }
 
+        public void RemoveParameter (string identifier) {
+            Parameters.Remove(identifier);
+            Evaluate();
+        }
+
+        
+        public void MakeDirty () {
+            Parameters.Clear();
+            Evaluate();
+
+        }
         public bool Dirty { get; set; } = false;
 
         public void DebugWrite() {
@@ -164,8 +177,9 @@ namespace WhenPlugin.When {
         public void ReferenceRemoved (Symbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
-            Parameters.Remove(identifier);
+            //Parameters.Remove(identifier);
             Resolved.Remove(identifier);
+            Evaluate();
         }
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
@@ -180,6 +194,7 @@ namespace WhenPlugin.When {
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolved.Add(symReference, sym);
+                        Parameters.Remove(symReference);
                         Parameters.Add(symReference, sym.Expr.Value);
                         sym.AddConsumer(this);
                     }
@@ -220,7 +235,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Expr: Expression: {Expression}, References: {References.Count}, Value: {Value}";
+            return $"Expr: Expression: {Expression} in {ExprSym.Identifier}, References: {References.Count}, Value: {Value}";
         }
     }
 }

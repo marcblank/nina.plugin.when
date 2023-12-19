@@ -63,7 +63,7 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        public void SymbolDirty(Symbol sym) {
+        public static void SymbolDirty(Symbol sym) {
             Debug.WriteLine("SymbolDirty: " + sym);
             // Mark everything in the chain dirty
             foreach (Expr consumer in sym.Consumers) {
@@ -80,12 +80,15 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            Debug.WriteLine("APC: " + this + ", New Parent = " + ((Parent == null) ? "null" : Parent.Name));
             if (!IsAttachedToRoot(Parent)) {
                 if (Expr != null) {
                     // We've deleted this Symbol
                     SymbolDictionary cached;
                     if (LastParent == null) {
                         Warn("Removed symbol " + this + " has no LastParent?");
+                        // We're saving a template?
+                        return;
                     }
                     if (SymbolCache.TryGetValue(LastParent, out cached)) {
                         if (cached.Remove(Identifier)) {
@@ -113,6 +116,9 @@ namespace WhenPlugin.When {
                         { Identifier, this }
                     };
                     SymbolCache.Add(Parent, newSymbols);
+                    foreach (Expr consumer in Consumers) {
+                        consumer.RemoveParameter(Identifier);
+                    }
                     // Can we see if the Parent moves?
                     // Parent.AfterParentChanged += ??
                 }
