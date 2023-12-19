@@ -209,9 +209,11 @@ namespace WhenPlugin.When {
                     if (filterWheelInfo.Connected) {
                         Filter = filterWheelInfo.SelectedFilter.Position;
                     }
-                    sw.FInfo = filterWheelInfo.SelectedFilter;
+                    //sw.FInfo = filterWheelInfo.SelectedFilter;
+                    sw.FilterExpr = null;
                 } else if (Filter < fwi.Count) {
-                    sw.FInfo = fwi[Filter];
+                    sw.FilterExpr = FilterExpr;
+                    //sw.FInfo = fwi[Filter];
                 }
             }
         }
@@ -304,9 +306,11 @@ namespace WhenPlugin.When {
                 ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
                 if (CVFilter) {
                     ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
-                    SetFInfo();
+                    //SetFInfo();
                 }
 
+                SetFInfo();
+                
                 if (FilterNames.Count == 0) {
                     var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     foreach (var fw in fwi) {
