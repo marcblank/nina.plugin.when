@@ -44,7 +44,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Cx: Identifier: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
+            return $"Constant: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}";
         }
 
         public override bool Validate() {
@@ -55,7 +55,7 @@ namespace WhenPlugin.When {
                 return false;
             }
             // For now...
-            Expr.Evaluate();
+            //Expr.Evaluate();
             return true;
         }
 

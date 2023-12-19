@@ -6,6 +6,7 @@ using NINA.Sequencer.Container;
 using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -156,6 +157,10 @@ namespace WhenPlugin.When {
 
         public bool Dirty { get; set; } = false;
 
+        public void DebugWrite() {
+            Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + ExprSym + ")");
+        }
+
         public void ReferenceRemoved (Symbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
@@ -194,7 +199,9 @@ namespace WhenPlugin.When {
                 } else {
                     Value = Convert.ToDouble(eval);
                 }
+                Error = null;
                 RaisePropertyChanged("Value");
+                DebugWrite();
 
             } catch (ArgumentException ex) {
                 // What kind of Exception is this??
@@ -205,9 +212,11 @@ namespace WhenPlugin.When {
                     error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
                 }
                 Error = error;
+                DebugWrite();
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }
+            Dirty = false;
         }
 
         public override string ToString() {

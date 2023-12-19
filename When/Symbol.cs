@@ -63,6 +63,21 @@ namespace WhenPlugin.When {
             return false;
         }
 
+        public void SymbolDirty(Symbol sym) {
+            Debug.WriteLine("SymbolDirty: " + sym);
+            // Mark everything in the chain dirty
+            foreach (Expr consumer in sym.Consumers) {
+                consumer.ReferenceRemoved(sym);
+                Symbol consumerSym = consumer.ExprSym;
+                if (!consumer.Dirty) {
+                    SymbolDirty(consumerSym);
+                }
+                consumer.Dirty = true;
+                consumer.Evaluate();
+            }
+            //ShowSymbols();
+        }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             if (!IsAttachedToRoot(Parent)) {
@@ -74,12 +89,8 @@ namespace WhenPlugin.When {
                     }
                     if (SymbolCache.TryGetValue(LastParent, out cached)) {
                         if (cached.Remove(Identifier)) {
-                            foreach (Expr consumer in Consumers) {
-                                consumer.ReferenceRemoved(this);
-                                consumer.Evaluate();
-                                ShowSymbols();
-                            }
-                        } else {
+                            SymbolDirty(this);
+                         } else {
                             Warn("Deleting " + this + " but not in Parent's cache?");
                         }
                     } else {
