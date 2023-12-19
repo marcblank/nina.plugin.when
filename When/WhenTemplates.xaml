@@ -514,7 +514,7 @@
                     <TextBox
                        MinWidth="40"
                        Margin="5,1,10,-2"
-                       Text="{Binding Expr.Value, ValidatesOnExceptions=True}"
+                       Text="{Binding Expr.ValueString, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
                     <!--<local:ConstantControl
                       Margin="5,-2,5,3"

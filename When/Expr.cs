@@ -50,7 +50,8 @@ namespace WhenPlugin.When {
                         e.Evaluate();
                     } catch (NCalc.EvaluationException) {
                         // We should expect this, since we're just trying to find the parameters used
-                        IsSyntaxError = true;
+                        Error = "Syntax Error";
+                        return;
                     } catch (Exception) {
                         // That's ok
                     }
@@ -74,7 +75,34 @@ namespace WhenPlugin.When {
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
         private double _value;
-        public double Value { get; set; } = 0;
+        public double Value {
+            get => _value;
+            set {
+                if (value != _value) {
+                    _value = value;
+                    RaisePropertyChanged("ValueString");
+                }
+            }
+        }
+        
+        private string _error;
+        public string Error {
+            get => _error;
+            set {
+                if (value != _error) {
+                    _error = value;
+                    RaisePropertyChanged("ValueString");
+                }
+            }
+        }
+
+        public string ValueString {
+            get {
+                if (Error != null) return Error;
+                return Value.ToString();
+            }
+            set { }
+        }
 
         public bool IsExpression { get; set; } = false;
 
@@ -128,6 +156,13 @@ namespace WhenPlugin.When {
 
         public bool Dirty { get; set; } = false;
 
+        public void ReferenceRemoved (Symbol sym) {
+            // A definition we use was removed
+            string identifier = sym.Identifier;
+            Parameters.Remove(identifier);
+            Resolved.Remove(identifier);
+        }
+
         public void Evaluate() {
             if (!IsExpression) return;
 
@@ -149,6 +184,7 @@ namespace WhenPlugin.When {
             Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
             e.Parameters = Parameters;
 
+            Error = null;
             try {
                 object eval = e.Evaluate();
                 // We got an actual value
@@ -159,8 +195,9 @@ namespace WhenPlugin.When {
                 }
                 RaisePropertyChanged("Value");
 
-            } catch (ArgumentException) {
+            } catch (ArgumentException ex) {
                 // What kind of Exception is this??
+                Error = ex.Message;
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }

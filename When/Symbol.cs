@@ -14,6 +14,8 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 using Google.Protobuf.WellKnownTypes;
 using System.Diagnostics;
+using System.Linq;
+using System.ComponentModel;
 
 namespace WhenPlugin.When {
   
@@ -43,6 +45,12 @@ namespace WhenPlugin.When {
 
         private bool Debugging = true;
 
+        public static void Warn (string str) {
+            Logger.Warning (str);
+        }
+
+        private ISequenceContainer LastParent {  get; set; }
+
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
@@ -57,12 +65,35 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            if (!IsAttachedToRoot(Parent)) return;
+            if (!IsAttachedToRoot(Parent)) {
+                if (Expr != null) {
+                    // We've deleted this Symbol
+                    SymbolDictionary cached;
+                    if (LastParent == null) {
+                        Warn("Removed symbol " + this + " has no LastParent?");
+                    }
+                    if (SymbolCache.TryGetValue(LastParent, out cached)) {
+                        if (cached.Remove(Identifier)) {
+                            foreach (Expr consumer in Consumers) {
+                                consumer.ReferenceRemoved(this);
+                                consumer.Evaluate();
+                                ShowSymbols();
+                            }
+                        } else {
+                            Warn("Deleting " + this + " but not in Parent's cache?");
+                        }
+                    } else {
+                       Warn("De leting " + this + " but Parent has no cache?");
+                    }
+                }
+                return;
+            }
+            LastParent = Parent;
 
             Expr = new Expr(Definition, this);
 
             try {
-
+                if (Identifier != null && Identifier.Length == 0) return;
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(Parent, out cached)) {
                     cached.Add(Identifier, this);
@@ -163,7 +194,7 @@ namespace WhenPlugin.When {
 
         public void RemoveConsumer (Expr expr) {
             if (!Consumers.Remove(expr)) {
-                Logger.Warning("RemoveConsumer: " + expr + " not found in " + this);
+                Warn("RemoveConsumer: " + expr + " not found in " + this);
             }
         }
 
@@ -186,7 +217,7 @@ namespace WhenPlugin.When {
         public override string ToString() {
             return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
         }
-        private static void ShowSymbols () {
+        public static void ShowSymbols () {
             Debug.WriteLine("Symbols");
             foreach (var k in SymbolCache) {
                 ISequenceContainer c = k.Key;
@@ -194,6 +225,11 @@ namespace WhenPlugin.When {
                 Debug.WriteLine("Container: " + c.Name);
                 foreach (var kv in syms) {
                     Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
+                    if (kv.Value.Consumers.Count> 0) {
+                        foreach(Expr e in kv.Value.Consumers) {
+                            Debug.WriteLine("        -> " + e.ExprSym);
+                        }
+                    }
                 }
             }
         }
