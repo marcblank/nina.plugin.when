@@ -29,13 +29,13 @@ namespace WhenPlugin.When {
                 
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...
-                    Resolved.Clear();
-                    // Remove references?
                     foreach (var symKvp in Resolved) {
                         symKvp.Value.RemoveConsumer(this);
                     }
+                    Resolved.Clear();
+                    Parameters.Clear();
                 }
-                
+
                 _expression = value;
                 if (Double.TryParse(value, out result)) {
                     Value = result;
