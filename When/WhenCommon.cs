@@ -209,7 +209,7 @@ namespace WhenPlugin.When {
         private bool Critical {  get; set; } = false;
 
         private async Task InterruptWhenUnsafe() {
-            Logger.Info("InterruptWhenUnsafe");
+            //Logger.Info("InterruptWhenUnsafe");
             if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (InFlight || Triggered) {
                 //Logger.Info("Not InFlight or Triggered");
