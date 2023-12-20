@@ -517,8 +517,13 @@
                        MinWidth="40"
                        Margin="5,1,10,-2"
                        Text="{Binding Expr.ValueString, ValidatesOnExceptions=True}"
-                        VerticalAlignment="Center"
+                       VerticalAlignment="Center"
                        TextAlignment="Center" />
+                    <local:ExprControl
+                      Exp="{Binding XX, Mode=TwoWay}"
+                      Type="Integer"
+                      Validate="ValidateThis"
+                      Margin="5,-2,5,3" />
                     <Button
                         Width="25"
                         Height="25"

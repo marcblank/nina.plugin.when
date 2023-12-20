@@ -13,6 +13,7 @@ using System.Text;
 using NINA.Core.Utility;
 using System.Windows.Input;
 using System.Diagnostics;
+using Xceed.Wpf.Toolkit.Zoombox;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant")]
@@ -72,6 +73,15 @@ namespace WhenPlugin.When {
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Doesn't Execute
             return Task.CompletedTask;
+        }
+
+        private Expr _XX;
+
+        public Expr XX {
+            get => Expr;
+            set {
+                _XX = value;
+            }
         }
 
 
