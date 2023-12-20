@@ -62,13 +62,6 @@ namespace WhenPlugin.When {
                 return false;
             }
 
-            foreach (var o in Orphans) {
-                // See if this is orphaned
-                if (o.Value.Contains(Identifier)) {
-                    o.Key.Expr.Evaluate();
-                }
-            }
-
             if (Expr.Error != null) {
                 Expr.Evaluate();
             }

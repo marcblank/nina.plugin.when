@@ -77,7 +77,6 @@ namespace WhenPlugin.When {
                 consumer.Dirty = true;
                 consumer.Evaluate();
             }
-            //ShowSymbols();
         }
 
         public override void AfterParentChanged() {

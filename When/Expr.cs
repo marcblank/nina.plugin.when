@@ -162,12 +162,6 @@ namespace WhenPlugin.When {
             Evaluate();
         }
 
-        
-        public void MakeDirty () {
-            Parameters.Clear();
-            Evaluate();
-
-        }
         public bool Dirty { get; set; } = false;
 
         public void DebugWrite() {
@@ -185,6 +179,7 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
         public void Evaluate() {
             if (!IsExpression) return;
+            Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
 
             // First, validate References
             foreach (string symReference in References) {
@@ -199,6 +194,14 @@ namespace WhenPlugin.When {
                             Parameters.Add(symReference, sym.Expr.Value);
                         }
                         sym.AddConsumer(this);
+                    } else {
+                        // Try in the old Switch/Weather keys
+                        object Val;
+                        if (DataSymbols.TryGetValue(symReference, out Val)) {
+                            Parameters.Remove(symReference);
+                            Parameters.Add(symReference, Val);
+                        }
+
                     }
                 }
             }
