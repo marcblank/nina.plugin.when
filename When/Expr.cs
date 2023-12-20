@@ -41,7 +41,7 @@ namespace WhenPlugin.When {
                     Value = result;
                     IsExpression = false;
                     // Notify consumers
-                    Symbol.SymbolDirty(ExprSym);
+                    SymbolDirty(ExprSym);
                 } else {
                     IsExpression = true;
                     
@@ -68,7 +68,8 @@ namespace WhenPlugin.When {
                     References = visitor.Parameters;
                     Parameters.Clear();
                     Evaluate();
-                 }
+                    SymbolDirty(ExprSym);
+                }
             }
         }
 
