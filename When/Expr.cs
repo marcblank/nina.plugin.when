@@ -84,6 +84,7 @@ namespace WhenPlugin.When {
                 if (value != _value) {
                     _value = value;
                     RaisePropertyChanged("ValueString");
+                    ExprSym.ValueChanged();
                 }
             }
         }

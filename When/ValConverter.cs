@@ -28,9 +28,11 @@ namespace WhenPlugin.When {
 
     public class ValConverter : IMultiValueConverter {
 
+        private const int VALUE_EXPR = 0;              // The expression to be evaluated
+        private const int VALUE_ERR = 1;
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
-            Expr expr = value[1] as Expr;
-            if (expr != null && expr.Error == null) {
+            string expr = value[VALUE_ERR] as string;
+            if (expr == null) {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
             return new SolidColorBrush(Colors.Orange);

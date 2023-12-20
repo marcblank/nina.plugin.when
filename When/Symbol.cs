@@ -190,6 +190,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public abstract void ValueChanged();
+
 
         public IList<string> Issues => new List<string>();
 

@@ -81,6 +81,7 @@ namespace WhenPlugin.When {
             get => Expr;
             set {
                 _XX = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -92,6 +93,12 @@ namespace WhenPlugin.When {
             Debug.WriteLine("=-----------");
             ShowSymbols();
         }
+
+        public override void ValueChanged() {
+            RaisePropertyChanged("Expr");
+            RaisePropertyChanged("XX");
+        }
+
         private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
         public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(WriteSymbols);
 

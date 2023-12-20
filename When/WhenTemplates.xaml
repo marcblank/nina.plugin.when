@@ -513,14 +513,10 @@
                        Margin="5,1,10,-2"
                        Text="{Binding Definition, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
-                    <TextBox
-                       MinWidth="40"
-                       Margin="5,1,10,-2"
-                       Text="{Binding Expr.ValueString, ValidatesOnExceptions=True}"
-                       VerticalAlignment="Center"
-                       TextAlignment="Center" />
                     <local:ExprControl
-                      Exp="{Binding XX, Mode=TwoWay}"
+                      Visibility="{Binding Expr.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                      Val="{Binding Expr.ValueString, Mode=TwoWay}"
+                      Err="{Binding Expr.Error, Mode=TwoWay}"
                       Type="Integer"
                       Validate="ValidateThis"
                       Margin="5,-2,5,3" />

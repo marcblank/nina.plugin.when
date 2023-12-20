@@ -6,21 +6,20 @@
         <local:ExprConverter x:Key="ec" />
         <local:ValConverter x:Key="vc" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
         <TextBox MinWidth="20" Margin="0,4,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Expr, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}" />
         <TextBlock VerticalAlignment="Center" Margin="0,4,0,-4">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
-                    <Binding Path="."/>
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
+                    <Binding Path="Val" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                     <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                     <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}">
-                    <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}" />
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
+                    <Binding Path="Val" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
+                    <Binding Path="Err" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                     <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                 </MultiBinding>
             </TextBlock.Foreground>

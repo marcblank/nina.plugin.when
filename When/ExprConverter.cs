@@ -30,11 +30,8 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         private const int VALUE_EXPR = 0;              // The expression to be evaluated
-        private const int VALUE_ITEM = 1;              // The ISequenceItem (instruction)
-        private const int VALUE_VALU = 2;              // Present to cause source->target updates; not used in code
-        private const int VALUE_VALIDATE = 3;          // If present, a validation method (range check, etc.)
-        private const int VALUE_HINT = 4;              // For ConstantHintControl, the "hint"
-        private const int VALUE_TYPE = 5;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
+        private const int VALUE_VALIDATE = 1;          // If present, a validation method (range check, etc.)
+        private const int VALUE_TYPE = 2;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
         private const int VALUE_COMBO = 6;             // If present, a IList<string> of combo box values
 
         private string Validate (ISequenceEntity item, double val, object[] values) {
@@ -56,12 +53,13 @@ namespace WhenPlugin.When {
         }
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            Symbol sym = values[0] as Symbol;
-            if (sym != null) {
-                Expr expr = sym.Expr;
-                return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
+            string expr = values[VALUE_EXPR] as String;
+            if (expr != null) {
+                return "{"+ expr + "}";
+ //               if (!expr.IsExpression) return expr.Value;
+ //               return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
+        
             } else {
-                //string val = expr.Error != null ? expr.Error : expr.Value.ToString();
                 return "{" + "Foo" + "}";
             }
         }
