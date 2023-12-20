@@ -27,6 +27,8 @@ namespace WhenPlugin.When {
 
         public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
 
+        public static Dictionary<Symbol, List<string>> Orphans = new Dictionary<Symbol, List<string>>();
+        
         [ImportingConstructor]
         public Symbol() {
             Name = Name;
@@ -83,6 +85,8 @@ namespace WhenPlugin.When {
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((Parent == null) ? "null" : Parent.Name));
             if (!IsAttachedToRoot(Parent)) {
                 if (Expr != null) {
+                    // Clear out orphans of this Symbol
+                    Orphans.Remove(this);
                     // We've deleted this Symbol
                     SymbolDictionary cached;
                     if (LastParent == null) {

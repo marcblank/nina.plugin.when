@@ -207,6 +207,19 @@ namespace WhenPlugin.When {
             Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
             e.Parameters = Parameters;
 
+            if (Parameters.Count != References.Count) {
+                // We have some undefineds...
+                List<string> orphans = new List<string>();
+                foreach (string r in References) {
+                    if (!Resolved.ContainsKey(r)) {
+                        orphans.Add(r);
+                    }
+                }
+                // Save away our orphans in case they appear later
+                Symbol.Orphans.Remove(ExprSym);
+                Symbol.Orphans.Add(ExprSym, orphans);
+            }
+
             Error = null;
             try {
                 object eval = e.Evaluate();
@@ -221,7 +234,6 @@ namespace WhenPlugin.When {
                 DebugWrite();
 
             } catch (ArgumentException ex) {
-                // What kind of Exception is this??
                 string error = ex.Message;
                 // Shorten this common error from NCalc
                 int pos = error.IndexOf(NOT_DEFINED);

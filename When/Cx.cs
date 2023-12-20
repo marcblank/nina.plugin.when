@@ -60,8 +60,14 @@ namespace WhenPlugin.When {
                 Issues.Add("A name and a value must be specified");
                 return false;
             }
-            // For now...
-            //Expr.Evaluate();
+
+            foreach (var o in Orphans) {
+                // See if this is orphaned
+                if (o.Value.Contains(Identifier)) {
+                    o.Key.Expr.Evaluate();
+                }
+            }
+
             return true;
         }
 
