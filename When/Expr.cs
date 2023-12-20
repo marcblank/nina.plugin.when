@@ -193,9 +193,9 @@ namespace WhenPlugin.When {
                     Symbol sym = Symbol.FindSymbol(symReference, ExprSym.Parent);
                     if (sym != null) {
                         // Link Expression to the Symbol
-                        Resolved.Add(symReference, sym);
                         Parameters.Remove(symReference);
                         if (sym.Expr.Error == null) {
+                            Resolved.Add(symReference, sym);
                             Parameters.Add(symReference, sym.Expr.Value);
                         }
                         sym.AddConsumer(this);
@@ -249,6 +249,9 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
+            if (Error != null) {
+                return $"Expr: Expression: {Expression} in {ExprSym.Identifier}, References: {References.Count}, Error: {Error}";
+            }
             return $"Expr: Expression: {Expression} in {ExprSym.Identifier}, References: {References.Count}, Value: {Value}";
         }
     }

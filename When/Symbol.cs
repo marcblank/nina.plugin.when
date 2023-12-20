@@ -239,7 +239,6 @@ namespace WhenPlugin.When {
             return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
         }
         public static void ShowSymbols () {
-            Debug.WriteLine("Symbols");
             foreach (var k in SymbolCache) {
                 ISequenceContainer c = k.Key;
                 SymbolDictionary syms = k.Value;

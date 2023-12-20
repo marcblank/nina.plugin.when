@@ -12,6 +12,7 @@ using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant")]
@@ -68,6 +69,10 @@ namespace WhenPlugin.When {
                 }
             }
 
+            if (Expr.Error != null) {
+                Expr.Evaluate();
+            }
+
             return true;
         }
 
@@ -79,6 +84,9 @@ namespace WhenPlugin.When {
 
         // DEBUGGING
         public void WriteSymbols() {
+            Debug.WriteLine(this);
+            Debug.WriteLine(Expr);
+            Debug.WriteLine("=-----------");
             ShowSymbols();
         }
         private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
