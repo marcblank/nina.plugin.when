@@ -15,6 +15,17 @@ namespace WhenPlugin.When {
 
         public string Val { get; set; }
 
+        public static readonly DependencyProperty ExpProperty =
+           DependencyProperty.Register("Exp", typeof(Expr), typeof(ExprControl), null);
+
+        public Expr Exp { get; set; }
+
+
+        public static readonly DependencyProperty NotifierProperty =
+           DependencyProperty.Register("Notifier", typeof(Boolean), typeof(ExprControl), null);
+
+        public Boolean Notifier { get; set; }
+
         public static readonly DependencyProperty ErrProperty =
              DependencyProperty.Register("Err", typeof(string), typeof(ExprControl), null);
 

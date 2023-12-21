@@ -78,6 +78,8 @@ namespace WhenPlugin.When {
                     Evaluate();
                     if (ExprSym != null) SymbolDirty(ExprSym);
                 }
+                RaisePropertyChanged("Expression");
+                Notifier++;
             }
         }
 
@@ -95,6 +97,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Error");
                     RaisePropertyChanged("IsExpression");
+                    Notifier = 0;
                 }
             }
         }
@@ -108,6 +111,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Error");
                     RaisePropertyChanged("IsExpression");
+                    Notifier = 0;
                 }
             }
         }
@@ -123,6 +127,15 @@ namespace WhenPlugin.When {
         public bool IsExpression { get; set; } = false;
 
         public bool IsSyntaxError { get; set; } = false;
+
+        private int iNotifier = 0;
+        public int Notifier {
+            get => iNotifier;
+            set {
+                iNotifier++;
+                RaisePropertyChanged("Notifier");
+            }
+        }
 
         public HashSet<string> References { get; set; } = new HashSet<string>();
 

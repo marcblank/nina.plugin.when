@@ -112,6 +112,8 @@ namespace WhenPlugin.When {
                 }
                 IfExpr.Expression = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("IfExpr");
+
             }
         }
 

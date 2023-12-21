@@ -1183,11 +1183,13 @@
                             </Border>
                             <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
-                            <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding IfExpr.Expression, Mode=TwoWay}" />
-                            <local:ExprControl
+                            <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Predicate, Mode=TwoWay}" />
+                            <local:ExprControl DataContext="{Binding IfExpr}"
                                  Visibility="{Binding IfExpr.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                                 Val="{Binding IfExpr.ValueString, Mode=TwoWay}"
-                                 Err="{Binding IfExpr.Error, Mode=TwoWay}"
+                                 Exp="{Binding IfExpr, Mode=TwoWay}"
+                                 Val="{Binding Error, Mode=TwoWay}"
+                                Notifier="{Binding Notify, Mode=TwoWay}"
+                                 Err="{Binding ValueString, Mode=TwoWay}"
                                  Type="Integer"
                                  Validate="ValidateThis"
                                  Margin="10,-2,5,3" />

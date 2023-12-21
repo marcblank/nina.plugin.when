@@ -60,7 +60,7 @@ namespace WhenPlugin.When {
  //               return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
         
             } else {
-                return "{" + "Foo" + "}";
+                return "{" + "FuvkS" + "}";
             }
         }
 
