@@ -3,6 +3,7 @@ using NCalc;
 using NCalc.Domain;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.SequenceItem;
 using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,14 @@ namespace WhenPlugin.When {
 
         public Expr (string exp, Symbol sym) {
             ExprSym = sym;
+            ExprItem = sym;
             Expression = exp;
+        }
+
+        public Expr(SequenceItem item) {
+            ExprSym = null;
+            ExprItem = item;
+            Expression = "";
         }
 
         private string _expression;
@@ -41,7 +49,7 @@ namespace WhenPlugin.When {
                     Value = result;
                     IsExpression = false;
                     // Notify consumers
-                    SymbolDirty(ExprSym);
+                    if (ExprSym != null) SymbolDirty(ExprSym);
                 } else {
                     IsExpression = true;
                     
@@ -68,13 +76,13 @@ namespace WhenPlugin.When {
                     References = visitor.Parameters;
                     Parameters.Clear();
                     Evaluate();
-                    SymbolDirty(ExprSym);
+                    if (ExprSym != null) SymbolDirty(ExprSym);
                 }
             }
         }
 
-        private ISequenceContainer _ExprSym;
         public Symbol ExprSym { get; set; }
+        public SequenceItem ExprItem {  get; set; }
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -85,7 +93,8 @@ namespace WhenPlugin.When {
                 if (value != _value) {
                     _value = value;
                     RaisePropertyChanged("ValueString");
-                    ExprSym.ValueChanged();
+                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("IsExpression");
                 }
             }
         }
@@ -97,6 +106,8 @@ namespace WhenPlugin.When {
                 if (value != _error) {
                     _error = value;
                     RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("IsExpression");
                 }
             }
         }
@@ -187,7 +198,7 @@ namespace WhenPlugin.When {
             foreach (string symReference in References) {
                 if (!Resolved.ContainsKey(symReference)) {
                     // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, ExprSym.Parent);
+                    Symbol sym = Symbol.FindSymbol(symReference, ExprItem.Parent);
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Parameters.Remove(symReference);
@@ -221,8 +232,10 @@ namespace WhenPlugin.When {
                     }
                 }
                 // Save away our orphans in case they appear later
-                Symbol.Orphans.Remove(ExprSym);
-                Symbol.Orphans.Add(ExprSym, orphans);
+                if (ExprSym != null) {
+                    Orphans.Remove(ExprSym);
+                    Orphans.Add(ExprSym, orphans);
+                }
             }
 
             Error = null;
@@ -254,10 +267,11 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
+            string id = ExprSym != null ? ExprSym.Identifier : ExprItem.Name;
             if (Error != null) {
-                return $"Expr: Expression: {Expression} in {ExprSym.Identifier}, References: {References.Count}, Error: {Error}";
+                return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Error: {Error}";
             }
-            return $"Expr: Expression: {Expression} in {ExprSym.Identifier}, References: {References.Count}, Value: {Value}";
+            return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Value: {Value}";
         }
     }
 }

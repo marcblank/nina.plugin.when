@@ -1183,14 +1183,14 @@
                             </Border>
                             <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
-                            <local:ConstantControl 
-                                 Margin="0,2,10,10" 
-                                 ToolTip="Foo"
-                                 ToolTipOpening="IfConstant_PredicateToolTip"
-                                 Validate="ValidateConstant"
-                                 Expr="{Binding Path=Predicate, Mode=TwoWay}"
-                                 Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
-                                 />
+                            <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding IfExpr.Expression, Mode=TwoWay}" />
+                            <local:ExprControl
+                                 Visibility="{Binding IfExpr.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                 Val="{Binding IfExpr.ValueString, Mode=TwoWay}"
+                                 Err="{Binding IfExpr.Error, Mode=TwoWay}"
+                                 Type="Integer"
+                                 Validate="ValidateThis"
+                                 Margin="10,-2,5,3" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

@@ -189,10 +189,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-
-        public abstract void ValueChanged();
-
-
+ 
         public IList<string> Issues => new List<string>();
 
         protected bool IsAttachedToRoot() {

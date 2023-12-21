@@ -101,8 +101,28 @@ namespace WhenPlugin.When {
             }
         }
 
+        private string iPredicate;
         [JsonProperty]
-        public string Predicate { get; set; }
+        public string Predicate {
+            get => iPredicate;
+            set {
+                iPredicate = value;
+                if (IfExpr == null) {
+                    IfExpr = new Expr(this);
+                }
+                IfExpr.Expression = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Expr _IfExpr;
+        public Expr IfExpr {
+            get => _IfExpr;
+            set {
+                _IfExpr = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [JsonProperty]
         private string iPredicateValue;
@@ -130,7 +150,7 @@ namespace WhenPlugin.When {
 
         public new bool Validate() {
 
-            CommonValidate();
+                CommonValidate();
 
             var i = new List<string>();
 
