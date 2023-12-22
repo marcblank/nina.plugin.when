@@ -75,17 +75,6 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
-        private Expr _XX;
-
-        public Expr XX {
-            get => Expr;
-            set {
-                _XX = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
         // DEBUGGING
         public void WriteSymbols() {
             Debug.WriteLine(this);
