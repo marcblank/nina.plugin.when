@@ -514,11 +514,8 @@
                        Text="{Binding Definition, ValidatesOnExceptions=True}"
                        TextAlignment="Center" />
                     <local:ExprControl
-                      Visibility="{Binding Expr.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                      Exp="{Binding Expr}"
                       Val="{Binding Expr.ValueString, Mode=TwoWay}"
-                      Err="{Binding Expr.Error, Mode=TwoWay}"
-                      Type="Integer"
-                      Validate="ValidateThis"
                       Margin="5,-2,5,3" />
                     <Button
                         Width="25"

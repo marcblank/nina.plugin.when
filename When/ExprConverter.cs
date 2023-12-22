@@ -53,11 +53,10 @@ namespace WhenPlugin.When {
         }
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            string expr = values[VALUE_EXPR] as String;
+            Expr expr = values[VALUE_EXPR] as Expr;
             if (expr != null) {
-                return "{"+ expr + "}";
- //               if (!expr.IsExpression) return expr.Value;
- //               return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
+                if (!expr.IsExpression) return "{" + expr.Value + "}";
+                return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
         
             } else {
                 return "{" + "Foo" + "}";

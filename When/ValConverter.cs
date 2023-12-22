@@ -31,8 +31,8 @@ namespace WhenPlugin.When {
         private const int VALUE_EXPR = 0;              // The expression to be evaluated
         private const int VALUE_ERR = 1;
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
-            string expr = value[VALUE_ERR] as string;
-            if (expr == null) {
+            Expr expr = value[VALUE_EXPR] as Expr;
+            if (expr != null && expr.Error == null) {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
             return new SolidColorBrush(Colors.Orange);

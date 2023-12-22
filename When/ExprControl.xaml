@@ -6,20 +6,21 @@
         <local:ExprConverter x:Key="ec" />
         <local:ValConverter x:Key="vc" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+    <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Center"
+                Visibility="{Binding Exp.IsExpression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}} ,Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+        >
         <TextBlock VerticalAlignment="Center" Margin="-10,4,0,-4">
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
+                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                     <Binding Path="Val" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Validate" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}">
+                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                     <Binding Path="Val" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Err" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
