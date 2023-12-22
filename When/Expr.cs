@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
             get => _value;
             set {
                 if (value != _value) {
-                    if (ExprType.Equals("Integer")) {
+                    if ("Integer".Equals(ExprType)) {
                         value = Double.Floor(value);
                     }
                     _value = value;
