@@ -1182,12 +1182,9 @@
                             </TextBlock>
                             <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding IfExpr.Expression, Mode=TwoWay}" />
                             <local:ExprControl
-                                 Visibility="{Binding IfExpr.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                 Exp="{Binding IfExpr, Mode=TwoWay}"
                                  Val="{Binding IfExpr.ValueString, Mode=TwoWay}"
-                                 Err="{Binding IfExpr.Error, Mode=TwoWay}"
-                                 Type="Integer"
-                                 Validate="ValidateThis"
-                                 Margin="10,-2,5,3" />
+                                 Margin="15,1,5,3" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

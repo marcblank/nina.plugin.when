@@ -56,7 +56,19 @@ namespace WhenPlugin.When {
             Expr expr = values[VALUE_EXPR] as Expr;
             if (expr != null) {
                 if (!expr.IsExpression) return "{" + expr.Value + "}";
-                return "{" + ((expr.Error != null) ? expr.Error : expr.Value.ToString()) + "}";
+                string txt;
+                if (expr.Error == null) {
+                    if (expr.Value == 0) {
+                        txt = "False";
+                    } else if (expr.Value == 1) {
+                        txt = "True";
+                    } else {
+                        txt = expr.Value.ToString();
+                    }
+                } else {
+                    txt = expr.Error;
+                }
+                return "{" + txt + "}";
         
             } else {
                 return "{" + "Foo" + "}";

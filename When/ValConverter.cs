@@ -32,7 +32,7 @@ namespace WhenPlugin.When {
         private const int VALUE_ERR = 1;
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture) {
             Expr expr = value[VALUE_EXPR] as Expr;
-            if (expr != null && expr.Error == null) {
+            if (expr != null && expr.Error == null && expr.Value != 0) {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
             return new SolidColorBrush(Colors.Orange);
