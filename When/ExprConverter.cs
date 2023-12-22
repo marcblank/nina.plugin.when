@@ -58,10 +58,12 @@ namespace WhenPlugin.When {
                 if (!expr.IsExpression) return "{" + expr.Value + "}";
                 string txt;
                 if (expr.Error == null) {
-                    if (expr.Value == 0) {
-                        txt = "False";
-                    } else if (expr.Value == 1) {
-                        txt = "True";
+                    if (expr.ExprItem is IfCommand) {
+                        if (expr.Value == 0) {
+                            txt = "False";
+                        } else {
+                            txt = "True";
+                        }
                     } else {
                         txt = expr.Value.ToString();
                     }
