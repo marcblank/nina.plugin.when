@@ -22,7 +22,7 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public IfConstant() {
-            Predicate = "";
+            IfExpr = new Expr(this);
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
@@ -33,7 +33,8 @@ namespace WhenPlugin.When {
         public IfConstant(IfConstant copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Predicate = copyMe.Predicate;
+                IfExpr = new Expr(this);
+                IfExpr.Expression = copyMe.IfExpr.Expression;
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
@@ -58,37 +59,20 @@ namespace WhenPlugin.When {
 
         public bool Check() {
 
-            object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-
-            Logger.Info("IfConstant: Check, PredicateValue = " + PredicateValue);
-            if (result == null) {
-               return false;
-            }
-            if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                return true;
-            }
-            return false;
+             return false;
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("If: Execute, Predicate = " + Predicate);
-            if (string.IsNullOrEmpty(Predicate)) {
-                Status = SequenceEntityStatus.FAILED;
-                return;
-            }
+            //Logger.Info("If: Execute, Predicate = " + Predicate);
+            //if (string.IsNullOrEmpty(Predicate)) {
+            //    Status = SequenceEntityStatus.FAILED;
+            //    return;
+            //}
 
             try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                Logger.Info("If: Execute, PredicateValue = " + PredicateValue);
-                if (result == null) {
-                    // Syntax error...
-                    Logger.Info("If: There is a syntax error in your expression.");
-                    Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
-                    return;
-                }
-
-                if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
+  
+                if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
                     Logger.Info("If: If Predicate is true!");
                     Runner runner = new Runner(Instructions, null, progress, token);
                     await runner.RunConditional();
@@ -101,20 +85,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string iPredicate;
-        [JsonProperty]
-        public string Predicate {
-            get => iPredicate;
-            set {
-                iPredicate = value;
-                if (IfExpr == null) {
-                    IfExpr = new Expr(this);
-                }
-                IfExpr.Expression = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private Expr _IfExpr;
         public Expr IfExpr {
             get => _IfExpr;
@@ -124,44 +94,25 @@ namespace WhenPlugin.When {
             }
         }
 
-        [JsonProperty]
-        private string iPredicateValue;
-
-        public string PredicateValue {
-            get { return iPredicateValue; }
-            set {
-                iPredicateValue = value;
-                RaisePropertyChanged(nameof(PredicateValue));
-
-            }
-        }
-
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(IfConstant)}, Predicate: {Predicate}";
+            return $"Category: {Category}, Item: {nameof(IfConstant)}, Expr: {IfExpr}";
         }
 
         public IList<string> Switches { get; set; } = null;
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            ConstantExpression.UpdateConstants(this);
-            ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+            //IfExpr.Reset();
         }
 
         public new bool Validate() {
 
-                CommonValidate();
+            CommonValidate();
 
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Predicate)) {
+            if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 i.Add("Expression cannot be empty!");
-            }
-
-            try {
-                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            } catch (Exception ex) {
-                i.Add("Error in expression: " + ex.Message);
             }
 
             Switches = ConstantExpression.GetSwitches();
@@ -173,12 +124,7 @@ namespace WhenPlugin.When {
 
         public string ShowCurrentInfo() {
             try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                if (result is Boolean b && !b) {
-                    return "There is a syntax error in the expression.";
-                } else {
-                    return "Your expression is currently: " + (PredicateValue.Equals("0") ? "False" : "True");
-                }
+                return "Your expression is currently: " + (IfExpr.ValueString.Equals("0") ? "False" : "True");
             } catch (Exception ex) {
                 return "Error: " + ex.Message;
             }

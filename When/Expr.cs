@@ -49,7 +49,12 @@ namespace WhenPlugin.When {
                     Value = result;
                     IsExpression = false;
                     // Notify consumers
-                    if (ExprSym != null) SymbolDirty(ExprSym);
+                    if (ExprSym != null) {
+                        SymbolDirty(ExprSym);
+                    } else {
+                        // We always want to show the result if not a Symbol
+                        IsExpression = true;
+                    }
                 } else {
                     IsExpression = true;
                     
@@ -202,6 +207,7 @@ namespace WhenPlugin.When {
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Parameters.Remove(symReference);
+                        Resolved.Remove(symReference);
                         if (sym.Expr.Error == null) {
                             Resolved.Add(symReference, sym);
                             Parameters.Add(symReference, sym.Expr.Value);

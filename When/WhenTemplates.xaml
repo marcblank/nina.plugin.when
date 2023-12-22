@@ -503,7 +503,7 @@
                     <TextBox
                       MinWidth="40"
                       Margin="5,1,10,-2"
-                      Text="{Binding Identifier, ValidatesOnExceptions=True}"
+                      Text="{Binding Identifier}"
                       VerticalAlignment="Center"
                       TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Value:" />
@@ -511,7 +511,7 @@
                        VerticalAlignment="Center"
                        MinWidth="40"
                        Margin="5,1,10,-2"
-                       Text="{Binding Definition, ValidatesOnExceptions=True}"
+                       Text="{Binding Definition}"
                        TextAlignment="Center" />
                     <local:ExprControl
                       Exp="{Binding Expr}"
@@ -1184,7 +1184,7 @@
                             <local:ExprControl
                                  Exp="{Binding IfExpr, Mode=TwoWay}"
                                  Val="{Binding IfExpr.ValueString, Mode=TwoWay}"
-                                 Margin="15,1,5,3" />
+                                 Margin="15,-2,5,3" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
