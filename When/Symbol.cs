@@ -143,6 +143,7 @@ namespace WhenPlugin.When {
                     // If there was an old value, remove it from Parent's dictionary
                     if (SymbolCache.TryGetValue(Parent, out cached)) {
                         cached.Remove(_identifier);
+                        SymbolDirty(this);
                     }
                 }
                 
