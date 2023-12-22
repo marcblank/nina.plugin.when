@@ -28,6 +28,14 @@ namespace WhenPlugin.When {
             Expression = "";
         }
 
+        public Expr(SequenceItem item, string type, string validator) {
+            ExprSym = null;
+            ExprItem = item;
+            Expression = "";
+            ExprType = type;
+            ExprValidator = validator;
+        }
+
         private string _expression;
         public string Expression {
             get => _expression;
@@ -88,6 +96,10 @@ namespace WhenPlugin.When {
 
         public Symbol ExprSym { get; set; }
         public SequenceItem ExprItem {  get; set; }
+
+        public string ExprType { get; set; } = null;
+
+        public string ExprValidator { get; set; } = null;
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -96,6 +108,9 @@ namespace WhenPlugin.When {
             get => _value;
             set {
                 if (value != _value) {
+                    if (ExprType.Equals("Integer")) {
+                        value = Double.Floor(value);
+                    }
                     _value = value;
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Error");
