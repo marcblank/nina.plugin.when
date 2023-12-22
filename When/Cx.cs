@@ -23,14 +23,14 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class Cx : Symbol {
+    public class SetConstant : Symbol {
 
         [ImportingConstructor]
-        public Cx() : base() {
+        public SetConstant() : base() {
             Name = Name;
             Icon = Icon;
         }
-        public Cx(Cx copyMe) : base(copyMe) {
+        public SetConstant(SetConstant copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
@@ -39,7 +39,7 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new Cx(this) {
+            return new SetConstant(this) {
                 Identifier = Identifier,
                 Definition = Definition,
                 Expr = Expr
@@ -85,6 +85,24 @@ namespace WhenPlugin.When {
 
         private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
         public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(WriteSymbols);
+
+        // Legacy
+
+        [JsonProperty]
+        public string Constant {
+            get => null;
+            set {
+                if (value != null) Identifier = value;
+            }
+        }
+        
+        [JsonProperty]
+        public string CValueExpr {
+            get => null;
+            set {
+                if (value != null) Definition = value;
+            }
+        }
 
 
     }

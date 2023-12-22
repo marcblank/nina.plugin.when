@@ -102,6 +102,7 @@ namespace WhenPlugin.When {
         }
 
         private Expr _IfExpr;
+        [JsonProperty]
         public Expr IfExpr {
             get => _IfExpr;
             set {

@@ -19,13 +19,13 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetConstant : SequenceItem, IValidatable, ISettable {
+    public class SetConstantOld : SequenceItem, IValidatable, ISettable {
         [ImportingConstructor]
-        public SetConstant() {
+        public SetConstantOld() {
             Constant = "";
             Icon = Icon;
         }
-        public SetConstant(SetConstant copyMe) : this() {
+        public SetConstantOld(SetConstantOld copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
@@ -58,7 +58,7 @@ namespace WhenPlugin.When {
 
         private string constant;
 
-        public bool IsSetConstant { get; set; } = false;
+        public bool IsSetConstantOld { get; set; } = false;
 
         [JsonProperty]
         public string Constant {
@@ -78,7 +78,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
                 if (Parent != null) {
                     foreach (var val in Parent.Items) {
-                        if (val is SetConstant) {
+                        if (val is SetConstantOld) {
                             ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
                         }
                     }
@@ -113,7 +113,7 @@ namespace WhenPlugin.When {
                 if (Parent == ConstantExpression.GlobalContainer) {
                     //WhenPlugin.UpdateGlobalConstants();
                     foreach (var val in Parent.Items) {
-                        if (val is SetConstant) {
+                        if (val is SetConstantOld) {
                             ConstantExpression.Evaluate(val, "CValueExpr", "CValue", "", null);
                         }
                     }
@@ -156,7 +156,7 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new SetConstant(this) {
+            return new SetConstantOld(this) {
                 Constant = Constant,
                 CValueExpr = CValueExpr
             };
@@ -191,7 +191,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SetConstant)}, Constant: {Constant}, Value: {CValueExpr}";
+            return $"Category: {Category}, Item: {nameof(SetConstantOld)}, Constant: {Constant}, Value: {CValueExpr}";
         }
 
         public bool Validate() {

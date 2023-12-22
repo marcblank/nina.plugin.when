@@ -475,7 +475,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:SetConstant}">
+    <DataTemplate DataType="{x:Type local:SetConstantOld}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
@@ -495,7 +495,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
     
-    <DataTemplate DataType="{x:Type local:Cx}">
+    <DataTemplate DataType="{x:Type local:SetConstant}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">

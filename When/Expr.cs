@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using NCalc;
 using NCalc.Domain;
+using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using static WhenPlugin.When.Symbol;
 
 namespace WhenPlugin.When {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Expr : BaseINPC {
 
         public Expr (string exp, Symbol sym) {
@@ -37,6 +39,7 @@ namespace WhenPlugin.When {
         }
 
         private string _expression;
+       [JsonProperty]
         public string Expression {
             get => _expression;
             set {
@@ -99,8 +102,10 @@ namespace WhenPlugin.When {
         public Symbol ExprSym { get; set; }
         public SequenceItem ExprItem {  get; set; }
 
+        [JsonProperty]
         public string ExprType { get; set; } = null;
 
+        [JsonProperty]
         public string ExprValidator { get; set; } = null;
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
