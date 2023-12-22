@@ -85,6 +85,25 @@ namespace WhenPlugin.When {
             }
         }
 
+<<<<<<< HEAD
+=======
+        private string iPredicate;
+        [JsonProperty]
+        public string Predicate {
+            get => iPredicate;
+            set {
+                iPredicate = value;
+                if (IfExpr == null) {
+                    IfExpr = new Expr(this);
+                }
+                IfExpr.Expression = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged("IfExpr");
+
+            }
+        }
+
+>>>>>>> 22aca702ea0452bf1edb995e13d93a5a0105d79d
         private Expr _IfExpr;
         public Expr IfExpr {
             get => _IfExpr;

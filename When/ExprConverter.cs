@@ -71,7 +71,7 @@ namespace WhenPlugin.When {
                 return "{" + txt + "}";
         
             } else {
-                return "{" + "Foo" + "}";
+                return "{" + "FuvkS" + "}";
             }
         }
 
