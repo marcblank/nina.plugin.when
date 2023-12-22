@@ -105,7 +105,7 @@ namespace WhenPlugin.When {
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
-        private double _value;
+        private double _value = Double.MinValue;
         public double Value {
             get => _value;
             set {

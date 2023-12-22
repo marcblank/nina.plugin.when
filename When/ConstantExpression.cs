@@ -712,7 +712,7 @@ namespace WhenPlugin.When {
         public static Task UpdateSwitchWeatherData() {
             lock (SwitchMediator) {
                 var i = new List<string>();
-                SwitchWeatherKeys.Clear();
+                SwitchWeatherKeys = new Keys();
 
                 //SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
