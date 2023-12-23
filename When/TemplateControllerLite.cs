@@ -34,6 +34,7 @@ using NINA.Core.Locale;
 using System.Threading.Tasks;
 using NINA.Sequencer;
 using System.Data.Entity.Migrations.Model;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
 
@@ -52,6 +53,8 @@ namespace WhenPlugin.When {
         public IList<NINA.Sequencer.TemplatedSequenceContainer> UserTemplates => Templates.Where(t => t.Group == UserTemplatesGroup).ToList();
 
         public IList<TemplatedSequenceContainer> Templates { get; }
+        public IList<TemplatedSequenceContainer> TBRTemplates { get; set; }
+
 
         public TemplateControllerLite(SequenceJsonConverter sequenceJsonConverter, IProfileService profileService) {
             lock (TemplateLock) {
@@ -73,6 +76,11 @@ namespace WhenPlugin.When {
                             Logger.Error("Invalid template JSON", ex);
                         }
                     }
+                    TBRTemplates = new List<TemplatedSequenceContainer>();
+                    foreach (var template in Templates) {
+                        TBRTemplates.Add(template);
+                    }
+
                 } catch (Exception ex) {
                     Logger.Error("Error occurred while loading default templates", ex);
                 }
@@ -173,6 +181,13 @@ namespace WhenPlugin.When {
                     }
 
                     Updated = true;
+                    lock (TemplateLock) {
+                        TBRTemplates = new List<TemplatedSequenceContainer>();
+                        foreach (var template in Templates) {
+                            TBRTemplates.Add(template);
+                        }
+                    }
+
 
                 } catch (Exception ex) {
                     Logger.Error(ex);
