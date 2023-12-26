@@ -118,7 +118,6 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            //IfExpr.Reset();
         }
 
         public new bool Validate() {

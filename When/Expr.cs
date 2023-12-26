@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static WhenPlugin.When.Symbol;
 
@@ -24,10 +25,13 @@ namespace WhenPlugin.When {
             Expression = exp;
         }
 
-        public Expr(SequenceItem item) {
+        public Expr(SequenceItem item, string expression) {
             ExprSym = null;
             ExprItem = item;
-            Expression = "";
+            Expression = expression;
+        }
+        public Expr(SequenceItem item) {
+            new Expr(item, "");
         }
 
         public Expr(SequenceItem item, string type, string validator) {
@@ -47,7 +51,7 @@ namespace WhenPlugin.When {
                 Double result;
                 
                 if (value != _expression && IsExpression) {
-                    // The value has changed.  Clear what we had...
+                    // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
                         symKvp.Value.RemoveConsumer(this);
                     }
@@ -58,6 +62,7 @@ namespace WhenPlugin.When {
                 _expression = value;
                 if (Double.TryParse(value, out result)) {
                     Value = result;
+                    Error = null;
                     IsExpression = false;
                     // Notify consumers
                     if (ExprSym != null) {
@@ -66,9 +71,12 @@ namespace WhenPlugin.When {
                         // We always want to show the result if not a Symbol
                         IsExpression = true;
                     }
+                } else if (Regex.IsMatch(value, "{(\\d+)}")) {
+                    IsExpression = false;
+
                 } else {
                     IsExpression = true;
-                    
+
                     // Evaluate just so that we can parse the expression
                     Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
                     e.Parameters = EmptyDictionary;
@@ -110,7 +118,7 @@ namespace WhenPlugin.When {
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
-        private double _value = Double.MinValue;
+        private double _value = 0; // Double.MinValue;
         public double Value {
             get => _value;
             set {

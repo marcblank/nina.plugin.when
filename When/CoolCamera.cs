@@ -47,6 +47,7 @@ namespace WhenPlugin.When {
             this.cameraMediator = cameraMediator;
             this.profileService = profileService;
             CameraSettings = profileService.ActiveProfile.CameraSettings;
+            TempExpr = new Expr(this);
         }
 
         private CoolCamera(CoolCamera cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator) {
@@ -54,12 +55,13 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new CoolCamera(this) {
-                Temperature = Temperature,
+            CoolCamera clone = new CoolCamera(this) {
                 TemperatureExpr = TemperatureExpr,
                 Duration = Duration,
                 DurationExpr = DurationExpr
             };
+            clone.TempExpr = new Expr(clone, this.TempExpr.Expression);
+            return clone;
         }
 
         private ICameraMediator cameraMediator;
@@ -75,6 +77,17 @@ namespace WhenPlugin.When {
                     }
             private set {
                 cameraSettings = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Expr _TempExpr = null;
+
+        [JsonProperty]
+        public Expr TempExpr {
+            get => _TempExpr;
+            set {
+                _TempExpr = value;
                 RaisePropertyChanged();
             }
         }
@@ -99,7 +112,7 @@ namespace WhenPlugin.When {
             get => temperatureExpr;
             set {
                 temperatureExpr = value;
-                ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature);
+              //  ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature);
                 RaisePropertyChanged("TemperatureExpr");
             }
         }
@@ -150,12 +163,13 @@ namespace WhenPlugin.When {
             if (!info.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else if (!info.CanSetTemperature) {
-                //i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
+                i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
+            if (TempExpr.Error != null) {
+                TempExpr.Evaluate();
+            }
 
-            CameraSettings = profileService.ActiveProfile.CameraSettings;
-            ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature, i);
             ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0, i);
 
             if (ValidateTemperature(temperature) != String.Empty) {
