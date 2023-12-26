@@ -316,6 +316,3 @@ namespace WhenPlugin.When {
     }
 }
 
-// Symbols go into a cache re: container
-// Exprs have symbols attached
-

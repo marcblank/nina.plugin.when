@@ -137,6 +137,11 @@ namespace WhenPlugin.When {
         public string Identifier {
             get => _identifier;
             set {
+                if (Parent == null) {
+                    _identifier = value;
+                    return;
+                }
+
                 SymbolDictionary cached = null;
                 if (value == _identifier || value.Length == 0) {
                     return;
@@ -175,9 +180,6 @@ namespace WhenPlugin.When {
                 _definition = value;
                 if (Parent != null) {
                     Expr.Expression = value;
-                    if (Debugging) {
-                        ShowSymbols();
-                    }
                 }
                 RaisePropertyChanged("Expr");
             }
