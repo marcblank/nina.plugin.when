@@ -1,19 +1,13 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Validations;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
-using NINA.Sequencer.Container;
-using System.Text;
-using NINA.Core.Utility;
 using System.Windows.Input;
 using System.Diagnostics;
-using Xceed.Wpf.Toolkit.Zoombox;
+using System.Text.RegularExpressions;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant")]
@@ -58,8 +52,14 @@ namespace WhenPlugin.When {
         public override bool Validate() {
             if (!IsAttachedToRoot()) return true;
             Issues.Clear();
-            if (Identifier.Length == 0 || Definition.Length == 0) {
+
+              if (Identifier.Length == 0 || Definition.Length == 0) {
                 Issues.Add("A name and a value must be specified");
+                return false;
+            }
+
+            if (!Regex.IsMatch(Identifier, "^[a-zA-Z0-9]*$")) {
+                Issues.Add("The name of a Constant must be alphanumeric");
                 return false;
             }
 

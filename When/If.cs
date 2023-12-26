@@ -64,15 +64,14 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            //Logger.Info("If: Execute, Predicate = " + Predicate);
-            //if (string.IsNullOrEmpty(Predicate)) {
-            //    Status = SequenceEntityStatus.FAILED;
-            //    return;
-            //}
+            Logger.Info("If: Execute, Predicate = " + IfExpr.Expression);
+            if (string.IsNullOrEmpty(IfExpr.Expression)) {
+                Status = SequenceEntityStatus.FAILED;
+                return;
+            }
 
             try {
-  
-                if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
+                if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true!");
                     Runner runner = new Runner(Instructions, null, progress, token);
                     await runner.RunConditional();
@@ -134,6 +133,10 @@ namespace WhenPlugin.When {
 
             Switches = ConstantExpression.GetSwitches();
             RaisePropertyChanged("Switches");
+
+            if (IfExpr.Error != null) {
+                IfExpr.Evaluate();
+            }
 
             Issues = i;
             return i.Count == 0;

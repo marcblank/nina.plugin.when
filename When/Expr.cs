@@ -267,6 +267,7 @@ namespace WhenPlugin.When {
                 List<string> orphans = new List<string>();
                 foreach (string r in References) {
                     if (!Resolved.ContainsKey(r)) {
+                        // Try to find this; it might have been defined since last evaluation
                         orphans.Add(r);
                     }
                 }

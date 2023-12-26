@@ -71,7 +71,8 @@ namespace WhenPlugin.When {
             foreach (Expr consumer in sym.Consumers) {
                 consumer.ReferenceRemoved(sym);
                 Symbol consumerSym = consumer.ExprSym;
-                if (!consumer.Dirty) {
+                // If this Expr is a Symbol, dirty that as well
+                if (!consumer.Dirty && consumerSym != null) {
                     SymbolDirty(consumerSym);
                 }
                 consumer.Dirty = true;
@@ -100,7 +101,7 @@ namespace WhenPlugin.When {
                             Warn("Deleting " + this + " but not in Parent's cache?");
                         }
                     } else {
-                       Warn("De leting " + this + " but Parent has no cache?");
+                       Warn("Deleting " + this + " but Parent has no cache?");
                     }
                 }
                 return;
