@@ -47,7 +47,13 @@ namespace WhenPlugin.When {
         public string Expression {
             get => _expression;
             set {
-                if (value == null || value.Length == 0) return;
+                if (value == null) return;
+                if (value.Length == 0) {
+                    IsExpression = false;
+                    ValueString = "";
+                    _expression = value;
+                    return;
+                }
                 Double result;
                 
                 if (value != _expression && IsExpression) {

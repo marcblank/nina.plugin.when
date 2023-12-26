@@ -168,6 +168,8 @@ namespace WhenPlugin.When {
 
             if (TempExpr.Error != null) {
                 TempExpr.Evaluate();
+            } else if (TempExpr.ValueString.Length == 0) {
+                TempExpr.Value = (double)CameraSettings.Temperature;
             }
 
             ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0, i);
