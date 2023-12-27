@@ -7,10 +7,12 @@
         <local:ValConverter x:Key="vc" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Center"
-                Visibility="{Binding Exp.IsExpression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}} ,Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-        <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Exp.Expression, Mode=TwoWay}" />
-        <TextBlock VerticalAlignment="Center" Margin="-10,4,0,-4">
+                VerticalAlignment="Center">
+        <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,3,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Exp.Expression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}" />
+        <TextBlock VerticalAlignment="Center" Margin="8,4,0,-4">
+            <TextBlock.Visibility>
+                <Binding Path="Exp.IsExpression" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+            </TextBlock.Visibility>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
                     <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>

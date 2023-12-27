@@ -327,6 +327,12 @@ namespace WhenPlugin.When {
             Dirty = false;
         }
 
+        public void Validate() {
+            if (Error != null) {
+                Evaluate();
+            }
+        }
+
         public override string ToString() {
             string id = ExprSym != null ? ExprSym.Identifier : ExprItem.Name;
             if (Error != null) {

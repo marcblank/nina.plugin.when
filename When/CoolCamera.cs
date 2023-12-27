@@ -148,13 +148,10 @@ namespace WhenPlugin.When {
             }
 
             TempExpr.Default = (double)cameraSettings.Temperature;
-            if (TempExpr.Error != null) {
-                TempExpr.Evaluate();
-            }
             
-            if (DurExpr.Error != null) {
-                DurExpr.Evaluate();
-            }
+            // Always Validate our Expr's
+            TempExpr.Validate();
+            DurExpr.Validate();
 
             if (ValidateTemperature(TempExpr.Value) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
@@ -164,6 +161,7 @@ namespace WhenPlugin.When {
             return i.Count == 0;
         }
 
+        // Always Validate after Parent changed!
         public override void AfterParentChanged() {
             Validate();
         }

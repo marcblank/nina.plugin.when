@@ -457,12 +457,6 @@
                         VerticalAlignment="Center"
                         Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <TextBox
-                      VerticalAlignment="Center"
-                      MinWidth="40"
-                      Margin="5,0,10,-2"
-                      Text="{Binding DurExpr.Expression}"
-                      TextAlignment="Center" />
                     <local:ExprControl
                         Exp="{Binding DurExpr}"
                         Margin="5,-4,5,3" />
@@ -514,7 +508,7 @@
                        Margin="5,0,10,-2"
                        Text="{Binding Definition}"
                        TextAlignment="Center" />
-                    <local:ExprControl
+                    <local:SymControl
                       Exp="{Binding Expr}"
                       Margin="5,-4,5,3" />
                     <Button
@@ -1178,8 +1172,7 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
-                            </TextBlock>
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: " />
                             <local:ExprControl
                                  Exp="{Binding IfExpr, Mode=TwoWay}"
                                  Margin="15,-4,5,3" />
