@@ -450,7 +450,6 @@
                         Margin="5,-3,0,0"
                         Exp="{Binding TempExpr, Mode=TwoWay}"
                         Val="{Binding TempExpr.ValueString, Mode=TwoWay}" 
-                        Default="{Binding Mode=OneWay, Path=Data.Temperature, Source={StaticResource CameraSettings}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TempConverter}}" 
                         />
 
                     <TextBlock
