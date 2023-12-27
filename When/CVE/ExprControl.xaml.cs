@@ -10,32 +10,17 @@ namespace WhenPlugin.When {
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ValProperty =
-            DependencyProperty.Register("Val", typeof(string), typeof(ExprControl), null);
+        public static readonly DependencyProperty LabelProperty =
+            DependencyProperty.Register("Label", typeof(string), typeof(ExprControl), null);
 
-        public string Val { get; set; }
+        public string Label { get; set; }
 
         public static readonly DependencyProperty ExpProperty =
              DependencyProperty.Register("Exp", typeof(Expr), typeof(ExprControl), null);
 
         public Expr Exp { get; set; }
 
-        public static readonly DependencyProperty ErrProperty =
-             DependencyProperty.Register("Err", typeof(string), typeof(ExprControl), null);
-
-        public string Err { get; set; }
-
-
-        public static readonly DependencyProperty ValidateProperty =
-             DependencyProperty.Register("Validate", typeof(String), typeof(ExprControl), null);
-
-        public String Validate { get; set; }
  
-        public static readonly DependencyProperty TypeProperty =
-              DependencyProperty.Register("Type", typeof(String), typeof(ExprControl), null);
-
-        public String Type { get; set; }
-
         public void ShowConstants(object sender, ToolTipEventArgs e) {
             //TextBox tb = (TextBox)sender;
             //ISequenceEntity item = (ISequenceEntity)tb.DataContext;

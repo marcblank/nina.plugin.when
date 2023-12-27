@@ -732,8 +732,7 @@
                             <ItemsControl ItemsSource="{Binding Switches}" />
                         </Border.ToolTip>
                     </Border>
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Expression:" />
-                    <local:ExprControl Exp="{Binding Path=PredicateExpr, Mode=TwoWay}"/>
+                    <local:ExprControl Label="Expression:" Exp="{Binding Path=PredicateExpr, Mode=TwoWay}"/>
                 </StackPanel>
 
             </nina:SequenceBlockView.SequenceItemContent>
@@ -1133,8 +1132,7 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: " />
-                            <local:ExprControl Exp="{Binding IfExpr, Mode=TwoWay}"/>
+                            <local:ExprControl Label="Ecpression:" Exp="{Binding IfExpr, Mode=TwoWay}"/>
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
