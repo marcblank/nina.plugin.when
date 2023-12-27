@@ -11,7 +11,7 @@
                 VerticalAlignment="Center" >
         <ninactrl:HintTextBox
                 MinWidth="40"
-                Margin="0,0,0,-5"
+                Margin="0,-2,0,-5"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -30,9 +30,7 @@
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
         <TextBlock VerticalAlignment="Center"
-                   Margin="0,-1,0,-3"
-                   Visibility="{Binding Exp.IsExpression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >
-                   >
+                   Visibility="{Binding Exp.IsExpression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
                     <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
