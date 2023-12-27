@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
                         SymbolDirty(ExprSym);
                     } else {
                         // We always want to show the result if not a Symbol
-                        IsExpression = true;
+                        //IsExpression = true;
                     }
                 } else if (Regex.IsMatch(value, "{(\\d+)}")) {
                     IsExpression = false;

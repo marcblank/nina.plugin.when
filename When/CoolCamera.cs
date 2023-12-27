@@ -48,6 +48,7 @@ namespace WhenPlugin.When {
             this.profileService = profileService;
             CameraSettings = profileService.ActiveProfile.CameraSettings;
             TempExpr = new Expr(this);
+            DurExpr = new Expr(this);
         }
 
         private CoolCamera(CoolCamera cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator) {
@@ -56,11 +57,9 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             CoolCamera clone = new CoolCamera(this) {
-                TemperatureExpr = TemperatureExpr,
-                Duration = Duration,
-                DurationExpr = DurationExpr
             };
             clone.TempExpr = new Expr(clone, this.TempExpr.Expression);
+            clone.DurExpr = new Expr(clone, this.DurExpr.Expression);
             return clone;
         }
 
@@ -91,53 +90,41 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+        
+        private Expr _DurExpr = null;
 
-        private double temperature = 0;
-
-        // COMMENTED OUT FOR CONSTANTS SUPPORT
-        //[JsonProperty]
-        public double Temperature {
-            get =>  temperature;
+        [JsonProperty]
+        public Expr DurExpr {
+            get => _DurExpr;
             set {
-                temperature = value;
+                _DurExpr = value;
                 RaisePropertyChanged();
             }
         }
 
-        // *** ADDED FOR CONSTANTS SUPPORT ***
-        private string temperatureExpr = "";
+        // Legacy support
         
         [JsonProperty]
         public string TemperatureExpr {
-            get => temperatureExpr;
+            get => null;
             set {
-                temperatureExpr = value;
-              //  ConstantExpression.Evaluate(this, "TemperatureExpr", "Temperature", CameraSettings.Temperature);
-                RaisePropertyChanged("TemperatureExpr");
+                if (TempExpr == null) {
+                    TempExpr = new Expr(this);
+                }
+                TempExpr.Expression = value;
+                RaisePropertyChanged("TempExpr");
             }
         }
-        // *** ADDED FOR CONSTANTS SUPPORT ***
-
-
-        private double duration = 0;
-
-        public double Duration {
-            get => duration;
-            set {
-                duration = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string durationExpr = "0";
-
+ 
         [JsonProperty]
         public string DurationExpr {
-            get => durationExpr;
+            get => null;
             set {
-                durationExpr = value;
-                ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0);
-                RaisePropertyChanged("DurationExpr");
+                if (DurExpr == null) {
+                    DurExpr = new Expr(this);
+                }
+                DurExpr.Expression = value;
+                RaisePropertyChanged("DurExpr");
             }
         }
 
@@ -152,7 +139,7 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return cameraMediator.CoolCamera(TempExpr.Value, TimeSpan.FromMinutes(Duration), progress, token);
+            return cameraMediator.CoolCamera(TempExpr.Value, TimeSpan.FromMinutes(DurExpr.Value), progress, token);
         }
 
         private static string BAD_TEMPERATURE = "Temperature must be between -30C and 30C";
@@ -170,8 +157,6 @@ namespace WhenPlugin.When {
             if (TempExpr.Error != null) {
                 TempExpr.Evaluate();
             }
-
-            ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0, i);
 
             if (ValidateTemperature(TempExpr.Value) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
@@ -193,11 +178,11 @@ namespace WhenPlugin.When {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return Duration > 0 ? TimeSpan.FromMinutes(Duration) : TimeSpan.FromMinutes(1);
+            return DurExpr.Value > 0 ? TimeSpan.FromMinutes(DurExpr.Value) : TimeSpan.FromMinutes(1);
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(CoolCamera)}, Temperature: {Temperature}, Duration: {Duration}";
+            return $"Category: {Category}, Item: {nameof(CoolCamera)}, Temperature: {TempExpr.Value}, Duration: {DurExpr.Value}";
         }
     }
 }

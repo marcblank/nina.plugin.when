@@ -457,11 +457,16 @@
                         VerticalAlignment="Center"
                         Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <local:ConstantControl
-                       Margin="5,0,5,3"
-                       MinWidth="25"
-                       Expr="{Binding DurationExpr, Mode=TwoWay}" 
-                       Valu="{Binding Duration, Mode=TwoWay}"/>
+                    <TextBox
+                      VerticalAlignment="Center"
+                      MinWidth="40"
+                      Margin="5,0,10,-2"
+                      Text="{Binding DurExpr.Expression}"
+                      TextAlignment="Center" />
+                    <local:ExprControl
+                        Exp="{Binding DurExpr}"
+                        Val="{Binding DurExpr.ValueString, Mode=TwoWay}"
+                        Margin="5,-4,5,3" />
                     <TextBlock
                        Margin="2.5,0,7.5,2 "
                        HorizontalAlignment="Center"
