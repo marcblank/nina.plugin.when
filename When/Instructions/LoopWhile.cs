@@ -9,6 +9,7 @@ using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Utility;
+using System.Windows.Controls;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Loop While")]
@@ -145,6 +146,7 @@ namespace WhenPlugin.When {
                     SequenceBlockInitialize();
                 }
             }
+            PredicateExpr.Evaluate();
         }
 
         public override void SequenceBlockTeardown() {
