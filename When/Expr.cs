@@ -308,6 +308,7 @@ namespace WhenPlugin.When {
                     Value = Convert.ToDouble(eval);
                 }
                 Error = null;
+                RaisePropertyChanged("ValueString");
                 RaisePropertyChanged("Value");
                 DebugWrite();
 
