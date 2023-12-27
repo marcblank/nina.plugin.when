@@ -248,6 +248,7 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
         public void Evaluate() {
             if (!IsExpression) return;
+            if (ExprItem == null || ExprItem.Parent == null) return;
             Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
 
             // First, validate References

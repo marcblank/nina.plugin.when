@@ -33,8 +33,7 @@ namespace WhenPlugin.When {
         public IfConstant(IfConstant copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                IfExpr = new Expr(this);
-                IfExpr.Expression = copyMe.IfExpr.Expression;
+                IfExpr = new Expr(this, copyMe.IfExpr.Expression);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
@@ -118,6 +117,7 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            IfExpr.Evaluate();
         }
 
         public new bool Validate() {
