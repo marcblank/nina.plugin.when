@@ -446,7 +446,6 @@
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
 
                     <local:ExprHintControl 
-                        MinWidth="40"
                         Margin="5,-3,0,0"
                         Exp="{Binding TempExpr, Mode=TwoWay}"
                         />
@@ -508,9 +507,7 @@
                        Margin="5,0,10,-2"
                        Text="{Binding Definition}"
                        TextAlignment="Center" />
-                    <local:SymControl
-                      Exp="{Binding Expr}"
-                      Margin="5,-4,5,3" />
+                    <local:SymControl Exp="{Binding Expr}"/>
                     <Button
                         Width="25"
                         Height="25"
@@ -533,10 +530,6 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <!--<local:ConstantControl
-                      Margin="5,-2,5,3"
-                      Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                      Valu="{Binding CValue, Mode=TwoWay}"/>-->
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
