@@ -18,70 +18,63 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceCondition))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class LoopWhile : SequenceCondition, IValidatable {
+    public class LoopWhile : SequenceCondition, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public LoopWhile() {
-            Predicate = "";
             ConditionWatchdog = new ConditionWatchdog(InterruptWhenFails, TimeSpan.FromSeconds(5));
+            PredicateExpr = new Expr(this);
         }
 
         public LoopWhile(LoopWhile copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Predicate = copyMe.Predicate;
             }
         }
 
         public override object Clone() {
-            return new LoopWhile(this) {
-            };
+            LoopWhile clone = new LoopWhile(this);
+            clone.PredicateExpr = new Expr(clone, this.PredicateExpr.Expression);
+            return clone;
         }
-
-        public string ValidateConstant(double temp) {
-            if ((int)temp == 0) {
-                return "False";
-            } else if ((int)temp == 1) {
-                return "True";
-            }
-            return string.Empty;
-        }
-
+        
         [JsonProperty]
-        public string Predicate { get; set; }
-
-        [JsonProperty]
-        private string iPredicateValue;
-
-        public string PredicateValue {
-            get { return iPredicateValue; }
+        public string Predicate {
+            get => null;
             set {
-                iPredicateValue = value;
-                RaisePropertyChanged(nameof(PredicateValue));
+                PredicateExpr.Expression = value;
+                RaisePropertyChanged("PredicateExpr");
+            }
+        }
 
+        private Expr _PredicateExpr;
+        [JsonProperty]
+        public Expr PredicateExpr {
+            get => _PredicateExpr;
+            set {
+                _PredicateExpr = value;
+                RaisePropertyChanged();
             }
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(LoopWhile)}, Predicate: {Predicate}";
+            return $"Category: {Category}, Item: {nameof(LoopWhile)}, Predicate: {PredicateExpr.Expression}";
         }
 
 
         public IList<string> Issues { get; set; }
 
+        // Parent changed???
+
         public bool Validate() {
 
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Predicate)) {
+            if (string.IsNullOrEmpty(PredicateExpr.Expression)) {
                 i.Add("Expression cannot be empty!");
             }
 
-            try {
-                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            } catch (Exception ex) {
-                i.Add("Error in expression: " + ex.Message);
-            }
+            PredicateExpr.Validate();
 
             Switches = ConstantExpression.GetSwitches();
             RaisePropertyChanged("Switches");
@@ -96,7 +89,7 @@ namespace WhenPlugin.When {
                 if (result is Boolean b && !b) {
                     return "There is a syntax error in the expression.";
                 } else {
-                    return "Your expression is currently: " + (PredicateValue.Equals("0") ? "False" : "True");
+                    return "Your expression is currently: " + (PredicateExpr.Value.Equals("0") ? "False" : "True");
                 }
             } catch (Exception ex) {
                 return "Error: " + ex.Message;
@@ -120,22 +113,23 @@ namespace WhenPlugin.When {
             }
 
             try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                //Logger.Info("LoopWhile: Check, PredicateValue = " + PredicateValue);
-                if (result == null) {
-                    // Syntax error...
-                    LogInfo("LoopWhile: There is a syntax error in your predicate expression.");
-                    Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
-                    return false;
-                }
+                return true;
+                //object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
+                ////Logger.Info("LoopWhile: Check, PredicateValue = " + PredicateValue);
+                //if (result == null) {
+                //    // Syntax error...
+                //    LogInfo("LoopWhile: There is a syntax error in your predicate expression.");
+                //    Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
+                //    return false;
+                //}
 
-                if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                    LogInfo("LoopWhile: Predicate is true!");
-                    return true;
-                } else {
-                    LogInfo("LoopWhile: Predicate is false!");
-                    return false;
-                }
+                //if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
+                //    LogInfo("LoopWhile: Predicate is true!");
+                //    return true;
+                //} else {
+                //    LogInfo("LoopWhile: Predicate is false!");
+                //    return false;
+                //}
             } catch (ArgumentException ex) {
                 LogInfo("LoopWhile error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;

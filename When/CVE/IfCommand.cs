@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
-    public abstract class IfCommand : SequenceItem, ISequenceContainer, IValidatable {
+    public abstract class IfCommand : SequenceItem, ISequenceContainer, IValidatable, ITrueFalse {
 
         [JsonProperty]
         public IfContainer Condition { get; protected set; }

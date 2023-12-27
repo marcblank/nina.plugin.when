@@ -65,7 +65,7 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        static public bool IsAttachedToRoot(ISequenceItem item) {
+        static public bool IsAttachedToRoot(ISequenceEntity item) {
             if (item.Parent == null) return false;
             return IsAttachedToRoot (item.Parent);
         }

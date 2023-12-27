@@ -29,9 +29,8 @@ namespace WhenPlugin.When {
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
-        private const int VALUE_EXPR = 0;              // The expression to be evaluated
+        private const int VALUE_EXP = 0;              // The expression to be evaluated
         private const int VALUE_VALIDATE = 1;          // If present, a validation method (range check, etc.)
-        private const int VALUE_TYPE = 2;              // If present, the type of result needed ("Integer" is the only value supported; others will be Double)
         private const int VALUE_COMBO = 6;             // If present, a IList<string> of combo box values
 
         private string Validate (ISequenceEntity item, double val, object[] values) {
@@ -53,12 +52,12 @@ namespace WhenPlugin.When {
         }
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            Expr expr = values[VALUE_EXPR] as Expr;
+            Expr expr = values[VALUE_EXP] as Expr;
             if (expr != null) {
                 if (!expr.IsExpression) return "{" + expr.Value + "}";
                 string txt;
                 if (expr.Error == null) {
-                    if (expr.ExprItem is IfCommand) {
+                    if (expr.ExprItem is ITrueFalse) {
                         if (expr.Value == 0) {
                             txt = "False";
                         } else {

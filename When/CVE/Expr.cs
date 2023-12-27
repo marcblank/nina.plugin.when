@@ -3,6 +3,7 @@ using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using Nito.Mvvm;
@@ -12,6 +13,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using static WhenPlugin.When.Symbol;
 
@@ -25,16 +27,16 @@ namespace WhenPlugin.When {
             Expression = exp;
         }
 
-        public Expr(SequenceItem item, string expression) {
+        public Expr(ISequenceEntity item, string expression) {
             ExprSym = null;
             ExprItem = item;
             Expression = expression;
         }
-        public Expr(SequenceItem item) {
+        public Expr(ISequenceEntity item) {
             new Expr(item, "");
         }
 
-        public Expr(SequenceItem item, string type, string validator) {
+        public Expr(ISequenceEntity item, string type, string validator) {
             ExprSym = null;
             ExprItem = item;
             Expression = "";
@@ -118,7 +120,7 @@ namespace WhenPlugin.When {
         public Double Default { get; set; } = Double.NaN;
         
         public Symbol ExprSym { get; set; }
-        public SequenceItem ExprItem {  get; set; }
+        public ISequenceEntity ExprItem {  get; set; }
 
         [JsonProperty]
         public string ExprType { get; set; } = null;
@@ -233,6 +235,8 @@ namespace WhenPlugin.When {
 
         public bool Dirty { get; set; } = false;
 
+        public bool Volatile {  get; set; } = false;
+
         public void DebugWrite() {
             Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (ExprSym != null ? ExprSym : ExprItem) + ")");
         }
@@ -251,6 +255,8 @@ namespace WhenPlugin.When {
             if (ExprItem == null || !Symbol.IsAttachedToRoot(ExprItem)) return;
             Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
+
+            Volatile = false;
 
             // First, validate References
             foreach (string symReference in References) {
@@ -272,6 +278,7 @@ namespace WhenPlugin.When {
                         if (DataSymbols.TryGetValue(symReference, out Val)) {
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
+                            Volatile = true;
                         }
 
                     }
@@ -328,7 +335,7 @@ namespace WhenPlugin.When {
         }
 
         public void Validate() {
-            if (Error != null) {
+            if (Error != null || Volatile) {
                 Evaluate();
             }
         }
