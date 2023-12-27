@@ -84,19 +84,6 @@ namespace WhenPlugin.When {
             return i.Count == 0;
         }
 
-        public string ShowCurrentInfo() {
-            try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                if (result is Boolean b && !b) {
-                    return "There is a syntax error in the expression.";
-                } else {
-                    return "Your expression is currently: " + (PredicateExpr.Value.Equals("0") ? "False" : "True");
-                }
-            } catch (Exception ex) {
-                return "Error: " + ex.Message;
-            }
-        }
-
         private bool Debugging = false;
 
         private void LogInfo(string str) {

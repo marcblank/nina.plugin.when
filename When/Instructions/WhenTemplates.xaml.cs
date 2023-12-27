@@ -35,14 +35,7 @@ namespace WhenPlugin.When {
                 predicateText.ToolTip = ifConstant.ShowCurrentInfo();
             } catch (Exception) { }
         }
-        public void LoopWhile_PredicateToolTip(object sender, ToolTipEventArgs e) {
-            try {
-                ConstantControl predicateText = (ConstantControl)sender;
-                LoopWhile loopWhile = (LoopWhile)(predicateText.DataContext);
-                predicateText.ToolTip = loopWhile.ShowCurrentInfo();
-            } catch (Exception) { }
-        }
-
+ 
         public void WhenSwitch_StopStartToolTip(object sender, ToolTipEventArgs e) {
             TextBlock startStopText = (TextBlock)sender;
             WhenUnsafe whenUnsafe = (WhenUnsafe)(startStopText.DataContext);

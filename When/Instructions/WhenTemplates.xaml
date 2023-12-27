@@ -733,11 +733,7 @@
                         </Border.ToolTip>
                     </Border>
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Expression:" />
-                    <local:ExprControl 
-                        ToolTip="Foo"
-                        ToolTipOpening="LoopWhile_PredicateToolTip"
-                        Exp="{Binding Path=PredicateExpr, Mode=TwoWay}"
-                        />
+                    <local:ExprControl Exp="{Binding Path=PredicateExpr, Mode=TwoWay}"/>
                 </StackPanel>
 
             </nina:SequenceBlockView.SequenceItemContent>
