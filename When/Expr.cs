@@ -234,7 +234,7 @@ namespace WhenPlugin.When {
         public bool Dirty { get; set; } = false;
 
         public void DebugWrite() {
-            Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + ExprSym + ")");
+            Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (ExprSym != null ? ExprSym : ExprItem) + ")");
         }
 
         public void ReferenceRemoved (Symbol sym) {
@@ -248,7 +248,8 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
         public void Evaluate() {
             if (!IsExpression) return;
-            if (ExprItem == null || ExprItem.Parent == null) return;
+            if (ExprItem == null || !Symbol.IsAttachedToRoot(ExprItem)) return;
+            Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
 
             // First, validate References

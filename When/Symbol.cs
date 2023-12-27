@@ -65,6 +65,11 @@ namespace WhenPlugin.When {
             return false;
         }
 
+        static public bool IsAttachedToRoot(ISequenceItem item) {
+            if (item.Parent == null) return false;
+            return IsAttachedToRoot (item.Parent);
+        }
+
         public static void SymbolDirty(Symbol sym) {
             Debug.WriteLine("SymbolDirty: " + sym);
             // Mark everything in the chain dirty
