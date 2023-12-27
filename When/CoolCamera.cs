@@ -108,9 +108,6 @@ namespace WhenPlugin.When {
         public string TemperatureExpr {
             get => null;
             set {
-                if (TempExpr == null) {
-                    TempExpr = new Expr(this);
-                }
                 TempExpr.Expression = value;
                 RaisePropertyChanged("TempExpr");
             }
@@ -120,9 +117,6 @@ namespace WhenPlugin.When {
         public string DurationExpr {
             get => null;
             set {
-                if (DurExpr == null) {
-                    DurExpr = new Expr(this);
-                }
                 DurExpr.Expression = value;
                 RaisePropertyChanged("DurExpr");
             }
@@ -156,6 +150,10 @@ namespace WhenPlugin.When {
             TempExpr.Default = (double)cameraSettings.Temperature;
             if (TempExpr.Error != null) {
                 TempExpr.Evaluate();
+            }
+            
+            if (DurExpr.Error != null) {
+                DurExpr.Evaluate();
             }
 
             if (ValidateTemperature(TempExpr.Value) != String.Empty) {

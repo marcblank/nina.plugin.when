@@ -465,7 +465,6 @@
                       TextAlignment="Center" />
                     <local:ExprControl
                         Exp="{Binding DurExpr}"
-                        Val="{Binding DurExpr.ValueString, Mode=TwoWay}"
                         Margin="5,-4,5,3" />
                     <TextBlock
                        Margin="2.5,0,7.5,2 "
@@ -517,7 +516,6 @@
                        TextAlignment="Center" />
                     <local:ExprControl
                       Exp="{Binding Expr}"
-                      Val="{Binding Expr.ValueString, Mode=TwoWay}"
                       Margin="5,-4,5,3" />
                     <Button
                         Width="25"
@@ -1182,10 +1180,8 @@
                             </Border>
                             <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
                             </TextBlock>
-                            <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="0,-1,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding IfExpr.Expression, Mode=TwoWay}" />
                             <local:ExprControl
                                  Exp="{Binding IfExpr, Mode=TwoWay}"
-                                 Val="{Binding IfExpr.ValueString, Mode=TwoWay}"
                                  Margin="15,-4,5,3" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
