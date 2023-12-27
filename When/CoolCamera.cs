@@ -152,7 +152,7 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return cameraMediator.CoolCamera(Temperature, TimeSpan.FromMinutes(Duration), progress, token);
+            return cameraMediator.CoolCamera(TempExpr.Value, TimeSpan.FromMinutes(Duration), progress, token);
         }
 
         private static string BAD_TEMPERATURE = "Temperature must be between -30C and 30C";
@@ -166,15 +166,14 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
+            TempExpr.Default = (double)cameraSettings.Temperature;
             if (TempExpr.Error != null) {
                 TempExpr.Evaluate();
-            } else if (TempExpr.ValueString.Length == 0) {
-                TempExpr.Value = (double)CameraSettings.Temperature;
             }
 
             ConstantExpression.Evaluate(this, "DurationExpr", "Duration", 0, i);
 
-            if (ValidateTemperature(temperature) != String.Empty) {
+            if (ValidateTemperature(TempExpr.Value) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
             }
 

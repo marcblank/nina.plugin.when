@@ -50,7 +50,9 @@ namespace WhenPlugin.When {
                 if (value == null) return;
                 if (value.Length == 0) {
                     IsExpression = false;
-                    ValueString = "";
+                    if (!double.IsNaN(Default)) {
+                        Value = Default;
+                    }
                     _expression = value;
                     return;
                 }
@@ -113,6 +115,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public Double Default { get; set; } = Double.NaN;
+        
         public Symbol ExprSym { get; set; }
         public SequenceItem ExprItem {  get; set; }
 

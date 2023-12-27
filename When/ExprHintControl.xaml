@@ -20,7 +20,7 @@
                 ToolTip="Foo" 
                 ToolTipOpening="ShowConstants" >
             <ninactrl:HintTextBox.HintText>
-                <Binding Mode="TwoWay" Path="Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
+                <Binding Mode="TwoWay" Path="Exp.Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
             </ninactrl:HintTextBox.HintText>
             <ninactrl:HintTextBox.Text>
                 <Binding
@@ -37,7 +37,6 @@
                 <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
                     <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
                     <Binding Path="Val" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
-                    <Binding Path="Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
