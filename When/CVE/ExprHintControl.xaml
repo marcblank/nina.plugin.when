@@ -46,15 +46,3 @@
         </TextBlock>
     </StackPanel>
 </UserControl>
-
-<!--<Binding
-                        Converter="{StaticResource CameraDefaultValueConverter}"
-                        Mode="OneWay"
-                        Path="Data.DefaultOffset"
-                        Source="{StaticResource CameraInfo}"
-                        UpdateSourceTrigger="PropertyChanged" />-->
-
-
-
-
-  

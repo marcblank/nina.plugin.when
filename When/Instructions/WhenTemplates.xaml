@@ -464,26 +464,6 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:SetConstantOld}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Name:" />
-                    <TextBox
-                      MinWidth="40"
-                      Margin="5,1,10,-2"
-                      Text="{Binding Constant, ValidatesOnExceptions=True}"
-                      TextAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" Text="Value:" />
-                    <local:ConstantControl
-                      Margin="5,-2,5,3"
-                      Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                      Valu="{Binding CValue, Mode=TwoWay}"/>
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>
-    
     <DataTemplate DataType="{x:Type local:SetConstant}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
