@@ -209,7 +209,7 @@ namespace WhenPlugin.When {
             }
         }
  
-        public IList<string> Issues => new List<string>();
+        public IList<string> Issues {  get; set; }
 
         protected bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;

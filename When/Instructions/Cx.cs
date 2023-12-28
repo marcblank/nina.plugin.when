@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Validations;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -52,24 +54,19 @@ namespace WhenPlugin.When {
 
         public override bool Validate() {
             if (!IsAttachedToRoot()) return true;
-            Issues.Clear();
+            IList<string> i = new List<string>();
 
             if (Identifier.Length == 0 || Definition.Length == 0) {
-                Issues.Add("A name and a value must be specified");
-                return false;
+                i.Add("A name and a value must be specified");
+            } else  if (!Regex.IsMatch(Identifier, "^[a-zA-Z][a-zA-Z0-9]+$")) {
+                i.Add("The name of a Constant must be alphanumeric");
             }
 
-            if (!Regex.IsMatch(Identifier, "^[a-zA-Z][a-zA-Z0-9]+$")) {
-                Issues.Add("The name of a Constant must be alphanumeric");
-                return false;
-            }
+            Expr.Validate();
 
-            if (Expr.Error != null) {
-                Expr.Evaluate();
-            }
-
-            return true;
-        }
+            Issues = i;
+            return i.Count == 0;
+         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             // Doesn't Execute
