@@ -18,11 +18,11 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class IfThenElse : IfCommand, IValidatable, IIfWhenSwitch {
+    public class IfThenElse : IfCommand, IValidatable, IIfWhenSwitch, ITrueFalse {
 
         [ImportingConstructor]
         public IfThenElse() {
-            Predicate = "";
+            IfExpr = new Expr(this);
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
         public IfThenElse(IfThenElse copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Predicate = copyMe.Predicate;
+                IfExpr = new Expr(this, copyMe.IfExpr.Expression);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
@@ -60,64 +60,26 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public IfContainer ElseInstructions { get; set; }
 
-        public string ValidateConstant(double temp) {
-            if ((int)temp == 0) {
-                return "False";
-            } else if ((int)temp == 1) {
-                return "True";
-            }
-            return string.Empty;
-        }
-
         public bool Check() {
 
-            object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-
-            Logger.Info("IfThenElse: Check, PredicateValue = " + PredicateValue);
-            if (result == null) {
-                return false;
-            }
-            if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                return true;
-            }
-            return false;
+             return false;
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("IfThenElse: Execute, Predicate = " + Predicate);
-            if (string.IsNullOrEmpty(Predicate)) {
+            Logger.Info("If: Execute, Predicate = " + IfExpr.Expression);
+            if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
             }
 
             try {
-                //// See if Predicate contains image parameters?
-                //NCalc.Expression e = new NCalc.Expression(Predicate);
-                //ConstantExpression.Keys k = new ConstantExpression.Keys();
-                //ConstantExpression.GetParsedKeys(e.ParsedExpression, new ConstantExpression.Keys(), k);
-                //if (k.ContainsKey("FWHM") || k.ContainsKey("HFR") || k.ContainsKey("Eccentricity") || k.ContainsKey("StarCount")) {
-                //    // We need to wait...
-                //    Logger.Info("Waiting for image data...");
-                //}
-
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                Logger.Info("IfConstant: Execute, PredicateValue = " + PredicateValue);
-                if (result == null) {
-                    // Syntax error...
-                    Logger.Info("If: There is a syntax error in your expression.");
-                    Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
-                    return;
-                }
-
-                if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
+                if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true!");
                     Runner runner = new Runner(Instructions, null, progress, token);
                     await runner.RunConditional();
                 } else {
-                    Logger.Info("If: If Predicate is false; executing else!");
-                    Runner runner = new Runner(ElseInstructions, null, progress, token);
-                    await runner.RunConditional();
+                    return;
                 }
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
@@ -126,20 +88,24 @@ namespace WhenPlugin.When {
         }
 
         [JsonProperty]
-        public string Predicate { get; set; }
-
-        [JsonProperty]
-        private string iPredicateValue;
-
-        public string PredicateValue {
-            get { return iPredicateValue; }
+        public string Predicate {
+            get => null;
             set {
-                iPredicateValue = value;
-                RaisePropertyChanged(nameof(PredicateValue));
+                IfExpr.Expression = value;
+                RaisePropertyChanged("IfExpr");
 
             }
         }
 
+        private Expr _IfExpr;
+        [JsonProperty]
+        public Expr IfExpr {
+            get => _IfExpr;
+            set {
+                _IfExpr = value;
+                RaisePropertyChanged();
+            }
+        }
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(IfConstant)}, Predicate: {Predicate}";
         }
@@ -150,17 +116,12 @@ namespace WhenPlugin.When {
 
             ValidateInstructions(Instructions);
             ValidateInstructions(ElseInstructions);
+            IfExpr.Validate();
 
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Predicate)) {
+            if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 i.Add("Expression cannot be empty!");
-            }
-
-            try {
-                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            } catch (Exception ex) {
-                i.Add("Error in expression: " + ex.Message);
             }
 
             Switches = ConstantExpression.GetSwitches();
@@ -168,19 +129,6 @@ namespace WhenPlugin.When {
 
             Issues = i;
             return i.Count == 0;
-        }
-
-        public string ShowCurrentInfo() {
-            try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                if (result is Boolean b && !b) {
-                    return "There is a syntax error in the expression.";
-                } else {
-                    return "Your expression is currently: " + (PredicateValue.Equals("0") ? "False" : "True");
-                }
-            } catch (Exception ex) {
-                return "Error: " + ex.Message;
-            }
         }
 
     }

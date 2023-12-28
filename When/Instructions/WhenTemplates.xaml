@@ -1355,16 +1355,7 @@
                                     <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Margin="8,0,5,0" Text="Expression: ">
-                            </TextBlock>
-                            <local:ConstantControl 
-                                  Margin="0,5,10,10" 
-                                  ToolTip="Foo"
-                                  ToolTipOpening="IfConstant_PredicateToolTip"
-                                  Validate="ValidateConstant"
-                                  Expr="{Binding Path=Predicate, Mode=TwoWay}"
-                                  Valu="{Binding Path=PredicateValue, Mode=TwoWay}" 
-                                  />
+                            <local:ExprControl Label="Expression:" Exp="{Binding Path=IfExpr, Mode=TwoWay}" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

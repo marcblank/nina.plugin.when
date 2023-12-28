@@ -47,15 +47,6 @@ namespace WhenPlugin.When {
             };
         }
 
-        public string ValidateConstant(double temp) {
-            if ((int)temp == 0) {
-                return "False";
-            } else if ((int)temp == 1) {
-                return "True";
-            }
-            return string.Empty;
-        }
-
         public bool Check() {
 
              return false;
@@ -86,14 +77,9 @@ namespace WhenPlugin.When {
         private string iPredicate;
         [JsonProperty]
         public string Predicate {
-            get => iPredicate;
+            get => null;
             set {
-                iPredicate = value;
-                if (IfExpr == null) {
-                    IfExpr = new Expr(this);
-                }
                 IfExpr.Expression = value;
-                RaisePropertyChanged();
                 RaisePropertyChanged("IfExpr");
 
             }
@@ -140,14 +126,5 @@ namespace WhenPlugin.When {
             Issues = i;
             return i.Count == 0;
         }
-
-        public string ShowCurrentInfo() {
-            try {
-                return "Your expression is currently: " + (IfExpr.ValueString.Equals("0") ? "False" : "True");
-            } catch (Exception ex) {
-                return "Error: " + ex.Message;
-            }
-        }
-
     }
 }

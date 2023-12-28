@@ -27,14 +27,6 @@ namespace WhenPlugin.When {
             WhenSwitch whenSwitch = (WhenSwitch)(predicateText.DataContext);
             predicateText.ToolTip = whenSwitch.ShowCurrentInfo();
         }
-
-        public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
-            try {
-                ConstantControl predicateText = (ConstantControl)sender;
-                IfConstant ifConstant = (IfConstant)(predicateText.DataContext);
-                predicateText.ToolTip = ifConstant.ShowCurrentInfo();
-            } catch (Exception) { }
-        }
  
         public void WhenSwitch_StopStartToolTip(object sender, ToolTipEventArgs e) {
             TextBlock startStopText = (TextBlock)sender;
