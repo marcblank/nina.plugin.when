@@ -10,6 +10,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Utility;
 using System.Windows.Controls;
+using NINA.Core.Model;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Loop While")]
@@ -65,8 +66,6 @@ namespace WhenPlugin.When {
 
         public IList<string> Issues { get; set; }
 
-        // Parent changed???
-
         public bool Validate() {
 
             var i = new List<string>();
@@ -94,36 +93,17 @@ namespace WhenPlugin.When {
 
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
 
-            if (string.IsNullOrEmpty(Predicate)) {
-                Status = SequenceEntityStatus.FAILED;
+            if (string.IsNullOrEmpty(PredicateExpr.Expression)) {
                 LogInfo("LoopWhile: Check, Predicate is null or empty");
-                return false;
+                throw new SequenceEntityFailedException();
             }
 
-            try {
-                return true;
-                //object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                ////Logger.Info("LoopWhile: Check, PredicateValue = " + PredicateValue);
-                //if (result == null) {
-                //    // Syntax error...
-                //    LogInfo("LoopWhile: There is a syntax error in your predicate expression.");
-                //    Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
-                //    return false;
-                //}
-
-                //if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                //    LogInfo("LoopWhile: Predicate is true!");
-                //    return true;
-                //} else {
-                //    LogInfo("LoopWhile: Predicate is false!");
-                //    return false;
-                //}
-            } catch (ArgumentException ex) {
-                LogInfo("LoopWhile error: " + ex.Message);
-                Status = SequenceEntityStatus.FAILED;
-                return false;
+            if (PredicateExpr.Error != null) {
+                throw new SequenceEntityFailedException();
+            } else {
+                return (PredicateExpr.Value != 0);
             }
-        }
+         }
 
         public override void AfterParentChanged() {
             if (Parent == null) {

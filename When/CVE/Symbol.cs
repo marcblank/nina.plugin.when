@@ -70,15 +70,23 @@ namespace WhenPlugin.When {
             return IsAttachedToRoot (item.Parent);
         }
 
-        public static void SymbolDirty(Symbol sym) {
+        // Must prevent cycles
+        public static void SymbolDirty (Symbol sym) {
+            List<Symbol> dirtyList = new List<Symbol>();
+            iSymbolDirty(sym, dirtyList);
+        }
+
+        public static void iSymbolDirty(Symbol sym, List<Symbol> dirtyList) {
             Debug.WriteLine("SymbolDirty: " + sym);
+            dirtyList.Add(sym);
             // Mark everything in the chain dirty
             foreach (Expr consumer in sym.Consumers) {
                 consumer.ReferenceRemoved(sym);
                 Symbol consumerSym = consumer.ExprSym;
-                // If this Expr is a Symbol, dirty that as well
                 if (!consumer.Dirty && consumerSym != null) {
-                    SymbolDirty(consumerSym);
+                    if (!dirtyList.Contains(consumerSym)) {
+                        iSymbolDirty(consumerSym, dirtyList);
+                    }
                 }
                 consumer.Dirty = true;
                 consumer.Evaluate();
