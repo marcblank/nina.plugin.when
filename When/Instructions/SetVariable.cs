@@ -24,17 +24,17 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetVariable : SequenceItem, IValidatable, ISettable {
+    public class OldSetVariable : SequenceItem, IValidatable, ISettable {
 
         private ISequenceMediator _mediator;
 
         [ImportingConstructor]
-        public SetVariable(ISequenceMediator sequenceMediator) {
+        public OldSetVariable(ISequenceMediator sequenceMediator) {
             Variable = "";
             Icon = Icon;
             _mediator = sequenceMediator;
         }
-        public SetVariable(SetVariable copyMe) : this(copyMe._mediator) {
+        public OldSetVariable(OldSetVariable copyMe) : this(copyMe._mediator) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
@@ -153,7 +153,7 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new SetVariable(this) {
+            return new OldSetVariable(this) {
                 Variable = variable,
                 CValueExpr = CValueExpr,
                 OValueExpr = OValueExpr

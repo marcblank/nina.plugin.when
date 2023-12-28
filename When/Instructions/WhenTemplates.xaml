@@ -520,13 +520,10 @@
                     <TextBox
                        MinWidth="40"
                        Margin="5,1,10,-2"
-                       Text="{Binding Variable, ValidatesOnExceptions=True}"
+                       Text="{Binding Identifier}"
                        TextAlignment="Center" />
                     <TextBlock VerticalAlignment="Center" Text="Initially:" />
-                    <local:ConstantControl
-                      Margin="5,-2,5,3"
-                      Expr="{Binding OValueExpr, Mode=TwoWay}" 
-                      Valu="{Binding OValue, Mode=TwoWay}"/>
+                    <local:ExprControl Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="Currently:" />
                     <local:ConstantControlVariable
                       Margin="5,0,5,3"

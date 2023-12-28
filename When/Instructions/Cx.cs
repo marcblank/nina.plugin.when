@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Constant")]
+    [ExportMetadata("Name", "Define Constant")]
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (CV)")]
@@ -53,14 +53,14 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
             Issues.Clear();
 
-              if (Identifier.Length == 0 || Definition.Length == 0) {
+            if (Identifier.Length == 0 || Definition.Length == 0) {
                 Issues.Add("A name and a value must be specified");
                 return false;
             }
 
-            if (!Regex.IsMatch(Identifier, "^[a-zA-Z0-9]*$")) {
-                Issues.Add("The name of a Constant must be alphanumeric");
-                return false;
+            if (!Regex.IsMatch(Identifier, "[a-zA-Z]^[a-zA-Z0-9]*$")) {
+  //              Issues.Add("The name of a Constant must be alphanumeric");
+   //             return false;
             }
 
             if (Expr.Error != null) {

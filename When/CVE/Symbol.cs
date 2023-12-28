@@ -277,7 +277,8 @@ namespace WhenPlugin.When {
                 sb.Append(sym.Identifier.ToString());
                 sb.Append(" (in ");
                 sb.Append(sym.Parent.Name);
-                sb.Append(")");
+                sb.Append(") = ");
+                sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
                 if (--cnt > 0) sb.Append("; ");
             }
             tb.ToolTip = sb.ToString();
@@ -289,6 +290,9 @@ namespace WhenPlugin.When {
         public override string ToString() {
             return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
         }
+
+        // DEBUGGING
+
         public static void ShowSymbols () {
             foreach (var k in SymbolCache) {
                 ISequenceContainer c = k.Key;
