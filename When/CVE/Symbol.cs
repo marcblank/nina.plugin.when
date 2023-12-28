@@ -268,7 +268,11 @@ namespace WhenPlugin.When {
             Dictionary<string, Symbol> syms = exp.Resolved;
             int cnt = syms.Count;
             if (cnt == 0) {
-                tb.ToolTip = "No symbols used in this expression";
+                if (exp.References.Count == 1) {
+                    tb.ToolTip = "The symbol is not yet defined";
+                } else {
+                    tb.ToolTip = "No defined symbols used in this expression";
+                }
                 return;
             }
             StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");

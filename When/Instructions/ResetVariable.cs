@@ -23,24 +23,32 @@ namespace WhenPlugin.When {
     public class ResetVariable : SequenceItem, IValidatable {
         [ImportingConstructor]
         public ResetVariable() {
-            Variable = "";
             Icon = Icon;
+            Expr = new Expr(this);
         }
         public ResetVariable(ResetVariable copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 CValueExpr = copyMe.CValueExpr;
                 Icon = copyMe.Icon;
+                Expr = Expr;
+                Expr.Expression = copyMe.Expr.Expression;
+                Variable = copyMe.Variable;
             }
         }
 
-        public string Dummy;
+        private Expr _Expr = null;
 
-        public static WhenPlugin WhenPluginObject { get; set; }
+        [JsonProperty]
+        public Expr Expr {
+            get => _Expr;
+            set {
+                _Expr = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private string variable;
-
-        public bool IsSetvariable { get; set; } = false;
 
         [JsonProperty]
         public string Variable {
@@ -51,54 +59,6 @@ namespace WhenPlugin.When {
                 }
                 variable = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public bool DuplicateName { get; set; } = false;
-        
-        private string cValueExpr = "0";
-        [JsonProperty]
-        public string CValueExpr {
-            get => cValueExpr;
-            set {
-                if (cValueExpr == value) {
-                    return;
-                }
-                cValueExpr = value;
-                RaisePropertyChanged("CValueExpr");
-                RaisePropertyChanged("CValue");
-                ConstantExpression.GlobalContainer.Validate();
-            }
-        }
-
-        private string cValue = "Undefined";
-
-        public string ValidateVariable(double var) {
-            ISequenceEntity p = ConstantExpression.FindKeyContainer(Parent, Variable);
-            if (p == null) {
-                return "Undefined: '" + Variable + "'";
-            }
-            if (p is ISequenceContainer sc) {
-                foreach (ISequenceEntity item in sc.Items) {
-                    if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
-                        if (item.Status == SequenceEntityStatus.FINISHED) {
-                            return String.Empty;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-            return "Not Yet Defined";
-        }
-
-        [JsonProperty]
-        public string CValue {
-            get => cValue;
-            set {
-                cValue = value;
-                // We get into trouble here because IsValid is called within IsValid...
-                //RaisePropertyChanged();
             }
         }
 
@@ -113,43 +73,13 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-        private static void DebugInfo(params string[] strs) {
-            if (Debugging) {
-                Debug.WriteLine(String.Join("", strs));
-            }
-        }
-
+  
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            // Find the SetVariable for this variable
-            ISequenceEntity p = ConstantExpression.FindKeyContainer(this, Variable);
-            if (p == null) {
-                throw new SequenceEntityFailedException("Variable is undefined.");
-            }
-            if (p is ISequenceContainer sc) {
-                foreach (ISequenceEntity item in sc.Items) {
-                    if (item is SetVariable sv && sv.Variable.Equals(Variable)) {
-                        // Found it!;;
-                        //Logger.Info(String.Join("", "  ** Before SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr));
-                        ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
-                        sv.CValue = cValue;
-                        sv.CValueExpr = cValue;
-                        //Logger.Info(String.Join("", "  ** After SetVariable: ", "CValue=", CValue, " CValueExpr=", CValueExpr, " sv.CValue=", sv.CValue, " sv.CValueExpr=", sv.CValueExpr));
-                        ConstantExpression.UpdateConstants(this);
-                        RaisePropertyChanged("CValueExpr");
-                        RaisePropertyChanged("CValue");
-                        return Task.CompletedTask;
-                    }
-                }
-            }
-            // Change its CValueExpr or CValue?
-            Status = SequenceEntityStatus.FAILED;
-            return Task.CompletedTask;
+             return Task.CompletedTask;
         }
 
         public override object Clone() {
             return new ResetVariable(this) {
-                Variable = variable,
-                CValueExpr = CValueExpr
             };
         }
 
@@ -164,15 +94,12 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        private ISequenceContainer LastParent { get; set; }
-
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            LastParent = Parent;
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, ValueExpr: {CValueExpr}, Value: {CValue}";
+            return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
         }
 
         public bool Validate() {
@@ -180,22 +107,27 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
 
-            if (DuplicateName) {
-                i.Add("Duplicate name in the same instruction set!");
-            }
+            // Variable has to exist...
 
-            if (Status != SequenceEntityStatus.FINISHED) {
-                ConstantExpression.Evaluate(this, "CValueExpr", "CValue", "");
-            }
+            //if (DuplicateName) {
+            //    i.Add("Duplicate name in the same instruction set!");
+            //}
 
-            RaisePropertyChanged("CValue");
-            RaisePropertyChanged("CValueExpr");
+            // Hmm, what to do?
             
             Issues = i;
-            if (Issues.Count > 0) {
-                cValue = Double.NaN.ToString();
-            }
             return Issues.Count == 0;
+        }
+
+        // Legacy
+
+        [JsonProperty]
+        public string CValueExpr {
+            get => null;
+            set {
+                Expr.Expression = value;
+                RaisePropertyChanged("Expr.Expression");
+            }
         }
     }
 }

@@ -522,10 +522,8 @@
                        Margin="5,1,10,-2"
                        Text="{Binding Identifier}"
                        TextAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" Text="Initially:" />
-                    <local:ExprControl Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
-                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="Currently:" />
-                    <local:ExprControl Exp="{Binding Expr, Mode=TwoWay}"/>
+                    <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
+                    <local:ExprControl Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -540,17 +538,13 @@
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
                     <TextBox
                        MinWidth="40"
                        Margin="5,0,10,-2"
-                       Text="{Binding Variable, ValidatesOnExceptions=True}"
+                       Text="{Binding Identifier}"
                        TextAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" Text="Value:" />
-                    <local:ConstantControl
-                       Margin="5,-4,5,3"
-                       Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                       Valu="{Binding CValue, Mode=TwoWay}"/>
+                    <local:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
