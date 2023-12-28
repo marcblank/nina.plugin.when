@@ -25,27 +25,9 @@ namespace WhenPlugin.When {
 
  
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            TextBox tb = (TextBox)sender;
-            BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
-            var exp = be.ResolvedSource as Expr;
-
-            Dictionary<string, Symbol> syms = exp.Resolved;
-            int cnt = syms.Count;
-            if (cnt == 0) {
-                tb.ToolTip = "No symbols used in this expression";
-                return;
-            }
-            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: "));
-
-            foreach (Symbol sym in syms.Values) {
-                sb.Append(sym.Identifier.ToString());
-                sb.Append(" (in ");
-                sb.Append(sym.Parent.Name);
-                sb.Append(")");
-                if (--cnt > 0) sb.Append("; ");
-            }
-            tb.ToolTip = sb.ToString();
+            Symbol.ShowSymbols(sender);
         }
+
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
         //    TextBox predicateText = (TextBox)sender;
         //    IfConstant ifConstant = (IfConstant)(predicateText.DataContext);

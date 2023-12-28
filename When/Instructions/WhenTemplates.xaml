@@ -481,6 +481,8 @@
                        MinWidth="40"
                        Margin="5,0,10,-2"
                        Text="{Binding Definition}"
+                       ToolTip="Foo"
+                       ToolTipOpening="ShowConstants"
                        TextAlignment="Center" />
                     <local:SymControl Exp="{Binding Expr}"/>
                     <Button

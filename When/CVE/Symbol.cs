@@ -16,6 +16,8 @@ using Google.Protobuf.WellKnownTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.ComponentModel;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace WhenPlugin.When {
   
@@ -247,6 +249,40 @@ namespace WhenPlugin.When {
             }
             return null;
         }
+
+        public static void ShowSymbols(object sender) {
+            TextBox tb = (TextBox)sender;
+            BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
+            Expr exp = be.ResolvedSource as Expr;
+
+            if (exp == null) {
+                Symbol s = be.ResolvedSource as Symbol;
+                if (s != null) {
+                    exp = s.Expr;
+                } else {
+                    tb.ToolTip = "??";
+                    return;
+                }
+            }
+ 
+            Dictionary<string, Symbol> syms = exp.Resolved;
+            int cnt = syms.Count;
+            if (cnt == 0) {
+                tb.ToolTip = "No symbols used in this expression";
+                return;
+            }
+            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
+
+            foreach (Symbol sym in syms.Values) {
+                sb.Append(sym.Identifier.ToString());
+                sb.Append(" (in ");
+                sb.Append(sym.Parent.Name);
+                sb.Append(")");
+                if (--cnt > 0) sb.Append("; ");
+            }
+            tb.ToolTip = sb.ToString();
+        }
+
 
         public abstract bool Validate();
 

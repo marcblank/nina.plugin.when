@@ -8,7 +8,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" 
                 VerticalAlignment="Center">
-        <TextBlock VerticalAlignment="Center" Margin="-7,-4,0,-4">
+        <TextBlock VerticalAlignment="Center" Margin="-7,-4,0,-4" >
             <TextBlock.Visibility>
                 <Binding Path="Exp.IsExpression" RelativeSource="{RelativeSource AncestorType={x:Type local:SymControl}}" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
             </TextBlock.Visibility>
