@@ -53,6 +53,7 @@ namespace WhenPlugin.When {
                     null,
                     new TakeExposure(profileService, cameraMediator, imagingMediator, imageSaveMediator, imageHistoryVM),
                     new LoopCondition() { Iterations = 1 }) {
+            IterExpr = new Expr(this);
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
@@ -97,7 +98,7 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterationsExpr = cloneMe.IterationsExpr;
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression);
             }
         }
 
@@ -108,34 +109,29 @@ namespace WhenPlugin.When {
         public LoopCondition GetLoopCondition() {
             return Conditions[0] as LoopCondition;
         }
+
+        [JsonProperty]
+        public Expr IterExpr {  get; set; }
         
-        private string iterationsExpr = "1";
 
         [JsonProperty]
         public string IterationsExpr {
-            get => iterationsExpr;
+            get => null;
             set {
-                iterationsExpr = value;
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
-                RaisePropertyChanged();
+                IterExpr.Expression = value;
+                RaisePropertyChanged("IterExpr");
             }
         }
-        [JsonProperty]
-        public int IterationCount {
-            get => (Conditions[0] as LoopCondition).Iterations;
-            set {
-                //
-                if (Conditions.Count == 0) return;
-                LoopCondition lc = Conditions[0] as LoopCondition;
-                lc.Iterations = value;
-                RaisePropertyChanged("IterationCount");
-            }
-        } 
-        
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            IterExpr.Evaluate();
+        }
+
         public override bool Validate() {
+            IterExpr.Validate();
             var valid = GetTakeExposure().Validate();
             IList<string> i = GetTakeExposure().Issues;
-            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
             Issues = i;
             RaisePropertyChanged("Issues");
             return valid && (Issues.Count == 0);
