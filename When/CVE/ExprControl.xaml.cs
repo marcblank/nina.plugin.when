@@ -1,7 +1,10 @@
 ﻿using NINA.Sequencer;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace WhenPlugin.When {
 
@@ -22,14 +25,26 @@ namespace WhenPlugin.When {
 
  
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            //TextBox tb = (TextBox)sender;
-            //ISequenceEntity item = (ISequenceEntity)tb.DataContext;
-            //var stack = ConstantExpression.GetKeyStack(item);
-            //if (stack == null || stack.Count == 0) {
-            //    tb.ToolTip = "There are no valid, defined constants.";
-            //} else {
-            //    tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
-            //}
+            TextBox tb = (TextBox)sender;
+            BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
+            var exp = be.ResolvedSource as Expr;
+
+            Dictionary<string, Symbol> syms = exp.Resolved;
+            int cnt = syms.Count;
+            if (cnt == 0) {
+                tb.ToolTip = "No symbols used in this expression";
+                return;
+            }
+            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: "));
+
+            foreach (Symbol sym in syms.Values) {
+                sb.Append(sym.Identifier.ToString());
+                sb.Append(" (in ");
+                sb.Append(sym.Parent.Name);
+                sb.Append(")");
+                if (--cnt > 0) sb.Append("; ");
+            }
+            tb.ToolTip = sb.ToString();
         }
         public void IfConstant_PredicateToolTip(object sender, ToolTipEventArgs e) {
         //    TextBox predicateText = (TextBox)sender;
