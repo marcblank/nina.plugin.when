@@ -58,9 +58,9 @@ namespace WhenPlugin.When {
                 return false;
             }
 
-            if (!Regex.IsMatch(Identifier, "[a-zA-Z]^[a-zA-Z0-9]*$")) {
-  //              Issues.Add("The name of a Constant must be alphanumeric");
-   //             return false;
+            if (!Regex.IsMatch(Identifier, "^[a-zA-Z][a-zA-Z0-9]+$")) {
+                Issues.Add("The name of a Constant must be alphanumeric");
+                return false;
             }
 
             if (Expr.Error != null) {

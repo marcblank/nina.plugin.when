@@ -525,11 +525,7 @@
                     <TextBlock VerticalAlignment="Center" Text="Initially:" />
                     <local:ExprControl Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="Currently:" />
-                    <local:ConstantControlVariable
-                      Margin="5,0,5,3"
-                      Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                      Validate="ValidateVariable"
-                      Valu="{Binding CValue, Mode=TwoWay}"/>
+                    <local:ExprControl Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
