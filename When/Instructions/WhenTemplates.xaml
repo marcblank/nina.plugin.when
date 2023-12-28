@@ -2265,7 +2265,6 @@
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="#" />
                     <local:ExprControl Label="#" Exp="{Binding IterExpr}" />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>

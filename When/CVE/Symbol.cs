@@ -242,7 +242,7 @@ namespace WhenPlugin.When {
                         return cached[identifier];
                     }
                 }
-                ConstantExpression.GetSwitchWeatherKeys();
+                //ConstantExpression.GetSwitchWeatherKeys();
                 context = context.Parent;
             }
             return null;
