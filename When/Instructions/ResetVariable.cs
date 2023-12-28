@@ -12,6 +12,8 @@ using System.Diagnostics;
 using NINA.Core.Enum;
 using NINA.Sequencer;
 using NINA.Core.Utility;
+using NCalc.Domain;
+using System.Text.RegularExpressions;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -106,14 +108,22 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
+            if (Expr.Expression.Length == 0 || Variable.Length == 0) {
+                i.Add("The variable and new value expression must both be specified");
+            }
+            if (!Regex.IsMatch(Variable, "^[a-zA-Z][a-zA-Z0-9]+$")) {
+                i.Add("'" + Variable + "' is not a legal Variable name");
+            }
+            // Variable must be within scope...
+            Symbol sym = Symbol.FindSymbol(Variable, Parent);
+            if (sym == null) {
+                i.Add("The Variable '" + Variable + "' is not in scope.");
+            } else if (sym is SetConstant) {
+                i.Add("The symbol '" + Variable + "' is a Constant and may not be used with this instruction");
 
-            // Variable has to exist...
+            }
 
-            //if (DuplicateName) {
-            //    i.Add("Duplicate name in the same instruction set!");
-            //}
-
-            // Hmm, what to do?
+            Expr.Validate();
             
             Issues = i;
             return Issues.Count == 0;

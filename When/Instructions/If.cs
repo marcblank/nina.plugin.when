@@ -119,10 +119,8 @@ namespace WhenPlugin.When {
             Switches = ConstantExpression.GetSwitches();
             RaisePropertyChanged("Switches");
 
-            if (IfExpr.Error != null) {
-                IfExpr.Evaluate();
-            }
-
+            IfExpr.Validate();
+ 
             Issues = i;
             return i.Count == 0;
         }

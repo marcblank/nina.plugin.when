@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using NINA.Sequencer.Validations;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -17,7 +18,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class SetConstant : Symbol {
+    public class SetConstant : Symbol, IValidatable {
 
         [ImportingConstructor]
         public SetConstant() : base() {

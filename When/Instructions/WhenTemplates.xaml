@@ -542,7 +542,7 @@
                     <TextBox
                        MinWidth="40"
                        Margin="5,0,10,-2"
-                       Text="{Binding Identifier}"
+                       Text="{Binding Variable}"
                        TextAlignment="Center" />
                     <local:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
