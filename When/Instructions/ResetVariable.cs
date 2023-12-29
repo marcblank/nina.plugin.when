@@ -14,6 +14,9 @@ using NINA.Sequencer;
 using NINA.Core.Utility;
 using NCalc.Domain;
 using System.Text.RegularExpressions;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Profile.Interfaces;
+using NINA.Profile;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -24,19 +27,24 @@ namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetVariable : SequenceItem, IValidatable {
         [ImportingConstructor]
+
+
         public ResetVariable() {
             Icon = Icon;
             Expr = new Expr(this);
         }
+
         public ResetVariable(ResetVariable copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                CValueExpr = copyMe.CValueExpr;
-                Icon = copyMe.Icon;
-                Expr = Expr;
-                Expr.Expression = copyMe.Expr.Expression;
-                Variable = copyMe.Variable;
             }
+        }
+
+        public override object Clone() {
+            ResetVariable clone = new ResetVariable(this) { };
+            clone.Expr = new Expr(clone, this.Expr.Expression);
+            clone.Variable = this.Variable;
+            return clone;
         }
 
         private Expr _Expr = null;
@@ -77,12 +85,27 @@ namespace WhenPlugin.When {
         }
   
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-             return Task.CompletedTask;
-        }
+            // Bunch of reasons the instructiopn might be invalid
+            if (Issues.Count != 0) {
+                throw new SequenceEntityFailedException("The instruction is invalid");
+            }
+            // Find Symbol, make sure it's valid
+            Symbol sym = Symbol.FindSymbol(Variable, Parent);
+            if (sym == null || !(sym is SetVariable)) {
+                throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
+            } else if (Expr.Error != null) {
+                throw new SequenceEntityFailedException("The value of the expression '" + Expr.Expression + "' was invalid");
+            }
+            SetVariable sv = sym as SetVariable;
+            if (sv == null || sv.Executed == false) {
+                throw new SequenceEntityFailedException("The Variable definition has not been executed");
+            }
 
-        public override object Clone() {
-            return new ResetVariable(this) {
-            };
+            // Whew!
+            Expr.Evaluate();
+            sym.Definition = Expr.Value.ToString();
+
+            return Task.CompletedTask;
         }
 
         private bool IsAttachedToRoot() {
@@ -98,10 +121,12 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            //Expr.Validate();
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
+            return "ResetVariable";
+            //return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
         }
 
         public bool Validate() {
@@ -121,7 +146,7 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Expr.Validate();
+            Expr.Evaluate();
             
             Issues = i;
             return Issues.Count == 0;
