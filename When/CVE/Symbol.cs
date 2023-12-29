@@ -47,7 +47,7 @@ namespace WhenPlugin.When {
              }
         }
 
-        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]+$";
+        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
         private bool Debugging = true;
 
@@ -60,7 +60,7 @@ namespace WhenPlugin.When {
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
-                if (p is SequenceRootContainer) {
+                if (p is SequenceRootContainer || p == WhenPluginObject.Globals) {
                     return true;
                 } else {
                     p = p.Parent;
@@ -100,7 +100,7 @@ namespace WhenPlugin.When {
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((Parent == null) ? "null" : Parent.Name));
-            if (!IsAttachedToRoot(Parent)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.Remove(this);
@@ -225,6 +225,8 @@ namespace WhenPlugin.When {
         }
 
         public HashSet<Expr> Consumers = new HashSet<Expr>();
+        public static WhenPlugin WhenPluginObject { get; set; }
+
 
         public void AddConsumer (Expr expr) {
             if (!Consumers.Contains(expr)) {

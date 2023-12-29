@@ -182,10 +182,13 @@ namespace WhenPlugin.When {
             }
         }
 
+        // References are the parsed tokens used in the Expr
         public HashSet<string> References { get; set; } = new HashSet<string>();
 
+        // Resolved are the Symbol's that have been found (from the References)
         public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
         
+        // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
         class ParameterExtractionVisitor : LogicalExpressionVisitor {
@@ -276,14 +279,25 @@ namespace WhenPlugin.When {
                         }
                         sym.AddConsumer(this);
                     } else {
+                        bool found = false;
+                        SymbolDictionary cached;
+                        if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
+                            Symbol global;
+                            if (cached != null && cached.TryGetValue(symReference, out global) && global.Expr.Error == null) {
+                                Resolved.Remove(symReference);
+                                Resolved.Add(symReference, global);
+                                Parameters.Remove(symReference);
+                                Parameters.Add(symReference, global.Expr.Value);
+                                found = true;
+                            }
+                        }
                         // Try in the old Switch/Weather keys
                         object Val;
-                        if (DataSymbols.TryGetValue(symReference, out Val)) {
+                        if (! found && DataSymbols.TryGetValue(symReference, out Val)) {
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
                             Volatile = true;
                         }
-
                     }
                 }
             }

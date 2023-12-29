@@ -60,8 +60,8 @@ namespace WhenPlugin.When {
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
             // Hook into image saving for adding FITS keywords or image file patterns
+            Symbol.WhenPluginObject = this;
             CreateGlobalSetConstants(this);
-            //SetConstant.WhenPluginObject = this;
             ConstantExpression.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator);
 
         }
@@ -115,16 +115,17 @@ namespace WhenPlugin.When {
         private void CreateGlobalSetConstants (WhenPlugin plugin) {
             Globals.Name = "Global Constants";
             var def = Properties.Settings.Default;
-            //Globals.Items.Add(new SetConstant() { Constant = Name1, CValueExpr = Value1, AllProfiles = All1, GlobalName = "Name1", GlobalValue = "Value1", GlobalAll = "All1" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name2, CValueExpr = Value2, AllProfiles = All2, GlobalName = "Name2", GlobalValue = "Value2", GlobalAll = "All2" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name3, CValueExpr = Value3, AllProfiles = All3, GlobalName = "Name3", GlobalValue = "Value3", GlobalAll = "All3" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name4, CValueExpr = Value4, AllProfiles = All4, GlobalName = "Name4", GlobalValue = "Value4", GlobalAll = "All4" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name5, CValueExpr = Value5, AllProfiles = All5, GlobalName = "Name5", GlobalValue = "Value5", GlobalAll = "All5" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name6, CValueExpr = Value6, AllProfiles = All6, GlobalName = "Name6", GlobalValue = "Value6", GlobalAll = "All6" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name7, CValueExpr = Value7, AllProfiles = All7, GlobalName = "Name7", GlobalValue = "Value7", GlobalAll = "All7" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, AllProfiles = All8, GlobalName = "Name8", GlobalValue = "Value8", GlobalAll = "All8" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, AllProfiles = All9, GlobalName = "Name9", GlobalValue = "Value9", GlobalAll = "All9" });
-            //Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, AllProfiles = All10, GlobalName = "Name10", GlobalValue = "Value10", GlobalAll = "All10" });
+            Globals.Items.Add(new SetConstant() { Constant = Name1, CValueExpr = Value1, AllProfiles = All1, GlobalName = "Name1", GlobalValue = "Value1", GlobalAll = "All1" });
+            Globals.Items.Add(new SetConstant() { Constant = Name2, CValueExpr = Value2, AllProfiles = All2, GlobalName = "Name2", GlobalValue = "Value2", GlobalAll = "All2" });
+            Globals.Items.Add(new SetConstant() { Constant = Name3, CValueExpr = Value3, AllProfiles = All3, GlobalName = "Name3", GlobalValue = "Value3", GlobalAll = "All3" });
+            Globals.Items.Add(new SetConstant() { Constant = Name4, CValueExpr = Value4, AllProfiles = All4, GlobalName = "Name4", GlobalValue = "Value4", GlobalAll = "All4" });
+            Globals.Items.Add(new SetConstant() { Constant = Name5, CValueExpr = Value5, AllProfiles = All5, GlobalName = "Name5", GlobalValue = "Value5", GlobalAll = "All5" });
+            Globals.Items.Add(new SetConstant() { Constant = Name6, CValueExpr = Value6, AllProfiles = All6, GlobalName = "Name6", GlobalValue = "Value6", GlobalAll = "All6" });
+            Globals.Items.Add(new SetConstant() { Constant = Name7, CValueExpr = Value7, AllProfiles = All7, GlobalName = "Name7", GlobalValue = "Value7", GlobalAll = "All7" });
+            Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, AllProfiles = All8, GlobalName = "Name8", GlobalValue = "Value8", GlobalAll = "All8" });
+            Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, AllProfiles = All9, GlobalName = "Name9", GlobalValue = "Value9", GlobalAll = "All9" });
+            Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, AllProfiles = All10, GlobalName = "Name10", GlobalValue = "Value10", GlobalAll = "All10" });
+
 
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);

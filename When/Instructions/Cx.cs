@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using NINA.Sequencer.Validations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Define Constant")]
@@ -83,6 +84,27 @@ namespace WhenPlugin.When {
 
         private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
         public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(WriteSymbols);
+
+        // Global Constants
+
+        public string GlobalName { get; set; }
+        public string GlobalValue { get; set; }
+        public string GlobalAll { get; set; }
+
+        public string Dummy;
+
+        private bool allProfiles = true;
+
+        public bool AllProfiles {
+            get => allProfiles;
+            set {
+                if (GlobalName != null) {
+                    PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalAll);
+                    pi?.SetValue(WhenPluginObject, value, null);
+                }
+                allProfiles = value;
+            }
+        }
 
         // Legacy
 

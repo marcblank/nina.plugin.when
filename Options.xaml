@@ -42,26 +42,26 @@
                                                     ToolTip="If set, this Global Constant will apply to ALL profiles; otherwise, just for the current profile." />
                                                 <TextBlock Margin="50,0,0,0" VerticalAlignment="Center" Text="Name:"/>
                                                 <TextBox
-                                                    MinWidth="100"
-                                                    Margin="5,0,10,-2"
-                                                    Text="{Binding Constant}"
-                                                    TextAlignment="Center" />
+                                                    MinWidth="170"
+                                                    Margin="5,-10,10,-2"
+                                                    Text="{Binding Identifier}"
+                                                    TextAlignment="Center" 
+                                                    VerticalAlignment="Center"/>
                                                 <TextBlock VerticalAlignment="Center" Text="Value:" />
-                                                <local:ConstantControl
-                                                    Margin="5,0,5,3"
-                                                    MinWidth="100"
-                                                    Expr="{Binding CValueExpr, Mode=TwoWay}" 
-                                                    Valu="{Binding CValue, Mode=TwoWay}"/>
+                                                <TextBox
+                                                    VerticalAlignment="Center"
+                                                    MinWidth="40"
+                                                    Margin="5,-2,10,-2"
+                                                    Text="{Binding Definition}"
+                                                    ToolTip=""
+                                                    ToolTipOpening="ShowConstants"
+                                                    TextAlignment="Center" />
+                                                <local:SymControl Exp="{Binding Expr}"/>
                                             </StackPanel>
 
                                         </local:GlobalConstantView.SequenceItemContent>
                                     </local:GlobalConstantView>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding IsSetConstant}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Hidden"></Setter>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
+                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Grid>
