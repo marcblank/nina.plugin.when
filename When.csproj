@@ -10,9 +10,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="localappdata\**" />
+    <Compile Remove="When\CVE - Copy\**" />
     <EmbeddedResource Remove="localappdata\**" />
+    <EmbeddedResource Remove="When\CVE - Copy\**" />
     <None Remove="localappdata\**" />
+    <None Remove="When\CVE - Copy\**" />
     <Page Remove="localappdata\**" />
+    <Page Remove="When\CVE - Copy\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
