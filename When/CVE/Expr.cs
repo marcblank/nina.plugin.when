@@ -130,7 +130,7 @@ namespace WhenPlugin.When {
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
-        private double _value = 0; // Double.MinValue;
+        private double _value = Double.MinValue;
         public double Value {
             get => _value;
             set {
@@ -250,6 +250,9 @@ namespace WhenPlugin.When {
         }
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
+
+        private static int EvaluateCount = 0;
+
         public void Evaluate() {
             if (!IsExpression) return;
             if (ExprItem == null || !Symbol.IsAttachedToRoot(ExprItem)) return;
@@ -308,6 +311,7 @@ namespace WhenPlugin.When {
             Error = null;
             try {
                 object eval = e.Evaluate();
+                EvaluateCount++;
                 // We got an actual value
                 if (eval is Boolean b) {
                     Value = b ? 1 : 0;
@@ -317,7 +321,6 @@ namespace WhenPlugin.When {
                 Error = null;
                 RaisePropertyChanged("ValueString");
                 RaisePropertyChanged("Value");
-                DebugWrite();
 
             } catch (ArgumentException ex) {
                 string error = ex.Message;
@@ -327,7 +330,6 @@ namespace WhenPlugin.When {
                     error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
                 }
                 Error = error;
-                DebugWrite();
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }

@@ -523,7 +523,7 @@
                        Text="{Binding Identifier}"
                        TextAlignment="Center" />
                     <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
-                    <local:ExprControl Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}"/>
+                    <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

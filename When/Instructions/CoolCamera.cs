@@ -153,7 +153,7 @@ namespace WhenPlugin.When {
             TempExpr.Validate();
             DurExpr.Validate();
 
-            if (ValidateTemperature(TempExpr.Value) != String.Empty) {
+            if (TempExpr.Value != Double.MinValue && ValidateTemperature(TempExpr.Value) != String.Empty) {
                 i.Add(BAD_TEMPERATURE);
             }
 

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using System.Text;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If/Then/Else")]
@@ -73,14 +74,16 @@ namespace WhenPlugin.When {
                 return;
             }
 
+            Runner runner;
             try {
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    Logger.Info("If: If Predicate is true!");
-                    Runner runner = new Runner(Instructions, null, progress, token);
-                    await runner.RunConditional();
+                    Logger.Info("If: If Predicate is true; running Then");
+                    runner = new Runner(Instructions, null, progress, token);
                 } else {
-                    return;
+                    Logger.Info("If: If Predicate is true; running Else");
+                    runner = new Runner(ElseInstructions, null, progress, token);
                 }
+                await runner.RunConditional();
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;

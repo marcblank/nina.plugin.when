@@ -66,6 +66,8 @@ namespace WhenPlugin.When {
                     } else {
                         txt = expr.Value.ToString();
                     }
+                } else if (expr.Value == Double.MinValue) {
+                    txt = "Not evaluated";
                 } else {
                     txt = expr.Error;
                 }

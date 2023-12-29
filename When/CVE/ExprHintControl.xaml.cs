@@ -31,10 +31,7 @@ namespace WhenPlugin.When {
         public String Default { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            TextBox tb = (TextBox)sender;
-            ISequenceItem item = (ISequenceItem)tb.DataContext;
-            var stack = ConstantExpression.GetKeyStack(item);
-            tb.ToolTip = ConstantExpression.DissectExpression(item, tb.Text, stack);
+            Symbol.ShowSymbols(sender);
         }
 
     }

@@ -97,7 +97,7 @@ namespace WhenPlugin.When {
 
             if (Identifier.Length == 0 || OriginalDefinition.Length == 0) {
                 i.Add("A name and an initial value must be specified");
-            } else if (!Regex.IsMatch(Identifier, "^[a-zA-Z][a-zA-Z0-9]+$")) {
+            } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
             }
 

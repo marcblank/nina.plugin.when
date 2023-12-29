@@ -47,6 +47,8 @@ namespace WhenPlugin.When {
              }
         }
 
+        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]+$";
+
         private bool Debugging = true;
 
         public static void Warn (string str) {
