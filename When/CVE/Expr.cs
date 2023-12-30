@@ -356,11 +356,10 @@ namespace WhenPlugin.When {
         }
 
         public void Validate(IList<string> issues) {
-            if (Error == null && Value == Double.MinValue) {
-                Error = "Not defined";
-                issues.Add("The expression cannot be evaluated");
-            } else if (Error != null || Volatile) {
+            if (Error != null || Volatile) {
                 Evaluate();
+            } else if (Value == Double.MinValue) {
+                Error = "Not evaluated";
             }
         }
 

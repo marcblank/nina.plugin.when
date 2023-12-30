@@ -80,6 +80,7 @@ namespace WhenPlugin.When {
             RaisePropertyChanged("Switches");
 
             Issues = i;
+            RaisePropertyChanged("Issues");
             return i.Count == 0;
         }
 

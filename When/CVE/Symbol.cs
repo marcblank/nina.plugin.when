@@ -144,7 +144,7 @@ namespace WhenPlugin.When {
                     // Parent.AfterParentChanged += ??
                 }
             } catch (Exception ex) {
-                Logger.Info("Ex");
+                Logger.Error("Exception in Symbol evaluation: " + ex.Message);
             }
         }
 
