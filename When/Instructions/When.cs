@@ -34,12 +34,13 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class WhenSwitch : When, IValidatable {
+    public class WhenSwitch : When, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public WhenSwitch(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
                 IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator)
             : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator, cameraMediator) {
+            IfExpr = new Expr(this);
         }
 
         public ICameraConsumer cameraConsumer {  get; set; } 
@@ -47,6 +48,7 @@ namespace WhenPlugin.When {
         protected WhenSwitch(WhenSwitch cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
+                IfExpr = new Expr(this, cloneMe.IfExpr.Expression);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
@@ -69,26 +71,26 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-        
-        private string iPredicate = "";
 
+
+        private string iPredicate;
         [JsonProperty]
         public string Predicate {
-            get => iPredicate;
+            get => null;
             set {
-                iPredicate = value;
-                RaisePropertyChanged("Predicate");
+                IfExpr.Expression = value;
+                RaisePropertyChanged("IfExpr");
+
             }
         }
 
-        private string iPredicateValue;
-
-        public string PredicateValue {
-            get { return iPredicateValue; }
+        private Expr _IfExpr;
+        [JsonProperty]
+        public Expr IfExpr {
+            get => _IfExpr;
             set {
-                iPredicateValue = value;
-                RaisePropertyChanged(nameof(PredicateValue));
-
+                _IfExpr = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -111,32 +113,14 @@ namespace WhenPlugin.When {
         public override bool Check() {
             if (Disabled) return true;
 
-            object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-
-            if (result == null) {
-                return true;
-            }
-            if (!string.Equals(PredicateValue, "0", StringComparison.OrdinalIgnoreCase)) {
-                Logger.Info("When: Check, PredicateValue = " + PredicateValue);
+            if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
+                Logger.Info("When: Check, PredicateValue = true");
                 if (OnceOnly) {
                     Disabled = true;
                 }
                 return false;
             }
             return true;
-        }
-
-        public string ShowCurrentInfo() {
-            try {
-                object result = ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-                if (result is Boolean b && !b) {
-                    return "There is a syntax error in the expression.";
-                } else {
-                    return "Your expression is currently: " + (PredicateValue.Equals("0") ? "False" : "True");
-                }
-            } catch (Exception ex) {
-                return "Error: " + ex.Message;
-            }
         }
         public IList<string> Switches { get; set; } = null;
         public new bool Validate() {
@@ -145,14 +129,8 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Predicate)) {
+            if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 i.Add("Expression cannot be empty!");
-            }
-
-            try {
-                ConstantExpression.Evaluate(this, "Predicate", "PredicateValue", 0);
-            } catch (Exception ex) {
-                i.Add("Error in expression: " + ex.Message);
             }
 
             Switches = ConstantExpression.GetSwitches();

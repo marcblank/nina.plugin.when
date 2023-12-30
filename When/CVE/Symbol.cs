@@ -258,6 +258,7 @@ namespace WhenPlugin.When {
             TextBox tb = (TextBox)sender;
             BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
             Expr exp = be.ResolvedSource as Expr;
+            Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
 
             if (exp == null) {
                 Symbol s = be.ResolvedSource as Symbol;
@@ -281,14 +282,22 @@ namespace WhenPlugin.When {
             }
             StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
 
-            foreach (Symbol sym in syms.Values) {
-                sb.Append(sym.Identifier.ToString());
-                sb.Append(" (in ");
-                sb.Append(sym.Parent.Name);
-                sb.Append(") = ");
-                sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
+            foreach (var kvp in syms) {
+                Symbol sym = kvp.Value as Symbol;
+                sb.Append(kvp.Key.ToString());
+                if (sym != null) {
+                    sb.Append(" (in ");
+                    sb.Append(sym.Parent.Name);
+                    sb.Append(") = ");
+                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
+                } else {
+                    // We're a data value
+                    sb.Append(" (Data) = ");
+                    sb.Append(DataSymbols.GetValueOrDefault(kvp.Key, "??"));
+                }
                 if (--cnt > 0) sb.Append("; ");
             }
+
             tb.ToolTip = sb.ToString();
         }
 
