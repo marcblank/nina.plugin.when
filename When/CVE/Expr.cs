@@ -256,6 +256,16 @@ namespace WhenPlugin.When {
 
         private static int EvaluateCount = 0;
 
+        private void Resolve(string reference, Symbol sym) {
+            Parameters.Remove(reference);
+            Resolved.Remove(reference);
+            if (sym.Expr.Error == null) {
+                Resolved.Add(reference, sym);
+                Parameters.Add(reference, sym.Expr.Value);
+
+            }
+
+        }
         public void Evaluate() {
             if (!IsExpression) return;
             if (ExprItem == null || !Symbol.IsAttachedToRoot(ExprItem)) return;
@@ -271,29 +281,24 @@ namespace WhenPlugin.When {
                     Symbol sym = Symbol.FindSymbol(symReference, ExprItem.Parent);
                     if (sym != null) {
                         // Link Expression to the Symbol
-                        Parameters.Remove(symReference);
-                        Resolved.Remove(symReference);
-                        if (sym.Expr.Error == null) {
-                            Resolved.Add(symReference, sym);
-                            Parameters.Add(symReference, sym.Expr.Value);
-                        }
+                        Resolve(symReference, sym);
                         sym.AddConsumer(this);
                     } else {
                         bool found = false;
                         SymbolDictionary cached;
                         if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
                             Symbol global;
-                            if (cached != null && cached.TryGetValue(symReference, out global) && global.Expr.Error == null) {
-                                Resolved.Remove(symReference);
-                                Resolved.Add(symReference, global);
-                                Parameters.Remove(symReference);
-                                Parameters.Add(symReference, global.Expr.Value);
+                            if (cached != null && cached.TryGetValue(symReference, out global)) {
+                                Resolve(symReference, global);
                                 found = true;
                             }
                         }
                         // Try in the old Switch/Weather keys
                         object Val;
                         if (! found && DataSymbols.TryGetValue(symReference, out Val)) {
+                            // There's no Symbol for these...
+                            Resolved.Remove(symReference);
+                            Resolved.Add(symReference, null);
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
                             Volatile = true;
