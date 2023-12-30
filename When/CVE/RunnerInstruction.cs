@@ -9,10 +9,7 @@ using System.Threading.Tasks;
 namespace WhenPlugin.When {
     public abstract class RunnerInstruction : SequenceItem {
 
-        public IInstructionResults GetRunnerInstruction() {
-            return GetRunner().ConditionalCommand;
-        }
-
+ 
         public Runner GetRunner() {
             // Find the Runner responsible for this command
             ISequenceContainer p = Parent;

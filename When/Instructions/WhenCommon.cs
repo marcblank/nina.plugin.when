@@ -44,7 +44,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Icon", "ShieldSVG")]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public abstract class When : SequenceTrigger, IValidatable, IIfWhenSwitch {
+    public abstract class When : SequenceTrigger, IValidatable {
         protected ISafetyMonitorMediator safetyMediator;
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;

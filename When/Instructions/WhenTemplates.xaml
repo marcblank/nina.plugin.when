@@ -606,8 +606,6 @@
                                     MinWidth="300"
                                     Margin="5,5,10,0"
                                     Text="{Binding Predicate}"
-                                    ToolTip="Foo"
-                                    ToolTipOpening="IfSwitch_PredicateToolTip"
                                     VerticalAlignment="Center"
                                     TextAlignment="Left" />
                             <Grid Grid.Column="1" Visibility="Visible">

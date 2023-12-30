@@ -19,7 +19,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class IfThenElse : IfCommand, IValidatable, IIfWhenSwitch, ITrueFalse {
+    public class IfThenElse : IfCommand, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public IfThenElse() {
@@ -78,10 +78,10 @@ namespace WhenPlugin.When {
             try {
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true; running Then");
-                    runner = new Runner(Instructions, null, progress, token);
+                    runner = new Runner(Instructions, progress, token);
                 } else {
                     Logger.Info("If: If Predicate is true; running Else");
-                    runner = new Runner(ElseInstructions, null, progress, token);
+                    runner = new Runner(ElseInstructions, progress, token);
                 }
                 await runner.RunConditional();
             } catch (ArgumentException ex) {

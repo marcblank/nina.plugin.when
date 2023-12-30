@@ -89,7 +89,7 @@ namespace WhenPlugin.When {
             }
 
             // Execute instructions now
-            Runner runner = new Runner(Instructions, null, progress, token);
+            Runner runner = new Runner(Instructions, progress, token);
             await runner.RunConditional();
         }
 

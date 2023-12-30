@@ -234,7 +234,7 @@ namespace WhenPlugin.When {
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Runner runner = new Runner(Instructions, null, progress, token);
+            Runner runner = new Runner(Instructions, progress, token);
             await runner.RunConditional();
         }
 

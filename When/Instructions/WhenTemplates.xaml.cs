@@ -17,12 +17,7 @@ namespace WhenPlugin.When {
         public WhenTemplates() {
             InitializeComponent();
         }
-        public void IfSwitch_PredicateToolTip(object sender, ToolTipEventArgs e) {
-            TextBox predicateText = (TextBox)sender;
-            IfSwitch ifSwitch = (IfSwitch)(predicateText.DataContext);
-            predicateText.ToolTip = ifSwitch.ShowCurrentInfo();
-        }
- 
+  
         public void WhenSwitch_StopStartToolTip(object sender, ToolTipEventArgs e) {
             TextBlock startStopText = (TextBlock)sender;
             WhenUnsafe whenUnsafe = (WhenUnsafe)(startStopText.DataContext);

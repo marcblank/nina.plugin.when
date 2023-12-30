@@ -52,7 +52,7 @@ namespace WhenPlugin.When {
 
                 Logger.Info(Name + " true; triggered.");
 
-                Runner runner = new Runner(Instructions, null, progress, token);
+                Runner runner = new Runner(Instructions, progress, token);
                 await runner.RunConditional();
                 if (runner.ShouldRetry) {
                     runner.ResetProgress();

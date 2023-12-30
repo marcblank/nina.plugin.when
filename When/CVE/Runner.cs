@@ -16,7 +16,7 @@ using NINA.Core.Utility.Notification;
 namespace WhenPlugin.When {
     public class Runner: SequentialContainer {
 
-        public Runner(SequentialContainer runner, IInstructionResults cmd, IProgress<ApplicationStatus> progress, CancellationToken token) {
+        public Runner(SequentialContainer runner, IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (runner.Parent == this) {
                 Notification.ShowError("TBR RECURSION!");
                 Logger.Error("TBR recursing");
@@ -26,7 +26,6 @@ namespace WhenPlugin.When {
             }
             RunInstructions = runner;
             RunInstructions.AttachNewParent(this);
-            ConditionalCommand = cmd;
             Progress = progress;
             Token = token;
             ShouldRetry = false;
@@ -34,8 +33,6 @@ namespace WhenPlugin.When {
         }
 
         public SequentialContainer RunInstructions { get; set; }
-
-        public IInstructionResults ConditionalCommand { get; set; }
 
         public bool ShouldRetry { get; set; }
 

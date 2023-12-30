@@ -38,7 +38,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TakeManyExposures : SequentialContainer, IImmutableContainer, IInstructionResults {
+    public class TakeManyExposures : SequentialContainer, IImmutableContainer {
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -152,10 +152,6 @@ namespace WhenPlugin.When {
         /// When an inner instruction interrupts this set, it should reroute the interrupt to the real parent set
          public override Task Interrupt() {
             return this.Parent?.Interrupt();
-        }
-
-        public InstructionResult GetResults() {
-            throw new NotImplementedException();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class IfConstant : IfCommand, IValidatable, IIfWhenSwitch {
+    public class IfConstant : IfCommand, IValidatable {
 
         [ImportingConstructor]
         public IfConstant() {
@@ -63,7 +63,7 @@ namespace WhenPlugin.When {
             try {
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true!");
-                    Runner runner = new Runner(Instructions, null, progress, token);
+                    Runner runner = new Runner(Instructions, progress, token);
                     await runner.RunConditional();
                 } else {
                     return;
