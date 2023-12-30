@@ -6,12 +6,13 @@
         <UserControl.Resources>
             <local:ExprConverter x:Key="ec" />
             <local:ValConverter x:Key="vc" />
+            <local:CameraTemperatureConverter x:Key="tc" />
         </UserControl.Resources>
     <StackPanel Orientation="Horizontal" 
                 VerticalAlignment="Center" >
         <ninactrl:HintTextBox
                 MinWidth="40"
-                Margin="0,-2,0,-5"
+                Margin="0,-4,0,-5"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -20,7 +21,7 @@
                 ToolTip="Foo" 
                 ToolTipOpening="ShowConstants" >
             <ninactrl:HintTextBox.HintText>
-                <Binding Mode="TwoWay" Path="Exp.Default" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
+                <Binding Mode="TwoWay" Path="Exp.Default" Converter="{StaticResource tc}" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
             </ninactrl:HintTextBox.HintText>
             <ninactrl:HintTextBox.Text>
                 <Binding

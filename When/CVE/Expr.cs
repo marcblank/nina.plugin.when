@@ -36,12 +36,11 @@ namespace WhenPlugin.When {
             new Expr(item, "");
         }
 
-        public Expr(ISequenceEntity item, string type, string validator) {
+        public Expr(ISequenceEntity item, string expression, string type) {
             ExprSym = null;
             ExprItem = item;
-            Expression = "";
+            Expression = expression;
             ExprType = type;
-            ExprValidator = validator;
         }
 
         private string _expression;
@@ -56,6 +55,8 @@ namespace WhenPlugin.When {
                         Value = Default;
                     }
                     _expression = value;
+                    Parameters.Clear();
+                    Resolved.Clear();
                     return;
                 }
                 Double result;

@@ -2022,16 +2022,10 @@
             <util:BindingProxy x:Key="CameraInfo" Data="{Binding CameraInfo}" />
         </WrapPanel.Resources>
 
-        <TextBlock VerticalAlignment="Center" Margin="0,1,0,0" Text="{ns:Loc LblTime}" />
-        <local:ConstantControl 
-            Margin = "8,-1,10,5" 
-            Expr="{Binding Path=ExposureTimeExpr, Mode=TwoWay}"
-            Valu="{Binding Path=ExposureTime, Mode=TwoWay}" 
-
-            />
-
+        <local:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding EExpr}"/>
+ 
         <TextBlock
-            Margin="7.5,0,7.5,0"
+            Margin="7.5,-2,7.5,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Text="|" />
@@ -2043,14 +2037,14 @@
             SelectedItem="{Binding ImageType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock
-            Margin="7.5,0,7.5,0"
+            Margin="7.5,-3,7.5,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Text="|" />
 
-        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
+        <TextBlock VerticalAlignment="Center" Margin="0,-3,0,0" Text="{ns:Loc LblBinning}" />
         <ComboBox
-            Margin="5,0,0,0"
+            Margin="5,-2,0,0"
             DisplayMemberPath="Name"
             ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
             SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -2123,13 +2117,7 @@
                 Text="|" />
 
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-            <local:ConstantHintControl 
-                Margin="8,1,10,5" 
-                Expr="{Binding Path=GainExpr, Mode=TwoWay}"
-                Valu="{Binding Path=Gain, Mode=TwoWay}"
-                Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                Validate="ValidateGain"
-                />
+            <local:ExprHintControl Exp="{Binding GExpr}" />
 
         </WrapPanel>
 
@@ -2150,13 +2138,7 @@
                 VerticalAlignment="Center"
                 Text="|" />
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-            <local:ConstantHintControl 
-                Margin="8,1,10,5" 
-                Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
-                Valu="{Binding Path=Offset, Mode=TwoWay}"
-                Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                Validate="ValidateOffset"
-            />
+            <local:ExprHintControl Exp="{Binding OExpr}" />
         </WrapPanel>
     </WrapPanel>
 

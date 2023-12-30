@@ -37,6 +37,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
+using System.Windows.Navigation;
 
 namespace WhenPlugin.When {
 
@@ -56,8 +57,6 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public TakeExposure(IProfileService profileService, ICameraMediator cameraMediator, IImagingMediator imagingMediator, IImageSaveMediator imageSaveMediator, IImageHistoryVM imageHistoryVM) {
-            Gain = -1;
-            Offset = -1;
             ImageType = CaptureSequence.ImageTypes.LIGHT;
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
@@ -65,22 +64,23 @@ namespace WhenPlugin.When {
             this.imageHistoryVM = imageHistoryVM;
             this.profileService = profileService;
             CameraInfo = this.cameraMediator.GetInfo();
+            EExpr = new Expr(this);
+            GExpr = new Expr(this, "", "Integer");
+            OExpr = new Expr(this, "", "Integer");
+
         }
 
         private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
             CopyMetaData(cloneMe);
+            GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer");
+            OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer");
+            EExpr = new Expr(this, cloneMe.EExpr.Expression, "Integer");
         }
 
         public override object Clone() {
             var clone = new TakeExposure(this) {
-                ExposureTime = ExposureTime,
-                ExposureTimeExpr = ExposureTimeExpr,
                 ExposureCount = 0,
                 Binning = Binning,
-                GainExpr = GainExpr,
-                Gain = Gain,
-                Offset = Offset,
-                OffsetExpr = OffsetExpr,
                 ImageType = ImageType,
             };
 
@@ -90,6 +90,15 @@ namespace WhenPlugin.When {
 
             return clone;
         }
+
+        [JsonProperty]
+        public Expr EExpr { get; set; }
+        [JsonProperty]
+        public Expr GExpr { get; set; }
+        [JsonProperty]
+        public Expr OExpr { get; set; }
+
+
 
         private IList<string> issues = new List<string>();
 
@@ -101,64 +110,32 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string exposureTimeExpr = "0";
 
         [JsonProperty]
         public string ExposureTimeExpr {
-            get => exposureTimeExpr;
+            get => null;
             set {
-                exposureTimeExpr = value;
-                ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0);
+                EExpr.Expression = value;
                 RaisePropertyChanged("ExposureTimeExpr");
             }
         }
 
-        private double exposureTime;
-
-        [JsonProperty]
-        public double ExposureTime { get => exposureTime; set { exposureTime = value; RaisePropertyChanged("ExposureTime"); } }
-
-
-        private string gainExpr = "";
         [JsonProperty]
         public string GainExpr {
-            get => gainExpr;
+            get => null;
             set {
-                gainExpr = value;
-                ConstantExpression.Evaluate(this, "GainExpr", "Gain", CameraInfo.DefaultGain);
-                RaisePropertyChanged("GainExpr");
+                GExpr.Expression = value;
+                RaisePropertyChanged("GExpr");
             }
         }
 
-        private int gain = -1;
-
-        [JsonProperty]
-        public int Gain { get => gain;
-            set {
-                gain = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string offsetExpr = "";
+ 
         [JsonProperty]
         public string OffsetExpr {
-            get => offsetExpr;
+            get => null;
             set {
-                offsetExpr = value;
-                ConstantExpression.Evaluate(this, "OffsetExpr", "Offset", cameraMediator.GetInfo().DefaultOffset);
-                RaisePropertyChanged("OffsetExpr");
-            }
-        }
-
-        private int offset = -1;
-
-        [JsonProperty]
-        public int Offset {
-            get => offset;
-            set {
-                offset = value;
-                RaisePropertyChanged();
+                OExpr.Expression = value;
+                RaisePropertyChanged("OExpr");
             }
         }
 
@@ -172,10 +149,10 @@ namespace WhenPlugin.When {
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (Offset < 0) {
+            } else if (OExpr.Value < 0) {
                 i.Add("Offset cannot be less than 0");
-            } else if (CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin | Offset > CameraInfo.OffsetMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset));
+            } else if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin | OExpr.Value > CameraInfo.OffsetMax)) {
+                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
             }
 
             if (iCount == i.Count) {
@@ -241,10 +218,10 @@ namespace WhenPlugin.When {
                count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
            }
            var capture = new CaptureSequence() {
-                ExposureTime = ExposureTime,
+                ExposureTime = EExpr.Value,
                 Binning = Binning,
-                Gain = Gain,
-                Offset = Offset,
+                Gain = (int)GExpr.Value,
+                Offset = (int)OExpr.Value,
                 ImageType = ImageType,
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
@@ -348,6 +325,10 @@ namespace WhenPlugin.When {
             }
         }
 
+        public double ExposureTime { get => EExpr.Value; set { } }
+        public int Gain { get => (int)GExpr.Value; set { } }
+        public int Offset { get => (int)OExpr.Value; set { } }
+
         private void AddOptionalResult(ConstantExpression.Keys results, StarDetectionAnalysis a, string name) {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
@@ -409,10 +390,10 @@ namespace WhenPlugin.When {
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (Gain < -1) {
+            } else if (GExpr.Value < -1) {
                 i.Add("Gain cannot be less than -1");
-            } else if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
+            } else if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
+                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
             }
 
             //Logger.Info("** Temp setting: " + profileService.ActiveProfile.CameraSettings.Temperature);
@@ -430,11 +411,14 @@ namespace WhenPlugin.When {
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {
-                if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
-                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
+                if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
+                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
                 }
-                if (CameraInfo.CanSetOffset && Offset > -1 && (Offset < CameraInfo.OffsetMin || Offset > CameraInfo.OffsetMax)) {
-                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, Offset));
+                if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
+                    i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
+                }
+                if (EExpr.Expression?.Length == 0) {
+                    i.Add("There must be an exposure time set");
                 }
             }
 
@@ -446,11 +430,13 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            ConstantExpression.Evaluate(this, "ExposureTimeExpr", "ExposureTime", 0, i);
-            ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, i);
-            ConstantExpression.Evaluate(this, "OffsetExpr", "Offset", -1, i);
+            GExpr.Default = CameraInfo.DefaultGain;
+            OExpr.Default = CameraInfo.DefaultOffset;
 
-            RaisePropertyChanged("ExposureTimeExpr");
+            GExpr.Validate();
+            OExpr.Validate();
+            EExpr.Validate();
+
             Issues = i;
             return i.Count == 0;
         }
@@ -461,13 +447,13 @@ namespace WhenPlugin.When {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(this.ExposureTime);
+            return TimeSpan.FromSeconds(this.EExpr.Value);
         }
 
         public override string ToString() {
-            var currentGain = Gain == -1 ? CameraInfo.DefaultGain : Gain;
-            var currentOffset = Offset == -1 ? CameraInfo.DefaultOffset : Offset;
-            return $"Category: {Category}, Item: {nameof(TakeExposure)}, ExposureTime {ExposureTime}, Gain {currentGain}, Offset {currentOffset}, ImageType {ImageType}, Binning {Binning?.Name ?? "1x1"}";
+            var currentGain = GExpr.Value == -1 ? CameraInfo.DefaultGain : GExpr.Value;
+            var currentOffset = OExpr.Value == -1 ? CameraInfo.DefaultOffset : OExpr.Value;
+            return $"Category: {Category}, Item: {nameof(TakeExposure)}, ExposureTime {EExpr.Value}, Gain {currentGain}, Offset {currentOffset}, ImageType {ImageType}, Binning {Binning?.Name ?? "1x1"}";
         }
     }
 }
