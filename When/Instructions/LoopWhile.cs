@@ -74,7 +74,7 @@ namespace WhenPlugin.When {
                 i.Add("Expression cannot be empty!");
             }
 
-            PredicateExpr.Validate();
+            PredicateExpr.Validate(i);
 
             Switches = ConstantExpression.GetSwitches();
             RaisePropertyChanged("Switches");

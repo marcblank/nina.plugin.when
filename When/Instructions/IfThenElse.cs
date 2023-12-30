@@ -117,11 +117,11 @@ namespace WhenPlugin.When {
 
         public new bool Validate() {
 
+            var i = new List<string>();
+
             ValidateInstructions(Instructions);
             ValidateInstructions(ElseInstructions);
-            IfExpr.Validate();
-
-            var i = new List<string>();
+            IfExpr.Validate(i);
 
             if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 i.Add("Expression cannot be empty!");

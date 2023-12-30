@@ -259,7 +259,7 @@ namespace WhenPlugin.When {
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
-            if (sym.Expr.Error == null) {
+            if (sym.Expr.Error == null && sym.Expr.Value != Double.MinValue) {
                 Resolved.Add(reference, sym);
                 Parameters.Add(reference, sym.Expr.Value);
 
@@ -355,10 +355,17 @@ namespace WhenPlugin.When {
             Dirty = false;
         }
 
-        public void Validate() {
-            if (Error != null || Volatile) {
+        public void Validate(IList<string> issues) {
+            if (Error == null && Value == Double.MinValue) {
+                Error = "Not defined";
+                issues.Add("The expression cannot be evaluated");
+            } else if (Error != null || Volatile) {
                 Evaluate();
             }
+        }
+
+        public void Validate() {
+            Validate(null);
         }
 
         public override string ToString() {
