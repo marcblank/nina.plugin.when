@@ -9,7 +9,8 @@
             <local:CameraTemperatureConverter x:Key="tc" />
         </UserControl.Resources>
     <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Center" >
+                VerticalAlignment="Center"
+                DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}}">
         <TextBlock  Text="{Binding Label}" />
         <ninactrl:HintTextBox
                 MinWidth="40"
@@ -22,27 +23,24 @@
                 ToolTip="Foo" 
                 ToolTipOpening="ShowConstants" >
             <ninactrl:HintTextBox.HintText>
-                <Binding Mode="TwoWay" Path="Exp.Default" Converter="{StaticResource tc}" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
+                <Binding Mode="TwoWay" Path="Exp.Default" Converter="{StaticResource tc}" />
             </ninactrl:HintTextBox.HintText>
             <ninactrl:HintTextBox.Text>
-                <Binding
-                        Mode="TwoWay"
-                        Path="Exp.Expression" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}">
-                </Binding>
+                <Binding Mode="TwoWay" Path="Exp.Expression" />
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
         <TextBlock VerticalAlignment="Center"
-                   Visibility="{Binding Exp.IsExpression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
+                   Visibility="{Binding Exp.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
-                <MultiBinding Converter="{StaticResource ec}" ConverterParameter="Hint">
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
-                    <Binding Path="Exp.ValueString" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
+                <MultiBinding Converter="{StaticResource ec}">
+                    <Binding Path="Exp"  />
+                    <Binding Path="Exp.ValueString"  />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
-                <MultiBinding Converter="{StaticResource vc}" ConverterParameter="Hint">
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
-                    <Binding Path="Exp.ValueString" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprHintControl}}" />
+                <MultiBinding Converter="{StaticResource vc}">
+                    <Binding Path="Exp"  />
+                    <Binding Path="Exp.ValueString"  />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>

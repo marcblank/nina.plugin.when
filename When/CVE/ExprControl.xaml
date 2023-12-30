@@ -7,23 +7,24 @@
         <local:ValConverter x:Key="vc" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Center">
-        <TextBlock VerticalAlignment="Center" Margin="5,0,5,0" Text="{Binding Label, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}" />
-        <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="5,-3,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Exp.Expression, RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}" />
+                VerticalAlignment="Center"
+                DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}">
+        <TextBlock VerticalAlignment="Center" Margin="5,0,5,0" Text="{Binding Label}" />
+        <TextBox VerticalAlignment="Center"  MinWidth="20" Margin="5,-3,0,-5" ToolTip="Foo" ToolTipOpening="ShowConstants" Text="{Binding Exp.Expression}" />
         <TextBlock VerticalAlignment="Center" Margin="5,-4,10,-4">
             <TextBlock.Visibility>
-                <Binding Path="Exp.IsExpression" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                <Binding Path="Exp.IsExpression" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
             </TextBlock.Visibility>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Exp.ValueString" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
+                    <Binding Path="Exp" />
+                    <Binding Path="Exp.ValueString" />
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
                 <MultiBinding Converter="{StaticResource vc}">
-                    <Binding Path="Exp" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
-                    <Binding Path="Exp.ValueString" RelativeSource="{RelativeSource AncestorType={x:Type local:ExprControl}}"/>
+                    <Binding Path="Exp"/>
+                    <Binding Path="Exp.ValueString" />
                 </MultiBinding>
             </TextBlock.Foreground>
         </TextBlock>
