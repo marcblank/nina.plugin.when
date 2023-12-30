@@ -116,17 +116,6 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
-        // DEBUGGING
-        public void WriteSymbols() {
-            Debug.WriteLine(this);
-            Debug.WriteLine(Expr);
-            Debug.WriteLine("=-----------");
-            ShowSymbols();
-        }
-
-        private GalaSoft.MvvmLight.Command.RelayCommand postInstructions;
-        public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(WriteSymbols);
-
         // Legacy
 
         [JsonProperty]
