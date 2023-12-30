@@ -20,10 +20,10 @@ namespace WhenPlugin.When {
 
         public Expr Exp { get; set; }
 
-        public static readonly DependencyProperty ValProperty =
-            DependencyProperty.Register("Val", typeof(String), typeof(ExprHintControl), null);
+        public static readonly DependencyProperty LabelProperty =
+            DependencyProperty.Register("Label", typeof(String), typeof(ExprHintControl), null);
 
-        public String Val { get; set; }
+        public String Label { get; set; }
 
         public static readonly DependencyProperty DefaultProperty =
              DependencyProperty.Register("Default", typeof(String), typeof(ExprHintControl), null);

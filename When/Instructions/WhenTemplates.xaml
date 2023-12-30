@@ -2116,8 +2116,7 @@
                 VerticalAlignment="Center"
                 Text="|" />
 
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-            <local:ExprHintControl Exp="{Binding GExpr}" />
+            <local:ExprHintControl Label="Gain" Exp="{Binding GExpr}" />
 
         </WrapPanel>
 
@@ -2137,8 +2136,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
-            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-            <local:ExprHintControl Exp="{Binding OExpr}" />
+            <local:ExprHintControl Label="Offset" Exp="{Binding OExpr}" />
         </WrapPanel>
     </WrapPanel>
 
