@@ -44,8 +44,14 @@ namespace WhenPlugin.When {
             ExprType = type;
         }
 
+        public Expr (Expr cloneMe) : this(cloneMe.ExprItem, cloneMe.Expression, cloneMe.ExprType) {
+            ExprSetter = cloneMe.ExprSetter;
+            ExprSym = cloneMe.ExprSym;
+        }
+
         private string _expression;
-       [JsonProperty]
+
+        [JsonProperty]
         public string Expression {
             get => _expression;
             set {

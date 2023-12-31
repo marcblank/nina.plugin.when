@@ -2025,14 +2025,14 @@
         <local:ExprControl Label="{ns:Loc LblTime}" Exp="{Binding EExpr}"/>
  
         <TextBlock
-            Margin="7.5,-2,7.5,0"
+            Margin="7,0,7.5,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Text="|" />
 
-        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblType}" />
+        <TextBlock Margin="0,-1,0,0" VerticalAlignment="Center" Text="{ns:Loc LblType}" />
         <ComboBox
-            Margin="5,0,0,0"
+            Margin="5,-1,0,0"
             ItemsSource="{Binding ImageTypes}"
             SelectedItem="{Binding ImageType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -2042,9 +2042,9 @@
             VerticalAlignment="Center"
             Text="|" />
 
-        <TextBlock VerticalAlignment="Center" Margin="0,-3,0,0" Text="{ns:Loc LblBinning}" />
+        <TextBlock VerticalAlignment="Center" Margin="0,-2,0,0" Text="{ns:Loc LblBinning}" />
         <ComboBox
-            Margin="5,-2,0,0"
+            Margin="5,-1,0,0"
             DisplayMemberPath="Name"
             ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
             SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -2111,7 +2111,7 @@
                 </PriorityBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,0,7.5,0"
+                Margin="7.5,-2,7.5,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
@@ -2132,7 +2132,7 @@
                 </MultiBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,0,7.5,0"
+                Margin="7.5,-2,7.5,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
@@ -2246,12 +2246,7 @@
             <nina:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="#" />
-                    <local:ConstantControl 
-                        Margin="0,0,10,5" 
-                        Expr="{Binding Path=IterationsExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=IterationCount, Mode=TwoWay}" 
-                        Type="Integer"/>
+                    <local:ExprControl Label="#" Exp="{Binding IterExpr}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -2260,12 +2255,12 @@
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[1]}" />
 
                     <TextBlock
-                        Margin="7.5,0,7.5,0"
+                        Margin="7.5,-5,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
                     <TextBlock
-                        Margin="5,-3,0,0"
+                        Margin="5,-2,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
                     <ComboBox
@@ -2286,27 +2281,17 @@
                     </ComboBox>
                     <local:ConstantComboControl
                         Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                        Margin="0,-7,10,5"
+                        Margin="0,-4,10,5"
                         Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
                         Valu="{Binding Path=Filter, Mode=TwoWay}"
                         Type="Integer"
                         Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
                     <TextBlock
-                        Margin="7.5,-5,7.5,0"
+                        Margin="7.5,-6,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                    <TextBlock
-                        Margin="5,-3,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblDitherEveryNoFrame}" />
-                    <local:ConstantControl 
-                        Margin="0,-7,10,5" 
-                        Expr="{Binding Path=DitherExpr, Mode=TwoWay}" 
-                        Valu="{Binding Path=DitherCount, Mode=TwoWay}" 
-                        Type="Integer"
-                        />
-
+                     <local:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>

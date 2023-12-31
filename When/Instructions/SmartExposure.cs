@@ -107,13 +107,12 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterationsExpr = cloneMe.IterationsExpr;
-                DitherExpr = cloneMe.DitherExpr;
                 FilterExpr = cloneMe.FilterExpr;
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
+                IterExpr.ExprSetter = SetIterationCount;
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
+                DExpr.ExprSetter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
-
             }
         }
 
@@ -188,6 +187,22 @@ namespace WhenPlugin.When {
                 IterExpr.Expression = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private int iterationCount;
+        public int IterationCount {
+            get => iterationCount;
+            set {
+                //
+                if (Conditions.Count == 0) return;
+                LoopCondition lc = Conditions[0] as LoopCondition;
+                iterationCount = lc.Iterations = value;
+                RaisePropertyChanged("IterationCount");
+            }
+        }
+
+        public void SetIterationCount (double val) {
+            IterationCount = (int)val;
         }
 
           private List<string> iFilterNames = new List<string>();
@@ -266,7 +281,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        [JsonProperty]
         public int DitherCount {
             get => (Triggers[0] as DitherAfterExposures).AfterExposures;
             set {
@@ -275,6 +289,10 @@ namespace WhenPlugin.When {
                 lc.AfterExposures = value;
                 RaisePropertyChanged("DitherCount");
             }
+        }
+
+        public void SetDitherCount (double val) {
+            DitherCount = (int)val;
         }
 
         public override bool Validate() {
