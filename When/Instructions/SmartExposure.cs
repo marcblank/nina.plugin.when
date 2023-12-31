@@ -118,6 +118,11 @@ namespace WhenPlugin.When {
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
         [JsonProperty]
         public Expr IterExpr { get; set; }
         [JsonProperty]
@@ -185,7 +190,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 IterExpr.Expression = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -197,7 +201,6 @@ namespace WhenPlugin.When {
                 if (Conditions.Count == 0) return;
                 LoopCondition lc = Conditions[0] as LoopCondition;
                 iterationCount = lc.Iterations = value;
-                RaisePropertyChanged("IterationCount");
             }
         }
 
@@ -223,11 +226,9 @@ namespace WhenPlugin.When {
                     if (filterWheelInfo.Connected) {
                         Filter = filterWheelInfo.SelectedFilter.Position;
                     }
-                    //sw.FInfo = filterWheelInfo.SelectedFilter;
                     sw.FilterExpr = null;
                 } else if (Filter < fwi.Count) {
                     sw.FilterExpr = FilterExpr;
-                    //sw.FInfo = fwi[Filter];
                 }
             }
         }
@@ -317,11 +318,8 @@ namespace WhenPlugin.When {
                     i.AddRange(dither.Issues);
                 }
 
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, i);
-                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0, i);
                 if (CVFilter) {
                     ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
-                    //SetFInfo();
                 }
 
                 SetFInfo();
@@ -334,8 +332,11 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("FilterNames");
                 }
 
+                IterExpr.Validate();
+                DExpr.Validate();
+                FExpr.Validate();
+
                 Issues = i;
-                RaisePropertyChanged("Issues");
                 return (Issues.Count == 0) && valid;
             } catch (Exception ex) {
                 Logger.Info("Foo");

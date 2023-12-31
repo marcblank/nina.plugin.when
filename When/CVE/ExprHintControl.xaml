@@ -11,10 +11,10 @@
     <StackPanel Orientation="Horizontal" 
                 VerticalAlignment="Center"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}}">
-        <TextBlock  Text="{Binding Label}" />
+        <TextBlock Margin="0,2,0,0" Text="{Binding Label}" />
         <ninactrl:HintTextBox
                 MinWidth="40"
-                Margin="0,-4,0,-5"
+                Margin="0,-2,0,-5"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
