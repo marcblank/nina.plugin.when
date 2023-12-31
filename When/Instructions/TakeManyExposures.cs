@@ -99,6 +99,7 @@ namespace WhenPlugin.When {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression);
+                IterExpr.ExprSetter = SetIterationCount;
             }
         }
 
@@ -112,7 +113,24 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public Expr IterExpr {  get; set; }
-        
+
+        [JsonProperty]
+        public int IterationCount {
+            get => (Conditions[0] as LoopCondition).Iterations;
+            set {
+                //
+                if (Conditions.Count == 0) return;
+                LoopCondition lc = Conditions[0] as LoopCondition;
+                lc.Iterations = value;
+                RaisePropertyChanged("IterationCount");
+            }
+        }
+
+        public void SetIterationCount(double val) {
+            IterationCount = (int)val;
+        }
+
+
 
         [JsonProperty]
         public string IterationsExpr {

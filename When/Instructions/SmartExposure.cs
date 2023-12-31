@@ -82,6 +82,10 @@ namespace WhenPlugin.When {
                 ) {
             ProfileService = profileService;
             FilterWheelMediator = filterWheelMediator;
+            IterExpr = new Expr(this, "", "Integer");
+            DExpr = new Expr(this, "", "Integer");
+            FExpr = new Expr(this, "", "Integer");
+
         }
 
         /// <summary>
@@ -106,11 +110,22 @@ namespace WhenPlugin.When {
                 IterationsExpr = cloneMe.IterationsExpr;
                 DitherExpr = cloneMe.DitherExpr;
                 FilterExpr = cloneMe.FilterExpr;
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
+                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
+                FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
 
             }
         }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
+
+        [JsonProperty]
+        public Expr IterExpr { get; set; }
+        [JsonProperty]
+        public Expr DExpr { get; set; }
+        [JsonProperty]
+        public Expr FExpr {  get; set; }
+
 
         [JsonProperty]
         public override InstructionErrorBehavior ErrorBehavior {
@@ -166,32 +181,16 @@ namespace WhenPlugin.When {
             return Conditions[0] as LoopCondition;
         }
 
-        private string iterationsExpr = "1";
-
         [JsonProperty]
         public string IterationsExpr {
-            get => iterationsExpr;
+            get => null;
             set {
-                iterationsExpr = value;
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1);
+                IterExpr.Expression = value;
                 RaisePropertyChanged();
             }
         }
 
-        private int iterationCount = 0;
-        [JsonProperty]
-        public int IterationCount {
-            get => iterationCount;
-            set {
-                //
-                if (Conditions.Count == 0) return;
-                LoopCondition lc = Conditions[0] as LoopCondition;
-                iterationCount = lc.Iterations = value;
-                RaisePropertyChanged("IterationCount");
-            }
-        }
-
-        private List<string> iFilterNames = new List<string>();
+          private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
             set {
@@ -257,14 +256,12 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string ditherExpr = "1";
 
         [JsonProperty]
         public string DitherExpr {
-            get => ditherExpr;
+            get => null;
             set {
-                ditherExpr = value;
-                ConstantExpression.Evaluate(this, "DitherExpr", "DitherCount", 0);
+                DExpr.Expression = value;
                 RaisePropertyChanged();
             }
         }

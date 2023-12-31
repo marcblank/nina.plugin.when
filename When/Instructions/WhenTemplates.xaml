@@ -448,7 +448,7 @@
                     <local:ExprHintControl Exp="{Binding TempExpr, Mode=TwoWay}"/>
 
                     <TextBlock
-                        Margin="2.5,4,7.5,2 "
+                        Margin="4,4,7.5,2 "
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="°C   |" />

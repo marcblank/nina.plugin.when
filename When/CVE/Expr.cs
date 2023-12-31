@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -128,6 +129,9 @@ namespace WhenPlugin.When {
 
         [JsonProperty]
         public string ExprValidator { get; set; } = null;
+
+        public Action<double> ExprSetter { get; set; }
+
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -140,9 +144,10 @@ namespace WhenPlugin.When {
                         value = Double.Floor(value);
                     }
                     _value = value;
+                    if (ExprSetter != null) {
+                        ExprSetter(value);
+                    }
                     RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("Error");
-                    RaisePropertyChanged("IsExpression");
                     Notifier = 0;
                 }
             }
@@ -156,7 +161,6 @@ namespace WhenPlugin.When {
                     _error = value;
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Error");
-                    RaisePropertyChanged("IsExpression");
                     Notifier = 0;
                 }
             }
