@@ -136,7 +136,7 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public string ExprValidator { get; set; } = null;
 
-        public Action<double> ExprSetter { get; set; }
+        public Action<Expr> ExprSetter { get; set; }
 
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
@@ -151,7 +151,7 @@ namespace WhenPlugin.When {
                     }
                     _value = value;
                     if (ExprSetter != null) {
-                        ExprSetter(value);
+                        ExprSetter(this);
                     }
                     RaisePropertyChanged("ValueString");
                     Notifier = 0;

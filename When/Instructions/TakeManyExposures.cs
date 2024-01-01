@@ -124,8 +124,8 @@ namespace WhenPlugin.When {
             }
         }
 
-        public void SetIterationCount(double val) {
-            IterationCount = (int)val;
+        public void SetIterationCount(Expr expr) {
+            IterationCount = (int)expr.Value;
         }
 
 

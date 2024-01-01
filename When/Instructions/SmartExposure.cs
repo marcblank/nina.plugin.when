@@ -113,6 +113,7 @@ namespace WhenPlugin.When {
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
                 DExpr.ExprSetter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                FExpr.ExprSetter = SetFilter;
             }
         }
 
@@ -204,8 +205,8 @@ namespace WhenPlugin.When {
             }
         }
 
-        public void SetIterationCount (double val) {
-            IterationCount = (int)val;
+        public void SetIterationCount (Expr expr) {
+            IterationCount = (int)expr.Value;
         }
 
           private List<string> iFilterNames = new List<string>();
@@ -272,6 +273,10 @@ namespace WhenPlugin.When {
             }
         }
 
+        public void SetFilter (Expr expr) {
+
+        }
+
 
         [JsonProperty]
         public string DitherExpr {
@@ -292,8 +297,8 @@ namespace WhenPlugin.When {
             }
         }
 
-        public void SetDitherCount (double val) {
-            DitherCount = (int)val;
+        public void SetDitherCount (Expr expr) {
+            DitherCount = (int)expr.Value;
         }
 
         public override bool Validate() {
