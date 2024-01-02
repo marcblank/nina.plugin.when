@@ -29,16 +29,14 @@ namespace WhenPlugin.When {
         }
 
         public Expr(ISequenceEntity item, string expression) {
-            ExprSym = null;
             ExprItem = item;
             Expression = expression;
         }
         public Expr(ISequenceEntity item) {
-            new Expr(item, "");
+            ExprItem = item;
         }
 
         public Expr(ISequenceEntity item, string expression, string type) {
-            ExprSym = null;
             ExprItem = item;
             Expression = expression;
             ExprType = type;
@@ -126,9 +124,9 @@ namespace WhenPlugin.When {
         }
 
         public Double Default { get; set; } = Double.NaN;
-        
-        public Symbol ExprSym { get; set; }
-        public ISequenceEntity ExprItem {  get; set; }
+
+        public Symbol ExprSym { get; set; } = null;
+        public ISequenceEntity ExprItem { get; set; } = null;
 
         [JsonProperty]
         public string ExprType { get; set; } = null;
@@ -154,6 +152,7 @@ namespace WhenPlugin.When {
                         ExprSetter(this);
                     }
                     RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("IsExpression");
                     Notifier = 0;
                 }
             }
@@ -166,7 +165,7 @@ namespace WhenPlugin.When {
                 if (value != _error) {
                     _error = value;
                     RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("Error");
+                    RaisePropertyChanged("IsExpression");
                     Notifier = 0;
                 }
             }
@@ -279,7 +278,10 @@ namespace WhenPlugin.When {
         }
         public void Evaluate() {
             if (!IsExpression) return;
-            if (ExprItem == null || !Symbol.IsAttachedToRoot(ExprItem)) return;
+            if (ExprItem == null) return;
+            if (!Symbol.IsAttachedToRoot(ExprItem)) {
+               return;
+            }
             Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
 

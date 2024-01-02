@@ -25,40 +25,31 @@ namespace WhenPlugin.When {
         public SetVariable() : base() {
             Name = Name;
             Icon = Icon;
+            OriginalExpr = new Expr(this);
         }
         public SetVariable(SetVariable copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
-                Icon = copyMe.Icon;               
+                Icon = copyMe.Icon;
             }
         }
 
         public override object Clone() {
-            return new SetVariable(this) {
-                Identifier = Identifier,
-                Definition = Definition,
-                Expr = Expr,
-                OriginalExpr = OriginalExpr,
-                OriginalDefinition = OriginalDefinition
-            };
+            SetVariable clone = new SetVariable(this);
+            clone.Identifier = Identifier;
+            clone.Definition = Definition;
+            clone.OriginalExpr = new Expr(OriginalExpr);
+            return clone;
         }
-
-        private string _originalDefinition = "";
 
         public bool Executed = false;
 
         [JsonProperty]
         public string OriginalDefinition {
-            get => _originalDefinition;
+            get => OriginalExpr?.Expression;
             set {
-                if (value == _originalDefinition) {
-                    return;
-                }
-                _originalDefinition = value;
-                if (Parent != null) {
-                    OriginalExpr.Expression = value;
-                }
+                OriginalExpr.Expression = value;
                 RaisePropertyChanged("OriginalExpr");
             }
         }
@@ -95,7 +86,7 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || OriginalDefinition.Length == 0) {
+            if (Identifier.Length == 0 || OriginalDefinition?.Length == 0) {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
