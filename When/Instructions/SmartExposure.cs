@@ -343,8 +343,7 @@ namespace WhenPlugin.When {
 
                 Issues = i;
                 return (Issues.Count == 0) && valid;
-            } catch (Exception ex) {
-                Logger.Info("Foo");
+            } catch (Exception) {
                 return false;
             }
         }

@@ -119,7 +119,6 @@ namespace WhenPlugin.When {
                     if (Symbol != null) SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
-                Notifier++;
             }
         }
 
@@ -137,9 +136,12 @@ namespace WhenPlugin.When {
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
-        private double _value = Double.MinValue;
+        private double _value = Double.NaN;
         public double Value {
-            get => _value;
+            get {
+                if (_value == Double.NaN && Default != Double.NaN) return Default;
+                return _value;
+            }
             set {
                 if (value != _value) {
                     if ("Integer".Equals(Type)) {
@@ -151,7 +153,6 @@ namespace WhenPlugin.When {
                     }
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
-                    Notifier = 0;
                 }
             }
         }
@@ -164,7 +165,6 @@ namespace WhenPlugin.When {
                     _error = value;
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
-                    Notifier = 0;
                 }
             }
         }
@@ -180,15 +180,6 @@ namespace WhenPlugin.When {
         public bool IsExpression { get; set; } = false;
 
         public bool IsSyntaxError { get; set; } = false;
-
-        private int iNotifier = 0;
-        public int Notifier {
-            get => iNotifier;
-            set {
-                iNotifier++;
-                RaisePropertyChanged("Notifier");
-            }
-        }
 
         // References are the parsed tokens used in the Expr
         public HashSet<string> References { get; set; } = new HashSet<string>();
@@ -267,7 +258,7 @@ namespace WhenPlugin.When {
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
-            if (sym.Expr.Error == null && sym.Expr.Value != Double.MinValue) {
+            if (sym.Expr.Error == null && sym.Expr.Value != Double.NaN) {
                 Resolved.Add(reference, sym);
                 Parameters.Add(reference, sym.Expr.Value);
 
@@ -369,7 +360,7 @@ namespace WhenPlugin.When {
         public void Validate(IList<string> issues) {
             if (Error != null || Volatile) {
                 Evaluate();
-            } else if (Value == Double.MinValue) {
+            } else if (Value == Double.NaN) {
                 Error = "Not evaluated";
             }
         }
