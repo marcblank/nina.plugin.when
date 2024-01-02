@@ -57,7 +57,7 @@ namespace WhenPlugin.When {
                 if (!expr.IsExpression) return "{" + expr.Value + "}";
                 string txt;
                 if (expr.Error == null) {
-                    if (expr.ExprItem is ITrueFalse) {
+                    if (expr.SequenceEntity is ITrueFalse) {
                         if (expr.Value == 0) {
                             txt = "False";
                         } else {

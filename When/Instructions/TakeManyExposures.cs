@@ -99,7 +99,7 @@ namespace WhenPlugin.When {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression);
-                IterExpr.ExprSetter = SetIterationCount;
+                IterExpr.Setter = SetIterationCount;
             }
         }
 

@@ -14,10 +14,10 @@ using System.Collections.Generic;
 using System.Reflection;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Define Constant")]
+    [ExportMetadata("Name", "Constant")]
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (CV)")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

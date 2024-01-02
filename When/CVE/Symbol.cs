@@ -86,7 +86,7 @@ namespace WhenPlugin.When {
             // Mark everything in the chain dirty
             foreach (Expr consumer in sym.Consumers) {
                 consumer.ReferenceRemoved(sym);
-                Symbol consumerSym = consumer.ExprSym;
+                Symbol consumerSym = consumer.Symbol;
                 if (!consumer.Dirty && consumerSym != null) {
                     if (!dirtyList.Contains(consumerSym)) {
                         iSymbolDirty(consumerSym, dirtyList);
@@ -319,7 +319,7 @@ namespace WhenPlugin.When {
                     Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
                     if (kv.Value.Consumers.Count> 0) {
                         foreach(Expr e in kv.Value.Consumers) {
-                            Debug.WriteLine("        -> " + e.ExprSym);
+                            Debug.WriteLine("        -> " + e.Symbol);
                         }
                     }
                 }

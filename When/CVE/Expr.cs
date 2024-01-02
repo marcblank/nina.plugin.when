@@ -23,28 +23,28 @@ namespace WhenPlugin.When {
     public class Expr : BaseINPC {
 
         public Expr (string exp, Symbol sym) {
-            ExprSym = sym;
-            ExprItem = sym;
+            Symbol = sym;
+            SequenceEntity = sym;
             Expression = exp;
         }
 
         public Expr(ISequenceEntity item, string expression) {
-            ExprItem = item;
+            SequenceEntity = item;
             Expression = expression;
         }
         public Expr(ISequenceEntity item) {
-            ExprItem = item;
+            SequenceEntity = item;
         }
 
         public Expr(ISequenceEntity item, string expression, string type) {
-            ExprItem = item;
+            SequenceEntity = item;
             Expression = expression;
-            ExprType = type;
+            Type = type;
         }
 
-        public Expr (Expr cloneMe) : this(cloneMe.ExprItem, cloneMe.Expression, cloneMe.ExprType) {
-            ExprSetter = cloneMe.ExprSetter;
-            ExprSym = cloneMe.ExprSym;
+        public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
+            Setter = cloneMe.Setter;
+            Symbol = cloneMe.Symbol;
         }
 
         private string _expression;
@@ -81,8 +81,8 @@ namespace WhenPlugin.When {
                     Error = null;
                     IsExpression = false;
                     // Notify consumers
-                    if (ExprSym != null) {
-                        SymbolDirty(ExprSym);
+                    if (Symbol != null) {
+                        SymbolDirty(Symbol);
                     } else {
                         // We always want to show the result if not a Symbol
                         //IsExpression = true;
@@ -116,7 +116,7 @@ namespace WhenPlugin.When {
                     References = visitor.Parameters;
                     Parameters.Clear();
                     Evaluate();
-                    if (ExprSym != null) SymbolDirty(ExprSym);
+                    if (Symbol != null) SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
                 Notifier++;
@@ -125,16 +125,14 @@ namespace WhenPlugin.When {
 
         public Double Default { get; set; } = Double.NaN;
 
-        public Symbol ExprSym { get; set; } = null;
-        public ISequenceEntity ExprItem { get; set; } = null;
+        public Symbol Symbol { get; set; } = null;
+        public ISequenceEntity SequenceEntity { get; set; } = null;
 
         [JsonProperty]
-        public string ExprType { get; set; } = null;
+        public string Type { get; set; } = null;
 
-        [JsonProperty]
-        public string ExprValidator { get; set; } = null;
 
-        public Action<Expr> ExprSetter { get; set; }
+        public Action<Expr> Setter { get; set; }
 
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
@@ -144,12 +142,12 @@ namespace WhenPlugin.When {
             get => _value;
             set {
                 if (value != _value) {
-                    if ("Integer".Equals(ExprType)) {
+                    if ("Integer".Equals(Type)) {
                         value = Double.Floor(value);
                     }
                     _value = value;
-                    if (ExprSetter != null) {
-                        ExprSetter(this);
+                    if (Setter != null) {
+                        Setter(this);
                     }
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
@@ -251,7 +249,7 @@ namespace WhenPlugin.When {
         public bool Volatile {  get; set; } = false;
 
         public void DebugWrite() {
-            Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (ExprSym != null ? ExprSym : ExprItem) + ")");
+            Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (Symbol != null ? Symbol : SequenceEntity) + ")");
         }
 
         public void ReferenceRemoved (Symbol sym) {
@@ -278,8 +276,8 @@ namespace WhenPlugin.When {
         }
         public void Evaluate() {
             if (!IsExpression) return;
-            if (ExprItem == null) return;
-            if (!Symbol.IsAttachedToRoot(ExprItem)) {
+            if (SequenceEntity == null) return;
+            if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
                return;
             }
             Debug.WriteLine("Evaluate " + this);
@@ -291,7 +289,7 @@ namespace WhenPlugin.When {
             foreach (string symReference in References) {
                 if (!Resolved.ContainsKey(symReference)) {
                     // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, ExprItem.Parent);
+                    Symbol sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolve(symReference, sym);
@@ -334,9 +332,9 @@ namespace WhenPlugin.When {
                     }
                 }
                 // Save away our orphans in case they appear later
-                if (ExprSym != null) {
-                    Orphans.Remove(ExprSym);
-                    Orphans.Add(ExprSym, orphans);
+                if (Symbol != null) {
+                    Orphans.Remove(Symbol);
+                    Orphans.Add(Symbol, orphans);
                 }
             }
 
@@ -381,7 +379,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            string id = ExprSym != null ? ExprSym.Identifier : ExprItem.Name;
+            string id = Symbol != null ? Symbol.Identifier : SequenceEntity.Name;
             if (Error != null) {
                 return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Error: {Error}";
             }

@@ -12,10 +12,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Define Variable")]
+    [ExportMetadata("Name", "Variable")]
     [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (CV)")]
+    [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 

@@ -109,11 +109,11 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 FilterExpr = cloneMe.FilterExpr;
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
-                IterExpr.ExprSetter = SetIterationCount;
+                IterExpr.Setter = SetIterationCount;
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
-                DExpr.ExprSetter = SetDitherCount;
+                DExpr.Setter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
-                FExpr.ExprSetter = SetFilter;
+                FExpr.Setter = SetFilter;
             }
         }
 
