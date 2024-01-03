@@ -448,7 +448,7 @@
                     <local:ExprHintControl Exp="{Binding TempExpr, Mode=TwoWay}"/>
 
                     <TextBlock
-                        Margin="4,4,7.5,2 "
+                        Margin="4,2,7.5,2 "
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="°C   |" />
@@ -710,13 +710,10 @@
                 <ninactrl:DetachingExpander>
                     <ninactrl:DetachingExpander.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Margin="10,3,0,0" Text="Wait " />
-                            <local:ConstantControl 
-                                Margin = "8,3,10,5" 
-                                Expr="{Binding Path=WaitTimeExpr, Mode=TwoWay}"
-                                Valu="{Binding Path=WaitTime, Mode=TwoWay}"
-                                Validate="ValidateTime" />
-                            <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="s before repeating " />
+                            <local:ExprControl 
+                                Label="Wait "
+                                Exp="{Binding Path=WaitExpr, Mode=TwoWay}" />
+                           <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="s before repeating " />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
@@ -2261,9 +2258,10 @@
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
                     <ComboBox
-                        Margin="5,-3,0,0"
+                        Margin="5,-1,0,0"
                         IsEditable="True"
                         DisplayMemberPath="Name"
+                        VerticalAlignment="Center"
                         SelectedItem="{Binding SelectedFilter}"
                         Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
                         <ComboBox.Resources>
@@ -2278,7 +2276,7 @@
                     </ComboBox>
                     <local:ExprComboControl
                         Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                        Exp="{Binding Path=FilterExpr, Mode=TwoWay}"
+                        Exp="{Binding Path=FExpr, Mode=TwoWay}"
                         Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
                     <TextBlock
                         Margin="7.5,-6,7.5,0"

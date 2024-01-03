@@ -47,6 +47,8 @@ namespace WhenPlugin.When {
             Instructions.PseudoParent = this;
             Instructions.Name = Name;
             Instructions.Icon = Icon;
+            WaitExpr = new Expr(this, "60");
+           
         }
 
         private RepeatUntilAllSucceed(RepeatUntilAllSucceed cloneMe) : this() {
@@ -57,6 +59,7 @@ namespace WhenPlugin.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
+                WaitExpr = new Expr(this, cloneMe.WaitExpr.Expression);
             }
         }
 
@@ -64,23 +67,17 @@ namespace WhenPlugin.When {
             return new RepeatUntilAllSucceed(this) {
             };
         }
-        private string waitTimeExpr = "60";
+
+        public Expr WaitExpr { get; set; }
+
 
         [JsonProperty]
         public string WaitTimeExpr {
-            get => waitTimeExpr;
+            get => null;
             set {
-                waitTimeExpr = value;
-                ConstantExpression.Evaluate(this, "WaitTimeExpr", "WaitTime", 0);
-                RaisePropertyChanged("WaitTimeExpr");
+                WaitExpr.Expression = value;
             }
         }
-
-        private double waitTime = 60;
-
-        [JsonProperty]
-        public double WaitTime { get => waitTime; set { waitTime = value; RaisePropertyChanged("WaitTime"); } }
-
 
         public override void ResetProgress() {
             Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
@@ -141,8 +138,8 @@ namespace WhenPlugin.When {
                     break;
                 }
 
-                if (WaitTime > 0) {
-                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitTime), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
+                if (WaitExpr.Value > 0) {
+                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitExpr.Value), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
                 }
             }
             Logger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
@@ -162,12 +159,13 @@ namespace WhenPlugin.When {
             }
 
             var i = new List<string>();
-            ConstantExpression.Evaluate(this, "WaitTimeExpr", "WaitTime", 0, i);
 
-            string val = ValidateTime(WaitTime);
+            string val = ValidateTime(WaitExpr.Value);
             if (val != String.Empty) {
                 i.Add(val);
             }
+
+            WaitExpr.Validate();
 
             Issues = i;
             return (i.Count == 0);

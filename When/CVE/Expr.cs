@@ -232,6 +232,7 @@ namespace WhenPlugin.When {
 
         public void RemoveParameter (string identifier) {
             Parameters.Remove(identifier);
+            Resolved.Remove(identifier);
             Evaluate();
         }
 
