@@ -55,7 +55,7 @@ namespace WhenPlugin.When {
                             }
                         }
                     }
-                } else if (expr.Value == Double.NaN) {
+                } else if (Double.IsNaN(expr.Value)) {
                     txt = "Not evaluated";
                 } else {
                     txt = expr.Error;

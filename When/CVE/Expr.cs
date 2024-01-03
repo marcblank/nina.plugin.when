@@ -139,7 +139,7 @@ namespace WhenPlugin.When {
         private double _value = Double.NaN;
         public double Value {
             get {
-                if (double.IsNaN(_value) && Default != Double.NaN) return Default;
+                if (double.IsNaN(_value) && !double.IsNaN(Default)) return Default;
                 return _value;
             }
             set {
@@ -259,7 +259,7 @@ namespace WhenPlugin.When {
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
-            if (sym.Expr.Error == null && sym.Expr.Value != Double.NaN) {
+            if (sym.Expr.Error == null && !Double.IsNaN(sym.Expr.Value)) {
                 Resolved.Add(reference, sym);
                 Parameters.Add(reference, sym.Expr.Value);
 
@@ -361,7 +361,7 @@ namespace WhenPlugin.When {
         public void Validate(IList<string> issues) {
             if (Error != null || Volatile) {
                 Evaluate();
-            } else if (Value == Double.NaN) {
+            } else if (Double.IsNaN(Value)) {
                 Error = "Not evaluated";
             }
         }
