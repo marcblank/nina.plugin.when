@@ -62,6 +62,31 @@
                     </ToolTip>
                 </Button.ToolTip>
             </Button>
+
+            <Button
+                x:Name="TemplateContainerButton"
+                Width="25"
+                Height="25"
+                Margin="25,0,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Command="{Binding AddTemplateCommand}"
+                Style="{StaticResource SecondaryBackgroundButton}">
+                <Grid>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform"
+                        UseLayoutRounding="True" />
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_SaveAsTemplate_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+
             <Button
                     x:Name="CloneContainerButton"
                     Width="25"
@@ -85,8 +110,9 @@
                             <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Duplicate_Tooltip}" />
                         </ToolTip>
                     </Button.ToolTip>
-                </Button>
-                <Button
+            </Button>
+ 
+            <Button
                     x:Name="MoveUpButton"
                     Width="25"
                     Height="25"
@@ -1138,7 +1164,7 @@
                                  Margin="10,10,10,0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
-                                 Text="{Binding CVName}" />
+                                 Text="{Binding Name}" />
                             <Border
                                Width="20"
                                Height="20"
@@ -1187,7 +1213,7 @@
                       Margin="0,0,0,0"
                       BorderBrush="{StaticResource BorderBrush}"
                       BorderThickness="1">
-                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Items}">
                             <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                             <TextBlock
                               HorizontalAlignment="Center"

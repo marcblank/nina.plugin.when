@@ -30,6 +30,7 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new CVContainer(this) {
+                Name = Name
             };
         }  
     }
