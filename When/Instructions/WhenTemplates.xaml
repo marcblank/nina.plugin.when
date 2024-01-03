@@ -1637,7 +1637,8 @@
                     </ComboBox>
                     <local:ExprComboControl
                        Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                       Exp="{Binding Path=FExpr, Mode=TwoWay}" />
+                       Exp="{Binding Path=FExpr, Mode=TwoWay}" 
+                       Combo="{Binding Path=FilterNames}"/>
                 </StackPanel>
 
  

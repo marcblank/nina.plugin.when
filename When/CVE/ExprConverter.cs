@@ -31,7 +31,7 @@ namespace WhenPlugin.When {
 
         private const int VALUE_EXP = 0;              // The expression to be evaluated
         private const int VALUE_VALIDATE = 1;          // If present, a validation method (range check, etc.)
-        private const int VALUE_COMBO = 6;             // If present, a IList<string> of combo box values
+        private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
 
         private string Validate (ISequenceEntity item, double val, object[] values) {
             if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
@@ -65,6 +65,13 @@ namespace WhenPlugin.When {
                         }
                     } else {
                         txt = expr.Value.ToString();
+                        if (values.Length > 2) {
+                            IList<string> combo = (IList<string>)values[VALUE_COMBO];
+                            int i = (int)expr.Value;
+                            if (i >= 0 && i < combo.Count) {
+                                txt = combo[i]; 
+                            }
+                        }
                     }
                 } else if (expr.Value == Double.NaN) {
                     txt = "Not evaluated";
