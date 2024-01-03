@@ -24,6 +24,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Core.Model.Equipment;
 using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Equipment.MySafetyMonitor;
 
 namespace WhenPlugin.When {
     public class ConstantExpression {
@@ -224,13 +225,14 @@ namespace WhenPlugin.When {
         private static IFilterWheelMediator FilterWheelMediator { get; set; }
         private static IProfileService ProfileService {  get; set; }
         private static IRotatorMediator RotatorMediator { get; set; }
+        private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches {  get; set; } = new List<string>();
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator) {
+            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -239,6 +241,7 @@ namespace WhenPlugin.When {
             FilterWheelMediator = filterWheelMediator;
             ProfileService = profileService;
             RotatorMediator = rotatorMediator;
+            SafetyMonitorMediator = safetyMonitorMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
             ConditionWatchdog.Start();
         }
@@ -293,6 +296,12 @@ namespace WhenPlugin.When {
                 SwitchWeatherKeys.Add("TIME", timeSeconds);
                 //i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
                 i.Add("TIME: " + timeSeconds);
+
+                SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
+                if (safetyInfo.Connected) {
+                    SwitchWeatherKeys.Add("IsSafe", safetyInfo.IsSafe);
+                    i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
+                }
 
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();

@@ -54,6 +54,8 @@ namespace WhenPlugin.When {
             FilterWheelMediator = filterWheelMediator;
 
             WeakEventManager<IProfileService, EventArgs>.AddHandler(ProfileService, nameof(ProfileService.ProfileChanged), ProfileService_ProfileChanged);
+            FExpr = new Expr(this);
+          
         }
 
         private void MatchFilter() {
@@ -76,12 +78,11 @@ namespace WhenPlugin.When {
             CopyMetaData(cloneMe);
             Filter = cloneMe.Filter;
             FilterExpr = cloneMe.FilterExpr;
+            FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
         }
 
         public override object Clone() {
             return new SwitchFilter(this) {
-                Filter = Filter,
-                FilterExpr = FilterExpr,
             };
         }
 
@@ -106,9 +107,13 @@ namespace WhenPlugin.When {
             }
         }
 
+        public Expr FExpr { get; set; }
+
         public FilterInfo FInfo { get; set; } = new FilterInfo();
 
         public bool CVFilter { get; set; } = false;
+
+        public string SelectedFilter { get; set; }
 
         private void SetFInfo() {
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
@@ -130,21 +135,27 @@ namespace WhenPlugin.When {
             set {
                 value ??= "(Current)";
                 iFilterExpr = value;
+                FExpr.Expression = value;
+                FExpr.IsExpression = true;
 
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                foreach (var fw in fwi) {
-                    if (fw.Name.Equals(value)) {
-                        Filter = fw.Position;
-                        break;
+                if (SelectedFilter != null) {
+                    foreach (var fw in fwi) {
+                        if (fw.Name.Equals(value)) {
+                            Filter = fw.Position;
+                            break;
+                        }
                     }
                 }
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
-                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                     CVFilter = true;
+                    if (FExpr.Error == null && FExpr.Value < fwi.Count) {
+                        Filter = (int)FExpr.Value;
+                    }
                 }
 
                 SetFInfo();
@@ -182,8 +193,9 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
+
             if (CVFilter) {
-                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
+                FExpr.Validate();
                 SetFInfo();
             }
 

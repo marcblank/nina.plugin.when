@@ -139,7 +139,7 @@ namespace WhenPlugin.When {
         private double _value = Double.NaN;
         public double Value {
             get {
-                if (_value == Double.NaN && Default != Double.NaN) return Default;
+                if (double.IsNaN(_value) && Default != Double.NaN) return Default;
                 return _value;
             }
             set {
