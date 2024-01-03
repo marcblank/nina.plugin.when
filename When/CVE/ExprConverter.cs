@@ -30,26 +30,8 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         private const int VALUE_EXP = 0;              // The expression to be evaluated
-        private const int VALUE_VALIDATE = 1;          // If present, a validation method (range check, etc.)
+        private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
-
-        private string Validate (ISequenceEntity item, double val, object[] values) {
-            if ((values.Length > (VALUE_VALIDATE -1)) && values[VALUE_VALIDATE] is string validationMethod) {
-                MethodInfo m = item.GetType().GetMethod(validationMethod);
-                if (m != null) {
-                    string error = (string)m.Invoke(item, new object[] { val });
-                    if (error != string.Empty && item is IValidatable vitem) {
-                        vitem.Issues.Add(error);
-                        ValidityCache.Remove(item);
-                        if (error.Equals("True")) {
-                            ValidityCache.Add(item, true);
-                        }
-                        return " { " + error + " } ";
-                    }
-                }              
-            }
-            return string.Empty;
-        }
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             Expr expr = values[VALUE_EXP] as Expr;

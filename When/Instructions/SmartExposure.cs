@@ -43,6 +43,7 @@ using Google.Protobuf.WellKnownTypes;
 using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 
 namespace WhenPlugin.When {
 
@@ -107,13 +108,13 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                FilterExpr = cloneMe.FilterExpr;
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
                 IterExpr.Setter = SetIterationCount;
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
                 DExpr.Setter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 FExpr.Setter = SetFilter;
+                FilterExpr = cloneMe.FilterExpr;
             }
         }
 
@@ -243,21 +244,27 @@ namespace WhenPlugin.When {
             set {
                 value ??= "(Current)";
                 iFilterExpr = value;
+                FExpr.Expression = value;
+                FExpr.IsExpression = true;
 
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                foreach (var fw in fwi) {
-                    if (fw.Name.Equals(value)) {
-                        Filter = fw.Position;
-                        break;
+                if (SelectedFilter != null) {
+                    foreach (var fw in fwi) {
+                        if (fw.Name.Equals(value)) {
+                            Filter = fw.Position;
+                            break;
+                        }
                     }
                 }
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
-                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                     CVFilter = true;
+                    if (FExpr.Error == null && FExpr.Value < fwi.Count) {
+                        Filter = (int)FExpr.Value;
+                    }
                 }
 
                 SetFInfo();
