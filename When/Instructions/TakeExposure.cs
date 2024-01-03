@@ -313,8 +313,8 @@ namespace WhenPlugin.When {
 
         static Object LastImageLock = new Object();
 
-        static ConstantExpression.Keys iLastImageResult;
-        public static ConstantExpression.Keys LastImageResults {
+        static Symbol.Keys iLastImageResult;
+        public static Symbol.Keys LastImageResults {
             get {
                 lock (LastImageLock) {
                     return iLastImageResult;
@@ -329,7 +329,7 @@ namespace WhenPlugin.When {
         public int Gain { get => (int)GExpr.Value; set { } }
         public int Offset { get => (int)OExpr.Value; set { } }
 
-        private void AddOptionalResult(ConstantExpression.Keys results, StarDetectionAnalysis a, string name) {
+        private void AddOptionalResult(Symbol.Keys results, StarDetectionAnalysis a, string name) {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
                 if (v is double vDouble) {
@@ -343,7 +343,7 @@ namespace WhenPlugin.When {
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
-                ConstantExpression.Keys results = new ConstantExpression.Keys();
+                Symbol.Keys results = new Symbol.Keys();
 
                 // These are from AF or HocusFocus
                 results.Add("HFR", Math.Round(a.HFR, 3));

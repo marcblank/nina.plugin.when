@@ -62,6 +62,10 @@ namespace WhenPlugin.When {
              }
         }
 
+        static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
+
+        public class Keys : Dictionary<string, object>;
+
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
         private bool Debugging = true;

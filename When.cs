@@ -108,7 +108,7 @@ namespace WhenPlugin.When {
         }
 
         public SequenceContainer Globals {
-            get => ConstantExpression.GlobalContainer;
+            get => Symbol.GlobalContainer;
             set { }
         }
 
