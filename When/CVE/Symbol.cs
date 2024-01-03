@@ -30,7 +30,6 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
-using static WhenPlugin.When.ConstantExpression;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using Namotion.Reflection;
 

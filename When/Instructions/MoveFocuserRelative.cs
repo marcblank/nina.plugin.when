@@ -71,7 +71,7 @@ namespace WhenPlugin.When {
             get => iRelativePositionExpr;
             set {
                 iRelativePositionExpr = value;
-                ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0);
+                //ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0);
                 RaisePropertyChanged(nameof(RelativePositionExpr));
             }
         }
@@ -95,7 +95,7 @@ namespace WhenPlugin.When {
             if (!focuserMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
-            ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0, i);
+            //ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0, i);
             Issues = i;
             return i.Count == 0;
         }

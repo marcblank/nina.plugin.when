@@ -229,7 +229,7 @@ namespace WhenPlugin.When {
             get => iterationsExpr;
             set {
                 iterationsExpr = value;
-                ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
+                //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
                 RaisePropertyChanged();
             }
         }
@@ -293,7 +293,7 @@ namespace WhenPlugin.When {
                 }
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
-                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
+                    //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                     CVFilter = true;
                 }
 
@@ -405,10 +405,10 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
-            ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
-            ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, issues);
+            //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
+            //ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, issues);
             if (CVFilter) {
-                ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
+                //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
                 SetFInfo();
             }
 

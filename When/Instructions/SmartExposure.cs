@@ -332,10 +332,6 @@ namespace WhenPlugin.When {
                     i.AddRange(dither.Issues);
                 }
 
-                if (CVFilter) {
-                    ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, i);
-                }
-
                 SetFInfo();
                 
                 if (FilterNames.Count == 0) {
