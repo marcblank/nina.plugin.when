@@ -1376,12 +1376,12 @@
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
 
         <ComboBox
-            Margin="5,0,0,0"
-            HorizontalAlignment="Center"
+            Margin="5,-1,0,0"
             IsEditable="True"
             DisplayMemberPath="Name"
-            Text="{Binding Parent.FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-            >
+            VerticalAlignment="Center"
+            SelectedItem="{Binding SelectedFilter}"
+            Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
             <ComboBox.Resources>
                 <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
             </ComboBox.Resources>
@@ -1392,14 +1392,10 @@
                 </CompositeCollection>
             </ComboBox.ItemsSource>
         </ComboBox>
-        <!--<local:ConstantComboControl
-            Visibility="{Binding Parent.CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-            Margin="0,-3,10,5"
-            Expr="{Binding Path=Parent.FilterExpr, Mode=TwoWay}"
-            Valu="{Binding Path=Parent.Filter, Mode=TwoWay}"
-            Type="Integer"
-            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>-->
-
+        <local:ExprComboControl
+                      Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                      Exp="{Binding Path=Parent.FExpr, Mode=TwoWay}"
+                      Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>
         <TextBlock
            Margin="7.5,0,7.5,0"
            HorizontalAlignment="Center"

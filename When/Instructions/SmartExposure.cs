@@ -210,7 +210,7 @@ namespace WhenPlugin.When {
             IterationCount = (int)expr.Value;
         }
 
-          private List<string> iFilterNames = new List<string>();
+        private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
             set {
