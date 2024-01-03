@@ -1133,12 +1133,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock 
+                            <TextBox
                                  MinHeight="25"
                                  Margin="10,10,10,0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
-                                 Text="Constants/Variables Container" />
+                                 Text="{Binding CVName}" />
                             <Border
                                Width="20"
                                Height="20"
@@ -1194,11 +1194,12 @@
                               VerticalAlignment="Center"
                               FontStyle="Italic"
                               Opacity="0.4"
-                              Text="Conditional instructions go here"
+                              Text="Constant and Variable definition instructions go here"
                               Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="WhenPlugin.When.SetConstant, WhenPlugin, Culture=neutral, PublicKeyToken=null;
+WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" OnDropCommand="DropIntoCommand" />
                             </i:Interaction.Behaviors>
                         </Grid>
                     </Border>
