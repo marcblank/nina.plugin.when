@@ -2275,12 +2275,9 @@
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
                     </ComboBox>
-                    <local:ConstantComboControl
+                    <local:ExprComboControl
                         Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                        Margin="0,-4,10,5"
-                        Expr="{Binding Path=FilterExpr, Mode=TwoWay}"
-                        Valu="{Binding Path=Filter, Mode=TwoWay}"
-                        Type="Integer"
+                        Exp="{Binding Path=FilterExpr, Mode=TwoWay}"
                         Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
                     <TextBlock
                         Margin="7.5,-6,7.5,0"

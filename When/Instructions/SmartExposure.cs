@@ -217,6 +217,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public string SelectedFilter { get; set; }
+
         public bool CVFilter { get; set; } = false;
         private void SetFInfo() {
             SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
