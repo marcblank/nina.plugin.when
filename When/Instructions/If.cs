@@ -116,7 +116,7 @@ namespace WhenPlugin.When {
                 i.Add("Expression cannot be empty!");
             }
 
-            Switches = ConstantExpression.GetSwitches();
+            Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
             IfExpr.Validate();

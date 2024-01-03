@@ -273,7 +273,7 @@ namespace WhenPlugin.When {
                return;
             }
             Debug.WriteLine("Evaluate " + this);
-            Dictionary<string, object> DataSymbols = ConstantExpression.GetSwitchWeatherKeys();
+            Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
             Volatile = false;
 

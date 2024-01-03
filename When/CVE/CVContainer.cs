@@ -72,7 +72,6 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            ConstantExpression.UpdateConstants(this);
         }
 
   

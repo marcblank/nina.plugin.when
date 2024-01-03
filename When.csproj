@@ -20,10 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
+    <Compile Remove="When\CVE\ExpressionConverter.cs" />
+    <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
     <Compile Remove="When\Instructions\SetVariable.cs" />
     <Compile Remove="When\InterruptWait.cs" />
+    <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantControlVariable.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantHintControl.xaml.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
@@ -34,6 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
+    <Page Remove="When\Obsolete\ConstantComboControl.xaml" />
+    <Page Remove="When\Obsolete\ConstantControl.xaml" />
+    <Page Remove="When\Obsolete\ConstantControlVariable.xaml" />
+    <Page Remove="When\Obsolete\ConstantHintControl.xaml" />
     <Page Remove="When\SetConstantView.xaml" />
     <Page Remove="When\UserControl1.xaml" />
   </ItemGroup>

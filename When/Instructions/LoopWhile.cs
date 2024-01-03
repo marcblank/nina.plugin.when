@@ -76,7 +76,7 @@ namespace WhenPlugin.When {
 
             PredicateExpr.Validate(i);
 
-            Switches = ConstantExpression.GetSwitches();
+            Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
             Issues = i;

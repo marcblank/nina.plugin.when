@@ -14,8 +14,6 @@
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
-    <local:ExpressionConverter x:Key="ec" />
-
     <ControlTemplate x:Key="PowerupsButtons">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <Button
@@ -375,12 +373,12 @@
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRelativePosition}" />
-                    <local:ConstantControl 
+                    <!--<local:ConstantControl 
                         MinWidth="40"
                         Margin="5,-4,0,0"
                         Expr="{Binding RelativePositionExpr, Mode=TwoWay}"
                         Valu="{Binding RelativePosition , Mode=TwoWay}" 
-                        />
+                        />-->
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -1392,12 +1390,12 @@
            VerticalAlignment="Center"
            Text="#" />
 
-        <local:ConstantControl 
+        <!--<local:ConstantControl 
                        Margin="0,0,10,5" 
                        Expr="{Binding Path=Parent.IterationsExpr, Mode=TwoWay}"
                        Valu="{Binding Path=Parent.IterationCount, Mode=TwoWay}"
                        Type="Integer"
-                       />
+                       />-->
         <TextBlock
            Margin="7.5,0,7.5,0"
            HorizontalAlignment="Center"
@@ -1423,13 +1421,13 @@
                 </CompositeCollection>
             </ComboBox.ItemsSource>
         </ComboBox>
-        <local:ConstantComboControl
+        <!--<local:ConstantComboControl
             Visibility="{Binding Parent.CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
             Margin="0,-3,10,5"
             Expr="{Binding Path=Parent.FilterExpr, Mode=TwoWay}"
             Valu="{Binding Path=Parent.Filter, Mode=TwoWay}"
             Type="Integer"
-            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>
+            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>-->
 
         <TextBlock
            Margin="7.5,0,7.5,0"
@@ -1522,13 +1520,13 @@
                    VerticalAlignment="Center"
                    Text="|" />
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-                <local:ConstantHintControl 
+                <!--<local:ConstantHintControl 
                     Margin="8,1,10,5" 
                     Expr="{Binding Path=GainExpr, Mode=TwoWay}"
                     Valu="{Binding Path=Gain, Mode=TwoWay}"
                     Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
                     Validate="ValidateGain"
-                />
+                />-->
             </WrapPanel>
 
             <!--  Offset  -->
@@ -1548,13 +1546,13 @@
                    VerticalAlignment="Center"
                    Text="|" />
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-                <local:ConstantHintControl 
+                <!--<local:ConstantHintControl 
                     Margin="8,1,10,5" 
                     Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
                     Valu="{Binding Path=Offset, Mode=TwoWay}"
                     Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
                     Validate="ValidateOffset"
-                />
+                />-->
             </WrapPanel>
         </StackPanel>
     </WrapPanel>
