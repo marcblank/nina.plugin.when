@@ -526,35 +526,6 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:Retry}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="# of Retries:" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,10,0"
-                        Text="{Binding Iterations}"
-                        TextAlignment="Center" />
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemContent>
-            <nina:SequenceBlockView.SequenceItemProgressContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblIterations}" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding CompletedIterations}" />
-                    <TextBlock VerticalAlignment="Center">/</TextBlock>
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Iterations}" />
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemProgressContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type local:LogThis}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>

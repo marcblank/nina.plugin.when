@@ -31,6 +31,7 @@
     <Compile Remove="When\Obsolete\ConstantControlVariable.xaml.cs" />
     <Compile Remove="When\Obsolete\ConstantExpression.cs" />
     <Compile Remove="When\Obsolete\ConstantHintControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\Retry.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />

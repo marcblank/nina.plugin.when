@@ -53,11 +53,7 @@ namespace WhenPlugin.When {
         public override void ResetProgress() {
             base.ResetProgress();
             foreach (ISequenceItem item in RunInstructions.Items) {
-                if (item is not Retry) {
-                    item.ResetProgress();
-                } else {
-                    item.Status = SequenceEntityStatus.CREATED;
-                }
+                item.ResetProgress();
             }
         }
     }
