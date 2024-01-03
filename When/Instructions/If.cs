@@ -18,7 +18,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class IfConstant : IfCommand, IValidatable {
+    public class IfConstant : IfCommand, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public IfConstant() {

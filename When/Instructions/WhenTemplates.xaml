@@ -713,7 +713,7 @@
                             <local:ExprControl 
                                 Label="Wait "
                                 Exp="{Binding Path=WaitExpr, Mode=TwoWay}" />
-                           <TextBlock VerticalAlignment="Center" Margin="0,3,0,0" Text="s before repeating " />
+                           <TextBlock VerticalAlignment="Center" Margin="0,-1,0,0" Text=" s before repeating " />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
