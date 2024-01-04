@@ -122,7 +122,15 @@ namespace WhenPlugin.When {
             }
         }
 
-        public Double Default { get; set; } = Double.NaN;
+        private Double iDefault = Double.NaN;
+        public Double Default {
+            get => iDefault;
+            set {
+                iDefault = value;
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
+            }
+        }
 
         public Symbol Symbol { get; set; } = null;
         public ISequenceEntity SequenceEntity { get; set; } = null;
@@ -365,7 +373,8 @@ namespace WhenPlugin.When {
                 Evaluate();
             } else if (Double.IsNaN(Value)) {
                 Error = "Not evaluated";
-            } else if (Expression.Length == 0 && Value == Default && Error == null) {
+            } else if (Expression.Length != 0 && Value == Default && Error == null) {
+                // This seems very wrong to me; need to figure it out
                 Evaluate();
             }
         }
