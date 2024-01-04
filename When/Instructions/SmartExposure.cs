@@ -110,6 +110,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
                 IterExpr.Setter = SetIterationCount;
+                IterExpr.Default = 1;
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
                 DExpr.Setter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");

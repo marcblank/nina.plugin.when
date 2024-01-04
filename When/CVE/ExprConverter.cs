@@ -33,7 +33,10 @@ namespace WhenPlugin.When {
         private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
 
+        private static int ExprCount = 0;
+        
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            ExprCount++;
             Expr expr = values[VALUE_EXP] as Expr;
             if (expr != null) {
                 if (!expr.IsExpression) return "{" + expr.Value + "}";

@@ -58,6 +58,8 @@ namespace WhenPlugin.When {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {
                         Value = Default;
+                    } else {
+                        Value = Double.NaN;
                     }
                     _expression = value;
                     Parameters.Clear();
@@ -89,7 +91,6 @@ namespace WhenPlugin.When {
                     }
                 } else if (Regex.IsMatch(value, "{(\\d+)}")) {
                     IsExpression = false;
-
                 } else {
                     IsExpression = true;
 
@@ -282,7 +283,8 @@ namespace WhenPlugin.When {
             if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
                return;
             }
-            Debug.WriteLine("Evaluate " + this);
+            //Debug.WriteLine("Evaluate " + this);
+            EvaluateCount++;
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
             Volatile = false;
@@ -342,17 +344,23 @@ namespace WhenPlugin.When {
 
             Error = null;
             try {
-                object eval = e.Evaluate();
-                EvaluateCount++;
-                // We got an actual value
-                if (eval is Boolean b) {
-                    Value = b ? 1 : 0;
+                if (Parameters.Count > 40) {// References.Count) {
+                    Error = "Something missing";
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Value");
+
                 } else {
-                    Value = Convert.ToDouble(eval);
+                    object eval = e.Evaluate();
+                    // We got an actual value
+                    if (eval is Boolean b) {
+                        Value = b ? 1 : 0;
+                    } else {
+                        Value = Convert.ToDouble(eval);
+                    }
+                    Error = null;
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Value");
                 }
-                Error = null;
-                RaisePropertyChanged("ValueString");
-                RaisePropertyChanged("Value");
 
             } catch (ArgumentException ex) {
                 string error = ex.Message;
