@@ -1356,17 +1356,9 @@
        x:Key="TakeFlatExposureDetails"
        x:Shared="false"
        Orientation="Horizontal">
-        <TextBlock
-           Margin="5,0,0,0"
-           VerticalAlignment="Center"
-           Text="#" />
+ 
+        <local:ExprControl Label="#" Exp="{Binding Parent.IterExpr}" />
 
-        <!--<local:ConstantControl 
-                       Margin="0,0,10,5" 
-                       Expr="{Binding Path=Parent.IterationsExpr, Mode=TwoWay}"
-                       Valu="{Binding Path=Parent.IterationCount, Mode=TwoWay}"
-                       Type="Integer"
-                       />-->
         <TextBlock
            Margin="7.5,0,7.5,0"
            HorizontalAlignment="Center"
@@ -1376,12 +1368,12 @@
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
 
         <ComboBox
-            Margin="5,-1,0,0"
+            Margin="5,-2,0,0"
             IsEditable="True"
             DisplayMemberPath="Name"
             VerticalAlignment="Center"
-            SelectedItem="{Binding SelectedFilter}"
-            Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
+            SelectedItem="{Binding Parent.SelectedFilter}"
+            Text="{Binding Parent.FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
             <ComboBox.Resources>
                 <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
             </ComboBox.Resources>
@@ -1393,14 +1385,9 @@
             </ComboBox.ItemsSource>
         </ComboBox>
         <local:ExprComboControl
-                      Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                      Exp="{Binding Path=Parent.FExpr, Mode=TwoWay}"
-                      Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>
-        <TextBlock
-           Margin="7.5,0,7.5,0"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           Text="|" />
+            Visibility="{Binding Parent.CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+            Exp="{Binding Path=Parent.FExpr, Mode=TwoWay}"
+            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>
 
         <StackPanel DataContext="{Binding Items[0]}" Orientation="Horizontal">
             <StackPanel.Resources>
@@ -1415,7 +1402,7 @@
 
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
             <ComboBox
-               Margin="5,0,0,0"
+               Margin="5,-2,0,0"
                DisplayMemberPath="Name"
                ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
                SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1486,14 +1473,7 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Text="|" />
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-                <!--<local:ConstantHintControl 
-                    Margin="8,1,10,5" 
-                    Expr="{Binding Path=GainExpr, Mode=TwoWay}"
-                    Valu="{Binding Path=Gain, Mode=TwoWay}"
-                    Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                    Validate="ValidateGain"
-                />-->
+                <local:ExprHintControl Label="Gain" Exp="{Binding GExpr}" />
             </WrapPanel>
 
             <!--  Offset  -->
@@ -1512,14 +1492,8 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Text="|" />
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-                <!--<local:ConstantHintControl 
-                    Margin="8,1,10,5" 
-                    Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
-                    Valu="{Binding Path=Offset, Mode=TwoWay}"
-                    Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                    Validate="ValidateOffset"
-                />-->
+                <local:ExprHintControl Label="Offset" Exp="{Binding OExpr}" />
+
             </WrapPanel>
         </StackPanel>
     </WrapPanel>
@@ -1532,14 +1506,14 @@
                     <ContentPresenter Content="{StaticResource TakeFlatExposureDetails}" DataContext="{Binding Items[4]}" />
 
                     <TextBlock
-                       Margin="7.5,0,7.5,0"
+                       Margin="7.5,-3,7.5,0"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Text="|" />
 
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                    <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
                     <CheckBox
-                       Margin="5,0,0,0"
+                       Margin="8,-2,0,0"
                        VerticalAlignment="Center"
                        IsChecked="{Binding KeepPanelClosed}" />
                 </WrapPanel>

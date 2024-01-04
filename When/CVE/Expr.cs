@@ -387,6 +387,9 @@ namespace WhenPlugin.When {
 
         public void Validate(IList<string> issues) {
             if (Error != null || Volatile) {
+                if (Expression != null && Expression.Length == 0 && Value == Default) {
+                    Error = null;
+                }
                 Evaluate();
             } else if (Double.IsNaN(Value)) {
                 Error = "Not evaluated";

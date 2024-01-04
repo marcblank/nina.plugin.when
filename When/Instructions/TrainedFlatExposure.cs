@@ -44,6 +44,7 @@ using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using Antlr.Runtime;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 
 namespace WhenPlugin.When {
 
@@ -125,6 +126,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
                 IterExpr.Setter = SetIterationCount;
+                IterExpr.Default = 1;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 FilterExpr = cloneMe.FilterExpr;
             }
@@ -302,12 +304,13 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                if (SelectedFilter != null) {
-                    foreach (var fw in fwi) {
-                        if (fw.Name.Equals(value)) {
-                            Filter = fw.Position;
-                            break;
-                        }
+
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
+                        break;
                     }
                 }
 
