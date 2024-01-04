@@ -376,6 +376,9 @@ namespace WhenPlugin.When {
                     error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
                 }
                 Error = error;
+            } catch (NCalc.EvaluationException) {
+                Error = "Syntax Error";
+                return;
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }
