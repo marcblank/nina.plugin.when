@@ -265,8 +265,6 @@ namespace WhenPlugin.When {
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
-        private static int EvaluateCount = 0;
-
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
@@ -284,7 +282,6 @@ namespace WhenPlugin.When {
                return;
             }
             //Debug.WriteLine("Evaluate " + this);
-            EvaluateCount++;
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
             Volatile = false;
@@ -344,11 +341,20 @@ namespace WhenPlugin.When {
 
             Error = null;
             try {
-                if (Parameters.Count > 40) {// References.Count) {
-                    Error = "Something missing";
+                if (Parameters.Count != References.Count) {
+                    foreach (string r in References) {
+                        if (!Parameters.ContainsKey(r)) {
+                            // Not defined or evaluated
+                            Symbol s = FindSymbol(r, SequenceEntity.Parent);
+                            if (s is SetVariable sv && !sv.Executed) {
+                                Error = "Not evaluated: " + r;
+                            } else {
+                                Error = "Undefined: " + r;
+                            }
+                        }
+                    }
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("Value");
-
                 } else {
                     object eval = e.Evaluate();
                     // We got an actual value

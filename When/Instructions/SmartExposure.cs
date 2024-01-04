@@ -114,7 +114,6 @@ namespace WhenPlugin.When {
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
                 DExpr.Setter = SetDitherCount;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
-                FExpr.Setter = SetFilter;
                 FilterExpr = cloneMe.FilterExpr;
             }
         }
@@ -252,12 +251,13 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                if (SelectedFilter != null) {
-                    foreach (var fw in fwi) {
-                        if (fw.Name.Equals(value)) {
-                            Filter = fw.Position;
-                            break;
-                        }
+ 
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
+                        break;
                     }
                 }
 
@@ -273,6 +273,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
 
         private int iFilter = -1;
         public int Filter {

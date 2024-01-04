@@ -441,10 +441,6 @@ namespace WhenPlugin.When {
             OExpr.Validate();
             EExpr.Validate();
 
-            if (Parent != null && !Symbol.IsAttachedToRoot(Parent)) {
-                Logger.Info("Foo");
-            }
-
             Issues = i;
             return i.Count == 0;
         }

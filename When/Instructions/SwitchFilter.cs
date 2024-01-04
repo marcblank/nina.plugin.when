@@ -142,12 +142,13 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                if (SelectedFilter != null) {
-                    foreach (var fw in fwi) {
-                        if (fw.Name.Equals(value)) {
-                            Filter = fw.Position;
-                            break;
-                        }
+ 
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
+                        break;
                     }
                 }
 
