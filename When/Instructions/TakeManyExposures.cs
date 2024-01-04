@@ -135,7 +135,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 IterExpr.Expression = value;
-                RaisePropertyChanged("IterExpr");
             }
         }
 

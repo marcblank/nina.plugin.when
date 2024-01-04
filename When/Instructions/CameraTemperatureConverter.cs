@@ -22,7 +22,11 @@ namespace WhenPlugin.When {
     public class CameraTemperatureConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return $"({value})";
+            if (System.Convert.ToInt32(value) == -1) {
+                return $"({NINA.Core.Locale.Loc.Instance["LblCamera"]})";
+            } else {
+                return $"({value})";
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

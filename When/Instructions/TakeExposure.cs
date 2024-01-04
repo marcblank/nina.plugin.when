@@ -116,7 +116,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 EExpr.Expression = value;
-                RaisePropertyChanged("ExposureTimeExpr");
             }
         }
 
@@ -125,7 +124,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 GExpr.Expression = value;
-                RaisePropertyChanged("GExpr");
             }
         }
 
@@ -135,7 +133,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 OExpr.Expression = value;
-                RaisePropertyChanged("OExpr");
             }
         }
 
