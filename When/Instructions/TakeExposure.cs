@@ -295,6 +295,7 @@ namespace WhenPlugin.When {
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 
@@ -404,7 +405,7 @@ namespace WhenPlugin.When {
                 return i[iCount];
             }
         }
-  
+
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
@@ -430,8 +431,13 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            GExpr.Default = CameraInfo.DefaultGain;
-            OExpr.Default = CameraInfo.DefaultOffset;
+            if (GExpr.Default != CameraInfo.DefaultGain) {
+                GExpr.Default = CameraInfo.DefaultGain;
+            }
+
+            if (OExpr.Default != CameraInfo.DefaultOffset) {
+                OExpr.Default = CameraInfo.DefaultOffset;
+            }
 
             GExpr.Validate();
             OExpr.Validate();

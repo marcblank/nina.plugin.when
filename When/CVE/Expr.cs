@@ -139,7 +139,9 @@ namespace WhenPlugin.When {
         private double _value = Double.NaN;
         public double Value {
             get {
-                if (double.IsNaN(_value) && !double.IsNaN(Default)) return Default;
+                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
+                    return Default;
+                }
                 return _value;
             }
             set {
@@ -363,6 +365,8 @@ namespace WhenPlugin.When {
                 Evaluate();
             } else if (Double.IsNaN(Value)) {
                 Error = "Not evaluated";
+            } else if (Expression.Length == 0 && Value == Default && Error == null) {
+                Evaluate();
             }
         }
 
