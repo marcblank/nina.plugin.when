@@ -386,7 +386,6 @@ namespace WhenPlugin.When {
                 expr.Error = "Cannot be less than -1";
             } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
                 expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.GainMin, CameraInfo.GainMax);
-                ;
             }
         }
 
@@ -398,7 +397,6 @@ namespace WhenPlugin.When {
                 expr.Error = "Cannot be less than 0";
             } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
                 expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.OffsetMin, CameraInfo.OffsetMax);
-                ;
             }
         }
 

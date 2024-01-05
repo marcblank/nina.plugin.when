@@ -180,6 +180,7 @@ namespace WhenPlugin.When {
                     _error = value;
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
+                    RaisePropertyChanged("IsAnnotated");
                 }
             }
         }
