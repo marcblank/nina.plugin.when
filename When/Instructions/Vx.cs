@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
@@ -42,8 +43,14 @@ namespace WhenPlugin.When {
             clone.OriginalExpr = new Expr(OriginalExpr);
             return clone;
         }
-
-        public bool Executed = false;
+        private bool iExecuted = false;
+        public bool Executed {
+            get => iExecuted;
+            set {
+                iExecuted = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [JsonProperty]
         public string OriginalDefinition {
@@ -98,11 +105,17 @@ namespace WhenPlugin.When {
             return i.Count == 0;
         }
 
+        public override void ResetProgress() {
+            base.ResetProgress();
+            Executed = false;
+            Definition = "";
+            Expr.IsExpression = true;
+            Expr.Evaluate();
+        }
 
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Definition = OriginalDefinition;
-            Expr.Evaluate();
             Executed = true;
             return Task.CompletedTask;
         }

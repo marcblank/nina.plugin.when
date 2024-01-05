@@ -281,7 +281,11 @@ namespace WhenPlugin.When {
         public void Evaluate() {
             if (!IsExpression) return;
             if (Expression.Length == 0) {
+                // How the hell to clear the Expr
                 IsExpression = false;
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
+                RaisePropertyChanged("IsExpression");
                 return;
             }
             if (SequenceEntity == null) return;

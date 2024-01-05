@@ -86,13 +86,15 @@ namespace WhenPlugin.When {
             var info = safetyMediator.GetInfo();
             bool safe = info.Connected && info.IsSafe;
 
-            // SAFE means IsSafe && SAFE != false
+            
             double safeValue = Double.NaN;
-            //bool valid = ConstantExpression.IsValid(item, "*Converter*", "SAFE", out safeValue, null);
-
-            //if (safe && valid && safeValue == 0) {
-            //    safe = false;
-            //}
+            Symbol sym = Symbol.FindSymbol("SAFE", item.Parent);
+            if (sym != null) {
+                // If "SAFE" is defined, safe is the value
+                safeValue = sym.Expr.Value;
+                return (safeValue != 0);
+            }
+            // Otherwise, it's the safety monitor value
             return safe;
         }
 
