@@ -48,7 +48,7 @@ namespace WhenPlugin.When {
             Symbol = cloneMe.Symbol;
         }
 
-        private string _expression;
+        private string _expression = ""; 
 
         [JsonProperty]
         public string Expression {
@@ -66,6 +66,7 @@ namespace WhenPlugin.When {
                     _expression = value;
                     Parameters.Clear();
                     Resolved.Clear();
+                    References.Clear();
                     return;
                 }
                 Double result;
