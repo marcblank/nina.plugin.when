@@ -74,7 +74,8 @@ namespace WhenPlugin.When {
             CopyMetaData(cloneMe);
             GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer", ValidateGain);
             OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer", ValidateOffset);
-            EExpr = new Expr(this, cloneMe.EExpr.Expression, "Integer");
+            EExpr = new Expr(this, cloneMe.EExpr.Expression);
+            EExpr.Default = 0;
         }
 
         public override object Clone() {

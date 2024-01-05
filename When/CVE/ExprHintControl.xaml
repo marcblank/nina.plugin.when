@@ -16,6 +16,7 @@
                 MinWidth="40"
                 Margin="0,-3,0,-5"
                 VerticalAlignment="Center"
+                Opacity="90"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Foreground="{StaticResource PrimaryBrush}"
