@@ -82,9 +82,9 @@ namespace WhenPlugin.When {
 
                 _expression = value;
                 if (Double.TryParse(value, out result)) {
-                    Value = result;
                     Error = null;
                     IsExpression = false;
+                    Value = result;
                     // Notify consumers
                     if (Symbol != null) {
                         SymbolDirty(Symbol);
