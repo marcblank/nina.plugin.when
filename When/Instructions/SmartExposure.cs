@@ -243,6 +243,9 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
                 FExpr.Expression = value;
                 FExpr.IsExpression = true;

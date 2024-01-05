@@ -128,6 +128,7 @@ namespace WhenPlugin.When {
                 IterExpr.Setter = SetIterationCount;
                 IterExpr.Default = 1;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                FExpr.Default = 0;
                 FilterExpr = cloneMe.FilterExpr;
             }
         }
@@ -296,6 +297,9 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
                 FExpr.Expression = value;
                 FExpr.IsExpression = true;
@@ -435,6 +439,7 @@ namespace WhenPlugin.When {
             if (switchFilter != null) {
                 sfi = switchFilter.Issues;
             }
+
             Issues = issues.Concat(takeExposure.Issues).Concat(sfi).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
 

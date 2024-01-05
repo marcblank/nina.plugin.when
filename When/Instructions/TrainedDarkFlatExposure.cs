@@ -43,10 +43,11 @@ using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Sequencer.SequenceItem;
 using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using Antlr.Runtime;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Trained Dark Flat Exposure +")]
+    [ExportMetadata("Name", "Trained Dark Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description")]
     [ExportMetadata("Icon", "BrainBulbSVG")]
     [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
@@ -82,6 +83,8 @@ namespace WhenPlugin.When {
                 new OpenCover(flatDeviceMediator),
                 filterWheelMediator
             ) {
+            IterExpr = new Expr(this, "", "Integer");
+            FExpr = new Expr(this, "", "Integer");
         }
 
         private TrainedDarkFlatExposure(
@@ -115,8 +118,23 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
+                IterExpr.Setter = SetIterationCount;
+                IterExpr.Default = 1;
+                FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                FilterExpr = cloneMe.FilterExpr;
             }
         }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
+        [JsonProperty]
+        public Expr IterExpr { get; set; }
+        [JsonProperty]
+        public Expr FExpr { get; set; }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
 
@@ -205,20 +223,15 @@ namespace WhenPlugin.When {
                 FilterWheelMediator
             ) {
                 KeepPanelClosed = KeepPanelClosed,
-                FilterExpr = FilterExpr
             };
             return clone;
         }
 
-        private string iterationsExpr = "1";
-
         [JsonProperty]
         public string IterationsExpr {
-            get => iterationsExpr;
+            get => null;
             set {
-                iterationsExpr = value;
-                //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
-                RaisePropertyChanged();
+                IterExpr.Expression = value;
             }
         }
         [JsonProperty]
@@ -235,62 +248,9 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string gainExpr = "";
-        [JsonProperty]
-        public string GainExpr {
-            get => gainExpr;
-            set {
-                if (cameraMediator == null) return;
-                gainExpr = value;
-                //ConstantExpression.Evaluate(this, "GainExpr", "Gain", cameraMediator.GetInfo().DefaultGain);
-                RaisePropertyChanged("GainExpr");
-            }
-        }
-
-        private int gain = -1;
-
-        [JsonProperty]
-        public int Gain {
-            get => gain;
-            set {
-                gain = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        public string ValidateGain(double gain) {
-            return iValidateGain(gain, new List<string>());
-        }
-
-        public string iValidateGain(double gain, List<string> i) {
-            var iCount = i.Count;
-
-            CameraInfo = this.cameraMediator.GetInfo();
-            if (!CameraInfo.Connected) {
-                i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (Gain < -1) {
-                i.Add("Gain cannot be less than -1");
-            } else if (CameraInfo.CanSetGain && Gain > -1 && (Gain < CameraInfo.GainMin || Gain > CameraInfo.GainMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, Gain));
-            }
-
-            if (iCount == i.Count) {
-                return String.Empty;
-            } else {
-                return i[iCount];
-            }
-        }
-
-        private List<string> iFilterNames = new List<string>();
-        public List<string> FilterNames {
-            get => iFilterNames;
-            set {
-                iFilterNames = value;
-            }
-        }
-
+        public string SelectedFilter { get; set; }
         public bool CVFilter { get; set; } = false;
+
 
         private void SetFInfo() {
             SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilterItem();
@@ -314,28 +274,37 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
+                FExpr.Expression = value;
+                FExpr.IsExpression = true;
 
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
+
                 foreach (var fw in fwi) {
                     if (fw.Name.Equals(value)) {
                         Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
                         break;
                     }
                 }
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
-                    //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                     CVFilter = true;
+                    if (FExpr.Error == null && FExpr.Value < fwi.Count) {
+                        Filter = (int)FExpr.Value;
+                    }
                 }
 
                 SetFInfo();
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
-
             }
         }
 
@@ -345,6 +314,18 @@ namespace WhenPlugin.When {
             set {
                 iFilter = value;
                 RaisePropertyChanged();
+            }
+        }
+
+       public void SetIterationCount(Expr expr) {
+            IterationCount = (int)expr.Value;
+        }
+
+        private List<string> iFilterNames = new List<string>();
+        public List<string> FilterNames {
+            get => iFilterNames;
+            set {
+                iFilterNames = value;
             }
         }
 
@@ -436,11 +417,8 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
-            //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
-            if (CVFilter) {
-                //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
-                SetFInfo();
-            }
+            IterExpr.Validate();
+            FExpr.Validate();
 
             IList<string> sfi = new List<string>();
             if (switchFilter != null) {

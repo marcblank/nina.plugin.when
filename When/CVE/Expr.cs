@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using static WhenPlugin.When.Symbol;
 
 namespace WhenPlugin.When {
@@ -54,6 +55,7 @@ namespace WhenPlugin.When {
             get => _expression;
             set {
                 if (value == null) return;
+                value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {
@@ -277,6 +279,10 @@ namespace WhenPlugin.When {
         }
         public void Evaluate() {
             if (!IsExpression) return;
+            if (Expression.Length == 0) {
+                IsExpression = false;
+                return;
+            }
             if (SequenceEntity == null) return;
             if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
                return;
@@ -406,7 +412,9 @@ namespace WhenPlugin.When {
         public override string ToString() {
             string id = Symbol != null ? Symbol.Identifier : SequenceEntity.Name;
             if (Error != null) {
-                return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Error: {Error}";
+                return $"Expr: '{Expression}' in {id}, References: {References.Count}, Error: {Error}";
+            } else if (Expression.Length == 0) {
+                return "Expr: None";
             }
             return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Value: {Value}";
         }
