@@ -38,7 +38,8 @@ namespace WhenPlugin.When {
 
             try {
                 if (expr != null) {
-                    if (!expr.IsExpression) return "{" + expr.Value + "}";
+                    if (expr.Error != null) return "{" + expr.Error + "}";
+                    if (!expr.IsExpression) return ""; // return "{" + expr.Value + "}";
                     string txt;
                     if (expr.Error == null) {
                         if (expr.SequenceEntity is ITrueFalse) {

@@ -72,8 +72,8 @@ namespace WhenPlugin.When {
 
         private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
             CopyMetaData(cloneMe);
-            GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer");
-            OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer");
+            GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer", ValidateGain);
+            OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer", ValidateOffset);
             EExpr = new Expr(this, cloneMe.EExpr.Expression, "Integer");
         }
 
@@ -378,28 +378,27 @@ namespace WhenPlugin.When {
             }
         }
 
-        public string ValidateGain(double gain) {
-            return iValidateGain(gain, new List<string>());
-        }
-
-        public string iValidateGain(double gain, List<string> i) {
-            var iCount = i.Count;
-
+        public void ValidateGain(Expr expr) {
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
-                i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (GExpr.Value < -1) {
-                i.Add("Gain cannot be less than -1");
-            } else if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
+                expr.Error = Loc.Instance["LblCameraNotConnected"];
+            } else if (expr.Value < -1) {
+                expr.Error = "Cannot be less than -1";
+            } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
+                expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.GainMin, CameraInfo.GainMax);
+                ;
             }
+        }
 
-            //Logger.Info("** Temp setting: " + profileService.ActiveProfile.CameraSettings.Temperature);
-
-            if (iCount == i.Count) {
-                return String.Empty;
-            } else {
-                return i[iCount];
+        public void ValidateOffset(Expr expr) {
+            CameraInfo = this.cameraMediator.GetInfo();
+            if (!CameraInfo.Connected) {
+                expr.Error = Loc.Instance["LblCameraNotConnected"];
+            } else if (expr.Value < 0) {
+                expr.Error = "Cannot be less than 0";
+            } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
+                expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.OffsetMin, CameraInfo.OffsetMax);
+                ;
             }
         }
 

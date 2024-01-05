@@ -11,7 +11,7 @@
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SymControl}}}">
         <TextBlock VerticalAlignment="Center" Margin="-7,-4,0,-4" >
             <TextBlock.Visibility>
-                <Binding Path="Exp.IsExpression" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                <Binding Path="Exp.IsAnnotated" Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
             </TextBlock.Visibility>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">

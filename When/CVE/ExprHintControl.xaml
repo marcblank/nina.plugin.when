@@ -30,7 +30,7 @@
             </ninactrl:HintTextBox.Text>
         </ninactrl:HintTextBox>
         <TextBlock VerticalAlignment="Center"
-                   Visibility="{Binding Exp.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
+                   Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
                     <Binding Path="Exp"  />

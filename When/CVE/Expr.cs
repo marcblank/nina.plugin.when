@@ -1,23 +1,15 @@
-﻿using CsvHelper;
-using NCalc;
+﻿using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem;
-using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Data;
+using System.Windows;
 using static WhenPlugin.When.Symbol;
+using Expression = NCalc.Expression;
 
 namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
@@ -41,6 +33,13 @@ namespace WhenPlugin.When {
             SequenceEntity = item;
             Expression = expression;
             Type = type;
+        }
+
+        public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter) {
+            SequenceEntity = item;
+            Expression = expression;
+            Type = type;
+            Setter = setter;
         }
 
         public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
@@ -145,6 +144,8 @@ namespace WhenPlugin.When {
 
         public Action<Expr> Setter { get; set; }
 
+
+
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
@@ -194,6 +195,11 @@ namespace WhenPlugin.When {
         public bool IsExpression { get; set; } = false;
 
         public bool IsSyntaxError { get; set; } = false;
+
+        public bool IsAnnotated {
+            get => IsExpression || Error != null;
+            set { }
+        }
 
         // References are the parsed tokens used in the Expr
         public HashSet<string> References { get; set; } = new HashSet<string>();
