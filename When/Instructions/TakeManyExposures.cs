@@ -100,6 +100,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(cloneMe);
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression);
                 IterExpr.Setter = SetIterationCount;
+                IterExpr.Default = 1;
             }
         }
 
@@ -125,6 +126,10 @@ namespace WhenPlugin.When {
         }
 
         public void SetIterationCount(Expr expr) {
+            if (expr.Value < 0) {
+                expr.Error = "Must not be negative";
+                return;
+            }
             IterationCount = (int)expr.Value;
         }
 

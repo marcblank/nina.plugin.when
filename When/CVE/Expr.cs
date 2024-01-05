@@ -421,6 +421,12 @@ namespace WhenPlugin.When {
             Validate(null);
         }
 
+        public void NotNegative (Expr expr) {
+            if (expr.Value < 0) {
+                expr.Error = "Must not be negative";
+            }
+        }
+
         public override string ToString() {
             string id = Symbol != null ? Symbol.Identifier : SequenceEntity.Name;
             if (Error != null) {
