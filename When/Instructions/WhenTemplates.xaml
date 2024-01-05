@@ -1513,7 +1513,7 @@
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal" Margin="0,-4,0,0">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                        Margin="5,0,0,0"
@@ -2220,7 +2220,7 @@
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <WrapPanel Margin="0,-4,0,0" VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"
