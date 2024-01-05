@@ -372,14 +372,8 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRelativePosition}" />
-                    <!--<local:ConstantControl 
-                        MinWidth="40"
-                        Margin="5,-4,0,0"
-                        Expr="{Binding RelativePositionExpr, Mode=TwoWay}"
-                        Valu="{Binding RelativePosition , Mode=TwoWay}" 
-                        />-->
-                </StackPanel>
+                    <local:ExprControl Label="{ns:Loc LblRelativePosition}" Exp="{Binding PExpr}" />
+                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>

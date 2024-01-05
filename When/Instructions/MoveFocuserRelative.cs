@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
+using CsvHelper;
 
 namespace WhenPlugin.When {
 
@@ -40,39 +41,35 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public MoveFocuserRelative(IFocuserMediator focuserMediator) {
             this.focuserMediator = focuserMediator;
+            PExpr = new Expr(this);
         }
 
         private MoveFocuserRelative(MoveFocuserRelative cloneMe) : this(cloneMe.focuserMediator) {
             CopyMetaData(cloneMe);
+            PExpr = new Expr(this, cloneMe.PExpr.Expression, "Integer");
         }
 
         public override object Clone() {
             return new MoveFocuserRelative(this) {
-                RelativePosition = RelativePosition,
-                RelativePositionExpr = RelativePositionExpr
             };
         }
 
-        private IFocuserMediator focuserMediator;
-
-        private int relativePosition = 0;
-
-        public int RelativePosition {
-            get => relativePosition;
-            set {
-                relativePosition = value;
-                RaisePropertyChanged();
-            }
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
         }
 
-        private string iRelativePositionExpr = "";
+        public Expr PExpr { get; set; }
+        
+        
+        private IFocuserMediator focuserMediator;
+
+
         [JsonProperty]
         public string RelativePositionExpr {
-            get => iRelativePositionExpr;
+            get => null;
             set {
-                iRelativePositionExpr = value;
-                //ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0);
-                RaisePropertyChanged(nameof(RelativePositionExpr));
+                PExpr.Expression = value;
             }
         }
 
@@ -87,7 +84,7 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            return focuserMediator.MoveFocuserRelative(RelativePosition, token);
+            return focuserMediator.MoveFocuserRelative((int)PExpr.Value, token);
         }
 
         public bool Validate() {
@@ -95,17 +92,13 @@ namespace WhenPlugin.When {
             if (!focuserMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
-            //ConstantExpression.Evaluate(this, "RelativePositionExpr", "RelativePosition", 0, i);
+            PExpr.Validate();
             Issues = i;
             return i.Count == 0;
         }
 
-        public override void AfterParentChanged() {
-            Validate();
-        }
-
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(MoveFocuserRelative)}, Relative Position: {RelativePosition}";
+            return $"Category: {Category}, Item: {nameof(MoveFocuserRelative)}, Relative Position: {PExpr.Value}";
         }
     }
 }
