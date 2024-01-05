@@ -318,7 +318,7 @@ namespace WhenPlugin.When {
                         }
                         // Try in the old Switch/Weather keys
                         object Val;
-                        if (! found && DataSymbols.TryGetValue(symReference, out Val)) {
+                        if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
                             // There's no Symbol for these...
                             Resolved.Remove(symReference);
                             Resolved.Add(symReference, null);

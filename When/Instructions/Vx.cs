@@ -111,6 +111,7 @@ namespace WhenPlugin.When {
             Definition = "";
             Expr.IsExpression = true;
             Expr.Evaluate();
+            SymbolDirty(this);
         }
 
 
