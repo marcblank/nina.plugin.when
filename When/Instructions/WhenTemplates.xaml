@@ -496,7 +496,7 @@
                         VerticalAlignment="Center"
                         Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <local:ExprControl Exp="{Binding DurExpr}"/>
+                    <local:ExprHintControl Exp="{Binding DurExpr}"/>
                     <TextBlock
                        Margin="2.5,0,7.5,2 "
                        HorizontalAlignment="Center"

@@ -288,6 +288,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool ValidateExposureTime { get; set; } = true;
+
         private bool IsLightSequence() {
             return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
         }
@@ -413,7 +415,7 @@ namespace WhenPlugin.When {
                 if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
                 }
-                if (EExpr.Expression?.Length == 0) {
+                if (!ValidateExposureTime && EExpr.Expression?.Length == 0) {
                     i.Add("There must be an exposure time set");
                 }
             }

@@ -61,6 +61,7 @@ namespace WhenPlugin.When {
             clone.TempExpr = new Expr(clone, this.TempExpr.Expression);
             clone.TempExpr.Setter = ValidateTemperature;
             clone.DurExpr = new Expr(clone, this.DurExpr.Expression);
+            clone.DurExpr.Default = 0;
             return clone;
         }
 
