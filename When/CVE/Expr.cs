@@ -328,8 +328,9 @@ namespace WhenPlugin.When {
                         object Val;
                         if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
                             // There's no Symbol for these...
-                            Resolved.Remove(symReference);
-                            Resolved.Add(symReference, null);
+                            //Resolved.Remove(symReference);
+                            //Resolved.Add(symReference, null);
+                            // We don't want these resolved, just added to Parameters
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
                             Volatile = true;

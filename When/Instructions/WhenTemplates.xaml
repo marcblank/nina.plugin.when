@@ -294,7 +294,7 @@
                         Background="Transparent"
                         Foreground="White"
                         IsHitTestVisible="False"
-                        Opacity="0.6"
+                        Opacity="0.5"
                         Text="{TemplateBinding HintText}"
                         TextAlignment="{TemplateBinding TextAlignment}">
                             <TextBlock.Style>
