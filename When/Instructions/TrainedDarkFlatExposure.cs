@@ -384,6 +384,7 @@ namespace WhenPlugin.When {
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();
             var takeExposure = GetExposureItem();
+            takeExposure.ValidateExposureTime = false;
             var setBrightness = GetSetBrightnessItem();
 
             var valid = takeExposure.Validate() && setBrightness.Validate();

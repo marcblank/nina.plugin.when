@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
             get => _expression;
             set {
                 if (value == null) return;
-                value = value.Trim();
+                    value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {
@@ -122,6 +122,7 @@ namespace WhenPlugin.When {
                     if (Symbol != null) SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
+                RaisePropertyChanged("IsAnnotated");
             }
         }
 

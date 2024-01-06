@@ -47,6 +47,7 @@ namespace WhenPlugin.When {
         private MoveFocuserRelative(MoveFocuserRelative cloneMe) : this(cloneMe.focuserMediator) {
             CopyMetaData(cloneMe);
             PExpr = new Expr(this, cloneMe.PExpr.Expression, "Integer");
+            PExpr.Default = 0;
         }
 
         public override object Clone() {
