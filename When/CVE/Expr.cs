@@ -37,9 +37,10 @@ namespace WhenPlugin.When {
 
         public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter) {
             SequenceEntity = item;
+            // SETTER MUST BE BEFORE EXPRESSION!!
+            Setter = setter;
             Expression = expression;
             Type = type;
-            Setter = setter;
         }
 
         public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {

@@ -2267,7 +2267,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                     <local:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>

@@ -78,7 +78,7 @@ namespace WhenPlugin.When {
         }
 
         public void Exex (object foo, EventArgs args) {
-            Logger.Info("Foo");
+            Logger.Trace("Foo");
 
         }
 
@@ -209,10 +209,10 @@ namespace WhenPlugin.When {
         private bool Critical {  get; set; } = false;
 
         private async Task InterruptWhen() {
-            Logger.Info("*When Interrupt*");
+            Logger.Trace("*When Interrupt*");
             if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (InFlight || Triggered) {
-                Logger.Info("When: InFlight or Triggered, return");
+                Logger.Trace("When: InFlight or Triggered, return");
                 return;
             }
 
@@ -239,18 +239,18 @@ namespace WhenPlugin.When {
                     }
 
                     await sequenceMediator.StartAdvancedSequence(true);
-                    Logger.Info("When: Starting sequence, Triggered -> true");
+                    Logger.Trace("When: Starting sequence, Triggered -> true");
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
-                        Logger.Info("When: Parent not in root container?");
+                        Logger.Trace("When: Parent not in root container?");
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
-                        Logger.Info("When: Parent is not running?");
+                        Logger.Trace("When: Parent is not running?");
                     } else {
-                        Logger.Info("WhenL Disabled?");
+                        Logger.Trace("WhenL Disabled?");
                     }
                 }
             } else {
-                Logger.Info("When: Should trigger = false");
+                Logger.Trace("When: Should trigger = false");
             }
         }
 
@@ -260,7 +260,7 @@ namespace WhenPlugin.When {
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) {
-                Logger.Info("ShouldTrigger: FALSE (InFlight) ");
+                Logger.Trace("ShouldTrigger: FALSE (InFlight) ");
                 return false;
             }
             if (!Check()) {
@@ -268,7 +268,7 @@ namespace WhenPlugin.When {
                 TriggerRunner = Instructions;
                 return true;
             }
-            Logger.Info("ShouldTrigger: FALSE");
+            Logger.Trace("ShouldTrigger: FALSE");
             return false;
         }
 

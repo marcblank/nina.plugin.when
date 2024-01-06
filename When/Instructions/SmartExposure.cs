@@ -108,11 +108,11 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
-                IterExpr.Setter = SetIterationCount;
+                // NOTE THAT SETTER MUST BE IN THE CTOR!!
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount);
                 IterExpr.Default = 1;
-                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
-                DExpr.Setter = SetDitherCount;
+                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount);
+                DExpr.Default = 0;
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 FilterExpr = cloneMe.FilterExpr;
             }
@@ -352,6 +352,7 @@ namespace WhenPlugin.When {
                 FExpr.Validate();
 
                 Issues = i;
+                RaisePropertyChanged("Issues");
                 return (Issues.Count == 0) && valid;
             } catch (Exception) {
                 return false;
