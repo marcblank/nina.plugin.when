@@ -288,7 +288,7 @@
                         TextWrapping="Wrap" />
                         <TextBlock
                         x:Name="PART_HintText"
-                        Margin="0,0,0,0"
+                        Margin="0,-1,0,0"
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="Transparent"
