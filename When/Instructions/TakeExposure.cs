@@ -430,7 +430,7 @@ namespace WhenPlugin.When {
 
             if (GExpr.Default != CameraInfo.DefaultGain) {
                 GExpr.Default = CameraInfo.DefaultGain;
-                GExpr.Value = GExpr.Default;
+                GExpr.IsAnnotated = true;
             }
 
             if (OExpr.Default != CameraInfo.DefaultOffset) {

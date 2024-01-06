@@ -292,9 +292,9 @@
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="Transparent"
-                        Foreground="Cyan"
+                        Foreground="White"
                         IsHitTestVisible="False"
-                        Opacity="0.7"
+                        Opacity="0.6"
                         Text="{TemplateBinding HintText}"
                         TextAlignment="{TemplateBinding TextAlignment}">
                             <TextBlock.Style>
@@ -423,7 +423,7 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <local:ExprControl Label="{ns:Loc LblRelativePosition}" Exp="{Binding PExpr}" />
+                    <local:ExprHintControl Label="{ns:Loc LblRelativePosition}" Exp="{Binding PExpr}" />
                  </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
