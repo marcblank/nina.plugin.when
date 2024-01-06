@@ -5,7 +5,7 @@ using System.ComponentModel.Composition;
 using NINA.Equipment.Interfaces.Mediator;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "If Unsafe")]
+    [ExportMetadata("Name", "If Unsafe (Deprecated; use 'If !IsSafe')")]
     [ExportMetadata("Description", "Executes a customizable instruction set if the safety monitor indicates that conditions are unsafe.")]
     [ExportMetadata("Icon", "ShieldSVG")]
     [ExportMetadata("Category", "Powerups (Safety)")]

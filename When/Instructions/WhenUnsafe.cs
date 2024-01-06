@@ -100,6 +100,7 @@ namespace WhenPlugin.When {
 
         public override bool Check() {
             bool IsSafe = CheckSafe(this, safetyMediator);
+            Logger.Info("When Unsafe: Check returning " + ((IsSafe && IsActive()) ? "TRUE" : "FALSE"));
             return IsSafe && IsActive();
         }
     }

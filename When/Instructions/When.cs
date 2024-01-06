@@ -111,17 +111,19 @@ namespace WhenPlugin.When {
         }
 
         public override bool Check() {
-            if (Disabled) return true;
+            if (Disabled) {
+                Logger.Info("Check = TRUE (Disabled)");
+                return true;
+            }
 
             if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                Logger.Info("When: Check, PredicateValue = true");
-                if (OnceOnly) {
-                    Disabled = true;
-                }
+                Logger.Info("Check = FALSE");
                 return false;
             }
+            Logger.Info("Check = TRUE");
             return true;
         }
+
         public IList<string> Switches { get; set; } = null;
         public new bool Validate() {
 
