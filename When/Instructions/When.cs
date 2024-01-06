@@ -136,6 +136,8 @@ namespace WhenPlugin.When {
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
+            IfExpr.Validate();
+
             Issues = i;
             return i.Count == 0;
         }
