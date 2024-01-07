@@ -206,7 +206,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        private bool HandlerInit = false;
+        private static bool HandlerInit = false;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
            var count = ExposureCount;
@@ -330,7 +330,7 @@ namespace WhenPlugin.When {
         public int Gain { get => (int)GExpr.Value; set { } }
         public int Offset { get => (int)OExpr.Value; set { } }
 
-        private void AddOptionalResult(Symbol.Keys results, StarDetectionAnalysis a, string name) {
+        private static void AddOptionalResult(Symbol.Keys results, StarDetectionAnalysis a, string name) {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
                 if (v is double vDouble) {
@@ -339,16 +339,16 @@ namespace WhenPlugin.When {
             }
         }
 
-        private void ProcessResults(object sender, ImagePreparedEventArgs e) {
+        private static void ProcessResults(object sender, ImagePreparedEventArgs e) {
             lock (LastImageLock) {
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
-                Symbol.Keys results = new Symbol.Keys();
-
-                // These are from AF or HocusFocus
-                results.Add("HFR", Math.Round(a.HFR, 3));
-                results.Add("DetectedStars", a.DetectedStars);
+                Symbol.Keys results = new Symbol.Keys {
+                    // These are from AF or HocusFocus
+                    { "HFR", Math.Round(a.HFR, 3) },
+                    { "DetectedStars", a.DetectedStars }
+                };
 
                 // Add these if they exist
                 AddOptionalResult(results, a, "Eccentricity");
