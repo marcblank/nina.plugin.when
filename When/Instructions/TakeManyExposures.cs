@@ -98,8 +98,7 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount);
-                IterExpr.Default = 1;
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
             }
         }
 

@@ -43,6 +43,15 @@ namespace WhenPlugin.When {
             Type = type;
         }
 
+        public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter, double def) {
+            SequenceEntity = item;
+            // SETTER and DEFAULT MUST BE BEFORE EXPRESSION!!
+            Setter = setter;
+            Default = def;
+            Expression = expression;
+            Type = type;
+        }
+
         public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
             Setter = cloneMe.Setter;
             Symbol = cloneMe.Symbol;

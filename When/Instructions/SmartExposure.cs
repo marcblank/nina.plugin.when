@@ -109,10 +109,8 @@ namespace WhenPlugin.When {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
                 // NOTE THAT SETTER MUST BE IN THE CTOR!!
-                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount);
-                IterExpr.Default = 1;
-                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount);
-                DExpr.Default = 0;
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
+                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount, 0);
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 FilterExpr = cloneMe.FilterExpr;
             }
