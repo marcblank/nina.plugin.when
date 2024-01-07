@@ -317,16 +317,20 @@ namespace WhenPlugin.When {
 
             // First, validate References
             foreach (string symReference in References) {
-                if (!Resolved.ContainsKey(symReference)) {
-                    // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                Symbol sym;
+                bool found = Resolved.TryGetValue(symReference, out sym);
+                if (!found || sym == null) {
+                    // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                    if (!found) {
+                        sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                    }
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolve(symReference, sym);
                         sym.AddConsumer(this);
                     } else {
-                        bool found = false;
                         SymbolDictionary cached;
+                        found = false;
                         if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
                             Symbol global;
                             if (cached != null && cached.TryGetValue(symReference, out global)) {
@@ -337,10 +341,9 @@ namespace WhenPlugin.When {
                         // Try in the old Switch/Weather keys
                         object Val;
                         if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
-                            // There's no Symbol for these...
-                            //Resolved.Remove(symReference);
-                            //Resolved.Add(symReference, null);
                             // We don't want these resolved, just added to Parameters
+                            Resolved.Remove(symReference);
+                            Resolved.Add(symReference, null);
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
                             Volatile = true;
