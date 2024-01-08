@@ -271,6 +271,7 @@ namespace WhenPlugin.When {
         public bool Dirty { get; set; } = false;
 
         public bool Volatile {  get; set; } = false;
+        public bool ImageVolatile {  get; set; } = false;
 
         public void DebugWrite() {
             Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (Symbol != null ? Symbol : SequenceEntity) + ")");
@@ -314,10 +315,15 @@ namespace WhenPlugin.When {
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
             Volatile = false;
+            ImageVolatile = false;
 
             // First, validate References
             foreach (string symReference in References) {
                 Symbol sym;
+                // Remember if we have any image data
+                if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                    ImageVolatile = true;
+                }
                 bool found = Resolved.TryGetValue(symReference, out sym);
                 if (!found || sym == null) {
                     // !found -> couldn't find it; sym == null -> it's a DataSymbol

@@ -38,6 +38,8 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Windows.Navigation;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Observation;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
 
@@ -208,6 +210,9 @@ namespace WhenPlugin.When {
 
         private static bool HandlerInit = false;
 
+        public static double LastExposureTIme = 0;
+        public static double LastImageProcessTime = 0;
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
            var count = ExposureCount;
            var dsoContainer = RetrieveTarget(this.Parent);
@@ -224,9 +229,12 @@ namespace WhenPlugin.When {
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
             };
-
-            
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
+
+            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+            LastExposureTIme = time.TotalSeconds;
+
+            Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
 
             if (!HandlerInit) {
                 imagingMediator.ImagePrepared += ProcessResults;
@@ -312,7 +320,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        static Object LastImageLock = new Object();
+        static System.Object LastImageLock = new System.Object();
 
         static Symbol.Keys iLastImageResult;
         public static Symbol.Keys LastImageResults {
@@ -341,18 +349,24 @@ namespace WhenPlugin.When {
 
         private static void ProcessResults(object sender, ImagePreparedEventArgs e) {
             lock (LastImageLock) {
+                TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                TakeExposure.LastImageProcessTime = time.TotalSeconds;
+
+                Logger.Info("TakeExposure+ Processed at " + TakeExposure.LastImageProcessTime);
+                Logger.Info("Elapsed: " + (TakeExposure.LastImageProcessTime - TakeExposure.LastExposureTIme) + "s");
+
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
-                    { "HFR", Math.Round(a.HFR, 3) },
-                    { "DetectedStars", a.DetectedStars }
+                    { "Image_HFR", Math.Round(a.HFR, 3) },
+                    { "Image_StarCount", a.DetectedStars }
                 };
 
                 // Add these if they exist
-                AddOptionalResult(results, a, "Eccentricity");
-                AddOptionalResult(results, a, "FWHM");
+                AddOptionalResult(results, a, "Image_Eccentricity");
+                AddOptionalResult(results, a, "Image_FWHM");
 
                 // We should also get guider info as well...
 
@@ -378,6 +392,8 @@ namespace WhenPlugin.When {
                 //    }
                 //}
                 LastImageResults = results;
+                Logger.Info("TakeExposure+ Updating with " + results.Count + " image results");
+                Symbol.UpdateSwitchWeatherData();
             }
         }
 
@@ -446,7 +462,6 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            LastImageResults?.Clear();
         }
 
         public override TimeSpan GetEstimatedDuration() {

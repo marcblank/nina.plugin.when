@@ -292,7 +292,7 @@
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="Transparent"
-                        Foreground="White"
+                        Foreground="GreenYellow"
                         IsHitTestVisible="False"
                         Opacity="0.5"
                         Text="{TemplateBinding HintText}"

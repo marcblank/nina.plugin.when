@@ -120,6 +120,11 @@ namespace WhenPlugin.When {
 
         private IList<string> issues = new List<string>();
 
+        public override void Initialize() {
+            base.Initialize();
+            Instructions.Initialize();
+        }
+
         public IList<string> Issues {
             get => issues;
             set {
