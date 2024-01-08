@@ -18,7 +18,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "A container for Constant and Variable definitions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
 
     public class CVContainer : IfCommand, IValidatable {
 

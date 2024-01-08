@@ -369,7 +369,7 @@ namespace WhenPlugin.When {
             ProfileService = profileService;
             RotatorMediator = rotatorMediator;
             SafetyMonitorMediator = safetyMonitorMediator;
-            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
+            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
         }
 
@@ -398,17 +398,6 @@ namespace WhenPlugin.When {
         public static void AddSymbolData(string id, double value) {
             if (DataSymbols.ContainsKey(id)) {
 
-            }
-        }
-
-        public static void UpdateDataSymbols() {
-            lock (SwitchMediator) {
-                DomeInfo domeInfo = DomeMediator.GetInfo();
-                if (domeInfo.Connected) {
-                    AddSymbolData("ShutterStatus", (int)domeInfo.ShutterStatus);
-                    AddSymbolData("ShutterNone", -1);
-                    AddSymbolData("ShutterOpen", 0);
-                }
             }
         }
 

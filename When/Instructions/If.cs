@@ -69,6 +69,8 @@ namespace WhenPlugin.When {
                         progress?.Report(new ApplicationStatus() { Status = "" });
                         await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
                     }
+                    // Get latest values
+                    await Symbol.UpdateSwitchWeatherData();
                     IfExpr.Evaluate();
                     Logger.Info("If: ImageVolatile, new data");
                 }
