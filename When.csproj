@@ -10,15 +10,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="localappdata\**" />
+    <Compile Remove="When\CVE - Copy\**" />
     <EmbeddedResource Remove="localappdata\**" />
+    <EmbeddedResource Remove="When\CVE - Copy\**" />
     <None Remove="localappdata\**" />
+    <None Remove="When\CVE - Copy\**" />
     <Page Remove="localappdata\**" />
+    <Page Remove="When\CVE - Copy\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
+    <Compile Remove="When\CVE\ExpressionConverter.cs" />
+    <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
+    <Compile Remove="When\Instructions\SetVariable.cs" />
     <Compile Remove="When\InterruptWait.cs" />
+    <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantControlVariable.xaml.cs" />
+    <Compile Remove="When\Obsolete\ConstantExpression.cs" />
+    <Compile Remove="When\Obsolete\ConstantHintControl.xaml.cs" />
+    <Compile Remove="When\Obsolete\Retry.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
@@ -29,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
+    <Page Remove="When\CVE\CVC.xaml" />
+    <Page Remove="When\Obsolete\ConstantComboControl.xaml" />
+    <Page Remove="When\Obsolete\ConstantControl.xaml" />
+    <Page Remove="When\Obsolete\ConstantControlVariable.xaml" />
+    <Page Remove="When\Obsolete\ConstantHintControl.xaml" />
     <Page Remove="When\SetConstantView.xaml" />
     <Page Remove="When\UserControl1.xaml" />
   </ItemGroup>
@@ -55,6 +73,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.Settings</DependentUpon>
+    </Compile>
+    <Compile Update="When\CVE\Obsolete\ConstantControlVariable.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

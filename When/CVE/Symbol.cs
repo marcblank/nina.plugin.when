@@ -1,0 +1,552 @@
+﻿using Newtonsoft.Json;
+using NINA.Core.Model;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Validations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Reflection;
+using NINA.Sequencer.Container;
+using System.Text;
+using NINA.Core.Utility;
+using NINA.Sequencer;
+using Google.Protobuf.WellKnownTypes;
+using System.Diagnostics;
+using System.Linq;
+using System.ComponentModel;
+using System.Windows.Controls;
+using System.Windows.Data;
+using NINA.Core.Model.Equipment;
+using NINA.Equipment.Equipment.MyCamera;
+using NINA.Equipment.Equipment.MyDome;
+using NINA.Equipment.Equipment.MyFlatDevice;
+using NINA.Equipment.Equipment.MyRotator;
+using NINA.Equipment.Equipment.MySafetyMonitor;
+using NINA.Equipment.Equipment.MySwitch;
+using NINA.Equipment.Equipment.MyWeatherData;
+using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Interfaces;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
+using NINA.Equipment.Equipment.MyFilterWheel;
+using Namotion.Reflection;
+
+namespace WhenPlugin.When {
+  
+    [JsonObject(MemberSerialization.OptIn)]
+
+    public abstract class Symbol : SequenceItem, IValidatable {
+
+        public class SymbolDictionary : Dictionary<string, Symbol> { public static explicit operator Dictionary<object, object>(SymbolDictionary v) { throw new NotImplementedException(); } };
+
+        public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
+
+        public static Dictionary<Symbol, List<string>> Orphans = new Dictionary<Symbol, List<string>>();
+        
+        [ImportingConstructor]
+        public Symbol() {
+            Name = Name;
+            Icon = Icon;
+        }
+
+        public Symbol(Symbol copyMe) : this() {
+            if (copyMe != null) {
+                CopyMetaData(copyMe);
+                Name = copyMe.Name;
+                Icon = copyMe.Icon;
+                Identifier = copyMe.Identifier;
+                Definition = copyMe.Definition;
+             }
+        }
+
+        static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
+
+        public class Keys : Dictionary<string, object>;
+
+        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
+
+        private bool Debugging = true;
+
+        public static void Warn (string str) {
+            Logger.Warning (str);
+        }
+
+        private ISequenceContainer LastParent {  get; set; }
+
+        static private bool IsAttachedToRoot(ISequenceContainer container) {
+            ISequenceEntity p = container;
+            while (p != null) {
+                if (p is SequenceRootContainer || p == WhenPluginObject.Globals) {
+                    return true;
+                } else {
+                    p = p.Parent;
+                }
+            }
+            return false;
+        }
+
+        static public bool IsAttachedToRoot(ISequenceEntity item) {
+            if (item.Parent == null) return false;
+            return IsAttachedToRoot (item.Parent);
+        }
+
+        // Must prevent cycles
+        public static void SymbolDirty (Symbol sym) {
+            List<Symbol> dirtyList = new List<Symbol>();
+            iSymbolDirty(sym, dirtyList);
+        }
+
+        public static void iSymbolDirty(Symbol sym, List<Symbol> dirtyList) {
+            Debug.WriteLine("SymbolDirty: " + sym);
+            dirtyList.Add(sym);
+            // Mark everything in the chain dirty
+            foreach (Expr consumer in sym.Consumers) {
+                consumer.ReferenceRemoved(sym);
+                Symbol consumerSym = consumer.Symbol;
+                if (!consumer.Dirty && consumerSym != null) {
+                    if (!dirtyList.Contains(consumerSym)) {
+                        iSymbolDirty(consumerSym, dirtyList);
+                    }
+                }
+                consumer.Dirty = true;
+                consumer.Evaluate();
+            }
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Debug.WriteLine("APC: " + this + ", New Parent = " + ((Parent == null) ? "null" : Parent.Name));
+            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
+                if (Expr != null) {
+                    // Clear out orphans of this Symbol
+                    Orphans.Remove(this);
+                    // We've deleted this Symbol
+                    SymbolDictionary cached;
+                    if (LastParent == null) {
+                        Warn("Removed symbol " + this + " has no LastParent?");
+                        // We're saving a template?
+                        return;
+                    }
+                    if (SymbolCache.TryGetValue(LastParent, out cached)) {
+                        if (cached.Remove(Identifier)) {
+                            SymbolDirty(this);
+                         } else {
+                            Warn("Deleting " + this + " but not in Parent's cache?");
+                        }
+                    } else {
+                       Warn("Deleting " + this + " but Parent has no cache?");
+                    }
+                }
+                return;
+            }
+            LastParent = Parent;
+
+            Expr = new Expr(Definition, this);
+
+            try {
+                if (Identifier != null && Identifier.Length == 0) return;
+                SymbolDictionary cached;
+                if (SymbolCache.TryGetValue(Parent, out cached)) {
+                    cached.Add(Identifier, this);
+                } else {
+                    SymbolDictionary newSymbols = new SymbolDictionary {
+                        { Identifier, this }
+                    };
+                    SymbolCache.Add(Parent, newSymbols);
+                    foreach (Expr consumer in Consumers) {
+                        consumer.RemoveParameter(Identifier);
+                    }
+                    // Can we see if the Parent moves?
+                    // Parent.AfterParentChanged += ??
+                }
+            } catch (Exception ex) {
+                Logger.Error("Exception in Symbol evaluation: " + ex.Message);
+            }
+        }
+
+        private string _identifier = "";
+
+        [JsonProperty]
+        public string Identifier {
+            get => _identifier;
+            set {
+                if (Parent == null) {
+                    _identifier = value;
+                    return;
+                }
+
+                SymbolDictionary cached = null;
+                if (value == _identifier || value.Length == 0) {
+                    return;
+                } else if (_identifier.Length != 0) {
+                    // If there was an old value, remove it from Parent's dictionary
+                    if (SymbolCache.TryGetValue(Parent, out cached)) {
+                        cached.Remove(_identifier);
+                        SymbolDirty(this);
+                    }
+                }
+                
+                _identifier = value;
+                
+                // Store the symbol in the SymbolCache for this Parent
+                if (Parent != null) {
+                    if (cached != null || SymbolCache.TryGetValue(Parent, out cached)) {
+                        cached.Add(Identifier, this);
+                    } else {
+                        SymbolDictionary newSymbols = new SymbolDictionary();
+                        SymbolCache.Add(Parent, newSymbols);
+                        newSymbols.Add(Identifier, this);
+                    }
+                }
+            }
+        }
+
+        private string _definition = "";
+        
+        [JsonProperty]
+        public string Definition {
+            get => _definition;
+            set {
+                if (value == _definition) {
+                    return;
+                }
+                _definition = value;
+                if (Parent != null) {
+                    Expr.Expression = value;
+                }
+                RaisePropertyChanged("Expr");
+            }
+        }
+
+        private Expr _expr = null;
+        public Expr Expr {
+            get => _expr;
+            set {
+                _expr = value;
+                RaisePropertyChanged();
+            }
+        }
+ 
+        public IList<string> Issues {  get; set; }
+
+        protected bool IsAttachedToRoot() {
+            ISequenceContainer p = Parent;
+            while (p != null) {
+                if (p is SequenceRootContainer) {
+                    return true;
+                }
+                p = p.Parent;
+            }
+            return false;
+        }
+
+        public HashSet<Expr> Consumers = new HashSet<Expr>();
+        public static WhenPlugin WhenPluginObject { get; set; }
+
+
+        public void AddConsumer (Expr expr) {
+            if (!Consumers.Contains(expr)) {
+                Consumers.Add(expr);
+            }
+        }
+
+        public void RemoveConsumer (Expr expr) {
+            if (!Consumers.Remove(expr)) {
+                Warn("RemoveConsumer: " + expr + " not found in " + this);
+            }
+        }
+
+        public static Symbol FindSymbol(string identifier, ISequenceContainer context) {
+            while (context != null) {
+                SymbolDictionary cached;
+                if (SymbolCache.TryGetValue(context, out cached)) {
+                    if (cached.ContainsKey(identifier)) {
+                        return cached[identifier];
+                    }
+                }
+                //ConstantExpression.GetSwitchWeatherKeys();
+                context = context.Parent;
+            }
+            return null;
+        }
+
+        public static void ShowSymbols(object sender) {
+            TextBox tb = (TextBox)sender;
+            BindingExpression be = tb.GetBindingExpression(TextBox.TextProperty);
+            Expr exp = be.ResolvedSource as Expr;
+            Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+
+            if (exp == null) {
+                Symbol s = be.ResolvedSource as Symbol;
+                if (s != null) {
+                    exp = s.Expr;
+                } else {
+                    tb.ToolTip = "??";
+                    return;
+                }
+            }
+ 
+            Dictionary<string, Symbol> syms = exp.Resolved;
+            int cnt = syms.Count;
+            if (cnt == 0) {
+                if (exp.References.Count == 1) {
+                    tb.ToolTip = "The symbol is not yet defined";
+                } else {
+                    tb.ToolTip = "No defined symbols used in this expression";
+                }
+                return;
+            }
+            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
+
+            foreach (var kvp in syms) {
+                Symbol sym = kvp.Value as Symbol;
+                sb.Append(kvp.Key.ToString());
+                if (sym != null) {
+                    sb.Append(" (in ");
+                    sb.Append(sym.Parent.Name);
+                    sb.Append(") = ");
+                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
+                } else {
+                    // We're a data value
+                    sb.Append(" (Data) = ");
+                    sb.Append(DataSymbols.GetValueOrDefault(kvp.Key, "??"));
+                }
+                if (--cnt > 0) sb.Append("; ");
+            }
+
+            tb.ToolTip = sb.ToString();
+        }
+
+
+        public abstract bool Validate();
+
+        public override string ToString() {
+            return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
+        }
+
+
+        // DATA SYMBOLS
+
+
+        private static string[] WeatherData = new string[] { "CloudCover", "DewPoint", "Humidity", "Pressure", "RainRate", "SkyBrightness", "SkyQuality", "SkyTemperature",
+            "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
+
+        public static string RemoveSpecialCharacters(string str) {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str) {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_') {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+
+
+        private static ISwitchMediator SwitchMediator { get; set; }
+        private static IWeatherDataMediator WeatherDataMediator { get; set; }
+        private static ICameraMediator CameraMediator { get; set; }
+        private static IDomeMediator DomeMediator { get; set; }
+        private static IFlatDeviceMediator FlatMediator { get; set; }
+        private static IFilterWheelMediator FilterWheelMediator { get; set; }
+        private static IProfileService ProfileService { get; set; }
+        private static IRotatorMediator RotatorMediator { get; set; }
+        private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
+
+
+        private static ConditionWatchdog ConditionWatchdog { get; set; }
+        private static IList<string> Switches { get; set; } = new List<string>();
+
+        public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
+            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator) {
+            SwitchMediator = switchMediator;
+            WeatherDataMediator = weatherDataMediator;
+            CameraMediator = cameraMediator;
+            DomeMediator = domeMediator;
+            FlatMediator = flatMediator;
+            FilterWheelMediator = filterWheelMediator;
+            ProfileService = profileService;
+            RotatorMediator = rotatorMediator;
+            SafetyMonitorMediator = safetyMonitorMediator;
+            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
+            ConditionWatchdog.Start();
+        }
+
+        public static Keys SwitchWeatherKeys { get; set; } = new Keys();
+
+        public static Keys GetSwitchWeatherKeys() {
+            lock (SwitchMediator) {
+                return SwitchWeatherKeys;
+            }
+        }
+
+        public static IList<string> GetSwitches() {
+            lock (SwitchMediator) {
+                return Switches;
+            }
+        }
+
+        public static Symbol.SymbolDictionary DataSymbols { get; set; } = new Symbol.SymbolDictionary();
+
+        public Dictionary<string, Symbol> GetDataSymbols() {
+            lock (SwitchMediator) {
+                return DataSymbols;
+            }
+        }
+
+        public static void AddSymbolData(string id, double value) {
+            if (DataSymbols.ContainsKey(id)) {
+
+            }
+        }
+
+        public static void UpdateDataSymbols() {
+            lock (SwitchMediator) {
+                DomeInfo domeInfo = DomeMediator.GetInfo();
+                if (domeInfo.Connected) {
+                    AddSymbolData("ShutterStatus", (int)domeInfo.ShutterStatus);
+                    AddSymbolData("ShutterNone", -1);
+                    AddSymbolData("ShutterOpen", 0);
+                }
+            }
+        }
+
+        public static Task UpdateSwitchWeatherData() {
+            lock (SwitchMediator) {
+                var i = new List<string>();
+                SwitchWeatherKeys = new Keys();
+
+                //SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                double timeSeconds = Math.Floor(time.TotalSeconds);
+                SwitchWeatherKeys.Add("TIME", timeSeconds);
+                //i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
+                i.Add("TIME: " + timeSeconds);
+
+                SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
+                if (safetyInfo.Connected) {
+                    SwitchWeatherKeys.Add("IsSafe", safetyInfo.IsSafe);
+                    i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
+                }
+
+                // Get SensorTemp
+                CameraInfo cameraInfo = CameraMediator.GetInfo();
+                if (cameraInfo.Connected) {
+                    SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
+                    i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
+                }
+
+                DomeInfo domeInfo = DomeMediator.GetInfo();
+                if (domeInfo.Connected) {
+                    SwitchWeatherKeys.Add("ShutterStatus", (int)domeInfo.ShutterStatus);
+                    i.Add("Dome: ShutterStatus (" + domeInfo.ShutterStatus + ")");
+                    SwitchWeatherKeys.Add("ShutterNone", -1);
+                    SwitchWeatherKeys.Add("ShutterOpen", 0);
+                    SwitchWeatherKeys.Add("ShutterClosed", 1);
+                    SwitchWeatherKeys.Add("ShutterOpening", 2);
+                    SwitchWeatherKeys.Add("ShutterClosing", 3);
+                    SwitchWeatherKeys.Add("ShutterError", 4);
+                }
+
+                FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
+                if (flatInfo.Connected) {
+                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
+                    i.Add("Flat Panel: CoverState (Cover" + flatInfo.CoverState + ")");
+                    SwitchWeatherKeys.Add("CoverUnknown", 0);
+                    SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
+                    SwitchWeatherKeys.Add("CoverClosed", 2);
+                    SwitchWeatherKeys.Add("CoverOpen", 3);
+                    SwitchWeatherKeys.Add("CoverError", 4);
+                }
+
+                RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
+                if (rotatorInfo.Connected) {
+                    SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
+                    i.Add("Rotator: RotatorMechanicalPosition (" + rotatorInfo.MechanicalPosition + ")");
+                }
+
+                FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+                if (filterWheelInfo.Connected) {
+                    var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                    foreach (FilterInfo filterInfo in f) {
+                        SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                    }
+
+                    SwitchWeatherKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
+                    i.Add("Filter Wheel: CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
+
+                }
+
+                // Get switch values
+                SwitchInfo switchInfo = SwitchMediator.GetInfo();
+                if (switchInfo.Connected) {
+                    foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
+                        string key = RemoveSpecialCharacters(sw.Name);
+                        SwitchWeatherKeys.TryAdd(key, sw.Value);
+                        i.Add("Gauge: " + key + " (" + sw.Value + ")");
+                    }
+                    foreach (ISwitch sw in switchInfo.WritableSwitches) {
+                        string key = RemoveSpecialCharacters(sw.Name);
+                        SwitchWeatherKeys.TryAdd(key, sw.Value);
+                        i.Add("Switch: " + key + " (" + sw.Value + ")");
+                    }
+                }
+
+                // Get weather values
+                WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
+                if (weatherInfo.Connected) {
+                    foreach (string dataName in WeatherData) {
+                        double t = weatherInfo.TryGetPropertyValue(dataName, Double.NaN);
+                        if (!Double.IsNaN(t)) {
+                            t = Math.Round(t, 2);
+                            string key = RemoveSpecialCharacters(dataName);
+                            SwitchWeatherKeys.TryAdd(key, t);
+                            i.Add("Weather: " + key + " (" + t + ")");
+                        }
+                    }
+                }
+
+                Keys imageKeys = TakeExposure.LastImageResults;
+                if (imageKeys != null) {
+                    foreach (KeyValuePair<string, object> kvp in imageKeys) {
+                        SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
+                        i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        Logger.Info("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                    }
+                } else {
+                    SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("StarCount", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("FWHM", Double.NaN);
+                    SwitchWeatherKeys.TryAdd("Eccentricity", Double.NaN);
+                    i.Add("No image data");
+                }
+
+                Switches = i;
+                return Task.CompletedTask;
+            }
+        }
+
+
+
+    // DEBUGGING
+
+    public static void ShowSymbols () {
+            foreach (var k in SymbolCache) {
+                ISequenceContainer c = k.Key;
+                SymbolDictionary syms = k.Value;
+                Debug.WriteLine("Container: " + c.Name);
+                foreach (var kv in syms) {
+                    Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
+                    if (kv.Value.Consumers.Count> 0) {
+                        foreach(Expr e in kv.Value.Consumers) {
+                            Debug.WriteLine("        -> " + e.Symbol);
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+}

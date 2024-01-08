@@ -1,0 +1,86 @@
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2023 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
+using NINA.Core.Utility;
+using NINA.Sequencer;
+using NINA.Sequencer.Validations;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
+using System.Windows.Data;
+
+namespace WhenPlugin.When {
+
+    public class ExprConverter : IMultiValueConverter {
+
+        public static Dictionary<ISequenceEntity, bool> ValidityCache = new Dictionary<ISequenceEntity, bool>();
+
+        public static string NOT_DEFINED = "Parameter was not defined (Parameter";
+
+        private const int VALUE_EXP = 0;              // The expression to be evaluated
+        private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
+        private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            Expr expr = values[VALUE_EXP] as Expr;
+
+            try {
+                if (expr != null) {
+                    if (expr.Error != null) return "{" + expr.Error + "}";
+                    if (!expr.IsExpression) return ""; // return "{" + expr.Value + "}";
+                    string txt;
+                    if (expr.Error == null) {
+                        if (expr.SequenceEntity is ITrueFalse) {
+                            if (expr.Value == 0) {
+                                txt = "False";
+                            } else {
+                                txt = "True";
+                            }
+                        } else {
+                            txt = expr.Value.ToString();
+                            if (values.Length > 2) {
+                                IList<string> combo = (IList<string>)values[VALUE_COMBO];
+                                int i = (int)expr.Value;
+                                if (i >= 0 && i < combo.Count) {
+                                    txt = combo[i];
+                                }
+                            }
+                        }
+                        //                } else if (Double.IsNaN(expr.Value)) {
+                        //                    txt = "Not evaluated";
+                    } else {
+                        txt = expr.Error;
+                    }
+                    return "{" + txt + "}";
+
+                } else {
+                    return "{??}";
+                }
+            } catch (Exception ex) {
+                Logger.Error("ExprConverter: " + ex.Message);
+                return "{Exception}";
+            }
+        }
+
+ 
+        object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+
+        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
+    }
+}

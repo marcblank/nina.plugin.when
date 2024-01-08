@@ -46,7 +46,7 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator, 
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-                IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator) {
+                IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -60,9 +60,10 @@ namespace WhenPlugin.When {
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
             // Hook into image saving for adding FITS keywords or image file patterns
+            Symbol.WhenPluginObject = this;
             CreateGlobalSetConstants(this);
-            SetConstant.WhenPluginObject = this;
-            ConstantExpression.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator);
+            Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator, safetyMonitorMediator);
+
         }
 
         public override Task Teardown() {
@@ -107,7 +108,7 @@ namespace WhenPlugin.When {
         }
 
         public SequenceContainer Globals {
-            get => ConstantExpression.GlobalContainer;
+            get => Symbol.GlobalContainer;
             set { }
         }
 
@@ -124,6 +125,7 @@ namespace WhenPlugin.When {
             Globals.Items.Add(new SetConstant() { Constant = Name8, CValueExpr = Value8, AllProfiles = All8, GlobalName = "Name8", GlobalValue = "Value8", GlobalAll = "All8" });
             Globals.Items.Add(new SetConstant() { Constant = Name9, CValueExpr = Value9, AllProfiles = All9, GlobalName = "Name9", GlobalValue = "Value9", GlobalAll = "All9" });
             Globals.Items.Add(new SetConstant() { Constant = Name10, CValueExpr = Value10, AllProfiles = All10, GlobalName = "Name10", GlobalValue = "Value10", GlobalAll = "All10" });
+
 
             foreach (var item in Globals.Items) {
                 item.AttachNewParent(Globals);
