@@ -1056,6 +1056,7 @@
                             <TextBlock 
                                  MinHeight="25"
                                  Margin="10,10,10,0"
+                                 Foreground="White"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
                                  Text="If" />
@@ -1279,6 +1280,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
                                   MinHeight="25"
+                                  Foreground="White"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1656,6 +1658,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
                                   MinHeight="25"
+                                  Foreground="White"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1709,7 +1712,7 @@
                                 </Border.ToolTip>
                             </Border>
                             <local:ExprControl Label="Expression:" Exp="{Binding IfExpr, Mode=TwoWay}"/>
-                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only" />
+                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only"  Foreground="White"/>
                             <CheckBox
                                   MinWidth="40"
                                   Margin="5,0,0,0"

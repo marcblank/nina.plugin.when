@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using Accord.Statistics.Models.Regression.Fitting;
+using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
@@ -83,7 +84,10 @@ namespace WhenPlugin.When {
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
-                        symKvp.Value.RemoveConsumer(this);
+                        Symbol s = symKvp.Value;
+                        if (s != null) {
+                            symKvp.Value.RemoveConsumer(this);
+                        }
                     }
                     Resolved.Clear();
                     Parameters.Clear();
