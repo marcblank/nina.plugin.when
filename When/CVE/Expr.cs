@@ -119,6 +119,7 @@ namespace WhenPlugin.When {
                     if (Symbol != null) SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
+                RaisePropertyChanged("IsExpression");
             }
         }
 
