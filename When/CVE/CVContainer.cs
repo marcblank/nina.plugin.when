@@ -18,14 +18,17 @@ using System.Reflection;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
 using System.Linq;
+using System.Windows.Input;
+using System;
+using System.Collections.ObjectModel;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant/Variable Container")]
     [ExportMetadata("Description", "A container for Constant and Variable definitions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
-    //[Export(typeof(ISequenceItem))]
-    //[Export(typeof(ISequenceContainer))]
+    [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
 
     public class CVContainer : SequenceContainer, IValidatable {
 
@@ -38,7 +41,7 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public CVContainer(ISequenceMediator seqMediator) : base(new SequentialStrategy()) {
             sequenceMediator = seqMediator;
-            if (sequenceNavigationVM == null) {
+            if (ninaTemplateController == null) {
                 FieldInfo fi = sequenceMediator.GetType().GetField("sequenceNavigation", BindingFlags.Instance | BindingFlags.NonPublic);
                 if (fi != null) {
                     sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(sequenceMediator);
@@ -62,13 +65,29 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new CVContainer(this) {
-                Name = Name
+            var clone = new CVContainer(this) {
+                Name = Name,
+                Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem))
             };
+            foreach (var item in clone.Items) {
+                item.AttachNewParent(clone);
+            }
+            return clone;
+
         }
 
-        private void AddTemplate(object o) {
-            ISequenceContainer clonedContainer = ((o as DropIntoParameters).Source as ISequenceContainer).Clone() as ISequenceContainer;
+        private GalaSoft.MvvmLight.Command.RelayCommand addTemplate;
+
+        public ICommand AddTemplateCommand => addTemplate ??= new GalaSoft.MvvmLight.Command.RelayCommand(AddTemplate);
+
+        public bool ShowAddTemplate {  get; set; }
+
+        public override bool Validate() {
+            return base.Validate();
+        }
+
+        private void AddTemplate() {
+            ISequenceContainer clonedContainer = Clone() as ISequenceContainer;
             if (clonedContainer == null || clonedContainer is ISequenceRootContainer || clonedContainer is IImmutableContainer) return;
             clonedContainer.AttachNewParent(null);
             clonedContainer.ResetAll();
