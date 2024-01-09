@@ -69,6 +69,8 @@ namespace WhenPlugin.When {
 
         private bool Debugging = true;
 
+        public bool IsDuplicate { get; private set; } = false;
+
         public static void Warn (string str) {
             Logger.Warning (str);
         }
@@ -177,6 +179,8 @@ namespace WhenPlugin.When {
                     return;
                 }
 
+                IsDuplicate = false;
+
                 SymbolDictionary cached = null;
                 if (value == _identifier || value.Length == 0) {
                     return;
@@ -193,7 +197,12 @@ namespace WhenPlugin.When {
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(Parent, out cached)) {
-                        cached.Add(Identifier, this);
+                        try {
+                            cached.Add(Identifier, this);
+                        } catch (ArgumentException ex) {
+                            Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
+                            IsDuplicate = true;
+                        }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
                         SymbolCache.Add(Parent, newSymbols);
