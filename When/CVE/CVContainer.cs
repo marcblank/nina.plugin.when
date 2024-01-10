@@ -86,15 +86,18 @@ namespace WhenPlugin.When {
             return base.Validate();
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (var item in Items) {
+                item.AfterParentChanged();
+            }
+        }
+
         private void AddTemplate() {
             ISequenceContainer clonedContainer = Clone() as ISequenceContainer;
-            if (clonedContainer == null || clonedContainer is ISequenceRootContainer || clonedContainer is IImmutableContainer) return;
             clonedContainer.AttachNewParent(null);
             clonedContainer.ResetAll();
-            if (clonedContainer is DeepSkyObjectContainer dsoContainer) {
-                dsoContainer.ExposureInfoList.Clear();
-            }
-
+ 
             bool addTemplate = true;
             var templateExists = ninaTemplateController.UserTemplates.Any(t => t.Container.Name == clonedContainer.Name);
             if (templateExists) {
@@ -112,6 +115,5 @@ namespace WhenPlugin.When {
                 }
             }
         }
-
     }
 }
