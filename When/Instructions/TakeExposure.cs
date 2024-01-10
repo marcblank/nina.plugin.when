@@ -38,6 +38,8 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Windows.Navigation;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Observation;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
 
@@ -72,9 +74,10 @@ namespace WhenPlugin.When {
 
         private TakeExposure(TakeExposure cloneMe) : this(cloneMe.profileService, cloneMe.cameraMediator, cloneMe.imagingMediator, cloneMe.imageSaveMediator, cloneMe.imageHistoryVM) {
             CopyMetaData(cloneMe);
-            GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer");
-            OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer");
-            EExpr = new Expr(this, cloneMe.EExpr.Expression, "Integer");
+            GExpr = new Expr(this, cloneMe.GExpr.Expression, "Integer", ValidateGain);
+            OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer", ValidateOffset);
+            EExpr = new Expr(this, cloneMe.EExpr.Expression);
+            EExpr.Default = 0;
         }
 
         public override object Clone() {
@@ -116,7 +119,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 EExpr.Expression = value;
-                RaisePropertyChanged("ExposureTimeExpr");
             }
         }
 
@@ -125,7 +127,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 GExpr.Expression = value;
-                RaisePropertyChanged("GExpr");
             }
         }
 
@@ -135,7 +136,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 OExpr.Expression = value;
-                RaisePropertyChanged("OExpr");
             }
         }
 
@@ -208,7 +208,10 @@ namespace WhenPlugin.When {
             }
         }
 
-        private bool HandlerInit = false;
+        private static bool HandlerInit = false;
+
+        public static double LastExposureTIme = 0;
+        public static double LastImageProcessTime = 0;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
            var count = ExposureCount;
@@ -226,9 +229,12 @@ namespace WhenPlugin.When {
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
             };
-
-            
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
+
+            TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+            LastExposureTIme = time.TotalSeconds;
+
+            Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
 
             if (!HandlerInit) {
                 imagingMediator.ImagePrepared += ProcessResults;
@@ -290,11 +296,14 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool ValidateExposureTime { get; set; } = true;
+
         private bool IsLightSequence() {
             return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
         }
 
         public override void AfterParentChanged() {
+            base.AfterParentChanged();
             Validate();
         }
 
@@ -311,7 +320,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        static Object LastImageLock = new Object();
+        static System.Object LastImageLock = new System.Object();
 
         static Symbol.Keys iLastImageResult;
         public static Symbol.Keys LastImageResults {
@@ -329,7 +338,7 @@ namespace WhenPlugin.When {
         public int Gain { get => (int)GExpr.Value; set { } }
         public int Offset { get => (int)OExpr.Value; set { } }
 
-        private void AddOptionalResult(Symbol.Keys results, StarDetectionAnalysis a, string name) {
+        private static void AddOptionalResult(Symbol.Keys results, StarDetectionAnalysis a, string name) {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
                 if (v is double vDouble) {
@@ -338,20 +347,26 @@ namespace WhenPlugin.When {
             }
         }
 
-        private void ProcessResults(object sender, ImagePreparedEventArgs e) {
+        private static void ProcessResults(object sender, ImagePreparedEventArgs e) {
             lock (LastImageLock) {
+                TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
+                TakeExposure.LastImageProcessTime = time.TotalSeconds;
+
+                Logger.Info("TakeExposure+ Processed at " + TakeExposure.LastImageProcessTime);
+                Logger.Info("Elapsed: " + (TakeExposure.LastImageProcessTime - TakeExposure.LastExposureTIme) + "s");
+
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
-                Symbol.Keys results = new Symbol.Keys();
-
-                // These are from AF or HocusFocus
-                results.Add("HFR", Math.Round(a.HFR, 3));
-                results.Add("DetectedStars", a.DetectedStars);
+                Symbol.Keys results = new Symbol.Keys {
+                    // These are from AF or HocusFocus
+                    { "Image_HFR", Math.Round(a.HFR, 3) },
+                    { "Image_StarCount", a.DetectedStars }
+                };
 
                 // Add these if they exist
-                AddOptionalResult(results, a, "Eccentricity");
-                AddOptionalResult(results, a, "FWHM");
+                AddOptionalResult(results, a, "Image_Eccentricity");
+                AddOptionalResult(results, a, "Image_FWHM");
 
                 // We should also get guider info as well...
 
@@ -377,34 +392,33 @@ namespace WhenPlugin.When {
                 //    }
                 //}
                 LastImageResults = results;
+                Logger.Info("TakeExposure+ Updating with " + results.Count + " image results");
+                Symbol.UpdateSwitchWeatherData();
             }
         }
 
-        public string ValidateGain(double gain) {
-            return iValidateGain(gain, new List<string>());
-        }
-
-        public string iValidateGain(double gain, List<string> i) {
-            var iCount = i.Count;
-
+        public void ValidateGain(Expr expr) {
             CameraInfo = this.cameraMediator.GetInfo();
             if (!CameraInfo.Connected) {
-                i.Add(Loc.Instance["LblCameraNotConnected"]);
-            } else if (GExpr.Value < -1) {
-                i.Add("Gain cannot be less than -1");
-            } else if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
-                i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
-            }
-
-            //Logger.Info("** Temp setting: " + profileService.ActiveProfile.CameraSettings.Temperature);
-
-            if (iCount == i.Count) {
-                return String.Empty;
-            } else {
-                return i[iCount];
+                expr.Error = Loc.Instance["LblCameraNotConnected"];
+            } else if (expr.Value < -1) {
+                expr.Error = "Cannot be less than -1";
+            } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
+                expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.GainMin, CameraInfo.GainMax);
             }
         }
-  
+
+        public void ValidateOffset(Expr expr) {
+            CameraInfo = this.cameraMediator.GetInfo();
+            if (!CameraInfo.Connected) {
+                expr.Error = Loc.Instance["LblCameraNotConnected"];
+            } else if (expr.Value < 0) {
+                expr.Error = "Cannot be less than 0";
+            } else if (CameraInfo.CanSetGain && expr.Value > -1 && (expr.Value < CameraInfo.GainMin || expr.Value > CameraInfo.GainMax)) {
+                expr.Error = string.Format("Must be between {0} and {1}", CameraInfo.OffsetMin, CameraInfo.OffsetMax);
+            }
+        }
+
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
@@ -417,7 +431,7 @@ namespace WhenPlugin.When {
                 if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
                 }
-                if (EExpr.Expression?.Length == 0) {
+                if (ValidateExposureTime && EExpr.Expression?.Length == 0) {
                     i.Add("There must be an exposure time set");
                 }
             }
@@ -430,8 +444,13 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_FilePathInvalid"]);
             }
 
-            GExpr.Default = CameraInfo.DefaultGain;
-            OExpr.Default = CameraInfo.DefaultOffset;
+            if (GExpr.Default != CameraInfo.DefaultGain) {
+                GExpr.Default = CameraInfo.DefaultGain;
+            }
+
+            if (OExpr.Default != CameraInfo.DefaultOffset) {
+                OExpr.Default = CameraInfo.DefaultOffset;
+            }
 
             GExpr.Validate();
             OExpr.Validate();
@@ -443,7 +462,6 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            LastImageResults?.Clear();
         }
 
         public override TimeSpan GetEstimatedDuration() {

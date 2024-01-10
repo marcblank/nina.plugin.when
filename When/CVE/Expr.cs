@@ -1,22 +1,16 @@
-﻿using CsvHelper;
+﻿using Accord.Statistics.Models.Regression.Fitting;
 using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer;
-using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem;
-using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows;
 using static WhenPlugin.When.Symbol;
+using Expression = NCalc.Expression;
 
 namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
@@ -42,26 +36,47 @@ namespace WhenPlugin.When {
             Type = type;
         }
 
+        public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter) {
+            SequenceEntity = item;
+            // SETTER MUST BE BEFORE EXPRESSION!!
+            Setter = setter;
+            Expression = expression;
+            Type = type;
+        }
+
+        public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter, double def) {
+            SequenceEntity = item;
+            // SETTER and DEFAULT MUST BE BEFORE EXPRESSION!!
+            Setter = setter;
+            Default = def;
+            Expression = expression;
+            Type = type;
+        }
+
         public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
             Setter = cloneMe.Setter;
             Symbol = cloneMe.Symbol;
         }
 
-        private string _expression;
+        private string _expression = ""; 
 
         [JsonProperty]
         public string Expression {
             get => _expression;
             set {
                 if (value == null) return;
+                    value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {
                         Value = Default;
+                    } else {
+                        Value = Double.NaN;
                     }
                     _expression = value;
                     Parameters.Clear();
                     Resolved.Clear();
+                    References.Clear();
                     return;
                 }
                 Double result;
@@ -69,7 +84,10 @@ namespace WhenPlugin.When {
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
-                        symKvp.Value.RemoveConsumer(this);
+                        Symbol s = symKvp.Value;
+                        if (s != null) {
+                            symKvp.Value.RemoveConsumer(this);
+                        }
                     }
                     Resolved.Clear();
                     Parameters.Clear();
@@ -77,9 +95,9 @@ namespace WhenPlugin.When {
 
                 _expression = value;
                 if (Double.TryParse(value, out result)) {
-                    Value = result;
                     Error = null;
                     IsExpression = false;
+                    Value = result;
                     // Notify consumers
                     if (Symbol != null) {
                         SymbolDirty(Symbol);
@@ -89,7 +107,6 @@ namespace WhenPlugin.When {
                     }
                 } else if (Regex.IsMatch(value, "{(\\d+)}")) {
                     IsExpression = false;
-
                 } else {
                     IsExpression = true;
 
@@ -119,11 +136,19 @@ namespace WhenPlugin.When {
                     if (Symbol != null) SymbolDirty(Symbol);
                 }
                 RaisePropertyChanged("Expression");
-                RaisePropertyChanged("IsExpression");
+                RaisePropertyChanged("IsAnnotated");
             }
         }
 
-        public Double Default { get; set; } = Double.NaN;
+        private Double iDefault = Double.NaN;
+        public Double Default {
+            get => iDefault;
+            set {
+                iDefault = value;
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
+            }
+        }
 
         public Symbol Symbol { get; set; } = null;
         public ISequenceEntity SequenceEntity { get; set; } = null;
@@ -134,13 +159,17 @@ namespace WhenPlugin.When {
 
         public Action<Expr> Setter { get; set; }
 
+
+
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
 
         private double _value = Double.NaN;
         public double Value {
             get {
-                if (double.IsNaN(_value) && Default != Double.NaN) return Default;
+                if (double.IsNaN(_value) && !double.IsNaN(Default)) {
+                    return Default;
+                }
                 return _value;
             }
             set {
@@ -166,6 +195,7 @@ namespace WhenPlugin.When {
                     _error = value;
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
+                    RaisePropertyChanged("IsAnnotated");
                 }
             }
         }
@@ -181,6 +211,11 @@ namespace WhenPlugin.When {
         public bool IsExpression { get; set; } = false;
 
         public bool IsSyntaxError { get; set; } = false;
+
+        public bool IsAnnotated {
+            get => IsExpression || Error != null;
+            set { }
+        }
 
         // References are the parsed tokens used in the Expr
         public HashSet<string> References { get; set; } = new HashSet<string>();
@@ -240,6 +275,7 @@ namespace WhenPlugin.When {
         public bool Dirty { get; set; } = false;
 
         public bool Volatile {  get; set; } = false;
+        public bool ImageVolatile {  get; set; } = false;
 
         public void DebugWrite() {
             Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (Symbol != null ? Symbol : SequenceEntity) + ")");
@@ -255,12 +291,10 @@ namespace WhenPlugin.When {
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
-        private static int EvaluateCount = 0;
-
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
-            if (sym.Expr.Error == null && sym.Expr.Value != Double.NaN) {
+            if (sym.Expr.Error == null && !Double.IsNaN(sym.Expr.Value)) {
                 Resolved.Add(reference, sym);
                 Parameters.Add(reference, sym.Expr.Value);
 
@@ -269,27 +303,44 @@ namespace WhenPlugin.When {
         }
         public void Evaluate() {
             if (!IsExpression) return;
+            if (Expression.Length == 0) {
+                // How the hell to clear the Expr
+                IsExpression = false;
+                RaisePropertyChanged("Value");
+                RaisePropertyChanged("ValueString");
+                RaisePropertyChanged("IsExpression");
+                return;
+            }
             if (SequenceEntity == null) return;
             if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
                return;
             }
-            Debug.WriteLine("Evaluate " + this);
+            //Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
             Volatile = false;
+            ImageVolatile = false;
 
             // First, validate References
             foreach (string symReference in References) {
-                if (!Resolved.ContainsKey(symReference)) {
-                    // Find the symbol here or above
-                    Symbol sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                Symbol sym;
+                // Remember if we have any image data
+                if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                    ImageVolatile = true;
+                }
+                bool found = Resolved.TryGetValue(symReference, out sym);
+                if (!found || sym == null) {
+                    // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                    if (!found) {
+                        sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                    }
                     if (sym != null) {
                         // Link Expression to the Symbol
                         Resolve(symReference, sym);
                         sym.AddConsumer(this);
                     } else {
-                        bool found = false;
                         SymbolDictionary cached;
+                        found = false;
                         if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
                             Symbol global;
                             if (cached != null && cached.TryGetValue(symReference, out global)) {
@@ -299,8 +350,8 @@ namespace WhenPlugin.When {
                         }
                         // Try in the old Switch/Weather keys
                         object Val;
-                        if (! found && DataSymbols.TryGetValue(symReference, out Val)) {
-                            // There's no Symbol for these...
+                        if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
+                            // We don't want these resolved, just added to Parameters
                             Resolved.Remove(symReference);
                             Resolved.Add(symReference, null);
                             Parameters.Remove(symReference);
@@ -333,17 +384,32 @@ namespace WhenPlugin.When {
 
             Error = null;
             try {
-                object eval = e.Evaluate();
-                EvaluateCount++;
-                // We got an actual value
-                if (eval is Boolean b) {
-                    Value = b ? 1 : 0;
+                if (Parameters.Count != References.Count) {
+                    foreach (string r in References) {
+                        if (!Parameters.ContainsKey(r)) {
+                            // Not defined or evaluated
+                            Symbol s = FindSymbol(r, SequenceEntity.Parent);
+                            if (s is SetVariable sv && !sv.Executed) {
+                                Error = "Not evaluated: " + r;
+                            } else {
+                                Error = "Undefined: " + r;
+                            }
+                        }
+                    }
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Value");
                 } else {
-                    Value = Convert.ToDouble(eval);
+                    object eval = e.Evaluate();
+                    // We got an actual value
+                    if (eval is Boolean b) {
+                        Value = b ? 1 : 0;
+                    } else {
+                        Value = Convert.ToDouble(eval);
+                    }
+                    Error = null;
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("Value");
                 }
-                Error = null;
-                RaisePropertyChanged("ValueString");
-                RaisePropertyChanged("Value");
 
             } catch (ArgumentException ex) {
                 string error = ex.Message;
@@ -353,6 +419,9 @@ namespace WhenPlugin.When {
                     error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
                 }
                 Error = error;
+            } catch (NCalc.EvaluationException) {
+                Error = "Syntax Error";
+                return;
             } catch (Exception ex) {
                 Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
             }
@@ -361,9 +430,15 @@ namespace WhenPlugin.When {
 
         public void Validate(IList<string> issues) {
             if (Error != null || Volatile) {
+                if (Expression != null && Expression.Length == 0 && Value == Default) {
+                    Error = null;
+                }
                 Evaluate();
-            } else if (Value == Double.NaN) {
+            } else if (Double.IsNaN(Value)) {
                 Error = "Not evaluated";
+            } else if (Expression.Length != 0 && Value == Default && Error == null) {
+                // This seems very wrong to me; need to figure it out
+                Evaluate();
             }
         }
 
@@ -371,10 +446,18 @@ namespace WhenPlugin.When {
             Validate(null);
         }
 
+        public void NotNegative (Expr expr) {
+            if (expr.Value < 0) {
+                expr.Error = "Must not be negative";
+            }
+        }
+
         public override string ToString() {
             string id = Symbol != null ? Symbol.Identifier : SequenceEntity.Name;
             if (Error != null) {
-                return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Error: {Error}";
+                return $"Expr: '{Expression}' in {id}, References: {References.Count}, Error: {Error}";
+            } else if (Expression.Length == 0) {
+                return "Expr: None";
             }
             return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Value: {Value}";
         }

@@ -1,21 +1,15 @@
 ﻿using Newtonsoft.Json;
-using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Sequencer;
-using Google.Protobuf.WellKnownTypes;
 using System.Diagnostics;
-using System.Linq;
-using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 using NINA.Core.Model.Equipment;
@@ -34,7 +28,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using Namotion.Reflection;
 
 namespace WhenPlugin.When {
-  
+
     [JsonObject(MemberSerialization.OptIn)]
 
     public abstract class Symbol : SequenceItem, IValidatable {
@@ -378,7 +372,7 @@ namespace WhenPlugin.When {
             ProfileService = profileService;
             RotatorMediator = rotatorMediator;
             SafetyMonitorMediator = safetyMonitorMediator;
-            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(10));
+            ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
         }
 
@@ -407,17 +401,6 @@ namespace WhenPlugin.When {
         public static void AddSymbolData(string id, double value) {
             if (DataSymbols.ContainsKey(id)) {
 
-            }
-        }
-
-        public static void UpdateDataSymbols() {
-            lock (SwitchMediator) {
-                DomeInfo domeInfo = DomeMediator.GetInfo();
-                if (domeInfo.Connected) {
-                    AddSymbolData("ShutterStatus", (int)domeInfo.ShutterStatus);
-                    AddSymbolData("ShutterNone", -1);
-                    AddSymbolData("ShutterOpen", 0);
-                }
             }
         }
 
@@ -521,6 +504,7 @@ namespace WhenPlugin.When {
                     foreach (KeyValuePair<string, object> kvp in imageKeys) {
                         SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
                         i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        Logger.Info("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);

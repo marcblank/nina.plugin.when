@@ -43,6 +43,8 @@ using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Equipment.Equipment.MyCamera;
 using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
+using Antlr.Runtime;
+using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 
 namespace WhenPlugin.When {
 
@@ -81,9 +83,10 @@ namespace WhenPlugin.When {
                 new LoopCondition() { Iterations = 1 },
                 new ToggleLight(flatDeviceMediator) { OnOff = false },
                 new OpenCover(flatDeviceMediator),
-                filterWheelMediator
+                filterWheelMediator) {
+            IterExpr = new Expr(this, "", "Integer");
+            FExpr = new Expr(this, "", "Integer");
 
-            ) {
         }
 
         public TrainedFlatExposure(
@@ -121,9 +124,24 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
+                IterExpr.Setter = SetIterationCount;
+                IterExpr.Default = 1;
+                FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                FExpr.Default = 0;
+                FilterExpr = cloneMe.FilterExpr;
             }
-
         }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            Validate();
+        }
+
+        [JsonProperty]
+        public Expr IterExpr { get; set; }
+        [JsonProperty]
+        public Expr FExpr { get; set; }
 
         private InstructionErrorBehavior errorBehavior = InstructionErrorBehavior.ContinueOnError;
 
@@ -217,20 +235,15 @@ namespace WhenPlugin.When {
                 FilterWheelMediator
             ) {
                 KeepPanelClosed = KeepPanelClosed,
-                FilterExpr = FilterExpr
             };
             return clone;
         }
 
-        private string iterationsExpr = "1";
-
         [JsonProperty]
         public string IterationsExpr {
-            get => iterationsExpr;
+            get => null;
             set {
-                iterationsExpr = value;
-                //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 0);
-                RaisePropertyChanged();
+                IterExpr.Expression = value;
             }
         }
         [JsonProperty]
@@ -247,6 +260,10 @@ namespace WhenPlugin.When {
             }
         }
 
+        public void SetIterationCount(Expr expr) {
+            IterationCount = (int)expr.Value;
+        }
+
         private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
@@ -255,6 +272,7 @@ namespace WhenPlugin.When {
             }
         }
 
+        public string SelectedFilter { get; set; }
         public bool CVFilter { get; set; } = false;
 
         private void SetFInfo() {
@@ -279,28 +297,37 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
+                FExpr.Expression = value;
+                FExpr.IsExpression = true;
 
                 // Find in FilterWheelInfo
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
+
                 foreach (var fw in fwi) {
                     if (fw.Name.Equals(value)) {
                         Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
                         break;
                     }
                 }
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
-                    //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1);
                     CVFilter = true;
+                    if (FExpr.Error == null && FExpr.Value < fwi.Count) {
+                        Filter = (int)FExpr.Value;
+                    }
                 }
 
                 SetFInfo();
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
-          
             }
         }
 
@@ -374,6 +401,7 @@ namespace WhenPlugin.When {
         public override bool Validate() {
             var switchFilter = GetSwitchFilterItem();
             var takeExposure = GetExposureItem();
+            takeExposure.ValidateExposureTime = false;
             var setBrightness = GetSetBrightnessItem();
 
             var valid = takeExposure.Validate() && setBrightness.Validate();
@@ -405,17 +433,14 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
-            //ConstantExpression.Evaluate(this, "IterationsExpr", "IterationCount", 1, issues);
-            //ConstantExpression.Evaluate(this, "GainExpr", "Gain", -1, issues);
-            if (CVFilter) {
-                //ConstantExpression.Evaluate(this, "FilterExpr", "Filter", -1, issues);
-                SetFInfo();
-            }
+            IterExpr.Validate();
+            FExpr.Validate();
 
             IList<string> sfi = new List<string>();
             if (switchFilter != null) {
                 sfi = switchFilter.Issues;
             }
+
             Issues = issues.Concat(takeExposure.Issues).Concat(sfi).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));
 

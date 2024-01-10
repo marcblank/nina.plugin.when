@@ -134,6 +134,9 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
                 FExpr.Expression = value;
                 FExpr.IsExpression = true;
@@ -142,12 +145,13 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                if (SelectedFilter != null) {
-                    foreach (var fw in fwi) {
-                        if (fw.Name.Equals(value)) {
-                            Filter = fw.Position;
-                            break;
-                        }
+ 
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
+                        break;
                     }
                 }
 
@@ -193,8 +197,10 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
-
             if (CVFilter) {
+                if (FExpr.Expression.Length == 0) {
+                    FExpr.Expression = "(Current)";
+                }
                 FExpr.Validate();
                 SetFInfo();
             }

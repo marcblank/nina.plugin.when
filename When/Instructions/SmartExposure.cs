@@ -108,12 +108,10 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer");
-                IterExpr.Setter = SetIterationCount;
-                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer");
-                DExpr.Setter = SetDitherCount;
+                // NOTE THAT SETTER MUST BE IN THE CTOR!!
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
+                DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount, 0);
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
-                FExpr.Setter = SetFilter;
                 FilterExpr = cloneMe.FilterExpr;
             }
         }
@@ -210,7 +208,7 @@ namespace WhenPlugin.When {
             IterationCount = (int)expr.Value;
         }
 
-          private List<string> iFilterNames = new List<string>();
+        private List<string> iFilterNames = new List<string>();
         public List<string> FilterNames {
             get => iFilterNames;
             set {
@@ -243,6 +241,9 @@ namespace WhenPlugin.When {
             get => iFilterExpr;
             set {
                 value ??= "(Current)";
+                if (value.Length == 0) {
+                    value = "(Current)";
+                }
                 iFilterExpr = value;
                 FExpr.Expression = value;
                 FExpr.IsExpression = true;
@@ -251,12 +252,13 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
-                if (SelectedFilter != null) {
-                    foreach (var fw in fwi) {
-                        if (fw.Name.Equals(value)) {
-                            Filter = fw.Position;
-                            break;
-                        }
+ 
+                foreach (var fw in fwi) {
+                    if (fw.Name.Equals(value)) {
+                        Filter = fw.Position;
+                        FExpr.Value = Filter;
+                        FExpr.Error = null;
+                        break;
                     }
                 }
 
@@ -272,6 +274,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
 
         private int iFilter = -1;
         public int Filter {
@@ -333,7 +336,6 @@ namespace WhenPlugin.When {
                 }
 
                 SetFInfo();
-                
                 if (FilterNames.Count == 0) {
                     var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     foreach (var fw in fwi) {
@@ -347,6 +349,7 @@ namespace WhenPlugin.When {
                 FExpr.Validate();
 
                 Issues = i;
+                RaisePropertyChanged("Issues");
                 return (Issues.Count == 0) && valid;
             } catch (Exception) {
                 return false;

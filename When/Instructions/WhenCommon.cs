@@ -62,7 +62,7 @@ namespace WhenPlugin.When {
             this.switchMediator = switchMediator;
             this.weatherMediator = weatherMediator;
             this.cameraMediator = cameraMediator;
-            ConditionWatchdog = new ConditionWatchdog(InterruptWhenUnsafe, TimeSpan.FromSeconds(5));
+            ConditionWatchdog = new ConditionWatchdog(InterruptWhen, TimeSpan.FromSeconds(5));
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
@@ -78,7 +78,7 @@ namespace WhenPlugin.When {
         }
 
         public void Exex (object foo, EventArgs args) {
-            Logger.Info("Foo");
+            Logger.Trace("Foo");
 
         }
 
@@ -119,6 +119,11 @@ namespace WhenPlugin.When {
         }
 
         private IList<string> issues = new List<string>();
+
+        public override void Initialize() {
+            base.Initialize();
+            Instructions.Initialize();
+        }
 
         public IList<string> Issues {
             get => issues;
@@ -208,74 +213,93 @@ namespace WhenPlugin.When {
 
         private bool Critical {  get; set; } = false;
 
-        private async Task InterruptWhenUnsafe() {
-            Logger.Info("InterruptWhenUnsafe");
+
+        private async Task InterruptWhen() {
+            Logger.Trace("*When Interrupt*");
             if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (InFlight || Triggered) {
-                //Logger.Info("Not InFlight or Triggered");
+                Logger.Trace("When: InFlight or Triggered, return");
                 return;
             }
 
             if (ShouldTrigger(null, null) && Parent != null) {
-                Logger.Info("ShouldTrigger: true");
+                Logger.Info("When; shouldTrigger = true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Triggered = true;
-                    //Logger.Info("Unsafe conditions detected - Interrupting current Instruction Set");
+                    Logger.Info("When: Interrupting current Instruction Set");
 
                     Critical = true;
                     try {
 
                         sequenceMediator.CancelAdvancedSequence();
-                        //Logger.Info("Canceling sequence...");
+                        Logger.Info("When: Canceling sequence...");
 
                         await Task.Delay(1000);
                         while (sequenceMediator.IsAdvancedSequenceRunning()) {
                             Logger.Info("Delay 1000");
                             await Task.Delay(1000);
                         }
-                        //Logger.Info("Sequence longer running");
+                        Logger.Info("When: Sequence longer running");
                     } finally {
                         Critical = false;
                     }
-                    
+
                     await sequenceMediator.StartAdvancedSequence(true);
-                    //Logger.Info("Starting sequence, Triggered -> true");
-              }
+                    Logger.Trace("When: Starting sequence, Triggered -> true");
+                } else {
+                    if (!ItemUtility.IsInRootContainer(Parent)) {
+                        Logger.Trace("When: Parent not in root container?");
+                    } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
+                        Logger.Trace("When: Parent is not running?");
+                    } else {
+                        Logger.Trace("WhenL Disabled?");
+                    }
+                }
             } else {
-                //Logger.Info("Should trigger: false");
+                Logger.Trace("When: Should trigger = false");
             }
         }
 
         public override string ToString() {
-            return $"Condition: {nameof(When)}";
+            return $"Trigger: {nameof(When)} - toString";
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (InFlight) return false;
+            if (InFlight) {
+                Logger.Trace("ShouldTrigger: FALSE (InFlight) ");
+                return false;
+            }
             if (!Check()) {
+                Logger.Info("ShouldTrigger: TRUE, TriggerRunner set");
                 TriggerRunner = Instructions;
                 return true;
             }
+            Logger.Trace("ShouldTrigger: FALSE");
             return false;
         }
 
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Logger.Info("Execute");
             if (Critical) {
-                //Logger.Info("Execute in critical section; return");
+                Logger.Info("When: Execute in critical section; return");
                 return;
             }
-            if (InFlight) return;
+            if (InFlight) {
+                Logger.Info("When: InFlight; return");
+                return; 
+            }
             try {
-                //Logger.Info("InFlight -> true, Triggered -> false");
+                Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
                 InFlight = true;
                 Triggered = false;
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
                 Triggered = false;
-                //Logger.Info("Execute done; InFlight -> false, Triggered false");
-                //InterruptWhenUnsafe();
+                if (this is WhenSwitch w && w.OnceOnly) {
+                    w.Disabled = true;
+                }
+                Logger.Info("When: Execute done; InFlight -> false, Triggered false");
             }
         }
 

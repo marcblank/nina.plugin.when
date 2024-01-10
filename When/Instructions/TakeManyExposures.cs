@@ -98,8 +98,7 @@ namespace WhenPlugin.When {
 
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IterExpr = new Expr(this, cloneMe.IterExpr.Expression);
-                IterExpr.Setter = SetIterationCount;
+                IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
             }
         }
 
@@ -125,6 +124,10 @@ namespace WhenPlugin.When {
         }
 
         public void SetIterationCount(Expr expr) {
+            if (expr.Value < 0) {
+                expr.Error = "Must not be negative";
+                return;
+            }
             IterationCount = (int)expr.Value;
         }
 
@@ -135,7 +138,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 IterExpr.Expression = value;
-                RaisePropertyChanged("IterExpr");
             }
         }
 

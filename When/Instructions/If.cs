@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Core.Locale;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If")]
@@ -61,6 +62,19 @@ namespace WhenPlugin.When {
             }
 
             try {
+                if (IfExpr.ImageVolatile) {
+                    Logger.Info("If: ImageVolatile");
+                    while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
+                        Logger.Info("If: Waiting 250ms for processing...");
+                        progress?.Report(new ApplicationStatus() { Status = "" });
+                        await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
+                    }
+                    // Get latest values
+                    await Symbol.UpdateSwitchWeatherData();
+                    IfExpr.Evaluate();
+                    Logger.Info("If: ImageVolatile, new data");
+                }
+
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true!");
                     Runner runner = new Runner(Instructions, progress, token);

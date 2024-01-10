@@ -131,7 +131,13 @@ namespace WhenPlugin.When {
             }
         }
         
-        public IList<TemplatedSequenceContainer> Templates { get => templateController.Templates; }
+        public IList<TemplatedSequenceContainer> Templates {
+            get {
+                lock (TemplateControllerLite.TemplateLock) {
+                    return templateController.TBRTemplates;
+                }
+            }
+        }
 
         private int TemplateCompare (TemplatedSequenceContainer a, TemplatedSequenceContainer b) {
             return String.Compare(a.Container.Name, b.Container.Name);
@@ -203,7 +209,6 @@ namespace WhenPlugin.When {
                 cycleStack.Pop();
             }
 
-            Log("Clone #" + clone.Id + " returned, TemplateName = " + TemplateName);
             return clone;
         }
 
@@ -214,9 +219,8 @@ namespace WhenPlugin.When {
             lock (TemplateControllerLite.TemplateLock) {
                 for (int i = 0; i < 4; i++) {
                     try {
-                        foreach (var tmp in templateController.Templates) {
+                        foreach (var tmp in Templates) {
                             if (tmp.Container.Name.Equals(name)) {
-                                //Logger.Info("TemplateByReference; found template: " + TemplateName);
                                 return tmp;
                             }
                         }
@@ -265,7 +269,7 @@ namespace WhenPlugin.When {
                         // Update instruction set if user wants
                         if (MyMessageBox.Show("An instruction set named '" + tbr.Parent.Name + "' includes a reference to template '" + name + "', which has just been changed.  Do you want this instruction set to be updated as well?", "Update instruction set?", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
                             tbr.SelectedTemplate = FindTemplate(name);
-                            tbr.Log("Updated due to '" + name + "' changed.");
+                            tbr.Log("Updated due to '" + name + "' changed, " + tbr.SelectedTemplate.Container.Name);
                             Notification.ShowSuccess("The instruction set '" + tbr.Parent.Name + "' has been updated.");
                         }
                     }
@@ -282,8 +286,6 @@ namespace WhenPlugin.When {
         public bool Validate() {
 
             if (templateController == null) return true;
-
-            Log("Validate");
 
             var i = new List<string>();
 

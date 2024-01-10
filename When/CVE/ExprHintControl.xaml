@@ -12,9 +12,9 @@
                 VerticalAlignment="Center"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}}">
         <TextBlock Margin="0,2,0,0" Text="{Binding Label}" />
-        <ninactrl:HintTextBox
-                MinWidth="40"
-                Margin="0,-5,0,-5"
+        <local:WhenTextBox
+                MinWidth="32"
+                Margin="5,-4,0,-5"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -22,15 +22,15 @@
                 TextAlignment="Center"
                 ToolTip="Foo" 
                 ToolTipOpening="ShowConstants" >
-            <ninactrl:HintTextBox.HintText>
-                <Binding Mode="TwoWay" Path="Exp.Default" Converter="{StaticResource tc}" />
-            </ninactrl:HintTextBox.HintText>
-            <ninactrl:HintTextBox.Text>
+            <local:WhenTextBox.HintText>
+                <Binding Mode="OneWay" Path="Exp.Default" Converter="{StaticResource tc}" UpdateSourceTrigger="PropertyChanged"/>
+            </local:WhenTextBox.HintText>
+            <local:WhenTextBox.Text>
                 <Binding Mode="TwoWay" Path="Exp.Expression" />
-            </ninactrl:HintTextBox.Text>
-        </ninactrl:HintTextBox>
+            </local:WhenTextBox.Text>
+        </local:WhenTextBox>
         <TextBlock VerticalAlignment="Center"
-                   Visibility="{Binding Exp.IsExpression, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
+                   Visibility="{Binding Exp.IsAnnotated, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >>
             <TextBlock.Text>
                 <MultiBinding Converter="{StaticResource ec}">
                     <Binding Path="Exp"  />

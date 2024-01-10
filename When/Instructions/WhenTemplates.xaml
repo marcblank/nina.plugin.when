@@ -12,6 +12,7 @@
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors;assembly=NINA.Sequencer"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <ControlTemplate x:Key="PowerupsButtons">
@@ -270,6 +271,56 @@
     </Style>
 
 
+    <Style TargetType="local:WhenTextBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:WhenTextBox}">
+                    <Grid>
+                        <TextBox
+                        x:Name="PART_TextBox"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        MaxWidth="{TemplateBinding MaxWidth}"
+                        MaxHeight="{TemplateBinding MaxHeight}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Background="{TemplateBinding Background}"
+                        Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:WhenTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap" />
+                        <TextBlock
+                        x:Name="PART_HintText"
+                        Margin="0,-1,0,0"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Background="Transparent"
+                        Foreground="GreenYellow"
+                        IsHitTestVisible="False"
+                        Opacity="0.5"
+                        Text="{TemplateBinding HintText}"
+                        TextAlignment="{TemplateBinding TextAlignment}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=PART_TextBox}" Value="{x:Static s:String.Empty}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Text, ElementName=PART_TextBox}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
     <DataTemplate DataType="{x:Type local:DIYTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -375,14 +426,8 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRelativePosition}" />
-                    <!--<local:ConstantControl 
-                        MinWidth="40"
-                        Margin="5,-4,0,0"
-                        Expr="{Binding RelativePositionExpr, Mode=TwoWay}"
-                        Valu="{Binding RelativePosition , Mode=TwoWay}" 
-                        />-->
-                </StackPanel>
+                    <local:ExprHintControl Label="{ns:Loc LblRelativePosition}" Exp="{Binding PExpr}" />
+                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
@@ -454,7 +499,7 @@
                         VerticalAlignment="Center"
                         Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <local:ExprControl Exp="{Binding DurExpr}"/>
+                    <local:ExprHintControl Exp="{Binding DurExpr}"/>
                     <TextBlock
                        Margin="2.5,0,7.5,2 "
                        HorizontalAlignment="Center"
@@ -502,7 +547,7 @@
                        Text="{Binding Identifier}"
                        TextAlignment="Center" />
                     <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
-                    <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}"/>
+                    <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -1109,6 +1154,7 @@
                             <TextBlock 
                                  MinHeight="25"
                                  Margin="10,10,10,0"
+                                 Foreground="White"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
                                  Text="If" />
@@ -1451,6 +1497,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
                                   MinHeight="25"
+                                  Foreground="White"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1573,17 +1620,9 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
        x:Key="TakeFlatExposureDetails"
        x:Shared="false"
        Orientation="Horizontal">
-        <TextBlock
-           Margin="5,0,0,0"
-           VerticalAlignment="Center"
-           Text="#" />
+ 
+        <local:ExprControl Label="#" Exp="{Binding Parent.IterExpr}" />
 
-        <!--<local:ConstantControl 
-                       Margin="0,0,10,5" 
-                       Expr="{Binding Path=Parent.IterationsExpr, Mode=TwoWay}"
-                       Valu="{Binding Path=Parent.IterationCount, Mode=TwoWay}"
-                       Type="Integer"
-                       />-->
         <TextBlock
            Margin="7.5,0,7.5,0"
            HorizontalAlignment="Center"
@@ -1593,12 +1632,12 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFilter}" />
 
         <ComboBox
-            Margin="5,0,0,0"
-            HorizontalAlignment="Center"
+            Margin="5,-2,0,0"
             IsEditable="True"
             DisplayMemberPath="Name"
-            Text="{Binding Parent.FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-            >
+            VerticalAlignment="Center"
+            SelectedItem="{Binding Parent.SelectedFilter}"
+            Text="{Binding Parent.FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
             <ComboBox.Resources>
                 <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
             </ComboBox.Resources>
@@ -1609,19 +1648,10 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                 </CompositeCollection>
             </ComboBox.ItemsSource>
         </ComboBox>
-        <!--<local:ConstantComboControl
+        <local:ExprComboControl
             Visibility="{Binding Parent.CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-            Margin="0,-3,10,5"
-            Expr="{Binding Path=Parent.FilterExpr, Mode=TwoWay}"
-            Valu="{Binding Path=Parent.Filter, Mode=TwoWay}"
-            Type="Integer"
-            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>-->
-
-        <TextBlock
-           Margin="7.5,0,7.5,0"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           Text="|" />
+            Exp="{Binding Path=Parent.FExpr, Mode=TwoWay}"
+            Combo="{Binding Path=Parent.FilterNames, Mode=TwoWay}"/>
 
         <StackPanel DataContext="{Binding Items[0]}" Orientation="Horizontal">
             <StackPanel.Resources>
@@ -1636,7 +1666,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
 
             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblBinning}" />
             <ComboBox
-               Margin="5,0,0,0"
+               Margin="5,-2,0,0"
                DisplayMemberPath="Name"
                ItemsSource="{Binding Source={StaticResource CameraInfo}, Path=Data.BinningModes, Converter={StaticResource DefaultBinningModesConverter}}"
                SelectedItem="{Binding Binning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1707,14 +1737,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Text="|" />
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
-                <!--<local:ConstantHintControl 
-                    Margin="8,1,10,5" 
-                    Expr="{Binding Path=GainExpr, Mode=TwoWay}"
-                    Valu="{Binding Path=Gain, Mode=TwoWay}"
-                    Default="{Binding Mode=OneWay, Path=Data.DefaultGain, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                    Validate="ValidateGain"
-                />-->
+                <local:ExprHintControl Label="Gain" Exp="{Binding GExpr}" />
             </WrapPanel>
 
             <!--  Offset  -->
@@ -1733,14 +1756,8 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Text="|" />
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOffset}" />
-                <!--<local:ConstantHintControl 
-                    Margin="8,1,10,5" 
-                    Expr="{Binding Path=OffsetExpr, Mode=TwoWay}"
-                    Valu="{Binding Path=Offset, Mode=TwoWay}"
-                    Default="{Binding Mode=OneWay, Path=Data.DefaultOffset, Source={StaticResource CameraInfo}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CameraDefaultValueConverter}}" 
-                    Validate="ValidateOffset"
-                />-->
+                <local:ExprHintControl Label="Offset" Exp="{Binding OExpr}" />
+
             </WrapPanel>
         </StackPanel>
     </WrapPanel>
@@ -1753,20 +1770,20 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                     <ContentPresenter Content="{StaticResource TakeFlatExposureDetails}" DataContext="{Binding Items[4]}" />
 
                     <TextBlock
-                       Margin="7.5,0,7.5,0"
+                       Margin="7.5,-3,7.5,0"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Text="|" />
 
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
+                    <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center" Text="{ns:Loc Lbl_SequenceItem_FlatDevice_TrainedFlatExposure_KeepClosed}" />
                     <CheckBox
-                       Margin="5,0,0,0"
+                       Margin="8,-2,0,0"
                        VerticalAlignment="Center"
                        IsChecked="{Binding KeepPanelClosed}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal">
+                <WrapPanel DataContext="{Binding Items[4]}" Orientation="Horizontal" Margin="0,-4,0,0">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                        Margin="5,0,0,0"
@@ -1858,6 +1875,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                         <StackPanel Orientation="Horizontal">
                             <TextBlock 
                                   MinHeight="25"
+                                  Foreground="White"
                                   Margin="10,10,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1911,7 +1929,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                                 </Border.ToolTip>
                             </Border>
                             <local:ExprControl Label="Expression:" Exp="{Binding IfExpr, Mode=TwoWay}"/>
-                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only" />
+                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Once Only"  Foreground="White"/>
                             <CheckBox
                                   MinWidth="40"
                                   Margin="5,0,0,0"
@@ -2372,7 +2390,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <local:ExprControl Label="#" Exp="{Binding IterExpr}" />
+                    <local:ExprHintControl Label="#" Exp="{Binding IterExpr}" />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
@@ -2426,7 +2444,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
             <nina:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <local:ExprControl Label="#" Exp="{Binding IterExpr}" />
+                    <local:ExprHintControl Label="#" Exp="{Binding IterExpr}" />
                     <TextBlock
                         Margin="7.5,0,7.5,0"
                         HorizontalAlignment="Center"
@@ -2469,11 +2487,11 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" O
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                     <local:ExprControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
-                <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <WrapPanel Margin="0,-4,0,0" VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
                     <TextBlock
                         Margin="5,0,0,0"

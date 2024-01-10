@@ -70,6 +70,7 @@ namespace WhenPlugin.When {
         public string CValueExpr {
             get => cValueExpr;
             set {
+                if (!_mediator.Initialized) return;
                 if (!_mediator.IsAdvancedSequenceRunning()) return;
                 if (cValueExpr == value) {
                     RaisePropertyChanged("CValue");
@@ -102,7 +103,7 @@ namespace WhenPlugin.When {
 
         public string ValidateVariable(double var) {
             if (Status != SequenceEntityStatus.FINISHED) {
-                return "Not Yet Defined";
+                //return "Not Yet Defined";
             }
             return String.Empty;
         }

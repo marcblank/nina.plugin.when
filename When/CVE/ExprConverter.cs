@@ -35,35 +35,42 @@ namespace WhenPlugin.When {
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             Expr expr = values[VALUE_EXP] as Expr;
-            if (expr != null) {
-                if (!expr.IsExpression) return "{" + expr.Value + "}";
-                string txt;
-                if (expr.Error == null) {
-                    if (expr.SequenceEntity is ITrueFalse) {
-                        if (expr.Value == 0) {
-                            txt = "False";
+
+            try {
+                if (expr != null) {
+                    if (expr.Error != null) return "{" + expr.Error + "}";
+                    if (!expr.IsExpression) return ""; // return "{" + expr.Value + "}";
+                    string txt;
+                    if (expr.Error == null) {
+                        if (expr.SequenceEntity is ITrueFalse) {
+                            if (expr.Value == 0) {
+                                txt = "False";
+                            } else {
+                                txt = "True";
+                            }
                         } else {
-                            txt = "True";
-                        }
-                    } else {
-                        txt = expr.Value.ToString();
-                        if (values.Length > 2) {
-                            IList<string> combo = (IList<string>)values[VALUE_COMBO];
-                            int i = (int)expr.Value;
-                            if (i >= 0 && i < combo.Count) {
-                                txt = combo[i]; 
+                            txt = expr.Value.ToString();
+                            if (values.Length > 2) {
+                                IList<string> combo = (IList<string>)values[VALUE_COMBO];
+                                int i = (int)expr.Value;
+                                if (i >= 0 && i < combo.Count) {
+                                    txt = combo[i];
+                                }
                             }
                         }
+                        //                } else if (Double.IsNaN(expr.Value)) {
+                        //                    txt = "Not evaluated";
+                    } else {
+                        txt = expr.Error;
                     }
-                } else if (expr.Value == Double.NaN) {
-                    txt = "Not evaluated";
+                    return "{" + txt + "}";
+
                 } else {
-                    txt = expr.Error;
+                    return "{??}";
                 }
-                return "{" + txt + "}";
-        
-            } else {
-                return "{" + "FuvkS" + "}";
+            } catch (Exception ex) {
+                Logger.Error("ExprConverter: " + ex.Message);
+                return "{Exception}";
             }
         }
 

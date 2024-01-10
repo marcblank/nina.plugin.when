@@ -59,7 +59,9 @@ namespace WhenPlugin.When {
             CoolCamera clone = new CoolCamera(this) {
             };
             clone.TempExpr = new Expr(clone, this.TempExpr.Expression);
+            clone.TempExpr.Setter = ValidateTemperature;
             clone.DurExpr = new Expr(clone, this.DurExpr.Expression);
+            clone.DurExpr.Default = 0;
             return clone;
         }
 
@@ -153,7 +155,7 @@ namespace WhenPlugin.When {
             TempExpr.Validate();
             DurExpr.Validate();
 
-            if (TempExpr.Value != Double.NaN && ValidateTemperature(TempExpr.Value) != String.Empty) {
+            if (!Double.IsNaN(TempExpr.Value) && (TempExpr.Value < -40 || TempExpr.Value > 30)) {
                 i.Add(BAD_TEMPERATURE);
             }
 
@@ -166,11 +168,10 @@ namespace WhenPlugin.When {
             Validate();
         }
 
-        public string ValidateTemperature(double temp) {
-                if (temp < -30 || temp > 30) {
-                return BAD_TEMPERATURE;
+        public void ValidateTemperature(Expr expr) {
+            if (expr.Value < -40 || expr.Value > 30) {
+                expr.Error = "Must be between -40 and 30";
             }
-            return string.Empty;
         }
 
         public override TimeSpan GetEstimatedDuration() {
