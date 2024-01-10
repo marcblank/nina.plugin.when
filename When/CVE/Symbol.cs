@@ -1,21 +1,15 @@
 ﻿using Newtonsoft.Json;
-using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using NINA.Sequencer.Container;
 using System.Text;
 using NINA.Core.Utility;
 using NINA.Sequencer;
-using Google.Protobuf.WellKnownTypes;
 using System.Diagnostics;
-using System.Linq;
-using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 using NINA.Core.Model.Equipment;
@@ -34,7 +28,7 @@ using NINA.Equipment.Equipment.MyFilterWheel;
 using Namotion.Reflection;
 
 namespace WhenPlugin.When {
-  
+
     [JsonObject(MemberSerialization.OptIn)]
 
     public abstract class Symbol : SequenceItem, IValidatable {
