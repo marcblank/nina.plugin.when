@@ -114,6 +114,9 @@ namespace WhenPlugin.When {
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             ISequenceContainer sParent = SParent();
+            if (sParent == LastSParent) {
+                return;
+            }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
                 if (Expr != null) {

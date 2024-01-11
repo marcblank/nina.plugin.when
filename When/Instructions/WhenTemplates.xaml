@@ -1277,6 +1277,14 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
+                            <Path
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                Data="{StaticResource Pen_NoFill_SVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform"
+                                UseLayoutRounding="True" />
                             <TextBox
                                  MinHeight="25"
                                  Margin="10,10,10,0"

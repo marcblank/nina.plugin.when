@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using NINA.Core.Model;
-using NINA.Sequencer.SequenceItem;
+﻿using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System.ComponentModel.Composition;
 using NINA.Sequencer.Container;
@@ -8,18 +6,13 @@ using NINA.Sequencer.Container.ExecutionStrategy;
 using NINA.Core.Locale;
 using NINA.Core.MyMessageBox;
 using NINA.Core.Utility.Notification;
-using NINA.Sequencer.DragDrop;
 using NINA.Sequencer;
-using NINA.Profile;
-using NINA.Sequencer.Mediator;
-using NINA.Sequencer.Serialization;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
 using System.Linq;
 using System.Windows.Input;
-using System;
 using System.Collections.ObjectModel;
 
 namespace WhenPlugin.When {
@@ -66,6 +59,7 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             var clone = new CVContainer(this) {
+                Icon = Icon,
                 Name = Name,
                 Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem))
             };

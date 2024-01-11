@@ -471,6 +471,7 @@ namespace WhenPlugin.When {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             try {
+                SetCoords(MFCenter);
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;

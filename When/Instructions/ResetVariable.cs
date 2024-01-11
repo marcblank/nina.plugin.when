@@ -125,8 +125,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return "ResetVariable";
-            //return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
+            return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
         }
 
         public bool Validate() {
