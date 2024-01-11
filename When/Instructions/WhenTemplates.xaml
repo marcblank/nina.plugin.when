@@ -1461,7 +1461,7 @@
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
                                 <behaviors:DropIntoBehavior AllowedDragDropTypesString="WhenPlugin.When.SetConstant, WhenPlugin, Culture=neutral, PublicKeyToken=null;
-WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null" OnDropCommand="DropIntoCommand"/>
+WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NINA.Sequencer.SequenceItem.Utility.Annotation" OnDropCommand="DropIntoCommand"/>
                             </i:Interaction.Behaviors>
                         </Grid>
                     </Border>

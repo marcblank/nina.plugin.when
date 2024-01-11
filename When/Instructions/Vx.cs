@@ -112,8 +112,10 @@ namespace WhenPlugin.When {
             base.ResetProgress();
             Executed = false;
             Definition = "";
-            Expr.IsExpression = true;
-            Expr.Evaluate();
+            if (Expr != null) {
+                Expr.IsExpression = true;
+                Expr.Evaluate();
+            }
             SymbolDirty(this);
         }
 

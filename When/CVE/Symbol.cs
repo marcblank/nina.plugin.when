@@ -69,7 +69,7 @@ namespace WhenPlugin.When {
             Logger.Warning (str);
         }
 
-        private ISequenceContainer LastParent {  get; set; }
+        private ISequenceContainer LastSParent {  get; set; }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
@@ -113,44 +113,45 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            Debug.WriteLine("APC: " + this + ", New Parent = " + ((Parent == null) ? "null" : Parent.Name));
+            ISequenceContainer sParent = SParent();
+            Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.Remove(this);
                     // We've deleted this Symbol
                     SymbolDictionary cached;
-                    if (LastParent == null) {
-                        Warn("Removed symbol " + this + " has no LastParent?");
+                    if (LastSParent == null) {
+                        Warn("Removed symbol " + this + " has no LastSParent?");
                         // We're saving a template?
                         return;
                     }
-                    if (SymbolCache.TryGetValue(LastParent, out cached)) {
+                    if (SymbolCache.TryGetValue(LastSParent, out cached)) {
                         if (cached.Remove(Identifier)) {
                             SymbolDirty(this);
                          } else {
-                            Warn("Deleting " + this + " but not in Parent's cache?");
+                            Warn("Deleting " + this + " but not in SParent's cache?");
                         }
                     } else {
-                       Warn("Deleting " + this + " but Parent has no cache?");
+                       Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
                 return;
             }
-            LastParent = Parent;
+            LastSParent = sParent;
 
             Expr = new Expr(Definition, this);
 
             try {
                 if (Identifier != null && Identifier.Length == 0) return;
                 SymbolDictionary cached;
-                if (SymbolCache.TryGetValue(Parent, out cached)) {
+                if (SymbolCache.TryGetValue(sParent, out cached)) {
                     cached.Add(Identifier, this);
                 } else {
                     SymbolDictionary newSymbols = new SymbolDictionary {
                         { Identifier, this }
                     };
-                    SymbolCache.Add(Parent, newSymbols);
+                    SymbolCache.Add(sParent, newSymbols);
                     foreach (Expr consumer in Consumers) {
                         consumer.RemoveParameter(Identifier);
                     }
@@ -174,13 +175,14 @@ namespace WhenPlugin.When {
                 }
 
                 IsDuplicate = false;
+                ISequenceContainer sParent = SParent();
 
                 SymbolDictionary cached = null;
                 if (value == _identifier || value.Length == 0) {
                     return;
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
-                    if (SymbolCache.TryGetValue(Parent, out cached)) {
+                    if (SymbolCache.TryGetValue(sParent, out cached)) {
                         cached.Remove(_identifier);
                         SymbolDirty(this);
                     }
@@ -190,7 +192,7 @@ namespace WhenPlugin.When {
                 
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
-                    if (cached != null || SymbolCache.TryGetValue(Parent, out cached)) {
+                    if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
                         try {
                             cached.Add(Identifier, this);
                         } catch (ArgumentException ex) {
@@ -199,7 +201,7 @@ namespace WhenPlugin.When {
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
-                        SymbolCache.Add(Parent, newSymbols);
+                        SymbolCache.Add(sParent, newSymbols);
                         newSymbols.Add(Identifier, this);
                     }
                 }
@@ -247,6 +249,20 @@ namespace WhenPlugin.When {
 
         public HashSet<Expr> Consumers = new HashSet<Expr>();
         public static WhenPlugin WhenPluginObject { get; set; }
+
+        public ISequenceContainer SParent () {
+            if (Parent == null) {
+                return null;
+            } else if (Parent is CVContainer cvc) {
+                if (cvc.Parent is TemplateContainer tc) {
+                    return tc.Parent;
+                } else {
+                    return cvc.Parent;
+                }
+            } else {
+                return Parent;
+            }
+        }
 
 
         public void AddConsumer (Expr expr) {
@@ -308,7 +324,21 @@ namespace WhenPlugin.When {
                 sb.Append(kvp.Key.ToString());
                 if (sym != null) {
                     sb.Append(" (in ");
-                    sb.Append(sym.Parent.Name);
+                    sb.Append(sym.SParent().Name);
+                    ISequenceContainer sParent = sym.SParent();
+                    if (sParent != sym.Parent) {
+                        if (sym.Parent is CVContainer) {
+                            sb.Append("/" + sym.Parent.Name);
+                            if (sym.Parent.Parent is TemplateContainer tc) {
+                                sb.Append("/TBR");
+                                if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) { 
+                                    sb.Append("-" + tbr.TemplateName);
+                                }
+                            }
+                        } else {
+                            sb.Append(" - WTF");
+                        }
+                    }
                     sb.Append(") = ");
                     sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
                 } else {
@@ -326,7 +356,7 @@ namespace WhenPlugin.When {
         public abstract bool Validate();
 
         public override string ToString() {
-            return $"Symbol: Identifier {Identifier}, in {Parent.Name} with value {Expr.Value}";
+            return $"Symbol: Identifier {Identifier}, in {SParent()?.Name} with value {Expr.Value}";
         }
 
 
