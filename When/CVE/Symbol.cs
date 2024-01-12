@@ -26,6 +26,9 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using Namotion.Reflection;
+using NINA.Profile;
+using System.IO;
+using System.Linq;
 
 namespace WhenPlugin.When {
 
@@ -442,7 +445,6 @@ namespace WhenPlugin.When {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
 
-                //SwitchWeatherKeys.Add("TIME", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
                 SwitchWeatherKeys.Add("TIME", timeSeconds);
@@ -453,6 +455,18 @@ namespace WhenPlugin.When {
                 if (safetyInfo.Connected) {
                     SwitchWeatherKeys.Add("IsSafe", safetyInfo.IsSafe);
                     i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
+                }
+
+                string roofStatusFile = WhenPluginObject.RoofStatus;
+                if (roofStatusFile != null && roofStatusFile.Length > 0) {
+                    // It's actually a file name..
+                    try {
+                        var lastLine = File.ReadLines(roofStatusFile).Last();
+                        var comp = WhenPluginObject.RoofOpenString;
+                        Logger.Info("Roof status: " + lastLine);
+                    } catch (Exception e) {
+                        Logger.Info("Roof status, error: " + e.Message);
+                    }
                 }
 
                 // Get SensorTemp

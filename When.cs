@@ -26,6 +26,8 @@ using System.Drawing;
 using System.Windows.Media;
 using System.Windows;
 using NINA.Equipment.Interfaces.Mediator;
+using System.Windows.Input;
+using System.IO;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -64,6 +66,8 @@ namespace WhenPlugin.When {
             CreateGlobalSetConstants(this);
             Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator, safetyMonitorMediator);
 
+            OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
+
         }
 
         public override Task Teardown() {
@@ -79,37 +83,30 @@ namespace WhenPlugin.When {
             RaisePropertyChanged(nameof(ProfileSpecificNotificationMessage));
         }
 
-        private Task ImageSaveMediator_BeforeImageSaved(object sender, BeforeImageSavedEventArgs e) {
-            // Insert the example FITS keyword of a specific data type into the image metadata object prior to the file being saved
-            // FITS keywords have a maximum of 8 characters. Comments are options. Comments that are too long will be truncated.
-
-            string exampleKeywordComment = "This is a {0} keyword";
-
-            // string
-            string exampleStringKeywordName = "STRKEYWD";
-            string exampleStringKeywordValue = "Example";
-            e.Image.MetaData.GenericHeaders.Add(new StringMetaDataHeader(exampleStringKeywordName, exampleStringKeywordValue, string.Format(exampleKeywordComment, "string")));
-
-            // integer
-            string exampleIntKeywordName = "INTKEYWD";
-            int exampleIntKeywordValue = 5;
-            e.Image.MetaData.GenericHeaders.Add(new IntMetaDataHeader(exampleIntKeywordName, exampleIntKeywordValue, string.Format(exampleKeywordComment, "integer")));
-
-            // double
-            string exampleDoubleKeywordName = "DBLKEYWD";
-            double exampleDoubleKeywordValue = 1.3d;
-            e.Image.MetaData.GenericHeaders.Add(new DoubleMetaDataHeader(exampleDoubleKeywordName, exampleDoubleKeywordValue, string.Format(exampleKeywordComment, "double")));
-
-            // Classes also exist for other data types:
-            // BoolMetaDataHeader()
-            // DateTimeMetaDataHeader()
-
-            return Task.CompletedTask;
-        }
-
         public SequenceContainer Globals {
             get => Symbol.GlobalContainer;
             set { }
+        }
+
+        public ICommand OpenRoofFilePathDiagCommand { get; private set; }
+
+        private void OpenRoofFilePathDiag(object obj) {
+            var dialog = GetFilteredFileDialog(string.Empty, string.Empty, "Text File (*.txt)|*.txt");
+            if (dialog.ShowDialog() == true) {
+                RoofStatus = dialog.FileName;
+            }
+        }
+
+ 
+        public static Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            if (File.Exists(path)) {
+                dialog.InitialDirectory = Path.GetDirectoryName(path);
+            }
+            dialog.FileName = filename;
+            dialog.Filter = filter;
+            return dialog;
         }
 
         private void CreateGlobalSetConstants (WhenPlugin plugin) {
@@ -135,6 +132,43 @@ namespace WhenPlugin.When {
 
             Globals.Validate();
             RaisePropertyChanged("Globals");
+        }
+
+        public string RoofStatus {
+            get {
+                if (!All1) {
+                    return pluginSettings.GetValueString(nameof(RoofStatus), Settings.Default.RoofStatus);
+                } else {
+                    return Settings.Default.RoofStatus;
+                }
+            }
+            set {
+                if (!All1) {
+                    pluginSettings.SetValueString(nameof(RoofStatus), value);
+                } else {
+                    Settings.Default.RoofStatus = value;
+                }
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string RoofOpenString {
+            get {
+                if (!All1) {
+                    return pluginSettings.GetValueString(nameof(RoofOpenString), Settings.Default.RoofOpenString);
+                } else {
+                    return Settings.Default.RoofOpenString;
+                }
+            }
+            set {
+                if (!All1) {
+                    pluginSettings.SetValueString(nameof(RoofOpenString), value);
+                } else {
+                    Settings.Default.RoofOpenString = value;
+                }
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
         }
 
         public string Name1 {
