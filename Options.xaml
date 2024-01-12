@@ -69,7 +69,7 @@
                 </Border>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                 <TextBlock VerticalAlignment="Center" Text="Roof status file: " />
                 <TextBox
                     Margin="10,0,0,0"
@@ -78,7 +78,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center">
                     <TextBox.Text>
-                        <Binding Path="RoofFilePath" UpdateSourceTrigger="LostFocus">
+                        <Binding Path="RoofStatus" UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
                                 <rules:FileExistsOrEmptyRule />
                             </Binding.ValidationRules>

@@ -457,16 +457,25 @@ namespace WhenPlugin.When {
                     i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
                 }
 
-                string roofStatusFile = WhenPluginObject.RoofStatus;
-                if (roofStatusFile != null && roofStatusFile.Length > 0) {
+                string roofStatus = WhenPluginObject.RoofStatus;
+                string roofOpenString = WhenPluginObject.RoofOpenString;
+                if (roofStatus?.Length > 0 && roofOpenString?.Length > 0) {
+                    SwitchWeatherKeys.Add("RoofOpen", 1);
+                    SwitchWeatherKeys.Add("RoofNotOpen", 0);
+                    SwitchWeatherKeys.Add("RoofCannotOpenOrRead", 2);
                     // It's actually a file name..
+                    int status = 0;
                     try {
-                        var lastLine = File.ReadLines(roofStatusFile).Last();
-                        var comp = WhenPluginObject.RoofOpenString;
-                        Logger.Info("Roof status: " + lastLine);
+                        var lastLine = File.ReadLines(roofStatus).Last();
+                        if (lastLine.ToLower().Contains(roofOpenString.ToLower())) {
+                            status = 1;
+                        }
                     } catch (Exception e) {
                         Logger.Info("Roof status, error: " + e.Message);
+                        status = 2;
                     }
+                    SwitchWeatherKeys.Add("RoofStatus", status);
+                    i.Add("Roof: RoofStatus (" + (status == 0 ? "RoofNotOpen" : status == 1 ? "RoofOpen" : "RoofCannotOpenOrRead") + ")");
                 }
 
                 // Get SensorTemp
