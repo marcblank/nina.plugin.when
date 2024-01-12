@@ -48,7 +48,7 @@
                                     <TextBox
                                         MinWidth="140"
                                         Margin="5,-1,10,-2"
-                                        Text="{Binding Identifier}"
+                                        Text="{Binding Identifier, Mode=TwoWay}"
                                         TextAlignment="Center"
                                         VerticalAlignment="Center"/>
                                     <TextBlock VerticalAlignment="Center" Text="Value:" />
@@ -60,7 +60,7 @@
                                         ToolTip=""
                                         ToolTipOpening="ShowConstants"
                                         TextAlignment="Center" />
-                                    <local:SymControl Exp="{Binding Expr}"/>
+                                    <local:SymControl Exp="{Binding Expr, Mode=TwoWay}"/>
                                     </StackPanel>
                                  </DataTemplate>
                             </ItemsControl.ItemTemplate>

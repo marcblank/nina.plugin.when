@@ -63,8 +63,8 @@ namespace WhenPlugin.When {
 
             // Hook into image saving for adding FITS keywords or image file patterns
             Symbol.WhenPluginObject = this;
-            CreateGlobalSetConstants(this);
             Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, rotatorMediator, safetyMonitorMediator);
+            CreateGlobalSetConstants(this);
 
             OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
 

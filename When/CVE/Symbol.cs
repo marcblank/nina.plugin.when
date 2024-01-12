@@ -211,6 +211,10 @@ namespace WhenPlugin.When {
                         newSymbols.Add(Identifier, this);
                     }
                 }
+
+                if (this is SetConstant constant && constant.GlobalName != null) {
+                    constant.SetGlobalName(Identifier);
+                }
             }
         }
 
@@ -228,6 +232,11 @@ namespace WhenPlugin.When {
                     Expr.Expression = value;
                 }
                 RaisePropertyChanged("Expr");
+
+                if (this is SetConstant constant && constant.GlobalValue != null) {
+                    constant.SetGlobalValue(value);
+                }
+
             }
         }
 

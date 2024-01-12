@@ -79,8 +79,32 @@ namespace WhenPlugin.When {
 
         // Global Constants
 
-        public string GlobalName { get; set; }
-        public string GlobalValue { get; set; }
+        private string globalName = null;
+        public string GlobalName {
+            get => globalName;
+            set {
+                globalName = value;
+            }
+        }
+
+        public void SetGlobalName (string name) {
+            PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalName);
+            pi?.SetValue(WhenPluginObject, name, null);
+        }
+
+        private string globalValue = null;
+        public string GlobalValue {
+            get => globalValue;
+            set {
+                globalValue = value;
+            }
+        }
+
+        public void SetGlobalValue(string expr) {
+            PropertyInfo pi = WhenPluginObject.GetType().GetProperty(GlobalValue);
+            pi?.SetValue(WhenPluginObject, expr, null);
+        }
+
         public string GlobalAll { get; set; }
 
         public string Dummy;
