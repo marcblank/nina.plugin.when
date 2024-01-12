@@ -404,3 +404,60 @@
         </Border>
     </StackPanel>
 </UserControl>
+
+<!--
+    OpenHorizonFilePathDiagCommand = new RelayCommand(OpenHorizonFilePathDiag);
+ 
+    public ICommand OpenHorizonFilePathDiagCommand { get; private set; }
+
+      private void OpenHorizonFilePathDiag(object obj) {
+          var dialog = GetFilteredFileDialog(string.Empty, string.Empty, "Horizon File|*.hrz;*.hzn;*.txt|MountWizzard4 Horizon File|*.hpts");
+          if (dialog.ShowDialog() == true) {
+              HorizonFilePath = dialog.FileName;
+          }
+      }
+
+ 
+      public static Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
+           Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+           if (File.Exists(path)) {
+               dialog.InitialDirectory = Path.GetDirectoryName(path);
+           }
+           dialog.FileName = filename;
+           dialog.Filter = filter;
+           return dialog;
+      }
+
+   
+    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCustomHorizon}" />
+
+<TextBox
+                      Grid.Column="1"
+                      VerticalAlignment="Center"
+                      VerticalContentAlignment="Center">
+    <TextBox.Text>
+        <Binding Path="HorizonFilePath" UpdateSourceTrigger="LostFocus">
+            <Binding.ValidationRules>
+                <rules:FileExistsOrEmptyRule />
+            </Binding.ValidationRules>
+        </Binding>
+    </TextBox.Text>
+</TextBox>
+
+<Button
+                      Grid.Column="2"
+                      Width="20"
+                      Height="21"
+                      Margin="5,0,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Command="{Binding OpenHorizonFilePathDiagCommand}">
+    <Path
+                          Margin="2,10,2,0"
+                          Data="{StaticResource DotsSVG}"
+                          Fill="{StaticResource ButtonForegroundBrush}"
+                          Stretch="Uniform"
+                          UseLayoutRounding="True" />
+</Button>-->
+     
