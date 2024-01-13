@@ -62,6 +62,9 @@ namespace WhenPlugin.When {
             }
 
             try {
+                // Always get latest data...
+                await Symbol.UpdateSwitchWeatherData();
+                
                 if (IfExpr.ImageVolatile) {
                     Logger.Info("If: ImageVolatile");
                     while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
@@ -70,10 +73,10 @@ namespace WhenPlugin.When {
                         await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
                     }
                     // Get latest values
-                    await Symbol.UpdateSwitchWeatherData();
-                    IfExpr.Evaluate();
                     Logger.Info("If: ImageVolatile, new data");
                 }
+
+                IfExpr.Evaluate();
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true, " + IfExpr);
