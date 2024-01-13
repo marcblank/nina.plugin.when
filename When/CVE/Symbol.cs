@@ -449,6 +449,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public static int LastExitCode { get; set; } = 0;
+
         public static Task UpdateSwitchWeatherData() {
             lock (SwitchMediator) {
                 var i = new List<string>();
@@ -457,8 +459,10 @@ namespace WhenPlugin.When {
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
                 SwitchWeatherKeys.Add("TIME", timeSeconds);
-                //i.Add("TIME: " + DateTime.Now.ToString("MM/dd/yyyy h:mm tt"));
                 i.Add("TIME: " + timeSeconds);
+
+                SwitchWeatherKeys.Add("EXITCODE", LastExitCode);
+                i.Add("EXITCODE: " + LastExitCode);
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
                 if (safetyInfo.Connected) {
