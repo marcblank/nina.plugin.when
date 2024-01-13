@@ -32,10 +32,10 @@ using System.Text.RegularExpressions;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Lbl_SequenceItem_Utility_ExternalScript_Name")]
+    [ExportMetadata("Name", "External Script +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Utility_ExternalScript_Description")]
     [ExportMetadata("Icon", "ScriptSVG")]
-    [ExportMetadata("Category", "Lbl_SequenceCategory_Utility")]
+    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ExternalScript : SequenceItem, IValidatable {
@@ -83,11 +83,35 @@ namespace WhenPlugin.When {
             set {
                 script = value;
                 RaisePropertyChanged();
+                if (value != null) {
+                    while (true) {
+                        string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
+                        if (toReplace.Length == 0) break;
+                        Expr ex = new Expr(this, toReplace);
+                        ProcessedScriptError = null;
+                        if (ex.Error != null) {
+                            ProcessedScriptError = ex.Error;
+                            return;
+                        }
+                        value = value.Replace("{" + toReplace + "}", ex.ValueString);
+                    }
+                }
+                ProcessedScript = value;
+                RaisePropertyChanged(nameof(ProcessedScript));
+                RaisePropertyChanged(nameof(ProcessedScriptAnnotated));
             }
         }
 
+        public string ProcessedScriptAnnotated {
+            get { return "As processed: " + ProcessedScript; }
+            set { }
+        }
+
+        public string ProcessedScript { get; set; } = "";
+        public string ProcessedScriptError {  get; set; } = null;
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            string sequenceCompleteCommand = Script;
+            string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
             var success = await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
             if (!success) {
@@ -97,8 +121,10 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            var sequenceCompleteCommand = Script;
-            if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
+            var sequenceCompleteCommand = ProcessedScript;
+            if (ProcessedScriptError != null) {
+                i.Add(ProcessedScriptError);
+            } else if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
                 i.Add(string.Format(Loc.Instance["LblSequenceCommandAtCompletionNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
             }
             Issues = i;
@@ -110,16 +136,10 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ExternalScript)}, Script: {Script}";
+            return $"Category: {Category}, Item: {nameof(ExternalScript)}, Script: {Script} ProcessedScript: {ProcessedScript}";
         }
     }
 }
-
-
-//string errString = "This {match here} uses 3 other {match here} to {match here} the {match here}ation";
-//string toReplace = Regex.Match(errString, @"\{([^\}]+)\}").Groups[1].Value;
-
-//string correctString = errString.Replace(toReplace, "document");
 
 //\{                 # Escaped curly parentheses, means "starts with a '{' character"
 //        (          # Parentheses in a regex mean "put (capture) the stuff 
