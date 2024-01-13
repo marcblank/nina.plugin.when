@@ -102,6 +102,7 @@ namespace WhenPlugin.When {
             }
 
             // Whew!
+            Symbol.UpdateSwitchWeatherData();
             Expr.Evaluate();
             sym.Definition = Expr.Value.ToString();
 

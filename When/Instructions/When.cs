@@ -116,6 +116,8 @@ namespace WhenPlugin.When {
                 return true;
             }
 
+            IfExpr.Evaluate();
+
             if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                 Logger.Trace("Check = FALSE");
                 return false;
