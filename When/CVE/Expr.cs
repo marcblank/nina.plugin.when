@@ -145,6 +145,7 @@ namespace WhenPlugin.When {
             get => iDefault;
             set {
                 iDefault = value;
+                RaisePropertyChanged("Default");
                 RaisePropertyChanged("Value");
                 RaisePropertyChanged("ValueString");
             }

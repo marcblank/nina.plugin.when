@@ -101,7 +101,9 @@ namespace WhenPlugin.When {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            OriginalExpr.Validate();
+            if (!Executed) {
+                OriginalExpr.Validate();
+            }
 
             Issues = i;
             RaisePropertyChanged("Issues");

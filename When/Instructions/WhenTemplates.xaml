@@ -469,6 +469,18 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:WaitForTimeSpan}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprHintControl Label="Delay:" Exp="{Binding WaitExpr, Mode=TwoWay}" />
+                    <TextBlock VerticalAlignment="Center" Text=" s"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+
     <DataTemplate DataType="{x:Type local:ExternalScript}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
