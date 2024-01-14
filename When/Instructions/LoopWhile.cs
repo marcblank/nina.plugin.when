@@ -95,12 +95,13 @@ namespace WhenPlugin.When {
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
 
             if (string.IsNullOrEmpty(PredicateExpr.Expression)) {
-                LogInfo("LoopWhile: Check, Predicate is null or empty");
-                throw new SequenceEntityFailedException();
+                Logger.Warning("LoopWhile: Check, Predicate Expression is null or empty, " + PredicateExpr + " (Expression = " + PredicateExpr.Expression + ")");
+                throw new SequenceEntityFailedException("LoopWhile, PredicateExpr is null or empty");
             }
 
             if (PredicateExpr.Error != null) {
-                throw new SequenceEntityFailedException();
+                Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
+                throw new SequenceEntityFailedException(PredicateExpr.Error);
             } else {
                 return (PredicateExpr.Value != 0);
             }

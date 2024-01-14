@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using System.Text.RegularExpressions;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
 
@@ -101,6 +102,7 @@ namespace WhenPlugin.When {
                         ProcessedScriptError = null;
                         if (ex.Error != null) {
                             ProcessedScriptError = ex.Error;
+                            //Logger.Warning("External Script +, error processing script, " + ex.Error);
                             return "Error";
                         }
                         value = value.Replace("{" + toReplace + "}", ex.ValueString);
@@ -116,6 +118,7 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError {  get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Logger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
             var success = await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
@@ -124,6 +127,7 @@ namespace WhenPlugin.When {
             } else {
                 // Save the value
                 Symbol.LastExitCode = success;
+                Logger.Info("External Script +, exit code = " + success);
             }
         }
 
