@@ -60,6 +60,7 @@ namespace WhenPlugin.When {
             Validate();
         }
 
+        [JsonProperty]
         public Expr PExpr { get; set; }
         
         
