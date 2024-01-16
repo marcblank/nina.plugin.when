@@ -72,8 +72,6 @@ namespace WhenPlugin.When {
             }
         }
 
-
-        private string iPredicate;
         [JsonProperty]
         public string Predicate {
             get => null;

@@ -187,10 +187,6 @@ namespace WhenPlugin.When {
             ConditionWatchdog?.Start();
         }
 
-        private CancellationTokenSource cts;
-
-
-        private string startStop = "Stop";
         public string StartStop {
             get {
                 return Stopped && InFlight ? "Reset Trigger" : Stopped ? "Restart" : "Pause";

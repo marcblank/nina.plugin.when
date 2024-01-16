@@ -1305,6 +1305,19 @@
         </Border>
     </DataTemplate>
 
+    <DataTemplate x:Key="WhenPlugin.When.CVContainer_Mini">
+        <mini:MiniSequenceItem>
+            <mini:MiniSequenceItem.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Constant/Variable Container (" />
+                    <TextBox VerticalAlignment="Center" Text="{Binding Items.Count, Mode=OneWay}"/>
+                    <TextBlock VerticalAlignment="Center" Text=" items)" />
+                </StackPanel>
+            </mini:MiniSequenceItem.SequenceItemContent>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+
+
     <DataTemplate DataType="{x:Type local:CVContainer}">
         <Border>
             <Border.Resources>

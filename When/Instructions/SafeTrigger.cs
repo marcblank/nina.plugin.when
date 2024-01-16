@@ -139,12 +139,9 @@ namespace WhenPlugin.When {
                     _ = vitem.Validate();
                 }
             }
-
-            bool noTrigger = false;
-            
+           
             if (TriggerRunner.Triggers.FirstOrDefault() == null) {
                 i.Add("No trigger has been specified");
-                noTrigger = true;
             }
 
             SafetyMonitorInfo info = safetyMediator.GetInfo();

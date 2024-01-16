@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using System.Threading;
@@ -19,16 +16,10 @@ using System.Threading;
 
 #endregion "copyright"
 
-using Accord.Math.Comparers;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
-using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NINA.Core.Utility;
 using System.Windows.Input;
 
