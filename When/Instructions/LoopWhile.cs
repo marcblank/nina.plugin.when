@@ -99,6 +99,11 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("LoopWhile, PredicateExpr is null or empty");
             }
 
+            if (PredicateExpr.Error != null && PredicateExpr.Symbol != null && PredicateExpr.Symbol is SetVariable) {
+                // Avoid timing error with newly defined Variable
+                PredicateExpr.Validate();
+            }
+            
             if (PredicateExpr.Error != null) {
                 Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
                 throw new SequenceEntityFailedException(PredicateExpr.Error);

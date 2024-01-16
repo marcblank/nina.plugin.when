@@ -346,6 +346,7 @@ namespace WhenPlugin.When {
                             Symbol global;
                             if (cached != null && cached.TryGetValue(symReference, out global)) {
                                 Resolve(symReference, global);
+                                global.AddConsumer(this);
                                 found = true;
                             }
                         }

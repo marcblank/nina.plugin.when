@@ -104,6 +104,9 @@ namespace WhenPlugin.When {
             if (!Executed) {
                 OriginalExpr.Validate();
             }
+            if (Expr.Error != null) {
+                Expr.Validate();
+            }
 
             Issues = i;
             RaisePropertyChanged("Issues");
