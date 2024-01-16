@@ -36,13 +36,22 @@ namespace WhenPlugin.When {
             }
         }
 
+        private int CloneNum = 0;
+
         public override object Clone() {
-            return new SetConstant(this) {
-                Identifier = Identifier,
-                Definition = Definition,
-                Expr = Expr
-            };
-        }
+            SetConstant clone = new SetConstant(this);
+ 
+            if (Parent != null) {
+                // This is a UI clone...
+                clone.Identifier = Identifier + "_" + ++CloneNum;
+            } else {
+                clone.Identifier = Identifier;
+            }
+            
+            clone.Definition = Definition;
+            clone.Expr = Expr;
+            return clone;
+       }
 
         public override string ToString() {
             if (Expr != null) {
@@ -55,6 +64,7 @@ namespace WhenPlugin.When {
 
         public override bool Validate() {
             if (!IsAttachedToRoot()) return true;
+
             IList<string> i = new List<string>();
 
             if (Identifier.Length == 0 || Definition.Length == 0) {
