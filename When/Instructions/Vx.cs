@@ -36,13 +36,23 @@ namespace WhenPlugin.When {
             }
         }
 
+        private int CloneNum = 0;
+
         public override object Clone() {
             SetVariable clone = new SetVariable(this);
-            clone.Identifier = Identifier;
+ 
+            if (Parent != null) {
+                // This is a UI clone...
+                clone.Identifier = Identifier + "_" + ++CloneNum;
+            } else {
+                clone.Identifier = Identifier;
+            }
+
             clone.Definition = Definition;
             clone.OriginalExpr = new Expr(OriginalExpr);
             return clone;
         }
+
         private bool iExecuted = false;
         public bool Executed {
             get => iExecuted;
