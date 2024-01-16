@@ -29,6 +29,7 @@ using Namotion.Reflection;
 using NINA.Profile;
 using System.IO;
 using System.Linq;
+using NINA.Equipment.Equipment.MyFocuser;
 
 namespace WhenPlugin.When {
 
@@ -401,13 +402,15 @@ namespace WhenPlugin.When {
         private static IProfileService ProfileService { get; set; }
         private static IRotatorMediator RotatorMediator { get; set; }
         private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
+        private static IFocuserMediator FocuserMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches { get; set; } = new List<string>();
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
-            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator) {
+            IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
+            IFocuserMediator focuserMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -417,6 +420,7 @@ namespace WhenPlugin.When {
             ProfileService = profileService;
             RotatorMediator = rotatorMediator;
             SafetyMonitorMediator = safetyMonitorMediator;
+            FocuserMediator = focuserMediator;
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
         }
@@ -489,6 +493,12 @@ namespace WhenPlugin.When {
                     }
                     SwitchWeatherKeys.Add("RoofStatus", status);
                     i.Add("Roof: RoofStatus (" + (status == 0 ? "RoofNotOpen" : status == 1 ? "RoofOpen" : "RoofCannotOpenOrRead") + ")");
+                }
+
+                FocuserInfo fInfo = FocuserMediator.GetInfo();
+                if (fInfo != null) {
+                    SwitchWeatherKeys.Add("FocuserPosition", fInfo.Position);
+                    i.Add("Focuser: FocuserPosition (" + fInfo.Position + ")");
                 }
 
                 // Get SensorTemp
