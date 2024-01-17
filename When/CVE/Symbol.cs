@@ -583,7 +583,7 @@ namespace WhenPlugin.When {
                     foreach (KeyValuePair<string, object> kvp in imageKeys) {
                         SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
                         i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
-                        Logger.Info("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        Logger.Trace("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
