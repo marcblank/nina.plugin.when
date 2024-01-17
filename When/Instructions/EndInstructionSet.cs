@@ -80,13 +80,6 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            if (InstructionSetName != null) {
-                ISequenceContainer p = FindInstructionSet();
-                if (p == null) {
-                    InstructionSetName = null;
-                    RaisePropertyChanged("InstructionSetName");
-                }
-            }
         }
 
         public ISequenceContainer FindInstructionSet() {
@@ -120,10 +113,12 @@ namespace WhenPlugin.When {
         public bool Validate() {
             var i = new List<string>();
 
-            if (InstructionSetName == null || InstructionSetName.Length == 0) {
-                InstructionSetName = InstructionSetNames[0];
-            } else if (FindInstructionSet() == null) {
-                i.Add("The instruction set name cannot be found!");
+            if (Symbol.IsAttachedToRoot(this)) {
+                if (InstructionSetName == null || InstructionSetName.Length == 0) {
+                    InstructionSetName = InstructionSetNames[0];
+                } else if (FindInstructionSet() == null) {
+                    i.Add("The instruction set name cannot be found!");
+                }
             }
 
             Issues = i;
