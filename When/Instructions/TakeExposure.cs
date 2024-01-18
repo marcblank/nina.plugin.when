@@ -368,29 +368,8 @@ namespace WhenPlugin.When {
                 AddOptionalResult(results, a, "Image_Eccentricity");
                 AddOptionalResult(results, a, "Image_FWHM");
 
-                // We should also get guider info as well...
+                // We might also get guider info as well...
 
-                //foreach (var header in e.RenderedImage.RawImageData.MetaData.GenericHeaders) {
-                //    IGenericMetaDataHeader h = header as IGenericMetaDataHeader;
-                //    if (h != null) {
-                //        string key = h.Key;
-                //        try {
-                //            if (h is StringMetaDataHeader) { // int double bool DateTime
-                //                Results.Add(key, ((StringMetaDataHeader)h).Value);
-                //            } else if (h is IntMetaDataHeader) {
-                //                Results.Add(key, ((IntMetaDataHeader)h).Value);
-                //            } else if (h is DoubleMetaDataHeader) {
-                //                Results.Add(key, ((DoubleMetaDataHeader)h).Value);
-                //            } else if (h is BoolMetaDataHeader) {
-                //                Results.Add(key, ((BoolMetaDataHeader)h).Value);
-                //            } else if (h is DateTimeMetaDataHeader) {
-                //                Results.Add(key, ((DateTimeMetaDataHeader)h).Value);
-                //            }
-                //        } catch (Exception ex) {
-                //            Console.WriteLine(ex.ToString());
-                //        }
-                //    }
-                //}
                 LastImageResults = results;
                 Logger.Info("TakeExposure+ Updating with " + results.Count + " image results");
                 Symbol.UpdateSwitchWeatherData();

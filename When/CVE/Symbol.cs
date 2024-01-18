@@ -30,6 +30,7 @@ using NINA.Profile;
 using System.IO;
 using System.Linq;
 using NINA.Equipment.Equipment.MyFocuser;
+using NINA.Equipment.Equipment.MyTelescope;
 
 namespace WhenPlugin.When {
 
@@ -403,6 +404,7 @@ namespace WhenPlugin.When {
         private static IRotatorMediator RotatorMediator { get; set; }
         private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
         private static IFocuserMediator FocuserMediator { get; set; }
+        private static ITelescopeMediator TelescopeMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
@@ -410,7 +412,7 @@ namespace WhenPlugin.When {
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-            IFocuserMediator focuserMediator) {
+            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -421,6 +423,8 @@ namespace WhenPlugin.When {
             RotatorMediator = rotatorMediator;
             SafetyMonitorMediator = safetyMonitorMediator;
             FocuserMediator = focuserMediator;
+            TelescopeMediator = telescopeMediator;
+
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
         }
@@ -467,6 +471,14 @@ namespace WhenPlugin.When {
 
                 SwitchWeatherKeys.Add("EXITCODE", LastExitCode);
                 i.Add("EXITCODE: " + LastExitCode);
+
+                TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
+                if (telescopeInfo.Connected) {
+                    SwitchWeatherKeys.Add("Altitude", telescopeInfo.Altitude);
+                    i.Add("Telescope: Altitude (" + Math.Round(telescopeInfo.Altitude, 2) + ")");
+                    SwitchWeatherKeys.Add("Azimuth", telescopeInfo.Azimuth);
+                    i.Add("Telescope: Azimuth (" + telescopeInfo.Azimuth + ")");
+                }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
                 if (safetyInfo.Connected) {
@@ -582,7 +594,7 @@ namespace WhenPlugin.When {
                 if (imageKeys != null) {
                     foreach (KeyValuePair<string, object> kvp in imageKeys) {
                         SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
-                        i.Add("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        i.Add("Last Image: " + kvp.Key + " (" + Math.Round((double)kvp.Value, 2) + ")");
                         Logger.Trace("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 } else {
