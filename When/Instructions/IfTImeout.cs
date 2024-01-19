@@ -60,6 +60,7 @@ namespace WhenPlugin.When {
 
         private IProgress<ApplicationStatus> timerProgress;
 
+
         private Task CheckTimer() {
             TimeSpan diff = DateTime.Now - StartTime;
             if (diff > TimeSpan.FromSeconds(Time)) {
@@ -109,6 +110,7 @@ namespace WhenPlugin.When {
                     await runner.RunConditional();
                 }
             } finally {
+                timerProgress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" }); ;
                 watch.Cancel();
                 cts.Dispose();
                 linkedCts.Dispose();
