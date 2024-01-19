@@ -6,6 +6,7 @@ using NINA.Sequencer.Container.ExecutionStrategy;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -90,20 +91,35 @@ namespace WhenPlugin.When {
         }
 
         protected void ValidateInstructions(IfContainer instructions) {
-            if (instructions.PseudoParent == null) {
-                instructions.PseudoParent = this;
-            }
-
-            // Avoid infinite loop by checking first...
-            if (instructions.Parent != Parent) {
-                instructions.AttachNewParent(Parent);
-            }
-
-            foreach (ISequenceItem item in instructions.Items) {
-                if (item is IValidatable val) {
-                    //item.AttachNewParent(Parent);
-                    _ = val.Validate();
+            try {
+                if (instructions.PseudoParent == null) {
+                    instructions.PseudoParent = this;
                 }
+
+                // Avoid infinite loop by checking first...
+                if (instructions.Parent != Parent) {
+                    instructions.AttachNewParent(Parent);
+                }
+
+                foreach (ISequenceItem item in instructions.Items) {
+                    if (item is IValidatable val) {
+                        _ = val.Validate();
+                    }
+
+                }
+
+                if (Condition != null) {
+                    if (Condition.Parent == null) {
+                        Condition.AttachNewParent(Parent);
+                    }
+                    foreach (ISequenceItem item in Condition.Items) {
+                        if (item is IValidatable val) {
+                            _ = val.Validate();
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Info("Foo");
             }
         }
 

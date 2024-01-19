@@ -1208,7 +1208,7 @@
                                 Foreground="White"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="If Timed Out: " />
+                                Text="If Timed Out  @" />
 
                             <Border
                               Width="20"
@@ -1234,8 +1234,7 @@
                                     <ItemsControl ItemsSource="{Binding Issues}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Text="Time:" />
-                            <TextBox VerticalAlignment="Center" Text="{Binding Time}" />
+                            <TextBox Margin="0,2,0,0" VerticalAlignment="Center" Text="{Binding Time}" />
                             <TextBlock VerticalAlignment="Center" Text=" s" />
 
                             <Border
@@ -1249,7 +1248,7 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontStyle="Italic"
-                                       Text="Instruction to check goes here"
+                                       Text="Instruction or template to check goes here"
                                        TextAlignment="Center"
                                        MinWidth="400"
                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
@@ -1258,7 +1257,7 @@
                                     </i:Interaction.Behaviors>
                                 </Grid>
                                 <i:Interaction.Behaviors>
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoIfCommand" />
                                 </i:Interaction.Behaviors>
                             </Border>
                         </StackPanel>

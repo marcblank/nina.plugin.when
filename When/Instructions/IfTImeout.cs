@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using NINA.Sequencer.Conditions;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Sequencer;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Timed Out")]
@@ -34,6 +35,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Condition = (IfContainer)copyMe.Condition.Clone();
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Condition.AttachNewParent(Instructions.Parent);
             }
         }
 
@@ -57,7 +59,7 @@ namespace WhenPlugin.When {
 
         private Task CheckTimer() {
             if (DateTime.Now -  StartTime > TimeSpan.FromSeconds(Time)) {
-                linkedCts.Cancel();
+                cts.Cancel();
                 TimedOut = true;
                 Notification.ShowWarning("Timed out!");
                 Logger.Info("Timeout period over; interrupting...");
@@ -80,19 +82,20 @@ namespace WhenPlugin.When {
 
             try {
                 StartTime = DateTime.Now;
+                TimedOut = false;
                 // Execute the conditional
                 condition.Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
-                await condition.Run(progress, linkedCts.Token);
+                await condition.Run(progress, cts.Token);
 
                 if (condition.Status != NINA.Core.Enum.SequenceEntityStatus.FAILED) {
                     return;
                 }
-
-                Runner runner = new Runner(Instructions, progress, linkedCts.Token);
-                await runner.RunConditional();
             } catch (Exception ex) {
-                Logger.Info(ex.Message);
-
+                if (TimedOut) {
+                    Logger.Info("Timed out; executing instructions...");
+                    Runner runner = new Runner(Instructions, progress, token);
+                    await runner.RunConditional();
+                }
             } finally {
                 watch.Cancel();
                 cts.Dispose();
@@ -103,27 +106,29 @@ namespace WhenPlugin.When {
         // Allow only ONE instruction to be added to Condition
         public void DropIntoCondition(DropIntoParameters parameters) {
             lock (lockObj) {
-                ISequenceItem item;
-                var source = parameters.Source as ISequenceItem;
-
-                if (source.Parent != null && !parameters.Duplicate) {
-                    item = source;
+                ISequenceEntity item;
+                if (parameters.Source is TemplatedSequenceContainer tsc) {
+                    item = (ISequenceEntity)tsc.Clone();
                 } else {
-                    item = (ISequenceItem)source.Clone();
+                    item = parameters.Source as ISequenceEntity;
                 }
 
-                if (item.Parent != Condition) {
-                    item.Parent?.Remove(item);
-                    item.AttachNewParent(Condition);
-                }
+                ISequenceItem si = item as ISequenceItem;
+                if (si != null) {
 
-                Condition.Items.Clear();
-                Condition.Items.Add(item);
+                    if (si.Parent != Condition) {
+                        si.Parent?.Remove(si);
+                        si.AttachNewParent(Condition);
+                    }
+
+                    Condition.Items.Clear();
+                    Condition.Items.Add(si);
+                }
             }
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(IfFailed)}";
+            return $"Category: {Category}, Item: {nameof(IfTimeout)}";
         }
     }
 }
