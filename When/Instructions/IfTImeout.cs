@@ -14,6 +14,7 @@ using NINA.Sequencer.Conditions;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Timed Out")]
@@ -57,12 +58,18 @@ namespace WhenPlugin.When {
         private CancellationTokenSource cts;
         private CancellationTokenSource linkedCts;
 
+        private IProgress<ApplicationStatus> timerProgress;
+
         private Task CheckTimer() {
-            if (DateTime.Now -  StartTime > TimeSpan.FromSeconds(Time)) {
+            TimeSpan diff = DateTime.Now - StartTime;
+            if (diff > TimeSpan.FromSeconds(Time)) {
                 cts.Cancel();
                 TimedOut = true;
                 Notification.ShowWarning("Timed out!");
                 Logger.Info("Timeout period over; interrupting...");
+            }
+            if (timerProgress != null) {
+                timerProgress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue,  MaxProgress = Time, Progress = diff.Seconds, Status = "Waiting..." }) ; ;
             }
             return Task.CompletedTask;
         }
@@ -73,6 +80,11 @@ namespace WhenPlugin.When {
                 Status = NINA.Core.Enum.SequenceEntityStatus.FAILED;
                 return;
             }
+
+            timerProgress = new Progress<ApplicationStatus>((p) => {
+                p.Source = Name;
+                progress?.Report(p);
+            });
 
             ConditionWatchdog watch = new ConditionWatchdog(CheckTimer, TimeSpan.FromSeconds(5));
             _ = watch.Start();
@@ -85,7 +97,7 @@ namespace WhenPlugin.When {
                 TimedOut = false;
                 // Execute the conditional
                 condition.Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
-                await condition.Run(progress, cts.Token);
+                await condition.Run(progress, linkedCts.Token);
 
                 if (condition.Status != NINA.Core.Enum.SequenceEntityStatus.FAILED) {
                     return;
