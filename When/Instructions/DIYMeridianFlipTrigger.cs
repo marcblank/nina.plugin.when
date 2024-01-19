@@ -504,7 +504,6 @@ namespace WhenPlugin.When {
                 }
             }
 
-
             SetCoords(MFCenter);
 
             if (!valid) {

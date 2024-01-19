@@ -15,6 +15,8 @@ using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using Grpc.Core;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Timed Out")]
@@ -58,19 +60,42 @@ namespace WhenPlugin.When {
         private CancellationTokenSource cts;
         private CancellationTokenSource linkedCts;
 
-        private IProgress<ApplicationStatus> timerProgress;
+        private IProgress<ApplicationStatus> progress;
 
 
         private Task CheckTimer() {
-            TimeSpan diff = DateTime.Now - StartTime;
-            if (diff > TimeSpan.FromSeconds(Time)) {
+            TimeSpan elapsed = DateTime.Now - StartTime;
+            if (elapsed > TimeSpan.FromSeconds(Time)) {
                 cts.Cancel();
                 TimedOut = true;
                 Notification.ShowWarning("Timed out!");
                 Logger.Info("Timeout period over; interrupting...");
             }
-            if (timerProgress != null) {
-                timerProgress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue,  MaxProgress = Time, Progress = diff.Seconds, Status = "Waiting..." }) ; ;
+            if (progress != null) {
+                string progressStatus;
+
+                TimeSpan t = TimeSpan.FromSeconds(Time);
+                string status = "Timeout ~";
+
+                if (t.Hours > 0) {
+                    var remaining = t - elapsed;
+                    progressStatus = $"{status} {remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}";
+                } else if (t.Minutes > 0) {
+                    var remaining = t - elapsed;
+                    progressStatus = $"{status} {remaining.Minutes:D2}:{remaining.Seconds:D2}";
+                } else {
+                    var remaining = t - elapsed;
+                    progressStatus = $"{status} {remaining.Seconds} s";
+                }
+
+                progress?.Report(
+                    new ApplicationStatus {
+                        MaxProgress = 1,
+                        Progress = elapsed.TotalSeconds / t.TotalSeconds,
+                        Status = progressStatus,
+                        ProgressType = ApplicationStatus.StatusProgressType.Percent
+                    }
+                );
             }
             return Task.CompletedTask;
         }
@@ -82,7 +107,7 @@ namespace WhenPlugin.When {
                 return;
             }
 
-            timerProgress = new Progress<ApplicationStatus>((p) => {
+            this.progress = new Progress<ApplicationStatus>((p) => {
                 p.Source = Name;
                 progress?.Report(p);
             });
@@ -110,7 +135,7 @@ namespace WhenPlugin.When {
                     await runner.RunConditional();
                 }
             } finally {
-                timerProgress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" }); ;
+                this.progress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" }); ;
                 watch.Cancel();
                 cts.Dispose();
                 linkedCts.Dispose();
