@@ -61,7 +61,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(WaitIndefinitely)}, Time: 12 hours";
+            return $"Category: {Category}, Item: {nameof(LogThis)}";
         }
     }
 }

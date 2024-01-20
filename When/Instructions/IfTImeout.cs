@@ -75,7 +75,7 @@ namespace WhenPlugin.When {
                 string progressStatus;
 
                 TimeSpan t = TimeSpan.FromSeconds(Time);
-                string status = "Timeout ~";
+                string status = "Timeout in ~";
 
                 if (t.Hours > 0) {
                     var remaining = t - elapsed;
@@ -91,11 +91,11 @@ namespace WhenPlugin.When {
                 progress?.Report(
                     new ApplicationStatus {
                         MaxProgress = 1,
-                        Progress = elapsed.TotalSeconds / t.TotalSeconds,
+                        Progress = -1,
                         Status = progressStatus,
                         ProgressType = ApplicationStatus.StatusProgressType.Percent
                     }
-                );
+                ) ;  ;
             }
             return Task.CompletedTask;
         }

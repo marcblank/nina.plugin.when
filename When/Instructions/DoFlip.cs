@@ -102,7 +102,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(DoFlip)}";
+            return $"Category: {Category}, Item: DoFlip+";
         }
 
         public override bool Validate() {
