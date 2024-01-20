@@ -166,7 +166,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(PassMeridian)}";
+            return $"Category: {Category}, Item: PassMeridian+";
         }
         private string TimeString(TimeSpan min) {
             return (DateTime.Now + min).ToString("T", CultureInfo.CurrentCulture);

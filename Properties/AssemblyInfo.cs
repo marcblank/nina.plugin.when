@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.12.3.5")]
-[assembly: AssemblyFileVersion("3.12.3.5")]
+[assembly: AssemblyVersion("3.12.4.1")]
+[assembly: AssemblyFileVersion("3.12.4.1")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 // Your name
 [assembly: AssemblyCompany("Marc Blank")]
 // The product name that this plugin is part ofgit 
-[assembly: AssemblyProduct("When")]
+[assembly: AssemblyProduct("When")] 
 [assembly: AssemblyCopyright("Copyright © 2023-4 Marc Blank")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible withq

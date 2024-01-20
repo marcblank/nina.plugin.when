@@ -65,9 +65,22 @@ namespace WhenPlugin.When {
             }
         }
 
+        private Coordinates GetCoords() {
+            ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(Parent);
+            if (cc != null) {
+                Logger.Info("Getting coordinates from Parent");
+                return cc.Coordinates;
+            }
+            Logger.Info("Getting coordinates from telescope");
+            return telescopeMediator?.GetInfo().Coordinates;
+        }
+
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblFlippingScope"] });
-            Coordinates targetCoordinates = ItemUtility.RetrieveContextCoordinates(Parent).Coordinates;
+            Coordinates targetCoordinates = GetCoords();
+            if (targetCoordinates == null) {
+                throw new SequenceEntityFailedException("No coordinates found");
+            }
             Logger.Info($"Meridian Flip - Scope will flip to coordinates RA: {targetCoordinates.RAString} Dec: {targetCoordinates.DecString} Epoch: {targetCoordinates.Epoch}");
             var flipsuccess = await telescopeMediator.MeridianFlip(targetCoordinates, token);
             Logger.Trace($"Meridian Flip - Successful flip: {flipsuccess}");
@@ -89,7 +102,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(DoFlip)}";
+            return $"Category: {Category}, Item: DoFlip+";
         }
 
         public override bool Validate() {

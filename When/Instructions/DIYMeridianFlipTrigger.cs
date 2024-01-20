@@ -461,7 +461,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(DIYMeridianFlipTrigger)}";
+            return $"Trigger: DIY Meridian Flip Trigger+";
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -503,7 +503,6 @@ namespace WhenPlugin.When {
                     valid &= vitem.Validate();
                 }
             }
-
 
             SetCoords(MFCenter);
 

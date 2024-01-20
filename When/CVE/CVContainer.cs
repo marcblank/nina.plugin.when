@@ -28,7 +28,6 @@ namespace WhenPlugin.When {
         static protected ISequenceMediator sequenceMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
         static protected TemplateController ninaTemplateController;
-        private static IProfileService profileService;
         private static ISequencerFactory sequencerFactory;
 
         [ImportingConstructor]

@@ -49,7 +49,8 @@ namespace WhenPlugin.When {
                                 txt = "True";
                             }
                         } else {
-                            txt = expr.Value.ToString();
+
+                            txt = Math.Round(expr.Value, 2).ToString();
                             if (values.Length > 2) {
                                 IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                 int i = (int)expr.Value;
