@@ -41,13 +41,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             SetConstant clone = new SetConstant(this);
  
-            if (Parent != null) {
-                // This is a UI clone...
-                clone.Identifier = Identifier + "_" + ++CloneNum;
-            } else {
-                clone.Identifier = Identifier;
-            }
-            
+            clone.Identifier = Identifier;
             clone.Definition = Definition;
             clone.Expr = Expr;
             return clone;

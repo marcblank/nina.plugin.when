@@ -46,6 +46,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Equipment.Interfaces;
 using NINA.PlateSolving.Interfaces;
 using NINA.Core.Utility.WindowService;
+using System.Drawing;
 
 namespace WhenPlugin.When {
 
@@ -483,13 +484,21 @@ namespace WhenPlugin.When {
             var cc = ItemUtility.RetrieveContextCoordinates(Parent);
             if (cc != null) {
                 Coordinates coord = cc.Coordinates;
+                //Logger.Info("** SetCoords from Parent ** " + coord);
                 if (coord != null) {
                     c.Coordinates = new InputCoordinates(coord);
+                    if (coord.RADegrees == 0 && coord.Dec == 0) {
+                        Coordinates x = telescopeMediator.GetInfo().Coordinates;
+                        //Logger.Info("** SetCoords from Scope ** " + x);
+                        c.Coordinates = new InputCoordinates(x);
+                    }
                 }
             } else if (telescopeMediator.GetInfo() != null) {
                 Coordinates x = telescopeMediator.GetInfo().Coordinates;
+                //Logger.Info("** SetCoords from Scope ** " + x);
                 c.Coordinates = new InputCoordinates(x);
             } else {
+                //Logger.Info("** SetCoords to zero");
                 c.Coordinates = new InputCoordinates();
             }
         }

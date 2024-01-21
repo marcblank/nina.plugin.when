@@ -126,8 +126,15 @@ namespace WhenPlugin.When {
                 var t = ItemUtility.RetrieveContextCoordinates(Parent);
                 if (t != null) {
                     target = t.Coordinates;
+                    //Logger.Info("**Got target from Parent: " + target);
+                    if (target.RADegrees == 0 && target.Dec == 0) {
+                        //Logger.Info("**Target is at 0/0; using telescope");
+                        target = telescopeMediator.GetInfo().Coordinates;
+                        //Logger.Info("** target from telescope: " + target);
+                    }
                 } else {
                     target = telescopeMediator.GetInfo().Coordinates;
+                    //Logger.Info("**Got target from telescope: " + target);
                 }
 
 
