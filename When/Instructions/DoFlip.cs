@@ -133,8 +133,10 @@ namespace WhenPlugin.When {
 
                 if (target != null) {
                     FlipStatus = $"Scope will flip to coordinates RA: {target.RAString} Dec: {target.DecString} Epoch: {target.Epoch}";
-                    RaisePropertyChanged("FlipStatus");
+                } else {
+                    FlipStatus = "Cannot retrieve scope coordinates";
                 }
+                RaisePropertyChanged("FlipStatus");
             }
   
             Issues = i;

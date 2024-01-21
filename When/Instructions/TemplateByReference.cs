@@ -93,7 +93,7 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 try {
                     Instructions = (TemplateContainer)copyMe.Instructions.Clone();
-                } catch (Exception ex) {
+                } catch (Exception) {
                     Instructions = copyMe.Instructions.Clone();
                 }
                 Instructions.PseudoParent = this;
