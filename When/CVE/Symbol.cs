@@ -594,7 +594,11 @@ namespace WhenPlugin.When {
                 if (imageKeys != null) {
                     foreach (KeyValuePair<string, object> kvp in imageKeys) {
                         SwitchWeatherKeys.TryAdd(kvp.Key, kvp.Value);
-                        i.Add("Last Image: " + kvp.Key + " (" + Math.Round((double)kvp.Value, 2) + ")");
+                        var v = kvp.Value;
+                        if (v is double d) {
+                            v = Math.Round(d, 2);
+                        }
+                        i.Add("Last Image: " + kvp.Key + " (" + v + ")");
                         Logger.Trace("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 } else {
