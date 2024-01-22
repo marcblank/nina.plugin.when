@@ -481,6 +481,7 @@ namespace WhenPlugin.When {
 
 
         private void SetCoords(Center c) {
+            if (c == null) return;
             var cc = ItemUtility.RetrieveContextCoordinates(Parent);
             if (cc != null) {
                 Coordinates coord = cc.Coordinates;
@@ -513,6 +514,12 @@ namespace WhenPlugin.When {
                 }
             }
 
+            foreach(ISequenceItem item in TriggerRunner.Items) {
+                if (item is Center c) {
+                    MFCenter = c;
+                    break;
+                }
+            }
             SetCoords(MFCenter);
 
             if (!valid) {
