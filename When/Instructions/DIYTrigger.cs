@@ -109,6 +109,13 @@ namespace WhenPlugin.When {
             if (TriggerRunner.Triggers.FirstOrDefault() == null) return false;
             return TriggerRunner.Triggers.FirstOrDefault().ShouldTriggerAfter(previousItem, nextItem);
         }
+
+        // Per Nick Holland
+        public override void SequenceBlockInitialize() {
+            if (!InFlight && TriggerRunner.Triggers.FirstOrDefault() != null)
+                TriggerRunner.Triggers.FirstOrDefault().SequenceBlockInitialize();
+        }
+
         public override void AfterParentChanged() {
             foreach (ISequenceTrigger item in TriggerRunner.Triggers) {
                 if (item.Parent == null) item.AttachNewParent(TriggerRunner);
