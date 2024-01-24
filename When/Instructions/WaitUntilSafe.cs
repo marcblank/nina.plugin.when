@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WhenPlugin.When {
 
@@ -84,9 +85,10 @@ namespace WhenPlugin.When {
             var info = safetyMonitorMediator.GetInfo();
 
             if (!info.Connected) {
-                i.Add(Loc.Instance["LblSafetyMonitorNotConnected"]);
-            } else {
-                IsSafe = info.IsSafe;
+                Symbol sym = Symbol.FindSymbol("SAFE", Parent);
+                if (sym == null) {
+                    i.Add(Loc.Instance["Safety Monitor not connected and SAFE not defined"]);
+                }
             }
 
             Issues = i;
@@ -98,14 +100,12 @@ namespace WhenPlugin.When {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            var info = safetyMonitorMediator.GetInfo();
-            IsSafe = info.Connected && info.IsSafe;
+            bool IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             while (!IsSafe && !(Parent == null)) {
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["Lbl_SequenceItem_SafetyMonitor_WaitUntilSafe_Waiting"] });
                 await CoreUtil.Wait(WaitInterval, token, default);
-                info = safetyMonitorMediator.GetInfo();
-                IsSafe = info.Connected && info.IsSafe;
+                IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             }
-         }
+        }
     }
 }
