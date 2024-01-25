@@ -191,6 +191,9 @@ namespace WhenPlugin.When {
                 var t = ItemUtility.RetrieveContextCoordinates(Parent);
                 if (t != null) {
                     target = t.Coordinates;
+                    if (target.RADegrees == 0 && target.Dec == 0) {
+                        target = telescopeInfo.Coordinates;
+                    }
                 } else {
                     target = telescopeInfo.Coordinates;
                 }

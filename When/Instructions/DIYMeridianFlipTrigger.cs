@@ -497,7 +497,9 @@ namespace WhenPlugin.When {
             } else if (telescopeMediator.GetInfo() != null) {
                 Coordinates x = telescopeMediator.GetInfo().Coordinates;
                 //Logger.Info("** SetCoords from Scope ** " + x);
-                c.Coordinates = new InputCoordinates(x);
+                if (x != null) {
+                    c.Coordinates = new InputCoordinates(x);
+                }
             } else {
                 //Logger.Info("** SetCoords to zero");
                 c.Coordinates = new InputCoordinates();

@@ -121,6 +121,8 @@ namespace WhenPlugin.When {
             var telescopeInfo = telescopeMediator.GetInfo();
             if (!telescopeInfo.Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
+                FlipStatus = "Telescope not connected";
+                RaisePropertyChanged("FlipStatus");
             } else {
                 Coordinates target;
                 var t = ItemUtility.RetrieveContextCoordinates(Parent);
