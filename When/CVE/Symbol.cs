@@ -231,7 +231,9 @@ namespace WhenPlugin.When {
                 }
                 _definition = value;
                 if (Parent != null) {
-                    Expr.Expression = value;
+                    if (Expr != null) {
+                        Expr.Expression = value;
+                    }
                 }
                 RaisePropertyChanged("Expr");
 
