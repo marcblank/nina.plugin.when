@@ -23,12 +23,15 @@ using System.Diagnostics;
 using NINA.Core.MyMessageBox;
 using System.Runtime.Serialization;
 using System.Windows.Navigation;
+using System.ComponentModel.DataAnnotations;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Call")]
-    [ExportMetadata("Description", "Incorporate a template by reference.  Please read the description on the plugin page.")]
+    [ExportMetadata("Description", "Call a Function (Template).")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Call : IfCommand, IValidatable {
@@ -71,6 +74,10 @@ namespace WhenPlugin.When {
                     }
                 }
             }
+
+            Arg1Expr = new Expr(this);
+            Arg2Expr = new Expr(this);
+            ResultExpr = new Expr(this);
         }
 
         [OnSerializing]
@@ -97,6 +104,39 @@ namespace WhenPlugin.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
+            }
+        }
+
+        private Expr _Arg1Expr = null;
+
+        [JsonProperty]
+        public Expr Arg1Expr {
+            get => _Arg1Expr;
+            set {
+                _Arg1Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Expr _Arg2Expr = null;
+
+        [JsonProperty]
+        public Expr Arg2Expr {
+            get => _Arg2Expr;
+            set {
+                _Arg2Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Expr _ResultExpr = null;
+
+        [JsonProperty]
+        public Expr ResultExpr {
+            get => _ResultExpr;
+            set {
+                _ResultExpr = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -168,10 +208,12 @@ namespace WhenPlugin.When {
                     Instructions.Items.Clear();
                 }
                 TemplateName = selectedTemplate.Container.Name;
+                
                 //Instructions.Items.Add((ISequenceContainer)SelectedTemplate.Container.Clone());
                 //foreach (ISequenceItem item in Instructions.Items) {
                 //    item.AttachNewParent(Instructions);
                 //}
+
                 RaisePropertyChanged("SelectedTemplate");
                 RaisePropertyChanged("TemplateNameIsTrue");
                 Validate();
@@ -194,6 +236,10 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("TemplateNameIsTrue");
                 }
             }
+
+            clone.Arg1Expr = new Expr(clone, this.Arg1Expr.Expression);
+            clone.Arg2Expr = new Expr(clone, this.Arg2Expr.Expression);
+            clone.ResultExpr = new Expr(clone, this.ResultExpr.Expression);
 
             return clone;
         }
@@ -224,6 +270,17 @@ namespace WhenPlugin.When {
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            TemplatedSequenceContainer tc = SelectedTemplate;
+            if (tc == null) {
+                throw new SequenceEntityFailedException("Selected Function/Template not found");
+            }
+
+            ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
+            Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Add(clone); }));
+            foreach (ISequenceItem item in Instructions.Items) {
+                item.AttachNewParent(Instructions);
+            }
+
             //Runner runner = new Runner(Instructions, progress, token);
             //await runner.RunConditional();
         }
