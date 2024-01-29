@@ -43,6 +43,7 @@ namespace WhenPlugin.When {
         private static SequenceJsonConverter sequenceJsonConverter;
         private static IProfileService profileService;
         private static ISequencerFactory sequencerFactory;
+        private static object TemplateLock = new object();  
 
         public static int instanceNumber = 0;
 
@@ -57,6 +58,8 @@ namespace WhenPlugin.When {
             Instructions.Icon = Icon;
             Name = Name;
             Id = ++instanceNumber;
+
+            Condition = new IfContainer();
 
             // Get the various NINA components we need
             if (sequenceNavigationVM == null || templateController == null) {
@@ -104,6 +107,12 @@ namespace WhenPlugin.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
+
+                if (copyMe.Condition == null) {
+                    Condition = new IfContainer();
+                } else {
+                    Condition = (IfContainer)copyMe.Condition.Clone();
+                }
             }
         }
 
@@ -171,7 +180,7 @@ namespace WhenPlugin.When {
 
         public IList<TemplatedSequenceContainer> Templates {
             get {
-                lock (TemplateControllerLite.TemplateLock) {
+                lock (TemplateLock) {
                     return templateController.TBRTemplates;
                 }
             }
@@ -184,7 +193,7 @@ namespace WhenPlugin.When {
 
         public TemplatedSequenceContainer[] SortedTemplates {
             get {
-                lock (TemplateControllerLite.TemplateLock) {
+                lock (TemplateLock) {
                     IList<TemplatedSequenceContainer> l = Templates;
                     TemplatedSequenceContainer[] lCopy = Templates.ToArray();
                     lCopy.Sort(TemplateCompare);
@@ -248,7 +257,7 @@ namespace WhenPlugin.When {
 
         private TemplatedSequenceContainer FindTemplate(string name) {
 
-            lock (TemplateControllerLite.TemplateLock) {
+            lock (TemplateLock) {
                 for (int i = 0; i < 4; i++) {
                     try {
                         foreach (var tmp in Templates) {
@@ -280,9 +289,20 @@ namespace WhenPlugin.When {
             foreach (ISequenceItem item in Instructions.Items) {
                 item.AttachNewParent(Instructions);
             }
+            Instructions.IsExpanded = true;
+            RaisePropertyChanged("Instructions.IsExpanded");
 
-            //Runner runner = new Runner(Instructions, progress, token);
-            //await runner.RunConditional();
+            Arg1Expr.Evaluate();
+            if (!Double.IsNaN(Arg1Expr.Value)) {
+                Condition.Add(new SetVariable("Arg1", Arg1Expr.ValueString, Parent));
+            }
+            Arg2Expr.Evaluate();
+             if (!Double.IsNaN(Arg2Expr.Value)) {
+                Condition.Add(new SetVariable("Arg2", Arg2Expr.ValueString, Parent));
+            }
+
+            Runner runner = new Runner(Instructions, progress, token);
+            await runner.RunConditional();
         }
 
         public override void AfterParentChanged() {

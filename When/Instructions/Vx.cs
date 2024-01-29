@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Common.CommandTrees;
+using NINA.Sequencer.Container;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
@@ -34,6 +35,14 @@ namespace WhenPlugin.When {
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
             }
+        }
+
+        public SetVariable(string id, string def, ISequenceContainer parent) {
+            SetVariable sv = new SetVariable();
+            sv.AttachNewParent(parent);
+            sv.Identifier = id;
+            sv.Definition = def;
+            sv.Executed = true;
         }
 
         private int CloneNum = 0;

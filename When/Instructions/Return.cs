@@ -92,9 +92,6 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            if (!focuserMediator.GetInfo().Connected) {
-                i.Add(Loc.Instance["LblFocuserNotConnected"]);
-            }
             RExpr.Validate();
             Issues = i;
             return i.Count == 0;
