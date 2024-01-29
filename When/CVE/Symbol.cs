@@ -629,7 +629,7 @@ namespace WhenPlugin.When {
                     Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
                     if (kv.Value.Consumers.Count> 0) {
                         foreach(Expr e in kv.Value.Consumers) {
-                            Debug.WriteLine("        -> " + e.Symbol);
+                            Debug.WriteLine("        -> " + e);
                         }
                     }
                 }

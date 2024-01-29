@@ -78,6 +78,8 @@ namespace WhenPlugin.When {
 
                 IfExpr.Evaluate();
 
+                Symbol.ShowSymbols();
+
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("If: If Predicate is true, " + IfExpr);
                     Runner runner = new Runner(Instructions, progress, token);

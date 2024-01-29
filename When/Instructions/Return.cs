@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using CsvHelper;
+using NINA.Sequencer.Container;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
 
@@ -86,8 +88,25 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            //return focuserMediator.MoveFocuserRelative((int)RExpr.Value, token);
-            return Task.CompletedTask;
+            ISequenceContainer p = Parent;
+            while (p != null) {
+                if (p is TemplateContainer tc && tc.PseudoParent is Call c) {
+                    p.Interrupt();
+                    string resultName = c.ResultExpr.Expression;
+                    Symbol sym = Symbol.FindSymbol(resultName, tc);
+                    if (sym != null && sym is SetVariable sv) {
+                        RExpr.Evaluate();
+                        Logger.Warning("** Call " + c.TemplateName + " with Arg1 = " + c.Arg1Expr.ValueString + " is returning: " + RExpr.ValueString);
+                        sv.Definition = RExpr.Value.ToString();
+                        c.ResultExpr.Evaluate();
+                    } else {
+                        throw new SequenceEntityFailedException("Result Variable is not defined");
+                    }
+                    return Task.CompletedTask;
+                }
+                p = p.Parent;
+            }
+            throw new SequenceEntityFailedException("Return is not within a Call instruction");
         }
 
         public bool Validate() {
