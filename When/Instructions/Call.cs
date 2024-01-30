@@ -275,7 +275,8 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            Instructions.ResetAll();
+            Instructions.Items.Clear();
+            Instructions.IsExpanded = false;
         }
 
         private static int CallID = 0;
