@@ -92,11 +92,15 @@ namespace WhenPlugin.When {
             while (p != null) {
                 if (p is TemplateContainer tc && tc.PseudoParent is Call c) {
                     p.Interrupt();
+                    p.Status = NINA.Core.Enum.SequenceEntityStatus.FINISHED;
+                    foreach (var item in p.Items) {
+                        p.Status = NINA.Core.Enum.SequenceEntityStatus.FINISHED;
+                    }
                     string resultName = c.ResultExpr.Expression;
                     Symbol sym = Symbol.FindSymbol(resultName, tc);
                     if (sym != null && sym is SetVariable sv) {
                         RExpr.Evaluate();
-                        Logger.Warning("** Call " + c.TemplateName + " with Arg1 = " + c.Arg1Expr.ValueString + " is returning: " + RExpr.ValueString);
+                        Logger.Warning("** Call " + tc.Items[0].Name + " with Arg1 = " + c.Arg1Expr.ValueString + " is returning: " + RExpr.ValueString);
                         sv.Definition = RExpr.Value.ToString();
                         c.ResultExpr.Evaluate();
                     } else {
@@ -117,7 +121,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(Return)}, Relative Position: {RExpr.Value}";
+            return $"Category: {Category}, Item: {nameof(Return)}, Result: {RExpr.Value}";
         }
     }
 }

@@ -278,13 +278,28 @@ namespace WhenPlugin.When {
             Instructions.ResetAll();
         }
 
+        private static int CallID = 0;
+
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             TemplatedSequenceContainer tc = SelectedTemplate;
             if (tc == null) {
                 throw new SequenceEntityFailedException("Selected Function/Template not found");
             }
 
+            Arg1Expr.Parameters.Clear();
+            Arg1Expr.Resolved.Clear();
+            Arg1Expr.Evaluate();
+            Logger.Info("Call, Arg1 expression = " + Arg1Expr.Expression + " evaluated to " + Arg1Expr.ValueString);
+            if (!Double.IsNaN(Arg1Expr.Value)) {
+                new SetVariable("Arg1", Arg1Expr.ValueString, Parent);
+            }
+            Arg2Expr.Evaluate();
+            if (!Double.IsNaN(Arg2Expr.Value)) {
+                new SetVariable("Arg2", Arg2Expr.ValueString, Parent);
+            }
+
             ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
+            clone.Name += (++CallID).ToString();
             Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Add(clone); }));
             foreach (ISequenceItem item in Instructions.Items) {
                 item.AttachNewParent(Instructions);
@@ -292,15 +307,21 @@ namespace WhenPlugin.When {
             Instructions.IsExpanded = true;
             RaisePropertyChanged("Instructions.IsExpanded");
 
-            Arg1Expr.Evaluate();
-            if (!Double.IsNaN(Arg1Expr.Value)) {
-                Condition.Add(new SetVariable("Arg1", Arg1Expr.ValueString, Parent));
-            }
-            Arg2Expr.Evaluate();
-             if (!Double.IsNaN(Arg2Expr.Value)) {
-                Condition.Add(new SetVariable("Arg2", Arg2Expr.ValueString, Parent));
+
+            Logger.Info("Call, Execute");
+            foreach (var kvp in Arg1Expr.Parameters) {
+                Logger.Info(" -> " + kvp.Key + " = " + kvp.Value);
             }
 
+            Logger.Info("Running " + clone.Name + ", Symbols:");
+            if (Symbol.SymbolCache.TryGetValue(Parent, out var symbols)) {
+                foreach (var symbol in symbols) {
+                    Logger.Info(symbol.Value.ToString());
+                }
+            }
+
+            Debug.WriteLine("*** PRE RUNNER");
+            Symbol.ShowSymbols();
             Runner runner = new Runner(Instructions, progress, token);
             await runner.RunConditional();
         }

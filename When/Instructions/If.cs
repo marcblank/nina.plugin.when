@@ -55,10 +55,14 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("If: Execute, Predicate = " + IfExpr.Expression);
+            Logger.Info("If, Predicate: " + IfExpr.Expression);
             if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
+            }
+
+            foreach(var kvp in IfExpr.Parameters) {
+                Logger.Info(" -> " + kvp.Key + " = " + kvp.Value);
             }
 
             try {
@@ -81,7 +85,7 @@ namespace WhenPlugin.When {
                 Symbol.ShowSymbols();
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    Logger.Info("If: If Predicate is true, " + IfExpr);
+                    Logger.Info("If: Predicate is true, " + IfExpr);
                     Runner runner = new Runner(Instructions, progress, token);
                     await runner.RunConditional();
                 } else {

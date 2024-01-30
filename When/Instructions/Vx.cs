@@ -95,7 +95,7 @@ namespace WhenPlugin.When {
 
         public override string ToString() {
             if (Expr != null) {
-                return $"Variable: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Dirty: {Expr.Dirty}";
+                return $"Variable: {Identifier}, Definition: {Definition}, Parent {Parent?.Name}, Expr: {Expr}";
 
             } else {
                 return $"Variable: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Expr: null";
