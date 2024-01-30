@@ -61,10 +61,6 @@ namespace WhenPlugin.When {
                 return;
             }
 
-            foreach(var kvp in IfExpr.Parameters) {
-                Logger.Info(" -> " + kvp.Key + " = " + kvp.Value);
-            }
-
             try {
                 // Always get latest data...
                 await Symbol.UpdateSwitchWeatherData();

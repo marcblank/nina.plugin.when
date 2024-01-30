@@ -100,7 +100,7 @@ namespace WhenPlugin.When {
                     Symbol sym = Symbol.FindSymbol(resultName, tc);
                     if (sym != null && sym is SetVariable sv) {
                         RExpr.Evaluate();
-                        Logger.Warning("** Call " + tc.Items[0].Name + " with Arg1 = " + c.Arg1Expr.ValueString + " is returning: " + RExpr.ValueString);
+                        Logger.Warning("Call " + tc.Items[0].Name + " with Arg1 = " + c.Arg1Expr.ValueString + " is returning: " + RExpr.ValueString);
                         sv.Definition = RExpr.Value.ToString();
                         c.ResultExpr.Evaluate();
                     } else {
@@ -115,8 +115,10 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
+
             RExpr.Validate();
             Issues = i;
+            RaisePropertyChanged("Issues");
             return i.Count == 0;
         }
 

@@ -294,6 +294,8 @@ namespace WhenPlugin.When {
             if (!Double.IsNaN(Arg1Expr.Value)) {
                 new SetVariable("Arg1", Arg1Expr.ValueString, Parent);
             }
+            Arg2Expr.Parameters.Clear();
+            Arg2Expr.Resolved.Clear();
             Arg2Expr.Evaluate();
             if (!Double.IsNaN(Arg2Expr.Value)) {
                 new SetVariable("Arg2", Arg2Expr.ValueString, Parent);
@@ -306,7 +308,8 @@ namespace WhenPlugin.When {
                 item.AttachNewParent(Instructions);
             }
             Instructions.IsExpanded = true;
-            RaisePropertyChanged("Instructions.IsExpanded");
+            IsExpanded = true;
+            RaisePropertyChanged("IsExpanded");
 
 
             Logger.Info("Call, Execute");
@@ -321,8 +324,6 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Debug.WriteLine("*** PRE RUNNER");
-            Symbol.ShowSymbols();
             Runner runner = new Runner(Instructions, progress, token);
             await runner.RunConditional();
         }

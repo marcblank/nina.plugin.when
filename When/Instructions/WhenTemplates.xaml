@@ -431,7 +431,19 @@
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
- 
+
+    <DataTemplate DataType="{x:Type local:MoveFocuserAbsolute}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprControl Label="{ns:Loc LblPosition}" Exp="{Binding PExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+
+
     <DataTemplate DataType="{x:Type local:Return}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
@@ -1123,7 +1135,7 @@
                                VerticalAlignment="Center"
                                FontStyle="Italic"
                                Opacity="0.4"
-                               Text="The specified template will go here..."
+                               Text="The specified function/template will go here..."
                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
