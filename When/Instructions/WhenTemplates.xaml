@@ -1135,12 +1135,8 @@
                                VerticalAlignment="Center"
                                FontStyle="Italic"
                                Opacity="0.4"
-                               Text="The specified function/template will go here..."
+                               Text="The specified function/template will appear here during execution"
                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                            <i:Interaction.Behaviors>
-                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoTemplateCommand" />
-                            </i:Interaction.Behaviors>
                         </Grid>
                     </Border>
                 </StackPanel>
