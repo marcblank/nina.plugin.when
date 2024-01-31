@@ -80,6 +80,7 @@ namespace WhenPlugin.When {
 
             Arg1Expr = new Expr(this);
             Arg2Expr = new Expr(this);
+            Arg3Expr = new Expr(this);
             ResultExpr = new Expr(this);
         }
 
@@ -134,6 +135,17 @@ namespace WhenPlugin.When {
             get => _Arg2Expr;
             set {
                 _Arg2Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Expr _Arg3Expr = null;
+
+        [JsonProperty]
+        public Expr Arg3Expr {
+            get => _Arg3Expr;
+            set {
+                _Arg3Expr = value;
                 RaisePropertyChanged();
             }
         }
@@ -248,6 +260,7 @@ namespace WhenPlugin.When {
 
             clone.Arg1Expr = new Expr(clone, this.Arg1Expr.Expression);
             clone.Arg2Expr = new Expr(clone, this.Arg2Expr.Expression);
+            clone.Arg3Expr = new Expr(clone, this.Arg3Expr.Expression);
             clone.ResultExpr = new Expr(clone, this.ResultExpr.Expression);
 
             return clone;
@@ -299,6 +312,12 @@ namespace WhenPlugin.When {
             Arg2Expr.Evaluate();
             if (!Double.IsNaN(Arg2Expr.Value)) {
                 new SetVariable("Arg2", Arg2Expr.ValueString, Parent);
+            }
+            Arg3Expr.Parameters.Clear();
+            Arg3Expr.Resolved.Clear();
+            Arg3Expr.Evaluate();
+            if (!Double.IsNaN(Arg3Expr.Value)) {
+                new SetVariable("Arg3", Arg3Expr.ValueString, Parent);
             }
 
             ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
