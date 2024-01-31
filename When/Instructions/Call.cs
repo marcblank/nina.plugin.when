@@ -311,7 +311,6 @@ namespace WhenPlugin.When {
             IsExpanded = true;
             RaisePropertyChanged("IsExpanded");
 
-
             Logger.Info("Call, Execute");
             foreach (var kvp in Arg1Expr.Parameters) {
                 Logger.Info(" -> " + kvp.Key + " = " + kvp.Value);
