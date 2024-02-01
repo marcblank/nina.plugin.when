@@ -294,31 +294,26 @@ namespace WhenPlugin.When {
 
         private static int CallID = 0;
 
+        private void AssignArgument (Expr expr, string name) {
+            expr.Refresh();
+            if (expr.Expression.StartsWith("_")) {
+                SetVariable.SetVariableReference(name, expr.Expression, Parent);
+                Logger.Info("Call by reference " + name + ", expression = " + expr.Expression.Substring(1));
+            } else if (!Double.IsNaN(expr.Value)) {
+                new SetVariable(name, expr.ValueString, Parent);
+                Logger.Info("Call by value " + name + ", expression = " + expr.Expression + " evaluated to " + expr.ValueString);
+            }
+        }
+
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             TemplatedSequenceContainer tc = SelectedTemplate;
             if (tc == null) {
                 throw new SequenceEntityFailedException("Selected Function/Template not found");
             }
 
-            Arg1Expr.Parameters.Clear();
-            Arg1Expr.Resolved.Clear();
-            Arg1Expr.Evaluate();
-            Logger.Info("Call, Arg1 expression = " + Arg1Expr.Expression + " evaluated to " + Arg1Expr.ValueString);
-            if (!Double.IsNaN(Arg1Expr.Value)) {
-                new SetVariable("Arg1", Arg1Expr.ValueString, Parent);
-            }
-            Arg2Expr.Parameters.Clear();
-            Arg2Expr.Resolved.Clear();
-            Arg2Expr.Evaluate();
-            if (!Double.IsNaN(Arg2Expr.Value)) {
-                new SetVariable("Arg2", Arg2Expr.ValueString, Parent);
-            }
-            Arg3Expr.Parameters.Clear();
-            Arg3Expr.Resolved.Clear();
-            Arg3Expr.Evaluate();
-            if (!Double.IsNaN(Arg3Expr.Value)) {
-                new SetVariable("Arg3", Arg3Expr.ValueString, Parent);
-            }
+            AssignArgument(Arg1Expr, "Arg1");
+            AssignArgument(Arg2Expr, "Arg2");
+            AssignArgument(Arg3Expr, "Arg3");
 
             ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
             clone.Name += (++CallID).ToString();
@@ -330,12 +325,7 @@ namespace WhenPlugin.When {
             IsExpanded = true;
             RaisePropertyChanged("IsExpanded");
 
-            Logger.Info("Call, Execute");
-            foreach (var kvp in Arg1Expr.Parameters) {
-                Logger.Info(" -> " + kvp.Key + " = " + kvp.Value);
-            }
-
-            Logger.Info("Running " + clone.Name + ", Symbols:");
+            Logger.Info("Call, Execute " + clone.Name + ", Symbols:");
             if (Symbol.SymbolCache.TryGetValue(Parent, out var symbols)) {
                 foreach (var symbol in symbols) {
                     Logger.Info(symbol.Value.ToString());
@@ -382,6 +372,10 @@ namespace WhenPlugin.When {
                     _ = val.Validate();
                 }
             }
+
+            Arg1Expr.Validate();
+            Arg2Expr.Validate();
+            Arg3Expr.Validate();
 
             Issues = i;
             return i.Count == 0;

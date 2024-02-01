@@ -287,6 +287,8 @@ namespace WhenPlugin.When {
 
             if (templateController == null) return true;
 
+            if (!Symbol.IsAttachedToRoot(this)) return true;
+
             var i = new List<string>();
 
             if (SelectedTemplate == null && TemplateName == null) {

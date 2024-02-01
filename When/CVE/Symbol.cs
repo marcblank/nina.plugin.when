@@ -255,6 +255,8 @@ namespace WhenPlugin.When {
  
         public IList<string> Issues {  get; set; }
 
+        public bool IsReference { get; set; } = false;
+
         protected bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {

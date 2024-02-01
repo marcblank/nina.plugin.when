@@ -45,6 +45,22 @@ namespace WhenPlugin.When {
             sv.Executed = true;
         }
 
+        public static void SetVariableReference(string id, string def, ISequenceContainer parent) {
+            SetVariable sv = new SetVariable();
+            sv.AttachNewParent(parent);
+            sv.Identifier = id;
+            sv.Definition = def;
+            sv.Executed = true;
+
+            Symbol sym = Symbol.FindSymbol(def.Substring(1), parent);
+            if (sym != null) {
+                sv.Expr = sym.Expr;
+                sv.IsReference = true;
+            } else {
+                throw new SequenceEntityFailedException("Call by reference symbol not found: " + def);
+            }
+        }
+
         private int CloneNum = 0;
 
         public override object Clone() {

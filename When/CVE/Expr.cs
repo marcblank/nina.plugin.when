@@ -6,6 +6,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -300,8 +301,14 @@ namespace WhenPlugin.When {
                 Parameters.Add(reference, sym.Expr.Value);
 
             }
-
         }
+
+        public void Refresh () {
+            Parameters.Clear();
+            Resolved.Clear();
+            Evaluate();
+        }
+
         public void Evaluate() {
             if (!IsExpression) return;
             if (Expression.Length == 0) {
@@ -323,8 +330,13 @@ namespace WhenPlugin.When {
             ImageVolatile = false;
 
             // First, validate References
-            foreach (string symReference in References) {
+            foreach (string sRef in References) {
                 Symbol sym;
+                // Take care of "by reference" arguments
+                string symReference = sRef;
+                if (symReference.StartsWith("_")) {
+                    symReference = sRef.Substring(1);
+                }
                 // Remember if we have any image data
                 if (!ImageVolatile && symReference.StartsWith("Image_")) {
                     ImageVolatile = true;
