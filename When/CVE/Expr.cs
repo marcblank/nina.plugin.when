@@ -405,6 +405,8 @@ namespace WhenPlugin.When {
                             Symbol s = FindSymbol(r, SequenceEntity.Parent);
                             if (s is SetVariable sv && !sv.Executed) {
                                 Error = "Not evaluated: " + r;
+                            } else if (r.StartsWith("_")) {
+                                Error = "Reference";
                             } else {
                                 Error = "Undefined: " + r;
                             }
@@ -430,7 +432,12 @@ namespace WhenPlugin.When {
                 // Shorten this common error from NCalc
                 int pos = error.IndexOf(NOT_DEFINED);
                 if (pos == 0) {
-                    error = "Undefined: " + error.Substring(NOT_DEFINED.Length).TrimEnd(')');
+                    string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
+                    if (!var.StartsWith("'_")) {
+                        error = "Reference";
+                    } else {
+                        error = "Undefined: " + var;
+                    }
                 }
                 Error = error;
             } catch (NCalc.EvaluationException) {
