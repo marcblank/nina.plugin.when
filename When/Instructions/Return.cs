@@ -36,7 +36,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Return a value from a Function")]
     [ExportMetadata("Icon", "MoveFocuserRelativeSVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Return : SequenceItem, IValidatable {
 

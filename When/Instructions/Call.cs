@@ -32,7 +32,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Call a Function (Template).")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Call : IfCommand, IValidatable {
 

@@ -115,6 +115,14 @@ namespace WhenPlugin.When {
 
         public IList<string> Switches { get; set; } = null;
 
+        public override void ResetProgress() {
+            base.ResetProgress();
+            ElseInstructions.ResetAll();
+            foreach (ISequenceItem item in ElseInstructions.Items) {
+                item.ResetProgress();
+            }
+        }
+
         public new bool Validate() {
 
             var i = new List<string>();

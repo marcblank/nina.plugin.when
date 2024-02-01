@@ -462,6 +462,18 @@ namespace WhenPlugin.When {
         public static int LastExitCode { get; set; } = 0;
 
         public static Task UpdateSwitchWeatherData() {
+
+            //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
+            //foreach (ISequenceContainer c in SymbolCache.Keys) {
+            //    if (!IsAttachedToRoot(c)) {
+            //        orphans.Add(c);
+            //    }
+            //}
+            //foreach (ISequenceContainer c in orphans) {
+            //    SymbolCache.Remove(c);
+            //    Logger.Info("Removed container " + c.Name + " from SymbolCache");
+            //}
+
             lock (SwitchMediator) {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
