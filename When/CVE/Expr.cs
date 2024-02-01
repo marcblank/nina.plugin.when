@@ -448,7 +448,7 @@ namespace WhenPlugin.When {
                     Error = null;
                 }
                 Evaluate();
-            } else if (Double.IsNaN(Value)) {
+            } else if (Double.IsNaN(Value) && Expression.Length > 0) {
                 Error = "Not evaluated";
             } else if (Expression.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out

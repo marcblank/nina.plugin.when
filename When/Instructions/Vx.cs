@@ -104,7 +104,9 @@ namespace WhenPlugin.When {
             OriginalExpr = new Expr(OriginalDefinition, this);
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
-                Expr.Error = "Not evaluated";
+                if (Expr.Expression.Length > 0) {
+                    Expr.Error = "Not evaluated";
+                }
             }
         }
 
