@@ -5,12 +5,8 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Common.CommandTrees;
 using NINA.Sequencer.Container;
 
 namespace WhenPlugin.When {

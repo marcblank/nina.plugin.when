@@ -26,12 +26,10 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Equipment.Equipment.MyFilterWheel;
 using Namotion.Reflection;
-using NINA.Profile;
 using System.IO;
 using System.Linq;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Equipment.MyTelescope;
-using System.IdentityModel.Tokens;
 
 namespace WhenPlugin.When {
 

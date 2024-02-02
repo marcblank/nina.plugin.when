@@ -18,15 +18,10 @@ using NINA.Sequencer.Validations;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
-using CsvHelper;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility;
 

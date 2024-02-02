@@ -5,11 +5,8 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Validations;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 

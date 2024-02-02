@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
-using NINA.Core.Locale;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If")]

@@ -1,15 +1,12 @@
-﻿using Accord.Statistics.Models.Regression.Fitting;
-using NCalc;
+﻿using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Windows;
 using static WhenPlugin.When.Symbol;
 using Expression = NCalc.Expression;
 
