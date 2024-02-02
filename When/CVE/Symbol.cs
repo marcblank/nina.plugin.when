@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Equipment.MyTelescope;
+using System.IdentityModel.Tokens;
 
 namespace WhenPlugin.When {
 
@@ -116,6 +117,15 @@ namespace WhenPlugin.When {
             }
         }
 
+        private string GenId(SymbolDictionary dict, string id) {
+            for (int i = 0;; i++) {
+                string newId = id + "_" + i.ToString();
+                if (!dict.ContainsKey(newId)) {
+                    return newId;
+                }
+            }
+        }
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             ISequenceContainer sParent = SParent();
@@ -154,7 +164,13 @@ namespace WhenPlugin.When {
                 if (Identifier != null && Identifier.Length == 0) return;
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
-                    cached.Add(Identifier, this);
+                    try {
+                        cached.Add(Identifier, this);
+                    } catch (ArgumentException ex) {
+                        IsDuplicate = true;
+                        Identifier = GenId(cached, Identifier);
+                        cached.Add(Identifier, this);
+                    }
                 } else {
                     SymbolDictionary newSymbols = new SymbolDictionary {
                         { Identifier, this }
@@ -182,7 +198,6 @@ namespace WhenPlugin.When {
                     return;
                 }
 
-                IsDuplicate = false;
                 ISequenceContainer sParent = SParent();
 
                 SymbolDictionary cached = null;
@@ -190,7 +205,7 @@ namespace WhenPlugin.When {
                     return;
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
-                    if (SymbolCache.TryGetValue(sParent, out cached)) {
+                    if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
                         cached.Remove(_identifier);
                         SymbolDirty(this);
                     }
@@ -205,7 +220,6 @@ namespace WhenPlugin.When {
                             cached.Add(Identifier, this);
                         } catch (ArgumentException ex) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
-                            IsDuplicate = true;
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();

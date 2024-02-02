@@ -128,8 +128,6 @@ namespace WhenPlugin.When {
                 i.Add("A name and an initial value must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of a Constant must be alphanumeric");
-            } else if (IsDuplicate) {
-                i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
             if (!Executed) {
