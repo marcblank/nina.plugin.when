@@ -2253,6 +2253,13 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding OnceOnly, Mode=TwoWay}"
                                   ToolTip="If set, this instruction will only run one time and then be disabled.  This can prevent looping behavior that may not be desirable." />
+                            <TextBlock VerticalAlignment="Center" Margin="25,0,0,0" Text="Interrupt"  Foreground="White"/>
+                            <CheckBox
+                                  MinWidth="40"
+                                  Margin="15,0,0,0"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Interrupt, Mode=TwoWay}"
+                                  ToolTip="If set, this instruction will interrupt the currently running instruction when the expression is true (This is the default behavior)" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

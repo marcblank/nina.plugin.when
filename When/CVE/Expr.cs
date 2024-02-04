@@ -130,6 +130,7 @@ namespace WhenPlugin.When {
                     // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
                     Parameters.Clear();
+                    Resolved.Clear();
                     Evaluate();
                     if (Symbol != null) SymbolDirty(Symbol);
                 }
@@ -296,7 +297,6 @@ namespace WhenPlugin.When {
             if (sym.Expr.Error == null && !Double.IsNaN(sym.Expr.Value)) {
                 Resolved.Add(reference, sym);
                 Parameters.Add(reference, sym.Expr.Value);
-
             }
         }
 

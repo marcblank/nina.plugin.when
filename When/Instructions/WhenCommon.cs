@@ -117,6 +117,17 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+        
+        private bool iInterrupt = true;
+
+        [JsonProperty]
+        public bool Interrupt {
+            get => iInterrupt;
+            set {
+                iInterrupt = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private IList<string> issues = new List<string>();
 
@@ -213,6 +224,7 @@ namespace WhenPlugin.When {
         private async Task InterruptWhen() {
             Logger.Trace("*When Interrupt*");
             if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
+            if (!Interrupt) return;
             if (InFlight || Triggered) {
                 Logger.Trace("When: InFlight or Triggered, return");
                 return;

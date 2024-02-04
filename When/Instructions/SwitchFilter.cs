@@ -202,6 +202,9 @@ namespace WhenPlugin.When {
                     FExpr.Expression = "(Current)";
                 }
                 FExpr.Validate();
+                if (FExpr.Error == null) {
+                    Filter = (int)FExpr.Value;
+                }
                 SetFInfo();
             }
 

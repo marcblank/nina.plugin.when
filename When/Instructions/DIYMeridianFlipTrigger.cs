@@ -159,6 +159,10 @@ namespace WhenPlugin.When {
             Name = copyMe.Name;
             Icon = copyMe.Icon;
             FlipStatus = copyMe.FlipStatus;
+            // Fix for crash; unsure how we get here...
+            if (copyMe.MFCenter.Coordinates.Coordinates == null) {
+                copyMe.MFCenter.Coordinates.Coordinates = new Coordinates(Angle.Zero, Angle.Zero, Epoch.JNOW);
+            }
             TriggerRunner = (SequentialContainer)copyMe.TriggerRunner.Clone();
             PauseTimeBeforeMeridian = copyMe.PauseTimeBeforeMeridian;
             MaxMinutesAfterMeridian = copyMe.MaxMinutesAfterMeridian;
