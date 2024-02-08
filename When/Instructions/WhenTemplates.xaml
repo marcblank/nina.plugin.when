@@ -346,6 +346,43 @@
     </Style>
 
 
+    <DataTemplate x:Key="local:DitherAfterExposures_Mini">
+        <mini:MiniTrigger>
+            <mini:MiniTrigger.TriggerProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposures}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding ProgressExposures}" />
+                    <TextBlock Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                </StackPanel>
+            </mini:MiniTrigger.TriggerProgressContent>
+        </mini:MiniTrigger>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:DitherAfterExposures}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprHintControl Label="After Exposures:" Exp="{Binding AfterExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+            <nina:SequenceBlockView.SequenceItemProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposures}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding ProgressExposures}" />
+                    <TextBlock Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemProgressContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:DIYTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>

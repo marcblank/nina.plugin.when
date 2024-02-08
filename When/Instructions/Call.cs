@@ -290,6 +290,11 @@ namespace WhenPlugin.When {
             base.ResetProgress();
             Instructions.Items.Clear();
             Instructions.IsExpanded = false;
+            if (Symbol.SymbolCache.TryGetValue(Parent, out var cached)) {
+                if (Arg1Expr.Expression.Length > 0) cached.Remove("Arg1");
+                if (Arg2Expr.Expression.Length > 0) cached.Remove("Arg2");
+                if (Arg3Expr.Expression.Length > 0) cached.Remove("Arg3");
+            }
         }
 
         private static int CallID = 0;

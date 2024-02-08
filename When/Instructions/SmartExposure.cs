@@ -58,6 +58,8 @@ namespace WhenPlugin.When {
 
         private static IProfileService ProfileService;
         private static IFilterWheelMediator FilterWheelMediator;
+        private static IImageHistoryVM ImageHistoryVM;
+        private static IGuiderMediator GuiderMediator;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -83,6 +85,8 @@ namespace WhenPlugin.When {
                 ) {
             ProfileService = profileService;
             FilterWheelMediator = filterWheelMediator;
+            ImageHistoryVM = imageHistoryVM;
+            GuiderMediator = guiderMediator;
             IterExpr = new Expr(this, "", "Integer");
             DExpr = new Expr(this, "", "Integer");
             FExpr = new Expr(this, "", "Integer");
@@ -362,13 +366,20 @@ namespace WhenPlugin.When {
                 Items[0] = new SwitchFilter(ProfileService, FilterWheelMediator);
 
             }
-            var clone = new SmartExposure(
-                    this,
-                    (SwitchFilter)this.GetSwitchFilter().Clone(),
-                    (TakeExposure)this.GetTakeExposure().Clone(),
-                    (LoopCondition)this.GetLoopCondition().Clone(),
-                    (DitherAfterExposures)this.GetDitherAfterExposures().Clone()
-                );
+            SwitchFilter sf = (SwitchFilter)this.GetSwitchFilter().Clone();
+            TakeExposure te = (TakeExposure)this.GetTakeExposure().Clone();
+            LoopCondition lc = (LoopCondition)this.GetLoopCondition().Clone();
+            DitherAfterExposures dae = (DitherAfterExposures)this.GetDitherAfterExposures();
+            if (dae == null) {
+                NINA.Sequencer.Trigger.Guider.DitherAfterExposures oldDae = (NINA.Sequencer.Trigger.Guider.DitherAfterExposures)this.Triggers[0];
+                if (oldDae != null) {
+                    dae = new DitherAfterExposures(GuiderMediator, ImageHistoryVM, ProfileService);
+                    dae.AfterExpr.Expression = oldDae.AfterExposures.ToString();
+                }
+            } else {
+                dae = (DitherAfterExposures)dae.Clone();
+            }
+            var clone = new SmartExposure(this, sf, te, lc, dae);
             return clone;
         }
 
