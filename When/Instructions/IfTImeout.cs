@@ -47,6 +47,7 @@ namespace WhenPlugin.When {
             };
         }
 
+        [JsonProperty]
         public int Time { get; set; } = 10;
 
         public ICommand DropIntoIfCommand { get; set; }
