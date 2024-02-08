@@ -39,6 +39,7 @@ namespace WhenPlugin.When {
                 Condition = (IfContainer)copyMe.Condition.Clone();
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Condition.AttachNewParent(Instructions.Parent);
+                Time = copyMe.Time;
             }
         }
 
@@ -47,8 +48,15 @@ namespace WhenPlugin.When {
             };
         }
 
+        private int iTime = 10;
         [JsonProperty]
-        public int Time { get; set; } = 10;
+        public int Time {
+            get => iTime;
+            set {
+                iTime = value;
+                RaisePropertyChanged("Time");
+            }
+        }
 
         public ICommand DropIntoIfCommand { get; set; }
 
@@ -100,6 +108,7 @@ namespace WhenPlugin.When {
             }
             return Task.CompletedTask;
         }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             ISequenceItem condition = Condition.Items[0];
 
