@@ -8,15 +8,10 @@ using System.Threading.Tasks;
 using NINA.Sequencer.DragDrop;
 using System.Windows.Input;
 using NINA.Sequencer.Validations;
-using System.Collections;
-using System.Collections.Generic;
 using NINA.Sequencer.Conditions;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using Grpc.Core;
-using System.Diagnostics;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Timed Out")]

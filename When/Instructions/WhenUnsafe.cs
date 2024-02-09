@@ -12,40 +12,15 @@
 
 #endregion "copyright"
 
-using GalaSoft.MvvmLight.Command;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Validations;
-using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Core.Locale;
 using NINA.Core.Enum;
 using NINA.Sequencer.Utility;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Container;
-using NINA.Core.Model;
-using NINA.Sequencer.Conditions;
-using Newtonsoft.Json;
-using NINA.Core.Utility.Notification;
-using NINA.Equipment.Equipment.MySafetyMonitor;
-using System.ComponentModel;
-using System.Reflection;
-using Namotion.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
-using NINA.ViewModel.Sequencer;
-using System.Windows.Input;
-using System.Management;
-using System.Diagnostics;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
-using System.Windows.Media.Converters;
 
 namespace WhenPlugin.When {
 

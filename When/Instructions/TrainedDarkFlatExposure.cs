@@ -17,33 +17,24 @@ using NINA.Core.Model;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.Container.ExecutionStrategy;
-using NINA.Sequencer.SequenceItem.FilterWheel;
-using NINA.Sequencer.Trigger;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Equipment.Model;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Locale;
-using NINA.Profile;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyCamera;
-using WhenPlugin.When;
 using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Sequencer.SequenceItem;
-using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
-using Antlr.Runtime;
 
 namespace WhenPlugin.When {
 

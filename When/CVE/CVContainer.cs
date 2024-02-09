@@ -9,7 +9,6 @@ using NINA.Core.Utility.Notification;
 using NINA.Sequencer;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
-using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
 using System.Linq;
 using System.Windows.Input;

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Utility.Notification;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
 using System.Reflection;
@@ -19,12 +18,7 @@ using System.Linq;
 using Accord.Math;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Serialization;
-using System.Diagnostics;
-using NINA.Core.MyMessageBox;
 using System.Runtime.Serialization;
-using System.Windows.Navigation;
-using System.ComponentModel.DataAnnotations;
-using System.Windows.Threading;
 using System.Windows;
 
 namespace WhenPlugin.When {

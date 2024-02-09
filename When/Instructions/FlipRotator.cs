@@ -19,13 +19,10 @@ using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
-using NINA.Profile;
 using NINA.Equipment.Equipment.MyRotator;
 
 namespace WhenPlugin.When {

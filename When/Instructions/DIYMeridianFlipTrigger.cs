@@ -31,13 +31,11 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using NINA.Core.Enum;
 using NINA.WPF.Base.Interfaces.Mediator;
-using NINA.Core.Locale;
 using NINA.Sequencer.Interfaces;
 using NINA.WPF.Base.Interfaces;
 using System.Globalization;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.SequenceItem.Guider;
-using NINA.Sequencer.SequenceItem.Utility;
 using NINA.Sequencer.SequenceItem.Autofocus;
 using NINA.Sequencer.SequenceItem.Platesolving;
 using System.Windows.Media;
@@ -46,7 +44,6 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Equipment.Interfaces;
 using NINA.PlateSolving.Interfaces;
 using NINA.Core.Utility.WindowService;
-using System.Drawing;
 
 namespace WhenPlugin.When {
 

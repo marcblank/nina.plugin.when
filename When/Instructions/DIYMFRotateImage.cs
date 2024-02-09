@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
@@ -7,12 +6,10 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
-namespace WhenPlugin.When { 
+namespace WhenPlugin.When {
     [ExportMetadata("Name", "Rotate Image")]
     [ExportMetadata("Description", "Rotates the image in the Imaging pane by 180 degrees")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]

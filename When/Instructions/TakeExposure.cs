@@ -37,8 +37,6 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
-using System.Windows.Navigation;
-using static NINA.Image.FileFormat.XISF.XISFImageProperty.Observation;
 using System.Diagnostics;
 
 namespace WhenPlugin.When {
