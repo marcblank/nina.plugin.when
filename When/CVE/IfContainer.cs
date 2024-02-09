@@ -45,6 +45,9 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
+            if (PseudoParent != null && PseudoParent is WhenSwitch pp) {
+                pp.Disabled = false;
+            }
         }
 
         public override void Initialize() {
