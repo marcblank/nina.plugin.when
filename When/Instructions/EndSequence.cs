@@ -71,7 +71,10 @@ namespace WhenPlugin.When {
             var targetContainer = sequencer.MainContainer.Items[1] as ISequenceContainer;
             if (startContainer.Status == SequenceEntityStatus.RUNNING) {
                 await startContainer.Interrupt();
-                await Task.Delay(100);
+                await Task.Delay(500);
+                foreach (var item in startContainer.Items) {
+                    item.Status = SequenceEntityStatus.FINISHED;
+                }
             }
             if (targetContainer.Status == SequenceEntityStatus.RUNNING) {
                 await targetContainer.Interrupt();
