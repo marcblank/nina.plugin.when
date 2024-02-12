@@ -584,9 +584,10 @@ namespace WhenPlugin.When {
                         SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                     }
 
-                    SwitchWeatherKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                    i.Add("Filter Wheel: CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
-
+                    if (filterWheelInfo.SelectedFilter != null) {
+                        SwitchWeatherKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
+                        i.Add("Filter Wheel: CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
+                    }
                 }
 
                 // Get switch values
