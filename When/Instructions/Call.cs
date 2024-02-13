@@ -75,6 +75,9 @@ namespace WhenPlugin.When {
             Arg1Expr = new Expr(this);
             Arg2Expr = new Expr(this);
             Arg3Expr = new Expr(this);
+            Arg4Expr = new Expr(this);
+            Arg5Expr = new Expr(this);
+            Arg6Expr = new Expr(this);
             ResultExpr = new Expr(this);
         }
 
@@ -140,6 +143,36 @@ namespace WhenPlugin.When {
             get => _Arg3Expr;
             set {
                 _Arg3Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+        private Expr _Arg4Expr = null;
+
+        [JsonProperty]
+        public Expr Arg4Expr {
+            get => _Arg4Expr;
+            set {
+                _Arg4Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+        private Expr _Arg5Expr = null;
+
+        [JsonProperty]
+        public Expr Arg5Expr {
+            get => _Arg5Expr;
+            set {
+                _Arg5Expr = value;
+                RaisePropertyChanged();
+            }
+        }
+        private Expr _Arg6Expr = null;
+
+        [JsonProperty]
+        public Expr Arg6Expr {
+            get => _Arg6Expr;
+            set {
+                _Arg6Expr = value;
                 RaisePropertyChanged();
             }
         }
@@ -255,6 +288,9 @@ namespace WhenPlugin.When {
             clone.Arg1Expr = new Expr(clone, this.Arg1Expr.Expression);
             clone.Arg2Expr = new Expr(clone, this.Arg2Expr.Expression);
             clone.Arg3Expr = new Expr(clone, this.Arg3Expr.Expression);
+            clone.Arg4Expr = new Expr(clone, this.Arg4Expr.Expression);
+            clone.Arg5Expr = new Expr(clone, this.Arg5Expr.Expression);
+            clone.Arg6Expr = new Expr(clone, this.Arg6Expr.Expression);
             clone.ResultExpr = new Expr(clone, this.ResultExpr.Expression);
 
             return clone;
@@ -288,6 +324,9 @@ namespace WhenPlugin.When {
                 if (Arg1Expr.Expression.Length > 0) cached.Remove("Arg1");
                 if (Arg2Expr.Expression.Length > 0) cached.Remove("Arg2");
                 if (Arg3Expr.Expression.Length > 0) cached.Remove("Arg3");
+                if (Arg4Expr.Expression.Length > 0) cached.Remove("Arg4");
+                if (Arg5Expr.Expression.Length > 0) cached.Remove("Arg5");
+                if (Arg6Expr.Expression.Length > 0) cached.Remove("Arg6");
             }
         }
 
@@ -313,6 +352,9 @@ namespace WhenPlugin.When {
             AssignArgument(Arg1Expr, "Arg1");
             AssignArgument(Arg2Expr, "Arg2");
             AssignArgument(Arg3Expr, "Arg3");
+            AssignArgument(Arg4Expr, "Arg4");
+            AssignArgument(Arg5Expr, "Arg5");
+            AssignArgument(Arg6Expr, "Arg6");
 
             ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
             clone.Name += (++CallID).ToString();
@@ -375,6 +417,9 @@ namespace WhenPlugin.When {
             Arg1Expr.Validate();
             Arg2Expr.Validate();
             Arg3Expr.Validate();
+            Arg4Expr.Validate();
+            Arg5Expr.Validate();
+            Arg6Expr.Validate();
 
             Issues = i;
             return i.Count == 0;
