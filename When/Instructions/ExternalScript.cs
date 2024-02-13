@@ -92,6 +92,7 @@ namespace WhenPlugin.When {
         private string iProcessedScript;
         public string ProcessedScript {
             get {
+                Symbol.UpdateSwitchWeatherData();
                 string value = Script;
                 RaisePropertyChanged();
                 if (value != null) {
