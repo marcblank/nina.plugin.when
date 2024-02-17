@@ -72,13 +72,17 @@ namespace WhenPlugin.When {
 
         private CancellationTokenSource cts;
 
+        public bool Notify { get; set; } = true;
+
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             cts = new CancellationTokenSource();
             CancellationTokenSource lcts = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken[] { cts.Token, token });
 
             try {
-                Notification.ShowWarning("Breakpoint hit!");
+                if (Notify) {
+                    Notification.ShowWarning("Breakpoint hit!");
+                }
                 await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, lcts.Token, progress, ""); ;
             } finally {
                 InFlight = false;
