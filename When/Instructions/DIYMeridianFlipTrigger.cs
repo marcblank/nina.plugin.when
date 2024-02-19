@@ -48,7 +48,7 @@ using NINA.Core.Utility.WindowService;
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "DIY Meridian Flip Trigger")]
-    [ExportMetadata("Description", "Trigger for DYI Meridian Flip; CANNOT BE USED AS A GLOBAL TRIGGER!")]
+    [ExportMetadata("Description", "Trigger for DYI Meridian Flip")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
     [ExportMetadata("Category", "Powerups (Meridian Flip)")]
     [Export(typeof(ISequenceTrigger))]
