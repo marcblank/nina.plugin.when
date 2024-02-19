@@ -199,7 +199,7 @@ namespace WhenPlugin.When {
                 ISequenceContainer sParent = SParent();
 
                 SymbolDictionary cached = null;
-                if (value == _identifier || value.Length == 0) {
+                if (value == _identifier) {
                     return;
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
@@ -210,6 +210,8 @@ namespace WhenPlugin.When {
                 }
                 
                 _identifier = value;
+
+                if (value.Length == 0) return;
                 
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
@@ -239,7 +241,11 @@ namespace WhenPlugin.When {
             get => _definition;
             set {
                 if (value == _definition) {
-                    return;
+                    if (Expr != null && value != Expr.Expression) {
+                        Logger.Warning("Definition not reflected in Expression; user changed value manually");
+                    } else {
+                        return;
+                    }
                 }
                 _definition = value;
                 if (Parent != null) {

@@ -124,6 +124,10 @@ namespace WhenPlugin.When {
             return true;
         }
 
+        public override string ToString() {
+            return $"Trigger: {nameof(When)} Expression: {IfExpr.Expression} Value: {IfExpr.ValueString}";
+        }
+
         public IList<string> Switches { get; set; } = null;
         public new bool Validate() {
 

@@ -269,7 +269,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(When)} - toString";
+            return $"Trigger: {nameof(When)}";
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {

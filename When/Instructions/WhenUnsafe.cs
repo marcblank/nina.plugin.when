@@ -57,6 +57,11 @@ namespace WhenPlugin.When {
             return ItemUtility.IsInRootContainer(Parent) && Parent.Status == SequenceEntityStatus.RUNNING && Status != SequenceEntityStatus.DISABLED;
         }
 
+        public override string ToString() {
+            return $"Trigger: {nameof(WhenUnsafe)}";
+        }
+
+
         public static bool CheckSafe(ISequenceEntity item, ISafetyMonitorMediator safetyMediator) {
             var info = safetyMediator.GetInfo();
             bool safe = info.Connected && info.IsSafe;

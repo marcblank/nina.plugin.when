@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NINA.Sequencer.Container;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
@@ -131,6 +132,11 @@ namespace WhenPlugin.When {
             }
             if (Expr.Error != null) {
                 Expr.Validate();
+            }
+
+            if (Definition != Expr.Expression) {
+                Definition = Expr.Expression;
+                Logger.Info("Validate: Definition diverges from Expr; fixing");
             }
 
             Issues = i;

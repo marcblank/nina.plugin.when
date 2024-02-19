@@ -40,7 +40,7 @@
                                     <TextBlock VerticalAlignment="Center" Margin="12,0,0,0" Text="All Profiles" />
                                     <CheckBox
                                         MinWidth="40"
-                                        Margin="0,0,0,0"
+                                        Margin="8,0,0,0"
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding AllProfiles, Mode=TwoWay}"
                                         ToolTip="If set, this Global Constant will apply to ALL profiles; otherwise, just for the current profile." />
