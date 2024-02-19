@@ -318,7 +318,7 @@ namespace WhenPlugin.When {
 
         public override void ResetProgress() {
             base.ResetProgress();
-            Instructions.Items.Clear();
+            //Instructions.Items.Clear();
             Instructions.IsExpanded = false;
             if (Symbol.SymbolCache.TryGetValue(Parent, out var cached)) {
                 if (Arg1Expr.Expression.Length > 0) cached.Remove("Arg1");
