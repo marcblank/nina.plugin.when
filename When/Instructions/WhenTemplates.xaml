@@ -1173,10 +1173,10 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid>
-                            <StackPanel Orientation="Horizontal">
+                            <WrapPanel Orientation="Vertical">
                                 <TextBlock 
-                                    Foreground="{StaticResource ButtonForegroundBrush}"
-                                 MinHeight="30"
+                                  Foreground="{StaticResource ButtonForegroundBrush}"
+                                  MinHeight="30"
                                   Margin="10,11,10,0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
@@ -1200,9 +1200,12 @@
                                 <local:ExprControl Margin="10,-4,0,0" Label="Arg1:" Exp="{Binding Arg1Expr}" />
                                 <local:ExprControl Margin="10,-4,0,0" Label="Arg2:" Exp="{Binding Arg2Expr}" />
                                 <local:ExprControl Margin="10,-4,0,0" Label="Arg3:" Exp="{Binding Arg3Expr}" />
+                                <local:ExprControl Margin="10,-4,0,0" Label="Arg4:" Exp="{Binding Arg4Expr}" />
+                                <local:ExprControl Margin="10,-4,0,0" Label="Arg5:" Exp="{Binding Arg5Expr}" />
+                                <local:ExprControl Margin="10,-4,0,0" Label="Arg6:" Exp="{Binding Arg6Expr}" />
                                 <local:ExprControl Margin="10,-4,0,0" Label="Result:" Exp="{Binding ResultExpr}" />
 
-                            </StackPanel>
+                            </WrapPanel>
                         </Grid>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
