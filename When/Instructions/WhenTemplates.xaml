@@ -612,36 +612,61 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblScript}" />
                     <TextBox
-                       Grid.Column="1"
-                       MinWidth="40"
-                       Margin="5,0,0,0"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Center"
-                       Text="{Binding Script}"
-                       TextAlignment="Left"
-                       ToolTip="{Binding ProcessedScriptAnnotated}"
-                        />
+                      Grid.Column="1"
+                      MinWidth="40"
+                      Margin="5,0,0,0"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      Text="{Binding Script}"
+                      TextAlignment="Left"
+                      ToolTip="{Binding ProcessedScriptAnnotated}"
+                       />
                     <Button
-                       Grid.Column="2"
-                       Width="20"
-                       Height="20"
-                       Margin="5,0,0,0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Command="{Binding OpenDialogCommand}"
-                       Style="{StaticResource BackgroundButton}">
+                      Grid.Column="2"
+                      Width="20"
+                      Height="20"
+                      Margin="5,0,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Command="{Binding OpenDialogCommand}"
+                      Style="{StaticResource BackgroundButton}">
                         <Path
-                           Margin="2,10,2,0"
-                           Data="{StaticResource DotsSVG}"
-                           Fill="{StaticResource ButtonForegroundBrush}"
-                           Stretch="Uniform"
-                           UseLayoutRounding="True" />
+                          Margin="2,10,2,0"
+                          Data="{StaticResource DotsSVG}"
+                          Fill="{StaticResource ButtonForegroundBrush}"
+                          Stretch="Uniform"
+                          UseLayoutRounding="True" />
                     </Button>
                 </Grid>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
-    
+
+    <DataTemplate DataType="{x:Type local:Log}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Text="Text to log: " />
+                    <TextBox
+                      Grid.Column="1"
+                      MinWidth="40"
+                      Margin="5,2,0,0"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      Text="{Binding Script}"
+                      TextAlignment="Left"
+                      ToolTip="{Binding ProcessedScriptAnnotated}"
+                       />
+                </Grid>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+ 
     <DataTemplate x:Key="WhenPlugin.When.CoolCamera_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
@@ -2560,6 +2585,21 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock 
+                       Text="Reason: " 
+                       VerticalAlignment="Center"
+                       Visibility="{Binding NotInFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                       Margin="0,-4,0,0"
+                        />
+                    <TextBox
+                       MinHeight="25"
+                       HorizontalAlignment="Left"
+                       Margin="5,2,0,0"
+                       Visibility="{Binding NotInFlight, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                       VerticalAlignment="Center"
+                       MinWidth="250"
+                       ToolTip="Enter text that will appear in the Breakpoint notification (not required)"
+                       Text="{Binding Reason}" />
                     <TextBlock
                         MinHeight="20"
                         HorizontalAlignment="Left"

@@ -67,12 +67,21 @@ namespace WhenPlugin.When {
             set {
                 inFlight = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged("NotInFlight");
             }
+        }
+
+        public bool NotInFlight {
+            get => !InFlight;
+            set { }
         }
 
         private CancellationTokenSource cts;
 
         public bool Notify { get; set; } = true;
+
+        [JsonProperty]
+        public string Reason { get; set; } = "";
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
@@ -81,7 +90,11 @@ namespace WhenPlugin.When {
 
             try {
                 if (Notify) {
-                    Notification.ShowWarning("Breakpoint hit!");
+                    if (Reason != null && Reason.Length > 0) {
+                        Notification.ShowWarning("Breakpoint: " + Reason);
+                    } else {
+                        Notification.ShowWarning("Breakpoint hit!");
+                    }
                 }
                 await NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, lcts.Token, progress, ""); ;
             } finally {

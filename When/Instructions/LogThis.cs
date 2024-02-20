@@ -25,7 +25,7 @@ using System.Windows.Input;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Log")]
+    [ExportMetadata("Name", "Log On Click")]
     [ExportMetadata("Description", "Add your own entry into NINA's log")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Misc)")]
