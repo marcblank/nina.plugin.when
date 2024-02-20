@@ -473,11 +473,11 @@ namespace WhenPlugin.When {
         public override string ToString() {
             string id = Symbol != null ? Symbol.Identifier : SequenceEntity.Name;
             if (Error != null) {
-                return $"Expr: '{Expression}' in {id}, References: {References.Count}, Error: {Error}";
+                return $"'{Expression}' in {id}, References: {References.Count}, Error: {Error}";
             } else if (Expression.Length == 0) {
-                return "Expr: None";
+                return "None";
             }
-            return $"Expr: Expression: {Expression} in {id}, References: {References.Count}, Value: {Value}";
+            return $"Expression: {Expression} in {id}, References: {References.Count}, Value: {Value}";
         }
     }
 }

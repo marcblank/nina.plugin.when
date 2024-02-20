@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("If, Predicate: " + IfExpr.Expression);
+            Logger.Info("Predicate: " + IfExpr.Expression);
             if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
@@ -65,24 +65,24 @@ namespace WhenPlugin.When {
                 await Symbol.UpdateSwitchWeatherData();
                 
                 if (IfExpr.ImageVolatile) {
-                    Logger.Info("If: ImageVolatile");
+                    Logger.Info("ImageVolatile");
                     while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                        Logger.Info("If: Waiting 250ms for processing...");
+                        Logger.Info("Waiting 250ms for processing...");
                         progress?.Report(new ApplicationStatus() { Status = "" });
                         await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
                     }
                     // Get latest values
-                    Logger.Info("If: ImageVolatile, new data");
+                    Logger.Info("ImageVolatile, new data");
                 }
 
                 IfExpr.Evaluate();
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    Logger.Info("If: Predicate is true, " + IfExpr);
+                    Logger.Info("Predicate is true, " + IfExpr);
                     Runner runner = new Runner(Instructions, progress, token);
                     await runner.RunConditional();
                 } else {
-                    Logger.Info("If: Predicate is false, " + IfExpr);
+                    Logger.Info("Predicate is false, " + IfExpr);
                     return;
                 }
             } catch (ArgumentException ex) {

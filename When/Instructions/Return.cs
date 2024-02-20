@@ -92,8 +92,8 @@ namespace WhenPlugin.When {
                         p.Status = NINA.Core.Enum.SequenceEntityStatus.FINISHED;
                     }
                     string resultName = c.ResultExpr.Expression;
-                    if (resultName == null) {
-                        throw new SequenceEntityFailedException("There must be a result Variable specified in order to use the Return instruction");
+                    if (resultName == null || resultName.Length == 0) {
+                        return Task.CompletedTask; // throw new SequenceEntityFailedException("There must be a result Variable specified in order to use the Return instruction");
                     }
                     Symbol sym = Symbol.FindSymbol(resultName, tc);
                     if (sym != null && sym is SetVariable sv) {

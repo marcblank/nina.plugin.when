@@ -68,7 +68,7 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("If: Execute, Predicate = " + IfExpr.Expression);
+            Logger.Info("Execute, Predicate: " + IfExpr.Expression);
             if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
@@ -77,10 +77,10 @@ namespace WhenPlugin.When {
             Runner runner;
             try {
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    Logger.Info("If: If Predicate is true; running Then");
+                    Logger.Info("Predicate is true; running Then");
                     runner = new Runner(Instructions, progress, token);
                 } else {
-                    Logger.Info("If: If Predicate is true; running Else");
+                    Logger.Info("Predicate is false; running Else");
                     runner = new Runner(ElseInstructions, progress, token);
                 }
                 await runner.RunConditional();
@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
             }
         }
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(IfConstant)}, Predicate: {Predicate}";
+            return $"Category: {Category}, Item: {nameof(IfThenElse)}, Expr: {IfExpr}";
         }
 
         public IList<string> Switches { get; set; } = null;

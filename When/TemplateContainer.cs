@@ -50,6 +50,13 @@ namespace WhenPlugin.When {
 
         private object lockObj = new object();
 
+        public override string ToString() {
+            if (PseudoParent != null) {
+                return "Template Container " + PseudoParent.ToString();
+            }
+            return "TemplateContainer?";
+        }
+
         public ICommand DropIntoTemplateCommand { get; set; }
 
         // TODO: Allow only ONE instruction to be added to Instructions

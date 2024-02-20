@@ -358,6 +358,7 @@ namespace WhenPlugin.When {
 
             ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
             clone.Name += (++CallID).ToString();
+            Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Clear(); }));
             Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Add(clone); }));
             foreach (ISequenceItem item in Instructions.Items) {
                 item.AttachNewParent(Instructions);
