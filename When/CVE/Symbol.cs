@@ -542,7 +542,7 @@ namespace WhenPlugin.When {
                 }
 
                 FocuserInfo fInfo = FocuserMediator.GetInfo();
-                if (fInfo != null) {
+                if (fInfo != null && fInfo.Connected) {
                     SwitchWeatherKeys.Add("FocuserPosition", fInfo.Position);
                     i.Add("Focuser: FocuserPosition (" + fInfo.Position + ")");
                 }
