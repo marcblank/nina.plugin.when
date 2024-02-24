@@ -492,7 +492,9 @@ namespace WhenPlugin.When {
                     if (coord.RADegrees == 0 && coord.Dec == 0) {
                         Coordinates x = telescopeMediator.GetInfo().Coordinates;
                         //Logger.Info("** SetCoords from Scope ** " + x);
-                        c.Coordinates = new InputCoordinates(x);
+                        if (x != null) {
+                            c.Coordinates = new InputCoordinates(x);
+                        }
                     }
                 }
             } else if (telescopeMediator.GetInfo() != null) {

@@ -651,8 +651,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Text="Text to log: " />
-                    <TextBox
+                     <TextBox
                       Grid.Column="1"
                       MinWidth="40"
                       Margin="5,2,0,0"
