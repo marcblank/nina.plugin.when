@@ -81,7 +81,6 @@ namespace WhenPlugin.When {
         private string iProcessedScript;
         public string ProcessedScript {
             get {
-                Symbol.UpdateSwitchWeatherData();
                 string value = Script;
                 RaisePropertyChanged();
                 if (value != null) {
@@ -108,11 +107,13 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError { get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Symbol.UpdateSwitchWeatherData();
             Logger.Warning("User log: " + ProcessedScript);
         }
 
         public bool Validate() {
             var i = new List<string>();
+            _ = ProcessedScript;
             if (ProcessedScriptError != null) {
                 i.Add(ProcessedScriptError);
             }

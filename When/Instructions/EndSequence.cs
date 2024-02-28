@@ -69,8 +69,12 @@ namespace WhenPlugin.When {
             var sequencer = s2vm.Sequencer;
             var startContainer = sequencer.MainContainer.Items[0] as ISequenceContainer;
             var targetContainer = sequencer.MainContainer.Items[1] as ISequenceContainer;
-            if (startContainer.Status == SequenceEntityStatus.RUNNING) {
-                await startContainer.Interrupt();
+             if (startContainer.Status == SequenceEntityStatus.RUNNING) {
+                try {
+                    await startContainer.Interrupt();
+                } catch (Exception ex) {
+
+                }
                 await Task.Delay(500);
                 foreach (var item in startContainer.Items) {
                     item.Status = SequenceEntityStatus.FINISHED;

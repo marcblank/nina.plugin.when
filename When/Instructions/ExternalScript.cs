@@ -92,7 +92,6 @@ namespace WhenPlugin.When {
         private string iProcessedScript;
         public string ProcessedScript {
             get {
-                Symbol.UpdateSwitchWeatherData();
                 string value = Script;
                 RaisePropertyChanged();
                 if (value != null) {
@@ -119,6 +118,7 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError {  get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Symbol.UpdateSwitchWeatherData();
             Logger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
