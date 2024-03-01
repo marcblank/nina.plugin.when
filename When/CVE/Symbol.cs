@@ -165,9 +165,11 @@ namespace WhenPlugin.When {
                     try {
                         cached.Add(Identifier, this);
                     } catch (ArgumentException ex) {
-                        IsDuplicate = true;
-                        Identifier = GenId(cached, Identifier);
-                        cached.Add(Identifier, this);
+                        if (sParent != WhenPluginObject.Globals) {
+                            IsDuplicate = true;
+                            Identifier = GenId(cached, Identifier);
+                            cached.Add(Identifier, this);
+                        }
                     }
                 } else {
                     SymbolDictionary newSymbols = new SymbolDictionary {
