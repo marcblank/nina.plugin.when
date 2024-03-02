@@ -128,6 +128,19 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
+
+            ISequenceContainer p = Parent;
+            ISequenceContainer lastP = p;
+            while (p != null) {
+                if (p is SequenceRootContainer root) {
+                    if (lastP != root.Items[1]) {
+                        i.Add("End Sequence must reside in the Target Area of the sequencer");
+                    }
+                }
+                lastP = p;
+                p = p.Parent;
+            }
+
             Issues = i;
             return i.Count == 0;
         }
