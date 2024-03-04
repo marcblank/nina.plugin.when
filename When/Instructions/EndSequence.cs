@@ -132,7 +132,7 @@ namespace WhenPlugin.When {
             ISequenceContainer p = Parent;
             ISequenceContainer lastP = p;
             while (p != null) {
-                if (p is SequenceRootContainer root) {
+                if (p is SequenceRootContainer root && root.Items.Count > 1) {
                     if (lastP != root.Items[1]) {
                         i.Add("End Sequence must reside in the Target Area of the sequencer");
                     }
