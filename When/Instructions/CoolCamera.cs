@@ -29,6 +29,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Astrometry;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
 
@@ -149,7 +150,9 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["Lbl_SequenceItem_Validation_CameraCannotSetTemperature"]);
             }
 
-            TempExpr.Default = (double)cameraSettings.Temperature;
+            if (cameraSettings.Temperature != null) {
+                TempExpr.Default = (double)cameraSettings.Temperature;
+            }
             
             // Always Validate our Expr's
             TempExpr.Validate();

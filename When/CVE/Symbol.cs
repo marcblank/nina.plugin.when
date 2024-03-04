@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Equipment.MyTelescope;
+using NINA.Astrometry.Interfaces;
 
 namespace WhenPlugin.When {
 
@@ -42,7 +43,7 @@ namespace WhenPlugin.When {
         public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
 
         public static Dictionary<Symbol, List<string>> Orphans = new Dictionary<Symbol, List<string>>();
-        
+
         [ImportingConstructor]
         public Symbol() {
             Name = Name;
@@ -56,7 +57,7 @@ namespace WhenPlugin.When {
                 Icon = copyMe.Icon;
                 Identifier = copyMe.Identifier;
                 Definition = copyMe.Definition;
-             }
+            }
         }
 
         static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
@@ -69,11 +70,11 @@ namespace WhenPlugin.When {
 
         public bool IsDuplicate { get; private set; } = false;
 
-        public static void Warn (string str) {
-            Logger.Warning (str);
+        public static void Warn(string str) {
+            Logger.Warning(str);
         }
 
-        private ISequenceContainer LastSParent {  get; set; }
+        private ISequenceContainer LastSParent { get; set; }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
@@ -89,11 +90,11 @@ namespace WhenPlugin.When {
 
         static public bool IsAttachedToRoot(ISequenceEntity item) {
             if (item.Parent == null) return false;
-            return IsAttachedToRoot (item.Parent);
+            return IsAttachedToRoot(item.Parent);
         }
 
         // Must prevent cycles
-        public static void SymbolDirty (Symbol sym) {
+        public static void SymbolDirty(Symbol sym) {
             List<Symbol> dirtyList = new List<Symbol>();
             iSymbolDirty(sym, dirtyList);
         }
@@ -116,7 +117,7 @@ namespace WhenPlugin.When {
         }
 
         private string GenId(SymbolDictionary dict, string id) {
-            for (int i = 0;; i++) {
+            for (int i = 0; ; i++) {
                 string newId = id + "_" + i.ToString();
                 if (!dict.ContainsKey(newId)) {
                     return newId;
@@ -145,11 +146,11 @@ namespace WhenPlugin.When {
                     if (SymbolCache.TryGetValue(LastSParent, out cached)) {
                         if (cached.Remove(Identifier)) {
                             SymbolDirty(this);
-                         } else {
+                        } else {
                             Warn("Deleting " + this + " but not in SParent's cache?");
                         }
                     } else {
-                       Warn("Deleting " + this + " but SParent has no cache?");
+                        Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
                 return;
@@ -210,11 +211,11 @@ namespace WhenPlugin.When {
                         SymbolDirty(this);
                     }
                 }
-                
+
                 _identifier = value;
 
                 if (value.Length == 0) return;
-                
+
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
@@ -237,7 +238,7 @@ namespace WhenPlugin.When {
         }
 
         private string _definition = "";
-        
+
         [JsonProperty]
         public string Definition {
             get => _definition;
@@ -272,8 +273,8 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
- 
-        public IList<string> Issues {  get; set; }
+
+        public IList<string> Issues { get; set; }
 
         public bool IsReference { get; set; } = false;
 
@@ -291,7 +292,7 @@ namespace WhenPlugin.When {
         public HashSet<Expr> Consumers = new HashSet<Expr>();
         public static WhenPlugin WhenPluginObject { get; set; }
 
-        public ISequenceContainer SParent () {
+        public ISequenceContainer SParent() {
             if (Parent == null) {
                 return null;
             } else if (Parent is CVContainer cvc) {
@@ -306,13 +307,13 @@ namespace WhenPlugin.When {
         }
 
 
-        public void AddConsumer (Expr expr) {
+        public void AddConsumer(Expr expr) {
             if (!Consumers.Contains(expr)) {
                 Consumers.Add(expr);
             }
         }
 
-        public void RemoveConsumer (Expr expr) {
+        public void RemoveConsumer(Expr expr) {
             if (!Consumers.Remove(expr)) {
                 Warn("RemoveConsumer: " + expr + " not found in " + this);
             }
@@ -347,7 +348,7 @@ namespace WhenPlugin.When {
                     return;
                 }
             }
- 
+
             Dictionary<string, Symbol> syms = exp.Resolved;
             int cnt = syms.Count;
             if (cnt == 0) {
@@ -372,7 +373,7 @@ namespace WhenPlugin.When {
                             sb.Append("/" + sym.Parent.Name);
                             if (sym.Parent.Parent is TemplateContainer tc) {
                                 sb.Append("/TBR");
-                                if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) { 
+                                if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) {
                                     sb.Append("-" + tbr.TemplateName);
                                 }
                             }
@@ -653,17 +654,17 @@ namespace WhenPlugin.When {
 
 
 
-    // DEBUGGING
+        // DEBUGGING
 
-    public static void ShowSymbols () {
+        public static void ShowSymbols() {
             foreach (var k in SymbolCache) {
                 ISequenceContainer c = k.Key;
                 SymbolDictionary syms = k.Value;
                 Debug.WriteLine("Container: " + c.Name);
                 foreach (var kv in syms) {
                     Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
-                    if (kv.Value.Consumers.Count> 0) {
-                        foreach(Expr e in kv.Value.Consumers) {
+                    if (kv.Value.Consumers.Count > 0) {
+                        foreach (Expr e in kv.Value.Consumers) {
                             Debug.WriteLine("        -> " + e);
                         }
                     }
