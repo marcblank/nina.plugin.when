@@ -167,7 +167,7 @@ namespace WhenPlugin.When {
             return ((ISequenceContainer)Instructions).Remove(item);
         }
 
-        public void ResetAll() {
+        public virtual void ResetAll() {
             ((ISequenceContainer)Instructions).ResetAll();
             Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
         }

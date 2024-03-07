@@ -123,6 +123,11 @@ namespace WhenPlugin.When {
             }
         }
 
+        public override void ResetAll() {
+            base.ResetAll();
+            ElseInstructions.ResetAll();
+        }
+
         public new bool Validate() {
 
             var i = new List<string>();
