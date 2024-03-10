@@ -361,7 +361,7 @@ namespace WhenPlugin.When {
                             else {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                             }
-                            FlipStatus = $"Sequence start due now through {TimeString(maximumTimeRemaining)}!";
+                            FlipStatus = $"Flip sequence start due now through {TimeString(maximumTimeRemaining)}!";
                             RaisePropertyChanged("FlipStatus");
                             Logger.Info(FlipStatus);
                             return true;
@@ -379,10 +379,10 @@ namespace WhenPlugin.When {
                                 telescopeInfo.SideOfPier == PierSide.pierWest ? "West" :
                                 "unknown";
                             if (minimumTimeRemaining == maximumTimeRemaining) {
-                                FlipStatus = $"Sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
+                                FlipStatus = $"Flip sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
                             }
                             else {
-                                FlipStatus = $"Sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
+                                FlipStatus = $"Flip sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
 
                             }
                             RaisePropertyChanged("FlipStatus");
@@ -428,10 +428,10 @@ namespace WhenPlugin.When {
                     }
                     else {
                         if (minimumTimeRemaining == maximumTimeRemaining) {
-                            FlipStatus = $"Sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
+                            FlipStatus = $"Flip sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
                         }
                         else {
-                            FlipStatus = $"Sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
+                            FlipStatus = $"Flip sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
 
                         }
                         RaisePropertyChanged("FlipStatus");
@@ -527,8 +527,8 @@ namespace WhenPlugin.When {
             }
             SetCoords(MFCenter);
 
+            Issues.Clear();
             if (!valid) {
-                Issues.Clear();
                 Issues.Add("Expand the trigger to see the problematic instructions.");
             }
             RaisePropertyChanged("Issues");

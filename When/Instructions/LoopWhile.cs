@@ -99,18 +99,24 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("LoopWhile, PredicateExpr is null or empty");
             }
 
-            if (PredicateExpr.Error != null && PredicateExpr.Symbol != null && PredicateExpr.Symbol is SetVariable) {
-                // Avoid timing error with newly defined Variable
-                PredicateExpr.Validate();
-            }
-            
+            PredicateExpr.Evaluate();
+           
             if (PredicateExpr.Error != null) {
                 Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
                 throw new SequenceEntityFailedException(PredicateExpr.Error);
             } else {
-                return (PredicateExpr.Value != 0);
+                foreach(var kvp in PredicateExpr.Parameters) {
+                    Logger.Debug(kvp.Key + ": " + kvp.Value);
+                }
+                if (!string.Equals(PredicateExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
+                    Logger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
+                    return true;
+                } else {
+                    Logger.Info("LoopWhile, Predicate is false, " + PredicateExpr);
+                    return false;
+                }
             }
-         }
+        }
 
         public override void AfterParentChanged() {
             if (Parent == null) {
