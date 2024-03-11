@@ -590,7 +590,11 @@ namespace WhenPlugin.When {
                 if (filterWheelInfo.Connected) {
                     var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     foreach (FilterInfo filterInfo in f) {
-                        SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                        try {
+                            SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
+                        } catch (Exception ex) {
+                            Logger.Warning("Exception trying to add '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
+                        }
                     }
 
                     if (filterWheelInfo.SelectedFilter != null) {

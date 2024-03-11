@@ -56,6 +56,7 @@ namespace WhenPlugin.When {
                 Instructions.Icon = cloneMe.Icon;
                 Predicate = cloneMe.Predicate;
                 OnceOnly = cloneMe.OnceOnly;
+                Interrupt = cloneMe.Interrupt;
             }
         }
 
