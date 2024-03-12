@@ -345,6 +345,15 @@
         </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprControl Label="Angle:" Exp="{Binding RExpr}" />
+                 </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
 
     <DataTemplate x:Key="local:DitherAfterExposures_Mini">
         <mini:MiniTrigger>
