@@ -323,6 +323,19 @@ namespace WhenPlugin.When {
             //Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
+            if (Volatile) {
+                IList<string> volatiles = new List<string>();
+                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                    if (kvp.Value == null) {
+                        volatiles.Add(kvp.Key);
+                    }
+                }
+                foreach (string key in volatiles) {
+                    Resolved.Remove(key);
+                    Parameters.Remove(key);
+                }
+            }
+
             Volatile = false;
             ImageVolatile = false;
 

@@ -99,6 +99,10 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("LoopWhile, PredicateExpr is null or empty");
             }
 
+            if (!Symbol.SwitchWeatherConnectionStatusCurrent()) {
+                Symbol.UpdateSwitchWeatherData();
+            }
+
             PredicateExpr.Evaluate();
            
             if (PredicateExpr.Error != null) {

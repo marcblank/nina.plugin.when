@@ -345,6 +345,17 @@
         </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type local:SlewToRADec}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprControl Label="RA (decimal degrees):" Exp="{Binding RAExpr}" />
+                    <local:ExprControl Margin="8,0,0,0" Label="Dec (decimal degrees):" Exp="{Binding DecExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>

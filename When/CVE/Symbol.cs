@@ -484,6 +484,32 @@ namespace WhenPlugin.When {
 
         public static int LastExitCode { get; set; } = 0;
 
+        private static bool TelescopeConnected = false;
+        private static bool DomeConnected = false;
+        private static bool SafetyConnected = false;
+        private static bool FocuserConnected = false;
+        private static bool CameraConnected = false;
+        private static bool FlatConnected = false;
+        private static bool FilterWheelConnected = false;
+        private static bool RotatorConnected = false;
+        private static bool SwitchConnected = false;
+        private static bool WeatherConnected = false;
+
+        public static bool SwitchWeatherConnectionStatusCurrent() {
+            long milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            if (TelescopeConnected != TelescopeMediator.GetInfo().Connected) { return false; }
+            if (DomeConnected != DomeMediator.GetInfo().Connected) { return false; }
+            if (SafetyConnected != SafetyMonitorMediator.GetInfo().Connected) { return false; }
+            if (FocuserConnected != FocuserMediator.GetInfo().Connected) { return false; }
+            if (CameraConnected != CameraMediator.GetInfo().Connected) { return false; }
+            if (FlatConnected != FlatMediator.GetInfo().Connected) { return false; }
+            if (FilterWheelConnected != FilterWheelMediator.GetInfo().Connected) { return false; }
+            if (RotatorConnected != RotatorMediator.GetInfo().Connected) { return false; }
+            if (SwitchConnected != SwitchMediator.GetInfo().Connected) { return false; }
+            if (WeatherConnected != WeatherDataMediator.GetInfo().Connected) { return false; }
+            return true;
+        }
+
         public static Task UpdateSwitchWeatherData() {
 
             //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
@@ -510,7 +536,8 @@ namespace WhenPlugin.When {
                 i.Add("EXITCODE: " + LastExitCode);
 
                 TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
-                if (telescopeInfo.Connected) {
+                TelescopeConnected = telescopeInfo.Connected;
+                if (TelescopeConnected) {
                     SwitchWeatherKeys.Add("Altitude", telescopeInfo.Altitude);
                     i.Add("Telescope: Altitude (" + Math.Round(telescopeInfo.Altitude, 2) + ")");
                     SwitchWeatherKeys.Add("Azimuth", telescopeInfo.Azimuth);
@@ -518,7 +545,8 @@ namespace WhenPlugin.When {
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
-                if (safetyInfo.Connected) {
+                SafetyConnected = safetyInfo.Connected;
+                if (SafetyConnected) {
                     SwitchWeatherKeys.Add("IsSafe", safetyInfo.IsSafe);
                     i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
                 }
@@ -545,20 +573,23 @@ namespace WhenPlugin.When {
                 }
 
                 FocuserInfo fInfo = FocuserMediator.GetInfo();
-                if (fInfo != null && fInfo.Connected) {
+                FocuserConnected = fInfo.Connected;
+                if (fInfo != null && FocuserConnected) {
                     SwitchWeatherKeys.Add("FocuserPosition", fInfo.Position);
                     i.Add("Focuser: FocuserPosition (" + fInfo.Position + ")");
                 }
 
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();
-                if (cameraInfo.Connected) {
+                CameraConnected = cameraInfo.Connected;
+                if (CameraConnected) {
                     SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
                     i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
                 }
 
                 DomeInfo domeInfo = DomeMediator.GetInfo();
-                if (domeInfo.Connected) {
+                DomeConnected = domeInfo.Connected;
+                if (DomeConnected) {
                     SwitchWeatherKeys.Add("ShutterStatus", (int)domeInfo.ShutterStatus);
                     i.Add("Dome: ShutterStatus (" + domeInfo.ShutterStatus + ")");
                     SwitchWeatherKeys.Add("ShutterNone", -1);
@@ -570,7 +601,8 @@ namespace WhenPlugin.When {
                 }
 
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
-                if (flatInfo.Connected) {
+                FlatConnected = flatInfo.Connected;
+                if (FlatConnected) {
                     SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
                     i.Add("Flat Panel: CoverState (Cover" + flatInfo.CoverState + ")");
                     SwitchWeatherKeys.Add("CoverUnknown", 0);
@@ -581,13 +613,15 @@ namespace WhenPlugin.When {
                 }
 
                 RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
-                if (rotatorInfo.Connected) {
+                RotatorConnected = rotatorInfo.Connected;
+                if (RotatorConnected) {
                     SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
                     i.Add("Rotator: RotatorMechanicalPosition (" + rotatorInfo.MechanicalPosition + ")");
                 }
 
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
-                if (filterWheelInfo.Connected) {
+                FilterWheelConnected = filterWheelInfo.Connected;
+                if (FilterWheelConnected) {
                     var f = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                     foreach (FilterInfo filterInfo in f) {
                         try {
@@ -605,7 +639,8 @@ namespace WhenPlugin.When {
 
                 // Get switch values
                 SwitchInfo switchInfo = SwitchMediator.GetInfo();
-                if (switchInfo.Connected) {
+                SwitchConnected = switchInfo.Connected;
+                if (SwitchConnected) {
                     foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
                         string key = RemoveSpecialCharacters(sw.Name);
                         SwitchWeatherKeys.TryAdd(key, sw.Value);
@@ -620,7 +655,8 @@ namespace WhenPlugin.When {
 
                 // Get weather values
                 WeatherDataInfo weatherInfo = WeatherDataMediator.GetInfo();
-                if (weatherInfo.Connected) {
+                WeatherConnected = weatherInfo.Connected;
+                if (WeatherConnected) {
                     foreach (string dataName in WeatherData) {
                         double t = weatherInfo.TryGetPropertyValue(dataName, Double.NaN);
                         if (!Double.IsNaN(t)) {
