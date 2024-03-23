@@ -43,6 +43,9 @@ namespace WhenPlugin.When {
                 string completeMsg = string.Format(NINA.Core.Locale.Loc.Instance["LblSequenceCommandAtCompletion"], executableLocation);
                 Logger.Info($"Running - {executableLocation}");
 
+                // set environment variable to string equiv of int MinValue before calling the batch script
+                SetEnvironmentVariableValue("NINAESRC", int.MinValue.ToString(), EnvironmentVariableTarget.User);
+
                 Process process = new Process();
                 process.StartInfo.FileName = executableLocation;
                 process.StartInfo.UseShellExecute = false;
@@ -77,11 +80,24 @@ namespace WhenPlugin.When {
                     await Task.Delay(5000);
                     StatusUpdate(src, "");
                 });
-                return process.ExitCode;
+
+
+                int ninaesrc = GetEnvironmentVariableValue("NINAESRC", EnvironmentVariableTarget.User);
+
+                // if int MinValue returned, user did not set NINAESRC so the return the std exitcode
+                if (ninaesrc == int.MinValue) {
+                    return process.ExitCode; ;
+                }
+
+                // return the user set value of NINAESRC environment variable
+                return ninaesrc;
+
+
             } catch (Exception e) {
                 Logger.Error($"Error running command {sequenceCompleteCommand}: {e.Message}", e);
             }
             return int.MinValue;
+
         }
 
         private void StatusUpdate(string src, string data) {
@@ -124,5 +140,24 @@ namespace WhenPlugin.When {
             }
             return (new string(parmChars)).Split('\n');
         }
+
+        private static int GetEnvironmentVariableValue(string variableName, EnvironmentVariableTarget target) {
+            // Retrieve the value of the environment variable
+            string value = Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
+            Logger.Debug($"ES+ environment variable NINAESRC value '{value}'");
+            // Check if the environment variable is not string equiv of int MinValue then return its int value
+            if (value != int.MinValue.ToString()) {
+                return Int32.Parse(value);
+            } else {
+                // otherwise return min value
+                return int.MinValue;
+            }
+        }
+
+        private static void SetEnvironmentVariableValue(string variableName, string variableValue, EnvironmentVariableTarget target) {
+            // Set the value of the environment variable
+            Environment.SetEnvironmentVariable(variableName, variableValue, target);
+        }
+
     }
 }

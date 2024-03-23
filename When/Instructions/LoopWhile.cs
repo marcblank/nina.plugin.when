@@ -109,8 +109,12 @@ namespace WhenPlugin.When {
                 Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
                 throw new SequenceEntityFailedException(PredicateExpr.Error);
             } else {
-                foreach(var kvp in PredicateExpr.Parameters) {
-                    Logger.Debug(kvp.Key + ": " + kvp.Value);
+                try {
+                    foreach (var kvp in PredicateExpr.Parameters) {
+                        Logger.Debug(kvp.Key + ": " + kvp.Value);
+                    }
+                } catch (Exception) {
+                    // These could be modified by another thread
                 }
                 if (!string.Equals(PredicateExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
                     Logger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
