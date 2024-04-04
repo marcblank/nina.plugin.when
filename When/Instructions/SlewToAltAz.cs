@@ -29,86 +29,88 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Slew to RA/Dec +")]
-    [ExportMetadata("Description", "Lbl_SequenceItem_Telescope_SlewScopeToRaDec_Description")]
-    [ExportMetadata("Icon", "SlewToRaDecSVG")]
+    [ExportMetadata("Name", "Slew to Alt/Az +")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description")]
+    [ExportMetadata("Icon", "SlewToAltAzSVG")]
     [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SlewToRADec : SequenceItem, IValidatable {
+    public class SlewToAltAz : SequenceItem, IValidatable {
 
         [ImportingConstructor]
-        public SlewToRADec(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator) {
+        public SlewToAltAz(ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IProfileService profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
-            Coordinates = new InputCoordinates();
-            RAExpr = new Expr(this);
-            DecExpr = new Expr(this);
+            this.profileService = profileService;
+            Coordinates = new InputTopocentricCoordinates(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude));
+            AltExpr = new Expr(this);
+            AzExpr = new Expr(this);
         }
 
-        private SlewToRADec(SlewToRADec cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator) {
+        private SlewToAltAz(SlewToAltAz cloneMe) : this(cloneMe.telescopeMediator, cloneMe.guiderMediator, cloneMe.profileService) {
             CopyMetaData(cloneMe);
         }
 
         public override object Clone() {
-            SlewToRADec clone = new SlewToRADec(this) {
-                Coordinates = Coordinates?.Clone()
+            SlewToAltAz clone = new SlewToAltAz(this) {
+                Coordinates = new InputTopocentricCoordinates(Coordinates.Coordinates.Copy())
             };
-            clone.RAExpr = new Expr(clone, this.RAExpr.Expression);
-            clone.RAExpr.Setter = RASetter;
-            clone.DecExpr = new Expr(clone, this.DecExpr.Expression);
-            clone.DecExpr.Setter = DecSetter;
+            clone.AltExpr = new Expr(clone, this.AltExpr.Expression);
+            clone.AltExpr.Setter = AltSetter;
+            clone.AzExpr = new Expr(clone, this.AzExpr.Expression);
+            clone.AzExpr.Setter = AzSetter;
             return clone;
         }
 
+        private IProfileService profileService;
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
 
-
-        public void RASetter(Expr expr) {
+        public void AzSetter (Expr expr) {
             expr.Error = null;
-            if (expr.Value < 0 || expr.Value > 24) {
-                expr.Error = "RA must be between 0 and 24 hours";
+            if (expr.Value < 0 ||  expr.Value > 360) {
+                expr.Error = "Azimuth must be between 0° and 360°";
             }
         }
 
-        public void DecSetter(Expr expr) {
+        public void AltSetter (Expr expr) {
             expr.Error = null;
-            if (expr.Value < -90 || expr.Value > 90) {
-                expr.Error = "Dec must be between -90°and 90°";
+            if (expr.Value > 90 || expr.Value < 0) {
+                expr.Error = "Altitude must be between 0° and 90°";
             }
         }
-
 
         // 0 to 24
-        private Expr _RAExpr = null;
+        private Expr _AltExpr = null;
 
         [JsonProperty]
-        public Expr RAExpr {
-            get => _RAExpr;
+        public Expr AltExpr {
+            get => _AltExpr;
             set {
-                _RAExpr = value;
+                _AltExpr = value;
                 RaisePropertyChanged();
             }
         }
         
         // -90 to 90
-        private Expr _DecExpr = null;
+        private Expr _AzExpr = null;
 
         [JsonProperty]
-        public Expr DecExpr {
-            get => _DecExpr;
+        public Expr AzExpr {
+            get => _AzExpr;
             set {
-                _DecExpr = value;
+                _AzExpr = value;
                 RaisePropertyChanged();
             }
         }
 
         [JsonProperty]
-        public InputCoordinates Coordinates { get; set; }
+        public InputTopocentricCoordinates Coordinates { get; set; }
 
         private IList<string> issues = new List<string>();
 
@@ -125,10 +127,9 @@ namespace WhenPlugin.When {
                 Notification.ShowError(Loc.Instance["LblTelescopeParkedWarning"]);
                 throw new SequenceEntityFailedException(Loc.Instance["LblTelescopeParkedWarning"]);
             }
-
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            Coordinates.Coordinates.RA = RAExpr.Value;
-            Coordinates.Coordinates.Dec = DecExpr.Value;
+            Coordinates.Coordinates.Altitude = Angle.ByDegree(AltExpr.Value);
+            Coordinates.Coordinates.Azimuth = Angle.ByDegree(AzExpr.Value);
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
@@ -145,15 +146,15 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
 
-            RAExpr.Validate();
-            DecExpr.Validate();
+            AltExpr.Validate();
+            AzExpr.Validate();
 
             Issues = i;
             return i.Count == 0;
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SlewToAltAz)}, Coordinates: {Coordinates}";
+            return $"Category: {Category}, Item: {nameof(SlewToRADec)}, Coordinates: {Coordinates}";
         }
     }
 }

@@ -153,7 +153,7 @@ namespace WhenPlugin.When {
                         Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
-                LastSParent = sParent;
+                //LastSParent = sParent;
                 return;
             }
             LastSParent = sParent;
@@ -542,7 +542,7 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("Altitude", telescopeInfo.Altitude);
                     i.Add("Telescope: Altitude (" + Math.Round(telescopeInfo.Altitude, 2) + ")");
                     SwitchWeatherKeys.Add("Azimuth", telescopeInfo.Azimuth);
-                    i.Add("Telescope: Azimuth (" + telescopeInfo.Azimuth + ")");
+                    i.Add("Telescope: Azimuth (" + Math.Round(telescopeInfo.Azimuth, 2) + ")");
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
