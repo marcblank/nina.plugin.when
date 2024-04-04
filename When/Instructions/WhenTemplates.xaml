@@ -349,8 +349,19 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <local:ExprControl Label="RA (decimal degrees):" Exp="{Binding RAExpr}" />
+                    <local:ExprControl Label="RA (decimal hours):" Exp="{Binding RAExpr}" />
                     <local:ExprControl Margin="8,0,0,0" Label="Dec (decimal degrees):" Exp="{Binding DecExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:SlewToAltAz}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprControl Label="Altitude (decimal degrees):" Exp="{Binding AltExpr}" />
+                    <local:ExprControl Margin="8,0,0,0" Label="Azimuth (decimal degrees):" Exp="{Binding AzExpr}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
