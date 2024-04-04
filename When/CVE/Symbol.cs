@@ -153,7 +153,7 @@ namespace WhenPlugin.When {
                         Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
-                LastSParent = sParent;
+                //LastSParent = sParent;
                 return;
             }
             LastSParent = sParent;
