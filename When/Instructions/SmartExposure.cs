@@ -44,6 +44,8 @@ using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
+using NINA.Equipment.Equipment.MyCamera;
+using CsvHelper.Configuration.Attributes;
 
 namespace WhenPlugin.When {
 
@@ -60,6 +62,7 @@ namespace WhenPlugin.When {
         private static IFilterWheelMediator FilterWheelMediator;
         private static IImageHistoryVM ImageHistoryVM;
         private static IGuiderMediator GuiderMediator;
+        private static ICameraMediator CameraMediator;
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -87,6 +90,7 @@ namespace WhenPlugin.When {
             FilterWheelMediator = filterWheelMediator;
             ImageHistoryVM = imageHistoryVM;
             GuiderMediator = guiderMediator;
+            CameraMediator = cameraMediator;
             IterExpr = new Expr(this, "", "Integer");
             DExpr = new Expr(this, "", "Integer");
             FExpr = new Expr(this, "", "Integer");
@@ -133,6 +137,14 @@ namespace WhenPlugin.When {
         public Expr DExpr { get; set; }
         [JsonProperty]
         public Expr FExpr {  get; set; }
+
+        public bool CanSubSample {
+            get {
+                CameraInfo ci = CameraMediator.GetInfo();
+                return ci.Connected && ci.CanSubSample;
+            }
+            set { }
+        }
 
 
         [JsonProperty]

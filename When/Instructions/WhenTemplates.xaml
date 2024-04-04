@@ -2973,7 +2973,13 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                     <local:ExprHintControl Margin="0,-8,0,0" Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                    <local:ExprHintControl Margin="0,-8,0,0" Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                    <local:ExprHintControl
+                        Margin="0,-8,0,0"
+                        Label="| ROI"
+                        Exp="{Binding DExpr}"
+                        Visibility="{Binding CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                        />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
