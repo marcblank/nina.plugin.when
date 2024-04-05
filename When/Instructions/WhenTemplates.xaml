@@ -2988,7 +2988,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                     <local:ExprHintControl
                         Margin="0,-8,0,0"
                         Label="| ROI"
-                        Exp="{Binding DExpr}"
+                        Exp="{Binding RExpr}"
                         Visibility="{Binding CanSubSample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                         />
                 </WrapPanel>

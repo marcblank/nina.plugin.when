@@ -78,7 +78,8 @@ namespace WhenPlugin.When {
             OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer", ValidateOffset);
             EExpr = new Expr(this, cloneMe.EExpr.Expression);
             EExpr.Default = 0;
-            RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", ValidateROI, 100);
+            RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer");
+            RExpr.Default = 100;
         }
 
         public override object Clone() {
@@ -116,19 +117,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private double roi;
-
-        [JsonProperty]
-        public double ROI {
-            get => roi;
-            set {
-                if (value <= 0) { value = 1; }
-                if (value > 1) { value = 1; }
-                roi = value;
-                RaisePropertyChanged();
-            }
-        }
-
         [JsonProperty]
         public string ExposureTimeExpr {
             get => null;
@@ -151,12 +139,6 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 OExpr.Expression = value;
-            }
-        }
-
-        public void ValidateROI (Expr expr) {
-            if (expr.Error == null && expr.Value > 100 || expr.Value < 1) {
-                expr.Error = "ROI must be between 1 and 100";
             }
         }
 
@@ -254,7 +236,7 @@ namespace WhenPlugin.When {
                 rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
             }
             if (!info.CanSubSample && RExpr.Value < 100) {
-                Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
+                Logger.Warning($"ROI {RExpr.Value} was specified, but the camera is not able to take sub frames");
             }
 
             var capture = new CaptureSequence() {

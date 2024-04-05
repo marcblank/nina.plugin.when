@@ -94,6 +94,7 @@ namespace WhenPlugin.When {
             IterExpr = new Expr(this, "", "Integer");
             DExpr = new Expr(this, "", "Integer");
             FExpr = new Expr(this, "", "Integer");
+            RExpr = new Expr(this, "", "Integer");
 
         }
 
@@ -120,6 +121,7 @@ namespace WhenPlugin.When {
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount, 0);
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", ValidateROI, 100);
                 FilterExpr = cloneMe.FilterExpr;
             }
         }
@@ -136,7 +138,9 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public Expr DExpr { get; set; }
         [JsonProperty]
-        public Expr FExpr {  get; set; }
+        public Expr FExpr { get; set; }
+        [JsonProperty]
+        public Expr RExpr { get; set; }
 
         public bool CanSubSample {
             get {
@@ -145,6 +149,15 @@ namespace WhenPlugin.When {
             }
             set { }
         }
+
+        public void ValidateROI(Expr expr) {
+            if (expr.Error == null && expr.Value > 100 || expr.Value < 1) {
+                expr.Error = "ROI must be between 1 and 100";
+            } else if (GetTakeExposure() != null) {
+                GetTakeExposure().RExpr.Expression = expr.Value.ToString();
+            }
+        }
+
 
 
         [JsonProperty]
@@ -190,7 +203,7 @@ namespace WhenPlugin.When {
         }
 
         public TakeExposure GetTakeExposure() {
-            return Items[1] as TakeExposure;
+            return Items.Count < 2 ? null : Items[1] as TakeExposure;
         }
 
         public DitherAfterExposures GetDitherAfterExposures() {
@@ -363,6 +376,7 @@ namespace WhenPlugin.When {
                 IterExpr.Validate();
                 DExpr.Validate();
                 FExpr.Validate();
+                RExpr.Validate();
 
                 Issues = i;
                 RaisePropertyChanged("Issues");
