@@ -69,15 +69,13 @@ namespace WhenPlugin.When {
 
 
         public void RASetter(Expr expr) {
-            expr.Error = null;
-            if (expr.Value < 0 || expr.Value > 24) {
+            if (expr.Error == null && expr.Value < 0 || expr.Value > 24) {
                 expr.Error = "RA must be between 0 and 24 hours";
             }
         }
 
         public void DecSetter(Expr expr) {
-            expr.Error = null;
-            if (expr.Value < -90 || expr.Value > 90) {
+            if (expr.Error == null && expr.Value < -90 || expr.Value > 90) {
                 expr.Error = "Dec must be between -90°and 90°";
             }
         }

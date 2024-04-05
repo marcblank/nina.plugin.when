@@ -129,7 +129,11 @@ namespace WhenPlugin.When {
             base.AfterParentChanged();
             ISequenceContainer sParent = SParent();
             if (sParent == LastSParent) {
-                return;
+                // Check if we've already got the symbol cached
+                SymbolDictionary cached;
+                if (sParent != null && SymbolCache.TryGetValue(sParent, out cached) && cached.ContainsKey(Identifier)) {
+                    return;
+                }
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
             if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {

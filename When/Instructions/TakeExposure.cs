@@ -38,6 +38,7 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Diagnostics;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace WhenPlugin.When {
 
@@ -67,6 +68,7 @@ namespace WhenPlugin.When {
             EExpr = new Expr(this);
             GExpr = new Expr(this, "", "Integer");
             OExpr = new Expr(this, "", "Integer");
+            RExpr = new Expr(this, "", "Integer");
 
         }
 
@@ -76,6 +78,7 @@ namespace WhenPlugin.When {
             OExpr = new Expr(this, cloneMe.OExpr.Expression, "Integer", ValidateOffset);
             EExpr = new Expr(this, cloneMe.EExpr.Expression);
             EExpr.Default = 0;
+            RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", ValidateROI, 100);
         }
 
         public override object Clone() {
@@ -98,6 +101,8 @@ namespace WhenPlugin.When {
         public Expr GExpr { get; set; }
         [JsonProperty]
         public Expr OExpr { get; set; }
+        [JsonProperty]
+        public Expr RExpr { get; set; }
 
 
 
@@ -111,6 +116,18 @@ namespace WhenPlugin.When {
             }
         }
 
+        private double roi;
+
+        [JsonProperty]
+        public double ROI {
+            get => roi;
+            set {
+                if (value <= 0) { value = 1; }
+                if (value > 1) { value = 1; }
+                roi = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [JsonProperty]
         public string ExposureTimeExpr {
@@ -134,6 +151,12 @@ namespace WhenPlugin.When {
             get => null;
             set {
                 OExpr.Expression = value;
+            }
+        }
+
+        public void ValidateROI (Expr expr) {
+            if (expr.Error == null && expr.Value > 100 || expr.Value < 1) {
+                expr.Error = "ROI must be between 1 and 100";
             }
         }
 
@@ -218,15 +241,34 @@ namespace WhenPlugin.When {
            if (specificDSOContainer != null) {                
                count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
            }
-           var capture = new CaptureSequence() {
-                ExposureTime = EExpr.Value,
+
+            var info = cameraMediator.GetInfo();
+            ObservableRectangle rect = null;
+            if (info.CanSubSample && RExpr.Value < 100) {
+                var centerX = info.XSize / 2d;
+                var centerY = info.YSize / 2d;
+                var subWidth = info.XSize * RExpr.Value / 100;
+                var subHeight = info.YSize * RExpr.Value / 100;
+                var startX = centerX - subWidth / 2d;
+                var startY = centerY - subHeight / 2d;
+                rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
+            }
+            if (!info.CanSubSample && RExpr.Value < 100) {
+                Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
+            }
+
+            var capture = new CaptureSequence() {
+                ExposureTime = ExposureTime,
                 Binning = Binning,
-                Gain = (int)GExpr.Value,
-                Offset = (int)OExpr.Value,
+                Gain = Gain,
+                Offset = Offset,
                 ImageType = ImageType,
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
+                EnableSubSample = rect != null,
+                SubSambleRectangle = rect
             };
+
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
