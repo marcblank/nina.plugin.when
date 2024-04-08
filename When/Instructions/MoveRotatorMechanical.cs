@@ -46,7 +46,8 @@ namespace WhenPlugin.When {
 
         private MoveRotatorMechanical(MoveRotatorMechanical cloneMe) : this(cloneMe.rotatorMediator) {
             CopyMetaData(cloneMe);
-            RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", ValidateAngle);
+            RExpr = new Expr(this, cloneMe.RExpr.Expression);
+            RExpr.Setter = ValidateAngle;
             RExpr.Default = 0;
         }
 
