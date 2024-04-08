@@ -67,7 +67,6 @@ namespace WhenPlugin.When {
 
         private IRotatorMediator rotatorMediator;
 
-        [JsonProperty]
         public float MechanicalPosition {
             get => 0;
             set {
