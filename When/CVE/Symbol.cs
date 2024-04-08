@@ -603,7 +603,9 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("ShutterOpening", 2);
                     SwitchWeatherKeys.Add("ShutterClosing", 3);
                     SwitchWeatherKeys.Add("ShutterError", 4);
-                }
+                    SwitchWeatherKeys.Add("DomeAzimuth", domeInfo.Azimuth);
+                    i.Add("Dome: DomeAzimuth (" + Math.Round(domeInfo.Azimuth, 2) + ")");
+              }
 
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
                 FlatConnected = flatInfo.Connected;
