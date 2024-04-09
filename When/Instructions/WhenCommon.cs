@@ -297,10 +297,17 @@ namespace WhenPlugin.When {
                 return; 
             }
             try {
-                Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
-                InFlight = true;
-                Triggered = false;
-                await TriggerRunner.Run(progress, token);
+                while (true) {
+                    Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
+                    InFlight = true;
+                    Triggered = false;
+                    await TriggerRunner.Run(progress, token);
+                    if (!(this is WhenUnsafe && !Check())) {
+                        break;
+                    } else {
+                        Logger.Info("Unsafe leaving When Unsafe; re-running WBU");
+                    }
+                }
             } finally {
                 InFlight = false;
                 Triggered = false;

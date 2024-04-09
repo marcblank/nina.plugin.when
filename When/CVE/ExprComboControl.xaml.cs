@@ -22,7 +22,7 @@ namespace WhenPlugin.When {
         public IList<string> Combo { get; set; }
 
         public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols();
+            Symbol.ShowSymbols(e);
         }
 
     }

@@ -394,6 +394,57 @@ namespace WhenPlugin.When {
 
             tb.ToolTip = sb.ToString();
         }
+        public static string ShowSymbols(Expr exp) {
+            Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+
+            if (exp == null) {
+                return "??";
+            }
+
+            Dictionary<string, Symbol> syms = exp.Resolved;
+            int cnt = syms.Count;
+            if (cnt == 0) {
+                if (exp.References.Count == 1) {
+                    return "The symbol is not yet defined\r\n";
+                } else {
+                    return "No defined symbols used in this expression\r\n";
+                }
+            }
+            StringBuilder sb = new StringBuilder(cnt == 1 ? "Symbol: " : "Symbols: ");
+
+            foreach (var kvp in syms) {
+                Symbol sym = kvp.Value as Symbol;
+                sb.Append(kvp.Key.ToString());
+                if (sym != null) {
+                    sb.Append(" (in ");
+                    sb.Append(sym.SParent().Name);
+                    ISequenceContainer sParent = sym.SParent();
+                    if (sParent != sym.Parent) {
+                        if (sym.Parent is CVContainer) {
+                            sb.Append("/" + sym.Parent.Name);
+                            if (sym.Parent.Parent is TemplateContainer tc) {
+                                sb.Append("/TBR");
+                                if (tc.PseudoParent != null && tc.PseudoParent is TemplateByReference tbr) {
+                                    sb.Append("-" + tbr.TemplateName);
+                                }
+                            }
+                        } else {
+                            sb.Append(" - WTF");
+                        }
+                    }
+                    sb.Append(") = ");
+                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
+                } else {
+                    // We're a data value
+                    sb.Append(" (Data) = ");
+                    sb.Append(DataSymbols.GetValueOrDefault(kvp.Key, "??"));
+                }
+                if (--cnt > 0) sb.Append("; ");
+            }
+
+            sb.Append("\r\n");
+            return sb.ToString();
+        }
 
 
         public abstract bool Validate();
@@ -692,26 +743,6 @@ namespace WhenPlugin.When {
 
                 Switches = i;
                 return Task.CompletedTask;
-            }
-        }
-
-
-
-        // DEBUGGING
-
-        public static void ShowSymbols() {
-            foreach (var k in SymbolCache) {
-                ISequenceContainer c = k.Key;
-                SymbolDictionary syms = k.Value;
-                Debug.WriteLine("Container: " + c.Name);
-                foreach (var kv in syms) {
-                    Debug.WriteLine("   " + kv.Key + " / " + kv.Value);
-                    if (kv.Value.Consumers.Count > 0) {
-                        foreach (Expr e in kv.Value.Consumers) {
-                            Debug.WriteLine("        -> " + e);
-                        }
-                    }
-                }
             }
         }
 

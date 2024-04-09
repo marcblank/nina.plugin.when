@@ -159,7 +159,15 @@ namespace WhenPlugin.When {
 
         public Action<Expr> Setter { get; set; }
 
+        public IList<string> Switches {
+            get => Symbol.GetSwitches();
+            set { }
+        }
 
+        public string Constants {
+            get => Symbol.ShowSymbols(this);
+            set { }
+        }
 
         
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
