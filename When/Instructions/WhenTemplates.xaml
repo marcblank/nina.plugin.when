@@ -853,32 +853,6 @@
                                     Text="{Binding Predicate}"
                                     VerticalAlignment="Center"
                                     TextAlignment="Left" />
-                            <Grid Grid.Column="1" Visibility="Visible">
-                                <Border
-                                Width="20"
-                                Height="20"
-                                Margin="5,2,5,0"
-                                Background="{StaticResource NotificationErrorBrush}"
-                                BorderBrush="Transparent"
-                                CornerRadius="10">
-                                    <Border.Visibility>
-                                        <PriorityBinding>
-                                            <Binding
-                                            Converter="{StaticResource ZeroToVisibilityConverter}"
-                                            FallbackValue="Collapsed"
-                                            Path="Switches.Count" />
-                                        </PriorityBinding>
-                                    </Border.Visibility>
-                                    <Path
-                                    HorizontalAlignment="Right"
-                                    Data="{StaticResource AboutSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                                    <Border.ToolTip>
-                                        <ItemsControl ItemsSource="{Binding Switches}" />
-                                    </Border.ToolTip>
-                                </Border>
-                            </Grid>
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
@@ -918,30 +892,6 @@
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <Border
-                        Width="20"
-                        Height="20"
-                        Margin="5,2,5,0"
-                        Background="{StaticResource NotificationErrorBrush}"
-                        BorderBrush="Transparent"
-                        CornerRadius="10">
-                        <Border.Visibility>
-                            <PriorityBinding>
-                                <Binding
-                                    Converter="{StaticResource ZeroToVisibilityConverter}"
-                                    FallbackValue="Collapsed"
-                                    Path="Switches.Count" />
-                            </PriorityBinding>
-                        </Border.Visibility>
-                        <Path
-                            HorizontalAlignment="Right"
-                            Data="{StaticResource AboutSVG}"
-                            Fill="{StaticResource ButtonForegroundBrush}"
-                            Stretch="Uniform" />
-                        <Border.ToolTip>
-                            <ItemsControl ItemsSource="{Binding Switches}" />
-                        </Border.ToolTip>
-                    </Border>
                     <local:ExprControl Label="Expression:" Exp="{Binding Path=PredicateExpr, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -1360,30 +1310,6 @@
                             </Border>
 
                             <Border
-                             Width="20"
-                             Height="20"
-                             Margin="5,0,5,0"
-                             Background="{StaticResource NotificationErrorBrush}"
-                             BorderBrush="Transparent"
-                             CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
-                                         Converter="{StaticResource ZeroToVisibilityConverter}"
-                                         FallbackValue="Collapsed"
-                                         Path="Switches.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
-                                 HorizontalAlignment="Right"
-                                 Data="{StaticResource AboutSVG}"
-                                 Fill="{StaticResource ButtonForegroundBrush}"
-                                 Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Switches}" />
-                                </Border.ToolTip>
-                            </Border>
-                            <Border
                                MinHeight="35"
                                Margin="8,1,0,0"
                                BorderBrush="{StaticResource BorderBrush}"
@@ -1634,30 +1560,6 @@
                                 </Border.ToolTip>
                             </Border>
 
-                            <Border
-                              Width="20"
-                              Height="20"
-                              Margin="5,0,5,0"
-                              Background="{StaticResource NotificationErrorBrush}"
-                              BorderBrush="Transparent"
-                              CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
-                                          Converter="{StaticResource ZeroToVisibilityConverter}"
-                                          FallbackValue="Collapsed"
-                                          Path="Switches.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
-                                  HorizontalAlignment="Right"
-                                  Data="{StaticResource AboutSVG}"
-                                  Fill="{StaticResource ButtonForegroundBrush}"
-                                  Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Switches}" />
-                                </Border.ToolTip>
-                            </Border>
                             <local:ExprControl Label="Expression:" Exp="{Binding IfExpr, Mode=TwoWay}"/>
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
@@ -1997,30 +1899,6 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                                     Stretch="Uniform" />
                                 <Border.ToolTip>
                                     <ItemsControl ItemsSource="{Binding Issues}" />
-                                </Border.ToolTip>
-                            </Border>
-                            <Border
-                               Width="20"
-                               Height="20"
-                               Margin="5,0,5,0"
-                               Background="{StaticResource NotificationErrorBrush}"
-                               BorderBrush="Transparent"
-                               CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
-                                           Converter="{StaticResource ZeroToVisibilityConverter}"
-                                           FallbackValue="Collapsed"
-                                           Path="Switches.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
-                                   HorizontalAlignment="Right"
-                                   Data="{StaticResource AboutSVG}"
-                                   Fill="{StaticResource ButtonForegroundBrush}"
-                                   Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
                             <local:ExprControl Label="Expression:" Exp="{Binding Path=IfExpr, Mode=TwoWay}" />
@@ -2375,30 +2253,6 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                                     Stretch="Uniform" />
                                 <Border.ToolTip>
                                     <ItemsControl ItemsSource="{Binding Issues}" />
-                                </Border.ToolTip>
-                            </Border>
-                            <Border
-                               Width="20"
-                               Height="20"
-                               Margin="5,0,5,0"
-                               Background="{StaticResource NotificationErrorBrush}"
-                               BorderBrush="Transparent"
-                               CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
-                                           Converter="{StaticResource ZeroToVisibilityConverter}"
-                                           FallbackValue="Collapsed"
-                                           Path="Switches.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
-                                   HorizontalAlignment="Right"
-                                   Data="{StaticResource AboutSVG}"
-                                   Fill="{StaticResource ButtonForegroundBrush}"
-                                   Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Switches}" />
                                 </Border.ToolTip>
                             </Border>
                             <local:ExprControl Label="Expression:" Exp="{Binding IfExpr, Mode=TwoWay}"/>
