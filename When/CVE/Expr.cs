@@ -14,7 +14,7 @@ namespace WhenPlugin.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expr : BaseINPC {
 
-        public Expr (string exp, Symbol sym) {
+        public Expr(string exp, Symbol sym) {
             Symbol = sym;
             SequenceEntity = sym;
             Expression = exp;
@@ -51,19 +51,19 @@ namespace WhenPlugin.When {
             Type = type;
         }
 
-        public Expr (Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
+        public Expr(Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
             Setter = cloneMe.Setter;
             Symbol = cloneMe.Symbol;
         }
 
-        private string _expression = ""; 
+        private string _expression = "";
 
         [JsonProperty]
         public string Expression {
             get => _expression;
             set {
                 if (value == null) return;
-                    value = value.Trim();
+                value = value.Trim();
                 if (value.Length == 0) {
                     IsExpression = false;
                     if (!double.IsNaN(Default)) {
@@ -78,7 +78,7 @@ namespace WhenPlugin.When {
                     return;
                 }
                 Double result;
-                
+
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
@@ -126,7 +126,7 @@ namespace WhenPlugin.When {
                     var pe = e.ParsedExpression;
                     ParameterExtractionVisitor visitor = new ParameterExtractionVisitor();
                     pe.Accept(visitor);
-                    
+
                     // References now holds all of the CV's used in the expression
                     References = visitor.Parameters;
                     Parameters.Clear();
@@ -163,6 +163,55 @@ namespace WhenPlugin.When {
             get => Symbol.GetSwitches();
             set { }
         }
+
+        public List<string> GenericData {
+            get {
+                IList<string> sw = Switches;
+                List<string> data = new List<string>();
+                List<string> gsData = new List<string>();
+                List<string> wData = new List<string>();
+                foreach (string s in sw) {
+                    if (s.StartsWith("Weather")) {
+                        wData.Add(s.Substring(8));
+                    } else if (s.StartsWith("Gauge") || s.StartsWith("Switch")) {
+                        gsData.Add(s.Substring(s.StartsWith('G') ? 7 : 8));
+                    } else {
+                        int sp = s.IndexOf(' ');
+                        data.Add(s.Substring(sp+1));
+                    }
+                }
+                if (gsData.Count > 0) {
+                    gsData.Sort();
+                    //gsData.Insert(0, "Gauges/Switches:");
+                }
+                GaugeSwitchData = gsData;
+                if (wData.Count > 0) {
+                    wData.Sort();
+                    //wData.Insert(0, "Weather Data:");
+                }
+                WeatherData = wData;
+                data.Sort();
+                return data;
+            }
+            set { }
+        }
+
+        List<string> iGaugeSwitchData = null;
+        public List<string> GaugeSwitchData {
+            get => iGaugeSwitchData;
+            set {
+                iGaugeSwitchData = value;
+            }
+        }
+
+        List<string> iWeatherData = null;
+        public List<string> WeatherData {
+            get => iWeatherData;
+            set {
+                iWeatherData = value;
+            }
+        }
+
 
         public string Constants {
             get => Symbol.ShowSymbols(this);

@@ -582,10 +582,10 @@ namespace WhenPlugin.When {
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
                 SwitchWeatherKeys.Add("TIME", timeSeconds);
-                i.Add("TIME: " + timeSeconds);
+                i.Add(" TIME: " + timeSeconds);
 
                 SwitchWeatherKeys.Add("EXITCODE", LastExitCode);
-                i.Add("EXITCODE: " + LastExitCode);
+                i.Add(" EXITCODE: " + LastExitCode);
 
                 TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
                 TelescopeConnected = telescopeInfo.Connected;
@@ -658,7 +658,7 @@ namespace WhenPlugin.When {
                 FlatConnected = flatInfo.Connected;
                 if (FlatConnected) {
                     SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
-                    i.Add("Flat Panel: CoverState (Cover" + flatInfo.CoverState + ")");
+                    i.Add("Flat-Panel: CoverState (Cover" + flatInfo.CoverState + ")");
                     SwitchWeatherKeys.Add("CoverUnknown", 0);
                     SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
                     SwitchWeatherKeys.Add("CoverClosed", 2);
@@ -687,7 +687,7 @@ namespace WhenPlugin.When {
 
                     if (filterWheelInfo.SelectedFilter != null) {
                         SwitchWeatherKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                        i.Add("Filter Wheel: CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
+                        i.Add(" CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
                     }
                 }
 
@@ -730,15 +730,15 @@ namespace WhenPlugin.When {
                         if (v is double d) {
                             v = Math.Round(d, 2);
                         }
-                        i.Add("Last Image: " + kvp.Key + " (" + v + ")");
-                        Logger.Trace("Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        i.Add(" Last Image: " + kvp.Key + " (" + v + ")");
+                        Logger.Trace(" Last Image: " + kvp.Key + " (" + kvp.Value + ")");
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
                     SwitchWeatherKeys.TryAdd("StarCount", Double.NaN);
                     SwitchWeatherKeys.TryAdd("FWHM", Double.NaN);
                     SwitchWeatherKeys.TryAdd("Eccentricity", Double.NaN);
-                    i.Add("No image data");
+                    //i.Add(" No image data");
                 }
 
                 Switches = i;

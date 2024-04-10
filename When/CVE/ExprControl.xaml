@@ -24,13 +24,13 @@
                         </Style>
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="210" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.Switches}" />
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.Switches}" />
-                    <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.Switches}" />
+                    <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
+                    <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
                 </Grid>
             </TextBox.ToolTip>
         </TextBox>
