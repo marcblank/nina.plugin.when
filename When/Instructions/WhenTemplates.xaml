@@ -313,7 +313,47 @@
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="{TemplateBinding Background}"
                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:WhenTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap">
+
+                            <TextBox.ToolTip>
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding Exp.Constants}" Margin="0,0,0,0" />
+                                    <Grid>
+                                        <Grid.Resources >
+                                            <Style TargetType="ItemsControl" >
+                                                <Setter Property="Padding" Value="5,0,5,0" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="210" />
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="140" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
+                                        <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                                        <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.Resources >
+                                            <Style TargetType="ItemsControl" >
+                                                <Setter Property="Padding" Value="0,0,0,0" />
+                                                <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="210"/>
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="140" />
+                                        </Grid.ColumnDefinitions>
+                                        <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
+                                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
+                                    </Grid>
+                                </StackPanel>
+                            </TextBox.ToolTip>
+
+
+                        </TextBox>
                         <TextBlock
                         x:Name="PART_HintText"
                         Margin="0,-1,0,0"
@@ -325,6 +365,7 @@
                         Opacity="0.5"
                         Text="{TemplateBinding HintText}"
                         TextAlignment="{TemplateBinding TextAlignment}">
+                            
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Visibility" Value="Collapsed" />
