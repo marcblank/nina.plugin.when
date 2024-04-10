@@ -681,7 +681,7 @@ namespace WhenPlugin.When {
                         try {
                             SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                         } catch (Exception ex) {
-                            Logger.Warning("Exception trying to add '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
+                            Logger.Warning("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
                         }
                     }
 

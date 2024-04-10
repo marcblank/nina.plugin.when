@@ -167,30 +167,31 @@ namespace WhenPlugin.When {
         public List<string> GenericData {
             get {
                 IList<string> sw = Switches;
-                List<string> data = new List<string>();
-                List<string> gsData = new List<string>();
-                List<string> wData = new List<string>();
+                List<string> data = [];
+                List<string> gsData = [];
+                List<string> wData = [];
                 foreach (string s in sw) {
                     if (s.StartsWith("Weather")) {
-                        wData.Add(s.Substring(8));
+                        wData.Add(string.Concat("   ", s.AsSpan(8)));
                     } else if (s.StartsWith("Gauge") || s.StartsWith("Switch")) {
-                        gsData.Add(s.Substring(s.StartsWith('G') ? 7 : 8));
+                        gsData.Add(string.Concat("   ", s.AsSpan(s.StartsWith('G') ? 7 : 8)));
                     } else {
                         int sp = s.IndexOf(' ');
-                        data.Add(s.Substring(sp+1));
+                        data.Add(string.Concat("   ", s.AsSpan(sp+1)));
                     }
                 }
                 if (gsData.Count > 0) {
                     gsData.Sort();
-                    //gsData.Insert(0, "Gauges/Switches:");
+                    gsData.Insert(0, "Gauge/Switch Data:");
                 }
                 GaugeSwitchData = gsData;
                 if (wData.Count > 0) {
                     wData.Sort();
-                    //wData.Insert(0, "Weather Data:");
+                    wData.Insert(0, "Weather Data:");
                 }
                 WeatherData = wData;
                 data.Sort();
+                data.Insert(0, "Device/Misc Data:");
                 return data;
             }
             set { }
