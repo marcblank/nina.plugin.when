@@ -172,26 +172,27 @@ namespace WhenPlugin.When {
                 List<string> wData = [];
                 foreach (string s in sw) {
                     if (s.StartsWith("Weather")) {
-                        wData.Add(string.Concat("   ", s.AsSpan(8)));
+                        wData.Add(s.Substring(9));
                     } else if (s.StartsWith("Gauge") || s.StartsWith("Switch")) {
-                        gsData.Add(string.Concat("   ", s.AsSpan(s.StartsWith('G') ? 7 : 8)));
+                        gsData.Add(s.Substring(s.StartsWith('G') ? 7 : 8));
                     } else {
                         int sp = s.IndexOf(' ');
-                        data.Add(string.Concat("   ", s.AsSpan(sp+1)));
+                        data.Add(s.Substring(sp+1));
                     }
                 }
                 if (gsData.Count > 0) {
                     gsData.Sort();
-                    gsData.Insert(0, "Gauge/Switch Data:");
+                } else {
+                    gsData.Add("None");
                 }
                 GaugeSwitchData = gsData;
                 if (wData.Count > 0) {
                     wData.Sort();
-                    wData.Insert(0, "Weather Data:");
+                } else {
+                    wData.Add("None");
                 }
                 WeatherData = wData;
                 data.Sort();
-                data.Insert(0, "Device/Misc Data:");
                 return data;
             }
             set { }
