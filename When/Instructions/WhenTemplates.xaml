@@ -313,8 +313,8 @@
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="{TemplateBinding Background}"
                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type local:WhenTextBox}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap">
-
+                        TextWrapping="Wrap"
+                        Margin="0,-2,0,0">
                             <TextBox.ToolTip>
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding Exp.Constants}" Margin="0,0,0,0" />
@@ -356,7 +356,7 @@
                         </TextBox>
                         <TextBlock
                         x:Name="PART_HintText"
-                        Margin="0,-1,0,0"
+                        Margin="0,-2,0,0"
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Background="Transparent"
@@ -2879,7 +2879,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                     <local:ExprHintControl Margin="0,-8,0,0" Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
