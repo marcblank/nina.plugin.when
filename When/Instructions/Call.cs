@@ -321,12 +321,12 @@ namespace WhenPlugin.When {
             //Instructions.Items.Clear();
             Instructions.IsExpanded = false;
             if (Symbol.SymbolCache.TryGetValue(Parent, out var cached)) {
-                if (Arg1Expr.Expression.Length > 0) cached.Remove("Arg1");
-                if (Arg2Expr.Expression.Length > 0) cached.Remove("Arg2");
-                if (Arg3Expr.Expression.Length > 0) cached.Remove("Arg3");
-                if (Arg4Expr.Expression.Length > 0) cached.Remove("Arg4");
-                if (Arg5Expr.Expression.Length > 0) cached.Remove("Arg5");
-                if (Arg6Expr.Expression.Length > 0) cached.Remove("Arg6");
+                if (Arg1Expr.Expression.Length > 0) cached.TryRemove("Arg1", out _);
+                if (Arg2Expr.Expression.Length > 0) cached.TryRemove("Arg2", out _);
+                if (Arg3Expr.Expression.Length > 0) cached.TryRemove("Arg3", out _);
+                if (Arg4Expr.Expression.Length > 0) cached.TryRemove("Arg4", out _);
+                if (Arg5Expr.Expression.Length > 0) cached.TryRemove("Arg5", out _);
+                if (Arg6Expr.Expression.Length > 0) cached.TryRemove("Arg6", out _);
             }
         }
 

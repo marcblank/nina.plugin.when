@@ -460,8 +460,8 @@ namespace WhenPlugin.When {
                 }
                 // Save away our orphans in case they appear later
                 if (Symbol != null) {
-                    Orphans.Remove(Symbol);
-                    Orphans.Add(Symbol, orphans);
+                    Orphans.TryRemove(Symbol, out _);
+                    Orphans.TryAdd(Symbol, orphans);
                 }
             }
 

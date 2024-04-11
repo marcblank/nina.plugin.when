@@ -31,6 +31,7 @@ using System.Linq;
 using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Astrometry.Interfaces;
+using System.Collections.Concurrent;
 
 namespace WhenPlugin.When {
 
@@ -38,11 +39,11 @@ namespace WhenPlugin.When {
 
     public abstract class Symbol : SequenceItem, IValidatable {
 
-        public class SymbolDictionary : Dictionary<string, Symbol> { public static explicit operator Dictionary<object, object>(SymbolDictionary v) { throw new NotImplementedException(); } };
+        public class SymbolDictionary : ConcurrentDictionary<string, Symbol> { public static explicit operator ConcurrentDictionary<object, object>(SymbolDictionary v) { throw new NotImplementedException(); } };
 
-        public static Dictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new Dictionary<ISequenceContainer, SymbolDictionary>();
+        public static ConcurrentDictionary<ISequenceContainer, SymbolDictionary> SymbolCache = new ConcurrentDictionary<ISequenceContainer, SymbolDictionary>();
 
-        public static Dictionary<Symbol, List<string>> Orphans = new Dictionary<Symbol, List<string>>();
+        public static ConcurrentDictionary<Symbol, List<string>> Orphans = new ConcurrentDictionary<Symbol, List<string>>();
 
         [ImportingConstructor]
         public Symbol() {
@@ -135,7 +136,7 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
-                    Orphans.Remove(this);
+                    Orphans.TryRemove(this, out _);
                     // We've deleted this Symbol
                     SymbolDictionary cached;
                     if (LastSParent == null) {
@@ -144,7 +145,7 @@ namespace WhenPlugin.When {
                         return;
                     }
                     if (SymbolCache.TryGetValue(LastSParent, out cached)) {
-                        if (cached.Remove(Identifier)) {
+                        if (cached.TryRemove(Identifier, out _)) {
                             SymbolDirty(this);
                         } else {
                             Warn("Deleting " + this + " but not in SParent's cache?");
@@ -165,19 +166,18 @@ namespace WhenPlugin.When {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
                     try {
-                        cached.Add(Identifier, this);
+                        cached.TryAdd(Identifier, this);
                     } catch (ArgumentException ex) {
                         if (sParent != WhenPluginObject.Globals) {
                             IsDuplicate = true;
                             Identifier = GenId(cached, Identifier);
-                            cached.Add(Identifier, this);
+                            cached.TryAdd(Identifier, this);
                         }
                     }
                 } else {
-                    SymbolDictionary newSymbols = new SymbolDictionary {
-                        { Identifier, this }
-                    };
-                    SymbolCache.Add(sParent, newSymbols);
+                    SymbolDictionary newSymbols = new SymbolDictionary();
+                    newSymbols.TryAdd(Identifier, this);
+                    SymbolCache.TryAdd(sParent, newSymbols);
                     foreach (Expr consumer in Consumers) {
                         consumer.RemoveParameter(Identifier);
                     }
@@ -208,7 +208,7 @@ namespace WhenPlugin.When {
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
                     if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
-                        cached.Remove(_identifier);
+                        cached.TryRemove(_identifier, out _);
                         SymbolDirty(this);
                     }
                 }
@@ -221,14 +221,14 @@ namespace WhenPlugin.When {
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
                         try {
-                            cached.Add(Identifier, this);
+                            cached.TryAdd(Identifier, this);
                         } catch (ArgumentException ex) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
-                        SymbolCache.Add(sParent, newSymbols);
-                        newSymbols.Add(Identifier, this);
+                        SymbolCache.TryAdd(sParent, newSymbols);
+                        newSymbols.TryAdd(Identifier, this);
                     }
                 }
 
@@ -522,7 +522,7 @@ namespace WhenPlugin.When {
 
         public static Symbol.SymbolDictionary DataSymbols { get; set; } = new Symbol.SymbolDictionary();
 
-        public Dictionary<string, Symbol> GetDataSymbols() {
+        public ConcurrentDictionary<string, Symbol> GetDataSymbols() {
             lock (SwitchMediator) {
                 return DataSymbols;
             }
