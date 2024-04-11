@@ -13,7 +13,47 @@
                 Margin="0,-2,0,0"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}}">
         <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
-        <TextBlock Margin="5,0,0,0" Text="&#x1F6C8;" FontSize="24"/>
+        <TextBlock Margin="5,0,0,0" 
+                   Text="&#x1F6C8;" 
+                   FontSize="24">
+            <TextBlock.ToolTip>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Exp.Constants}" Margin="0,0,0,0" />
+                    <Grid>
+                        <Grid.Resources >
+                            <Style TargetType="ItemsControl" >
+                                <Setter Property="Padding" Value="5,0,5,0" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="210" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
+                        <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                        <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                    </Grid>
+                    <Grid>
+                        <Grid.Resources >
+                            <Style TargetType="ItemsControl" >
+                                <Setter Property="Padding" Value="0,0,0,0" />
+                                <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="210"/>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
+                        <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
+                    </Grid>
+                </StackPanel>
+            </TextBlock.ToolTip>
+
+        </TextBlock>
         <local:WhenTextBox
                 MinWidth="32"
                 Margin="5,-3,0,-5"
