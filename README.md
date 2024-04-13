@@ -12,8 +12,11 @@ All .x versions include minor bug fixes
 
 3.13.5.x
 * Two new instructions:  Slew To Alt/Az + and Slew to RA/Dec +.  Both of these instructions work with decimal degrees, unlike the standard NINA instructions.  Altitude and Azimuth are available as data symbols that can be saved in Variables
+
 * Bug fixed related to moving Constant/Variables definitions (.1)
+
 * Added DomeAzimuth as a data item (.4)
+
 * Allow decimal rotation values (.4) in Rotate by Mechanical Angle
  
 3.13.4.x
