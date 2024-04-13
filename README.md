@@ -158,3 +158,11 @@ Compare "When" to "If", which is an instruction that is executed in turn within 
 
 * Template By Reference and If (formerly If Constant) take up FAR less room horizontally (thanks, Stefan!)
 
+3.8.1.x
+
+* New instruction "Once Safe", to be used with "When Becomes Unsafe".   This instruction, when run inside a "When Becomes Unsafe", runs the enclosed set of instructions once conditions again become 'safe'.  If an 'unsafe' condition occurs within these instructions, the instructions will stop immediately and control will be returned to the "When Becomes Unsafe" set of instructions.
+
+3.7.0.x
+* Incorp
+orated DIYTrigger from the eponymous plugin (with its author's blessing).  A very handy way to split the triggering condition from its actions.
+* Newly added SafeTrigger instruction will only run the specified trigger if the Safety Monitor (if any) reports a 'Safe' condition.   This is intended to be used with the 'When Becomes Unsafe' trigger to ensure that a potentially long-running trigger isn't run during the 'When Becomes Unsafe' set of instructions
