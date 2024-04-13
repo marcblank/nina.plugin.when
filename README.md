@@ -1,5 +1,11 @@
 ﻿# Sequencer Powerups Version History
 
+Sequencer Powerups 3.13.7.x
+
+* New implementation of discovery of available data Variables (hovering over the "i" icon wherever an Expression is allowed).  Comments welcomed.
+* Fixed an issue in which, at the end of When Becomes Unsafe, a main sequence instruction would start running for a few seconds in the case that an Unsafe condition was again present.
+Image
+
 3.9.3.0
 
  - Fixed Take Exposure + (along with Take Many Exposures and Smart Expoure) so that they play nicely with exposure counts
