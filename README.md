@@ -8,9 +8,11 @@ All .x versions include minor bug fixes
 * Fixed an issue in which, at the end of When Becomes Unsafe, a main sequence instruction would start running for a few seconds in the case that an Unsafe condition was again present.
 
 3.13.6.x
+
 * Added ROI (sub-exposure %) to the Smart Exposure + instruction, defaulting (of course) to 100.  Note: not all cameras are capable of handing sub-exposures.
 
 3.13.5.x
+
 * Two new instructions:  Slew To Alt/Az + and Slew to RA/Dec +.  Both of these instructions work with decimal degrees, unlike the standard NINA instructions.  Altitude and Azimuth are available as data symbols that can be saved in Variables
 
 * Bug fixed related to moving Constant/Variables definitions (.1)
@@ -20,30 +22,43 @@ All .x versions include minor bug fixes
 * Allow decimal rotation values (.4) in Rotate by Mechanical Angle
  
 3.13.4.x
+
 * Added Rotate by Mechanical Angle + instruction
+
 * Added Slew to RA/Dec which will shortly be renamed to avoid confusion with Slew to Ra/Dec (sigh).  The new instruction uses decimal degrees and works with Expressions.   Sorry for the confusion.
 
 3.13.3.x
+
 * New instruction Annotation + allows Expressions to be used within the text; surround them with {}, e.g. {FocuserPosition}
  
 3.13.1.x
+
 * New feature for the When trigger - an "Interrupt" toggle (default 'ON' for compatibility); turning this to OFF will cause When to act like other triggers, and only act between execution of other instructions (rather than interrupting them)
+
 * Fix edge case issue with restoring Templates with Switch Filter + command
 
 3.13.0.x
+
 * Fixed rare bug with loading DIYMF in a sequence
 
 3.13.0.x
+
 * New Call and Return instructions implementing Functions
+
 * Documentation is  here: https://marcblank.github.io/Functions/
+
 * Feel free to play; I have no idea what it's good for! 😂
 
 3.12.4.x
+
 * New instruction, If Timeout, wraps an instruction, instruction set, or Template and times out in a specified number of seconds.  If a timeout occurs, the instructions you add will be executed.   As new functionality, please report any untoward behavior.   Comments, etc. very much appreciated!
 
 3.12.2.x
+
 * New instruction External Script + which is a potentially powerful new tool for users of external scripts; this is fully documented at  https://marcblank.github.io/External%20Script%20%2B/   Thanks to @Hologram for the suggestion and for the documentation!
+
 * New instruction Wait for Time Span + does what you'd expect.
+
 * Some users of ROR observatories (especially shared ones like SRO) might benefit from a new feature added to 3.12.1.0 - the ability to read a file containing roof status.   In the plugin page, choose a file and a string to look for when the roof is open.   Powerups will read the last (only?) line in the file and look for the (case-insensitive) string you specify.   Powerups will define a RoofStatus variable with values RoofOpen, RoofNotOpen, and RoofCannotOpenOrRead and make that available in all Expressions.   This feature is new and somewhat experimental - let me know how it works, any desired enhancements, etc. 
 
 3.12.0.x
