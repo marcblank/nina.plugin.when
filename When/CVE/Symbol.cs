@@ -670,7 +670,8 @@ namespace WhenPlugin.When {
                 RotatorConnected = rotatorInfo.Connected;
                 if (RotatorConnected) {
                     SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
-                    i.Add("Rotator: RotatorMechanicalPosition (" + rotatorInfo.MechanicalPosition + ")");
+                    SwitchWeatherKeys.Add("RotatorPosition", rotatorInfo.MechanicalPosition);
+                    i.Add("Rotator: RotatorPosition (" + rotatorInfo.MechanicalPosition + ")");
                 }
 
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
