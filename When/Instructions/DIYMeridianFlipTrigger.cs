@@ -190,6 +190,8 @@ namespace WhenPlugin.When {
         protected DateTime earliestFlipTime;
 
         private double minutesAfterMeridian;
+
+        public ISequenceContainer TriggerContext { get; set; }
         
         [JsonProperty]
         public virtual double MinutesAfterMeridian {
@@ -473,6 +475,7 @@ namespace WhenPlugin.When {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             try {
+                TriggerContext = context;
                 SetCoords(MFCenter);
                 await TriggerRunner.Run(progress, token);
             } finally {

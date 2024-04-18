@@ -8,6 +8,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
@@ -64,9 +65,10 @@ namespace WhenPlugin.When {
         }
 
         private Coordinates GetCoords() {
-            ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(Parent);
+            DIYMeridianFlipTrigger diymf = FindTrigger();
+            ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(diymf != null ? diymf.TriggerContext : Parent);
             if (cc != null) {
-                Logger.Info("Getting coordinates from Parent");
+                Logger.Info("Getting coordinates from Context/Parent");
                 return cc.Coordinates;
             }
             Logger.Info("Getting coordinates from telescope");
@@ -103,6 +105,22 @@ namespace WhenPlugin.When {
             return $"Category: {Category}, Item: DoFlip+";
         }
 
+        private DIYMeridianFlipTrigger FindTrigger() {
+            ISequenceContainer p = Parent;
+            while (p != null) {
+                if (p is SequenceContainer c) {
+                    // Found the DSO container; look at triggers
+                    foreach (SequenceTrigger t in c.Triggers) {
+                        if (t is DIYMeridianFlipTrigger diyTrigger) {
+                            return diyTrigger;
+                        }
+                    }
+                }
+                p = p.Parent;
+            }
+            return null;
+        }
+
         public override bool Validate() {
             var i = new List<string>();
 
@@ -122,10 +140,8 @@ namespace WhenPlugin.When {
                 FlipStatus = "Telescope not connected";
                 RaisePropertyChanged("FlipStatus");
             } else {
-                Coordinates target;
-                var t = ItemUtility.RetrieveContextCoordinates(Parent);
-                if (t != null) {
-                    target = t.Coordinates;
+                Coordinates target = GetCoords();
+                if (target != null) {
                     //Logger.Info("**Got target from Parent: " + target);
                     if (target.RADegrees == 0 && target.Dec == 0) {
                         //Logger.Info("**Target is at 0/0; using telescope");
