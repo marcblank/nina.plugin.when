@@ -479,6 +479,36 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:TriggerIf}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <Border MinHeight="35"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      BorderThickness="1">
+                    <StackPanel Orientation="Vertical" Background="{StaticResource BackgroundBrush}">
+                        <local:ExprControl Label="Expression:" Exp="{Binding Path=IfExpr, Mode=TwoWay}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding TriggerRunner.Triggers}"/>
+                            <TextBlock
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center"
+                               FontStyle="Italic"
+                               Opacity="0.4"
+                               Text="Trigger goes here"
+                               Visibility="{Binding Triggers.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}"
+                               MinWidth="200"/>
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Trigger.SequenceTrigger" OnDropCommand="DropIntoDIYTriggersCommand" />
+                            </i:Interaction.Behaviors>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:SafeTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
