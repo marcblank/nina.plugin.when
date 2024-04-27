@@ -486,17 +486,17 @@
                       BorderBrush="{StaticResource BorderBrush}"
                       BorderThickness="1">
                     <StackPanel Orientation="Vertical" Background="{StaticResource BackgroundBrush}">
-                        <local:ExprControl Label="Expression:" Exp="{Binding Path=IfExpr, Mode=TwoWay}"/>
+                        <local:ExprControl Label="Enabling Expression:" Exp="{Binding Path=IfExpr, Mode=TwoWay}"/>
                         <StackPanel Orientation="Horizontal">
                             <ItemsControl MinHeight="35" ItemsSource="{Binding TriggerRunner.Triggers}"/>
                             <TextBlock
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               TextAlignment="Center"
+                               TextAlignment="Left"
                                FontStyle="Italic"
                                Opacity="0.4"
-                               Text="Trigger goes here"
-                               Visibility="{Binding Triggers.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}"
+                               Text="Drop the Trigger here"
+                               Visibility="{Binding TriggerRunner.Triggers.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}"
                                MinWidth="200"/>
                             <i:Interaction.Behaviors>
                                 <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />

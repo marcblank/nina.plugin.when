@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.SequenceItem;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TriggerIf : SequenceTrigger, IValidatable {
+    public class TriggerIf : SequenceTrigger, IValidatable, ITrueFalse {
 
 
         [ImportingConstructor]
@@ -34,17 +36,17 @@ namespace WhenPlugin.When {
 
         public ICommand DropIntoDIYTriggersCommand { get; set; }
 
-        public override object Clone() {
-            var clone = new TriggerIf() {
-                Icon = Icon,
-                Name = Name,
-                Category = Category,
-                Description = Description,
-                TriggerRunner = (SequentialContainer)TriggerRunner.Clone(),
-            };
+        public TriggerIf(TriggerIf copyMe) : this() {
+            if (copyMe != null) {
+                CopyMetaData(copyMe);
+                TriggerRunner = (SequentialContainer)copyMe.TriggerRunner.Clone();
+                IfExpr = new Expr(this, copyMe.IfExpr.Expression);
+            }
+        }
 
-            IfExpr = new Expr(clone, IfExpr.Expression);
-            return clone;
+        public override object Clone() {
+            return new TriggerIf(this) {
+            };
         }
 
         private static object lockObj = new object();
@@ -70,6 +72,8 @@ namespace WhenPlugin.When {
                 } else {
                     item = (ISequenceTrigger)source.Clone();
                 }
+
+                if (item is TriggerIf) return;
 
                 if (item.Parent != TriggerRunner) {
                     item.Parent?.Remove(item);
@@ -103,21 +107,31 @@ namespace WhenPlugin.When {
             TriggerRunner.AttachNewParent(context);
 
             try {
-                await TriggerRunner.Run(progress, token);
+                if (TriggerRunner.Triggers.Count > 0) {
+                    ISequenceTrigger t = TriggerRunner.Triggers[0];
+                    await t.Run(context, progress, token);
+                }
             } finally {
                 InFlight = false;
                 TriggerRunner.Parent?.Remove(TriggerRunner);
                 TriggerRunner.AttachNewParent(Parent);
             }
         }
+
+        private bool SkipTrigger() {
+            Symbol.UpdateSwitchWeatherData();
+            IfExpr.Evaluate();
+            return string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null);
+        }
+
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (InFlight) return false;
+            if (InFlight || SkipTrigger()) return false;
             if (TriggerRunner.Triggers.FirstOrDefault() == null) return false;
             return TriggerRunner.Triggers.FirstOrDefault().ShouldTrigger(previousItem, nextItem);
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (InFlight) return false;
+            if (InFlight || SkipTrigger()) return false;
             if (TriggerRunner.Triggers.FirstOrDefault() == null) return false;
             return TriggerRunner.Triggers.FirstOrDefault().ShouldTriggerAfter(previousItem, nextItem);
         }
@@ -153,7 +167,18 @@ namespace WhenPlugin.When {
                 }
             }
             IfExpr.Validate();
-            return true;
+
+            IList<string> i = new List<string>();
+            if (IfExpr.Expression == null || IfExpr.Expression.Length == 0) {
+                i.Add("The Expression must not be empty");
+            } else if (IfExpr.Error != null) {
+                i.Add("Expression error: " + IfExpr.Error.ToString());
+            }
+            if (TriggerRunner.Triggers.Count == 0) {
+                i.Add("There must be a Trigger specified for this instruction");
+            }
+            Issues = i;
+            return i.Count == 0;
         }
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(DIYTrigger)}";
