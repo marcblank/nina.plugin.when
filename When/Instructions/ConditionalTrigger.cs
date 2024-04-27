@@ -17,17 +17,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Trigger If")]
+    [ExportMetadata("Name", "Conditional Trigger")]
     [ExportMetadata("Description", "The specified trigger will only be active when the Expression is true.")]
     [ExportMetadata("Icon", "WandSVG")]
     [ExportMetadata("Category", "Powerups (Misc)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class TriggerIf : SequenceTrigger, IValidatable, ITrueFalse {
+    public class ConditionalTrigger : SequenceTrigger, IValidatable, ITrueFalse {
 
 
         [ImportingConstructor]
-        public TriggerIf() {
+        public ConditionalTrigger() {
             DropIntoDIYTriggersCommand = new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropInSequenceTrigger);
             IfExpr = new Expr(this);
         }
@@ -36,7 +36,7 @@ namespace WhenPlugin.When {
 
         public ICommand DropIntoDIYTriggersCommand { get; set; }
 
-        public TriggerIf(TriggerIf copyMe) : this() {
+        public ConditionalTrigger(ConditionalTrigger copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 TriggerRunner = (SequentialContainer)copyMe.TriggerRunner.Clone();
@@ -45,7 +45,7 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
-            return new TriggerIf(this) {
+            return new ConditionalTrigger(this) {
             };
         }
 
@@ -73,7 +73,7 @@ namespace WhenPlugin.When {
                     item = (ISequenceTrigger)source.Clone();
                 }
 
-                if (item is TriggerIf) return;
+                if (item is ConditionalTrigger) return;
 
                 if (item.Parent != TriggerRunner) {
                     item.Parent?.Remove(item);

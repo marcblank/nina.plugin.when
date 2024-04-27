@@ -479,7 +479,7 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:TriggerIf}">
+    <DataTemplate DataType="{x:Type local:ConditionalTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <Border MinHeight="35"
