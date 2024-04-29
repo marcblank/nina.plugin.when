@@ -32,6 +32,8 @@ using NINA.Equipment.Equipment.MyFocuser;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Astrometry.Interfaces;
 using System.Collections.Concurrent;
+using NINA.Astrometry;
+using Accord;
 
 namespace WhenPlugin.When {
 
@@ -562,6 +564,8 @@ namespace WhenPlugin.When {
             return true;
         }
 
+        private static ObserverInfo Observer = null;
+
         public static Task UpdateSwitchWeatherData() {
 
             //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
@@ -579,6 +583,21 @@ namespace WhenPlugin.When {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
 
+                if (Observer == null) {
+                    Observer = new ObserverInfo() {
+                        Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,
+                        Longitude = ProfileService.ActiveProfile.AstrometrySettings.Longitude
+                    };
+                }
+
+                double moonAltitude = AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer);
+                SwitchWeatherKeys.Add("MoonAltitude", moonAltitude);
+                i.Add(" MoonAltitude: " + Math.Round(moonAltitude, 2));
+                
+                double sunAltitude = AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer);
+                SwitchWeatherKeys.Add("SunAltitude", sunAltitude);
+                i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
+
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
                 SwitchWeatherKeys.Add("TIME", timeSeconds);
@@ -594,6 +613,8 @@ namespace WhenPlugin.When {
                     i.Add("Telescope: Altitude (" + Math.Round(telescopeInfo.Altitude, 2) + ")");
                     SwitchWeatherKeys.Add("Azimuth", telescopeInfo.Azimuth);
                     i.Add("Telescope: Azimuth (" + Math.Round(telescopeInfo.Azimuth, 2) + ")");
+                    SwitchWeatherKeys.Add("AtPark", telescopeInfo.AtPark ? 1 : 0);
+                    i.Add("Telescope: AtPark (" + (telescopeInfo.AtPark ? "True" : "False") + ")");
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
