@@ -136,9 +136,7 @@ namespace WhenPlugin.When {
             ValidateInstructions(ElseInstructions);
             IfExpr.Validate(i);
 
-            if (string.IsNullOrEmpty(IfExpr.Expression)) {
-                i.Add("Expression cannot be empty!");
-            }
+            Expr.CheckExprError(IfExpr, i);
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");

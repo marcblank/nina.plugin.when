@@ -69,10 +69,7 @@ namespace WhenPlugin.When {
         public bool Validate() {
 
             var i = new List<string>();
-
-            if (string.IsNullOrEmpty(PredicateExpr.Expression)) {
-                i.Add("Expression cannot be empty!");
-            }
+            Expr.CheckExprError(PredicateExpr, i);
 
             PredicateExpr.Validate(i);
 

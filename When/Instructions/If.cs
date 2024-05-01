@@ -127,10 +127,7 @@ namespace WhenPlugin.When {
             CommonValidate();
 
             var i = new List<string>();
-
-            if (string.IsNullOrEmpty(IfExpr.Expression)) {
-                i.Add("Expression cannot be empty!");
-            }
+            Expr.CheckExprError(IfExpr, i);
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");

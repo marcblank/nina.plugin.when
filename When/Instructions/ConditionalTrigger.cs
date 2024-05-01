@@ -169,11 +169,8 @@ namespace WhenPlugin.When {
             IfExpr.Validate();
 
             IList<string> i = new List<string>();
-            if (IfExpr.Expression == null || IfExpr.Expression.Length == 0) {
-                i.Add("The Expression must not be empty");
-            } else if (IfExpr.Error != null) {
-                i.Add("Expression error: " + IfExpr.Error.ToString());
-            }
+            Expr.CheckExprError(IfExpr, i);
+
             if (TriggerRunner.Triggers.Count == 0) {
                 i.Add("There must be a Trigger specified for this instruction");
             }
