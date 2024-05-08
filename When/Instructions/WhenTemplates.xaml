@@ -3043,13 +3043,13 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                                         <TextBlock VerticalAlignment="Center" Text="Minutes after meridian:" />
                                         <TextBox
                                    MinWidth="40"
-                                    Margin="5,0,10,0"
+                                   Margin="5,0,10,0"
                                    Text="{Binding MinutesAfterMeridian}"
                                    TextAlignment="Center" />
                                         <TextBlock VerticalAlignment="Center" Text="Max minutes after meridian:" />
                                         <TextBox
                                    MinWidth="40"
-                                  Margin="5,0,10,0"
+                                   Margin="5,0,10,0"
                                    Text="{Binding MaxMinutesAfterMeridian}"
                                    TextAlignment="Center" />
                                     </StackPanel>
