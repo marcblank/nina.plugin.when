@@ -809,7 +809,7 @@
                       VerticalAlignment="Center"
                       TextAlignment="Center" />
                     <local:ExprControl Label="Value:" Exp="{Binding Expr}"/>
-                    <TextBlock Margin="20,-1,10,-2" VerticalAlignment="Center" Text="Description (optional):" />
+                    <TextBlock Margin="20,-1,10,-2" VerticalAlignment="Center" Text="Description:" />
                     <TextBox
                       MinWidth="250"
                       Margin="5,-1,10,-2"
