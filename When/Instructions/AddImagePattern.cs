@@ -61,6 +61,19 @@ namespace WhenPlugin.When {
 
         public string PatternDescription {  get; set; } = String.Empty;
 
+        public class ImagePatternExpr {
+
+            public ImagePatternExpr (ImagePattern p, Expr e) {
+                Pattern = p;
+                Expr = e;
+            }
+            
+            public ImagePattern Pattern;
+            public Expr Expr;
+        }
+
+        public static IList<ImagePatternExpr> ImagePatterns = new List<ImagePatternExpr>();
+
         public bool Validate() {
             if (!Symbol.IsAttachedToRoot(this)) return true;
 
@@ -77,6 +90,7 @@ namespace WhenPlugin.When {
                     if (desc.Length == 0) {
                         desc = "No description given";
                     }
+                    ImagePatterns.Add(new ImagePatternExpr(new ImagePattern("$$" + Identifier + "$$", desc, "Sequencer Powerups"), Expr));
                     OptionsVM.AddImagePattern(new ImagePattern("$$" + Identifier + "$$", desc, "Sequencer Powerups") { Value = "6.66" });
                     ImagePatternAdded = Identifier;
                 }

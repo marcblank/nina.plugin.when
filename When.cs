@@ -68,6 +68,8 @@ namespace WhenPlugin.When {
                 rotatorMediator, safetyMonitorMediator, focuserMediator, telescopeMediator);
             CreateGlobalSetConstants(this);
 
+            imageSaveMediator.BeforeFinalizeImageSaved += ImageSaveMediator_BeforeFinalizeImageSaved;
+
             OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
 
         }
@@ -76,6 +78,21 @@ namespace WhenPlugin.When {
             // Make sure to unregister an event when the object is no longer in use. Otherwise garbage collection will be prevented.
             profileService.ProfileChanged -= ProfileService_ProfileChanged;
             return base.Teardown();
+        }
+        private Task ImageSaveMediator_BeforeFinalizeImageSaved(object sender, BeforeFinalizeImageSavedEventArgs e) {
+            foreach (AddImagePattern.ImagePatternExpr pe in AddImagePattern.ImagePatterns) {
+                ImagePattern p = pe.Pattern;
+                Expr expr = pe.Expr;
+
+                if (expr.SequenceEntity == null || expr.SequenceEntity.Parent == null) {
+                    continue;
+                }
+
+                expr.Evaluate();
+                string v = (expr.Error != null) ? "ERROR" : expr.ValueString;
+                e.AddImagePattern(new ImagePattern(p.Key, p.Description, p.Category) { Value = v });
+            }
+            return Task.CompletedTask;
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
