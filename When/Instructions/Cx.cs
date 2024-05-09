@@ -33,8 +33,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private int CloneNum = 0;
-
         public override object Clone() {
             SetConstant clone = new SetConstant(this);
  

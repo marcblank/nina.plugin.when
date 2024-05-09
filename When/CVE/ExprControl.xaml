@@ -10,7 +10,7 @@
                 VerticalAlignment="Center"
                 MinHeight="30"
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprControl}}}">
-        <TextBlock Margin="5,0,0,0" 
+        <TextBlock Margin="5,-2,0,0" 
                    Text="&#x1F6C8;" 
                    FontSize="24">
             <TextBlock.ToolTip>

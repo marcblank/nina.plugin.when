@@ -797,6 +797,30 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:AddImagePattern}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding Identifier}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Center" />
+                    <local:ExprControl Label="Value:" Exp="{Binding Expr}"/>
+                    <TextBlock Margin="20,-1,10,-2" VerticalAlignment="Center" Text="Description (optional):" />
+                    <TextBox
+                      MinWidth="250"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding PatternDescription}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Left" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:SetVariable}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -2774,7 +2798,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
                 <WrapPanel Orientation="Horizontal">
-                    <local:ExprHintControl Margin="0,-4,0,0" Label="#" Exp="{Binding IterExpr}" />
+                    <local:ExprHintControl Margin="0,1,0,0" Label="#" Exp="{Binding IterExpr}" />
                     <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[0]}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
