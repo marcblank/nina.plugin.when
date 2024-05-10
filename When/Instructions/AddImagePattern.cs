@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Core.Utility.Notification;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Add Image Pattern")]
@@ -41,9 +42,11 @@ namespace WhenPlugin.When {
             }
         }
 
+        [JsonProperty]
         public Expr Expr { get; set; }
 
-        public string Identifier {  get; set; }
+        [JsonProperty]
+        public string Identifier {  get; set; } = string.Empty;
 
         public override object Clone() {
             return new AddImagePattern(this);
@@ -60,6 +63,7 @@ namespace WhenPlugin.When {
 
         private string ImagePatternAdded = String.Empty;
 
+        [JsonProperty]
         public string PatternDescription {  get; set; } = String.Empty;
 
         public class ImagePatternExpr {
@@ -80,7 +84,7 @@ namespace WhenPlugin.When {
 
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || Expr.Expression.Length == 0 || Description.Length == 0) {
+            if (Identifier.Length == 0 || Expr?.Expression.Length == 0 || Description.Length == 0) {
                 i.Add("A name, value, and description must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of an image pattern token must be all uppercase alphabetic characters");
