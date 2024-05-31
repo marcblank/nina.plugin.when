@@ -301,7 +301,9 @@ namespace WhenPlugin.When {
                     Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
                     InFlight = true;
                     Triggered = false;
+                    token.ThrowIfCancellationRequested();
                     await TriggerRunner.Run(progress, token);
+                    token.ThrowIfCancellationRequested();
                     if (!(this is WhenUnsafe) || Check()) {
                         break;
                     }

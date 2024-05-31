@@ -106,16 +106,17 @@ namespace WhenPlugin.When {
             Debug.WriteLine("SymbolDirty: " + sym);
             dirtyList.Add(sym);
             // Mark everything in the chain dirty
-            foreach (Expr consumer in sym.Consumers) {
-                consumer.ReferenceRemoved(sym);
-                Symbol consumerSym = consumer.Symbol;
-                if (!consumer.Dirty && consumerSym != null) {
+            foreach (var consumer in sym.Consumers) {
+                Expr expr = consumer.Key;
+                expr.ReferenceRemoved(sym);
+                Symbol consumerSym = expr.Symbol;
+                if (!expr.Dirty && consumerSym != null) {
                     if (!dirtyList.Contains(consumerSym)) {
                         iSymbolDirty(consumerSym, dirtyList);
                     }
                 }
-                consumer.Dirty = true;
-                consumer.Evaluate();
+                expr.Dirty = true;
+                expr.Evaluate();
             }
         }
 
@@ -180,8 +181,8 @@ namespace WhenPlugin.When {
                     SymbolDictionary newSymbols = new SymbolDictionary();
                     newSymbols.TryAdd(Identifier, this);
                     SymbolCache.TryAdd(sParent, newSymbols);
-                    foreach (Expr consumer in Consumers) {
-                        consumer.RemoveParameter(Identifier);
+                    foreach (var consumer in Consumers) {
+                        consumer.Key.RemoveParameter(Identifier);
                     }
                     // Can we see if the Parent moves?
                     // Parent.AfterParentChanged += ??
@@ -292,7 +293,7 @@ namespace WhenPlugin.When {
             return false;
         }
 
-        public HashSet<Expr> Consumers = new HashSet<Expr>();
+        public ConcurrentDictionary<Expr, byte> Consumers = new ConcurrentDictionary<Expr, byte>();
         public static WhenPlugin WhenPluginObject { get; set; }
 
         public ISequenceContainer SParent() {
@@ -311,13 +312,13 @@ namespace WhenPlugin.When {
 
 
         public void AddConsumer(Expr expr) {
-            if (!Consumers.Contains(expr)) {
-                Consumers.Add(expr);
+            if (!Consumers.ContainsKey(expr)) {
+                Consumers.TryAdd(expr, 0);
             }
         }
 
         public void RemoveConsumer(Expr expr) {
-            if (!Consumers.Remove(expr)) {
+            if (!Consumers.TryRemove(expr, out _)) {
                 Warn("RemoveConsumer: " + expr + " not found in " + this);
             }
         }

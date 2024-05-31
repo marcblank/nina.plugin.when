@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.DragDrop;
 using NINA.Sequencer.SequenceItem;
@@ -91,6 +92,7 @@ namespace WhenPlugin.When {
             TriggerRunner.AttachNewParent(context);
 
             try {
+                Logger.Info("DIY Trigger executing...");
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
@@ -101,13 +103,23 @@ namespace WhenPlugin.When {
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) return false;
             if (TriggerRunner.Triggers.FirstOrDefault() == null) return false;
-            return TriggerRunner.Triggers.FirstOrDefault().ShouldTrigger(previousItem, nextItem);
+            var trigger = TriggerRunner.Triggers.FirstOrDefault();
+            var result = trigger.ShouldTrigger(previousItem, nextItem);
+            if (result) {
+                Logger.Info("DIY Trigger " + trigger.Name + " ShouldTrigger returning true");
+            }
+            return result;
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) return false;
             if (TriggerRunner.Triggers.FirstOrDefault() == null) return false;
-            return TriggerRunner.Triggers.FirstOrDefault().ShouldTriggerAfter(previousItem, nextItem);
+            var trigger = TriggerRunner.Triggers.FirstOrDefault();
+            var result = trigger.ShouldTriggerAfter(previousItem, nextItem);
+            if (result) {
+                Logger.Info("DIY Trigger " + trigger.Name + " ShouldTriggerAfter returning true");
+            }
+            return result;
         }
 
         // Per Nick Holland

@@ -79,6 +79,10 @@ namespace WhenPlugin.When {
                 }
                 Double result;
 
+                if (value.StartsWith('%') && value.EndsWith('%') && value.Length > 2) {
+                    value = "__ENV_" + value.Substring(1, value.Length - 2);
+                }
+
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
@@ -103,7 +107,7 @@ namespace WhenPlugin.When {
                         // We always want to show the result if not a Symbol
                         //IsExpression = true;
                     }
-                } else if (Regex.IsMatch(value, "{(\\d+)}")) {
+                } else if (Regex.IsMatch(value, "{(\\d+)}")) { // Should be /^\d*\.?\d*$/
                     IsExpression = false;
                 } else {
                     IsExpression = true;
@@ -411,7 +415,7 @@ namespace WhenPlugin.When {
                 Symbol sym;
                 // Take care of "by reference" arguments
                 string symReference = sRef;
-                if (symReference.StartsWith("_")) {
+                if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
                     symReference = sRef.Substring(1);
                 }
                 // Remember if we have any image data
@@ -447,6 +451,19 @@ namespace WhenPlugin.When {
                             Resolved.Add(symReference, null);
                             Parameters.Remove(symReference);
                             Parameters.Add(symReference, Val);
+                            Volatile = true;
+                        }
+                        if (!found && symReference.StartsWith("__ENV_")) {
+                            string env = Environment.GetEnvironmentVariable(symReference.Substring(6), EnvironmentVariableTarget.User);
+                            UInt32 val;
+                            if (env == null || !UInt32.TryParse(env, out val)) {
+                                val = 0;
+                            }
+                            // We don't want these resolved, just added to Parameters
+                            Resolved.Remove(symReference);
+                            Resolved.Add(symReference, null);
+                            Parameters.Remove(symReference);
+                            Parameters.Add(symReference, val);
                             Volatile = true;
                         }
                     }
@@ -511,6 +528,7 @@ namespace WhenPlugin.When {
                 if (pos == 0) {
                     string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
                     if (!var.StartsWith("'_")) {
+                        Logger.Error("? Linda's error: " + ex.Message);
                         error = "Reference";
                     } else {
                         error = "Undefined: " + var;

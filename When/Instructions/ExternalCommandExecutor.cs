@@ -39,8 +39,6 @@ namespace WhenPlugin.When {
             try {
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
-                string src = NINA.Core.Locale.Loc.Instance["LblSequenceCommandSource"];
-                string completeMsg = string.Format(NINA.Core.Locale.Loc.Instance["LblSequenceCommandAtCompletion"], executableLocation);
                 Logger.Info($"Running - {executableLocation}");
 
                 // set environment variable to string equiv of int MinValue before calling the batch script
@@ -54,13 +52,13 @@ namespace WhenPlugin.When {
                 process.EnableRaisingEvents = true;
                 process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
-                        StatusUpdate(src, e.Data);
+                        StatusUpdate("External Command", e.Data);
                         Logger.Info($"STDOUT: {e.Data}");
                     }
                 };
                 process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
-                        StatusUpdate(src, e.Data);
+                        StatusUpdate("External Command", e.Data);
                         Logger.Error($"STDERR: {e.Data}");
                     }
                 };
@@ -72,15 +70,6 @@ namespace WhenPlugin.When {
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
-
-                //there is currently no automatism to clear a message other than
-                //sending a status update with an empty status for the same source.
-                StatusUpdate(src, completeMsg);
-                await Task.Run(async () => {
-                    await Task.Delay(5000);
-                    StatusUpdate(src, "");
-                });
-
 
                 int ninaesrc = GetEnvironmentVariableValue("NINAESRC", EnvironmentVariableTarget.User);
 
@@ -95,6 +84,8 @@ namespace WhenPlugin.When {
 
             } catch (Exception e) {
                 Logger.Error($"Error running command {sequenceCompleteCommand}: {e.Message}", e);
+            } finally {
+                StatusUpdate("ExternalCommand", "");
             }
             return int.MinValue;
 

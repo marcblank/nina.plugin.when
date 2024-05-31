@@ -138,7 +138,7 @@ namespace WhenPlugin.When {
             if (ProcessedScriptError != null) {
                 i.Add(ProcessedScriptError);
             } else if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
-                i.Add(string.Format(Loc.Instance["LblSequenceCommandAtCompletionNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
+                i.Add(string.Format("External Command Not Found", ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
             }
             Issues = i;
             return i.Count == 0;
