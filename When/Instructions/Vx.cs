@@ -12,7 +12,7 @@ using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
-    [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
+    [ExportMetadata("Description", "Creates a Variable whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]

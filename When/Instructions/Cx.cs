@@ -12,7 +12,7 @@ using System.Reflection;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Constant")]
-    [ExportMetadata("Description", "Sets a constant whose numeric value can be used in various instructions")]
+    [ExportMetadata("Description", "Creates a Constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
