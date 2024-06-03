@@ -86,7 +86,7 @@ namespace WhenPlugin.When {
             if (InstructionSetName == null) return null;
             ISequenceEntity p = Parent;
             while (p != null) {
-                if (p.Name.Trim().ToLower().Equals(InstructionSetName.Trim().ToLower(), StringComparison.OrdinalIgnoreCase)) {
+                if (p.Name != null && p.Name.Trim().ToLower().Equals(InstructionSetName.Trim().ToLower(), StringComparison.OrdinalIgnoreCase)) {
                     if (p is ISequenceContainer c) {
                         return c;
                     }
