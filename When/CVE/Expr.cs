@@ -3,6 +3,7 @@ using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Sequencer;
+using PanoramicData.NCalcExtensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -113,7 +114,14 @@ namespace WhenPlugin.When {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(value);
+                     //e.Options = EvaluateOptions.IgnoreCase;
+                    e.EvaluateFunction += delegate (string name, FunctionArgs args)
+                    {
+                        if (name == "SecretOperation")
+                            args.Result = (int)args.Parameters[0].Evaluate() + (int)args.Parameters[1].Evaluate();
+                    };
+                    //Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
                     e.Parameters = EmptyDictionary;
                     IsSyntaxError = false;
                     try {
@@ -471,7 +479,14 @@ namespace WhenPlugin.When {
             }
 
             // Then evaluate
-            Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+            Expression e = new Expression(Expression);
+            //e.Options = EvaluateOptions.IgnoreCase;
+            //Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+            e.EvaluateFunction += delegate (string name, FunctionArgs args)
+            {
+                if (name == "SecretOperation")
+                    args.Result = (int)args.Parameters[0].Evaluate() + (int)args.Parameters[1].Evaluate();
+            };
             e.Parameters = Parameters;
 
             if (Parameters.Count != References.Count) {
