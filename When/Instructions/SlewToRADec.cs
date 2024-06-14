@@ -110,6 +110,17 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public InputCoordinates Coordinates { get; set; }
 
+        private bool inherited;
+
+        [JsonProperty]
+        public bool Inherited {
+            get => inherited;
+            set {
+                inherited = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private IList<string> issues = new List<string>();
 
         public IList<string> Issues {
@@ -135,7 +146,26 @@ namespace WhenPlugin.When {
             }
         }
 
+        private Coordinates RetrieveContextCoordinates(ISequenceContainer parent) {
+            if (parent != null) {
+                var container = parent as IDeepSkyObjectContainer;
+                if (container != null) {
+                    return container.Target.InputCoordinates.Coordinates;
+                } else {
+                    return RetrieveContextCoordinates(parent.Parent);
+                }
+            } else {
+                return null;
+            }
+        }
         public override void AfterParentChanged() {
+            var coordinates = RetrieveContextCoordinates(this.Parent);
+            if (coordinates != null) {
+                Coordinates.Coordinates = coordinates;
+                Inherited = true;
+            } else {
+                Inherited = false;
+            }
             Validate();
         }
         public bool Validate() {
