@@ -386,7 +386,7 @@ namespace WhenPlugin.When {
                         }
                     }
                     sb.Append(") = ");
-                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.Value.ToString());
+                    sb.Append(sym.Expr.Error != null ? sym.Expr.Error : sym.Expr.ValueString);
                 } else {
                     // We're a data value
                     sb.Append(" (Data) = ");

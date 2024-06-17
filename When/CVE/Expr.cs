@@ -114,14 +114,7 @@ namespace WhenPlugin.When {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    Expression e = new Expression(value);
-                     //e.Options = EvaluateOptions.IgnoreCase;
-                    e.EvaluateFunction += delegate (string name, FunctionArgs args)
-                    {
-                        if (name == "SecretOperation")
-                            args.Result = (int)args.Parameters[0].Evaluate() + (int)args.Parameters[1].Evaluate();
-                    };
-                    //Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
                     e.Parameters = EmptyDictionary;
                     IsSyntaxError = false;
                     try {
@@ -279,10 +272,24 @@ namespace WhenPlugin.When {
             }
         }
 
+        private const long ONE_YEAR = 60 * 60 * 24 * 365;
+
         public string ValueString {
             get {
                 if (Error != null) return Error;
-                return Value.ToString();
+                long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+                long end = start + (2 * ONE_YEAR);
+                if (Value > start && Value < end) {
+                    DateTime dt = ConvertFromUnixTimestamp(Value).ToLocalTime();
+                    if (dt.Day == DateTime.Now.Day + 1) {
+                        return dt.ToShortTimeString() + " tomorrow";
+                    } else if (dt.Day == DateTime.Now.Day - 1) {
+                        return dt.ToShortTimeString() + " yesterday";
+                    } else
+                        return dt.ToShortTimeString();
+                } else {
+                    return Value.ToString();
+                }
             }
             set { }
         }
@@ -345,6 +352,46 @@ namespace WhenPlugin.When {
             }
         }
 
+        public static DateTime ConvertFromUnixTimestamp(double timestamp) {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            return origin.AddSeconds(timestamp);
+        }
+        public long UnixTimeNow() {
+            var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+            return (long)timeSpan.TotalSeconds;
+        }
+
+
+        public void ExtensionFunction(string name, FunctionArgs args) {
+            DateTime dt;
+            if (args.Parameters.Length > 0) {
+                try {
+                    var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                    dt = utc.ToLocalTime();
+                } catch (Exception) {
+                    dt = DateTime.MinValue;
+                }
+            } else {
+                dt = DateTime.Now;
+            }
+            if (name == "now") {
+                args.Result = UnixTimeNow();
+            } else if (name == "hour") {
+                args.Result = (int)dt.Hour;
+            } else if (name == "minute") {
+                args.Result = (int)dt.Minute;
+            } else if (name == "day") {
+                args.Result = (int)dt.Day;
+            } else if (name == "month") {
+                args.Result = (int)dt.Month;
+            } else if (name == "year") {
+                args.Result = (int)dt.Year;
+            } else if (name == "dow") {
+                args.Result = (int)dt.DayOfWeek;
+            } else if (name == "datetime") {
+                args.Result = 0;
+            }
+        }
         public void RemoveParameter (string identifier) {
             Parameters.Remove(identifier);
             Resolved.Remove(identifier);
@@ -479,14 +526,8 @@ namespace WhenPlugin.When {
             }
 
             // Then evaluate
-            Expression e = new Expression(Expression);
-            //e.Options = EvaluateOptions.IgnoreCase;
-            //Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
-            e.EvaluateFunction += delegate (string name, FunctionArgs args)
-            {
-                if (name == "SecretOperation")
-                    args.Result = (int)args.Parameters[0].Evaluate() + (int)args.Parameters[1].Evaluate();
-            };
+            Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+            e.EvaluateFunction += ExtensionFunction;
             e.Parameters = Parameters;
 
             if (Parameters.Count != References.Count) {

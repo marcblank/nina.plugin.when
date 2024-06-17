@@ -17,31 +17,50 @@ using System.Text.RegularExpressions;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Profile;
+using NINA.Astrometry;
+using NINA.Core.Locale;
+using NINA.Sequencer.Utility.DateTimeProvider;
+using System.Linq;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "Set Variable")]
+    [ExportMetadata("Name", "Set Variable to Time")]
     [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class ResetVariable : SequenceItem, IValidatable {
+    public class ResetVariableToDate : SequenceItem, IValidatable {
+
+        private IList<IDateTimeProvider> dateTimeProviders;
+        private IDateTimeProvider selectedProvider;
+        private int hours;
+        private int minutes;
+        private int minutesOffset;
+        private int seconds;
+
         [ImportingConstructor]
-
-
-        public ResetVariable() {
+        public ResetVariableToDate(IList<IDateTimeProvider> dateTimeProviders) {
             Icon = Icon;
             Expr = new Expr(this);
+            DateTime = new SystemDateTime();
+            this.DateTimeProviders = dateTimeProviders;
+            this.SelectedProvider = DateTimeProviders?.FirstOrDefault();
         }
 
-        public ResetVariable(ResetVariable copyMe) : this() {
+        public ResetVariableToDate(IList<IDateTimeProvider> dateTimeProviders, IDateTimeProvider selectedProvider) {
+            DateTime = new SystemDateTime();
+            this.DateTimeProviders = dateTimeProviders;
+            this.SelectedProvider = selectedProvider;
+        }
+
+        public ResetVariableToDate(ResetVariableToDate copyMe) : this(copyMe.DateTimeProviders, copyMe.SelectedProvider) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
             }
         }
 
         public override object Clone() {
-            ResetVariable clone = new ResetVariable(this) { };
+            ResetVariableToDate clone = new ResetVariableToDate(this) { };
             clone.Expr = new Expr(clone, this.Expr.Expression);
             clone.Variable = this.Variable;
             return clone;
@@ -120,6 +139,7 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+            UpdateTime();
             //Expr.Validate();
         }
 
@@ -127,11 +147,99 @@ namespace WhenPlugin.When {
             return $"Category: {Category}, Item: {nameof(ResetVariable)}, Variable: {variable}, Expr: {Expr}";
         }
 
+        public IList<IDateTimeProvider> DateTimeProviders {
+            get => dateTimeProviders;
+            set {
+                dateTimeProviders = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HasFixedTimeProvider => selectedProvider != null && !(selectedProvider is NINA.Sequencer.Utility.DateTimeProvider.TimeProvider);
+
+        [JsonProperty]
+        public IDateTimeProvider SelectedProvider {
+            get => selectedProvider;
+            set {
+                selectedProvider = value;
+                if (selectedProvider != null) {
+                    UpdateTime();
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(HasFixedTimeProvider));
+                }
+            }
+        }
+
+        public string TimeString { get; set; } = "Not Set";
+
+        private bool timeDeterminedSuccessfully;
+        private DateTime lastReferenceDate;
+        private void UpdateTime() {
+            try {
+                lastReferenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                if (HasFixedTimeProvider) {
+                    DateTime t = SelectedProvider.GetDateTime(this) + TimeSpan.FromMinutes(MinutesOffset);
+                    Hours = t.Hour;
+                    Minutes = t.Minute;
+                    Seconds = t.Second;
+                    Expr.Value = ((DateTimeOffset)t).ToUnixTimeSeconds();
+                    TimeString = Expr.ValueString;
+                    RaisePropertyChanged("Expr.Value");
+                    RaisePropertyChanged("Expr.ValueString");
+                    RaisePropertyChanged("Expr");
+                    RaisePropertyChanged("TimeString");
+                }
+                timeDeterminedSuccessfully = true;
+            } catch (Exception) {
+                timeDeterminedSuccessfully = false;
+                Validate();
+            }
+        }
+
+        [JsonProperty]
+        public int Hours {
+            get => hours;
+            set {
+                hours = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public int Minutes {
+            get => minutes;
+            set {
+                minutes = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public int MinutesOffset {
+            get => minutesOffset;
+            set {
+                minutesOffset = value;
+                UpdateTime();
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public int Seconds {
+            get => seconds;
+            set {
+                seconds = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICustomDateTime DateTime { get; set; }
+
         public bool Validate() {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
-            if (Expr.Expression.Length == 0 || (Variable == null || Variable.Length == 0)) {
+            if (Variable == null || Variable.Length == 0) {
                 i.Add("The variable and new value expression must both be specified");
             } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, Symbol.VALID_SYMBOL)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
@@ -142,6 +250,15 @@ namespace WhenPlugin.When {
                 } else if (sym is SetConstant) {
                     i.Add("The symbol '" + Variable + "' is a Constant and may not be used with this instruction");
                 }
+            }
+            if (HasFixedTimeProvider) {
+                var referenceDate = NighttimeCalculator.GetReferenceDate(DateTime.Now);
+                if (lastReferenceDate != referenceDate) {
+                    UpdateTime();
+                }
+            }
+            if (!timeDeterminedSuccessfully) {
+                i.Add(Loc.Instance["LblSelectedTimeSourceInvalid"]);
             }
 
             Expr.Evaluate();

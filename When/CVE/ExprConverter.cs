@@ -33,13 +33,25 @@ namespace WhenPlugin.When {
         private const int VALUE_STRING_VALUE = 1;          // If present, a validation method (range check, etc.)
         private const int VALUE_COMBO = 2;             // If present, a IList<string> of combo box values
 
+        private long NowInSeconds = 0;
+        private long NowPlusOneYear;
+        private long NowMinusOneYear;
+
+        private const int ONE_YEAR = 365 * 24 * 60 * 60;
+
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             Expr expr = values[VALUE_EXP] as Expr;
+
+            if (NowInSeconds == 0) {
+                NowInSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+                NowPlusOneYear = NowInSeconds + ONE_YEAR;
+                NowMinusOneYear = NowInSeconds - ONE_YEAR;
+            }
 
             try {
                 if (expr != null) {
                     if (expr.Error != null) return "{" + expr.Error + "}";
-                    if (!expr.IsExpression) return ""; // return "{" + expr.Value + "}";
+                    if (!expr.IsExpression) return "";
                     string txt;
                     if (expr.Error == null) {
                         if (expr.SequenceEntity is ITrueFalse) {
@@ -49,15 +61,20 @@ namespace WhenPlugin.When {
                                 txt = "True";
                             }
                         } else {
-
-                            txt = Math.Round(expr.Value, 2).ToString();
-                            if (values.Length > 2) {
-                                IList<string> combo = (IList<string>)values[VALUE_COMBO];
-                                int i = (int)expr.Value;
-                                if (i >= 0 && i < combo.Count) {
-                                    txt = combo[i];
+                            if (expr.Value > NowMinusOneYear && expr.Value < NowPlusOneYear) {
+                                // Handle dates
+                                txt = expr.ValueString;
+                            } else {
+                                txt = Math.Round(expr.Value, 2).ToString();
+                                if (values.Length > 2) {
+                                    IList<string> combo = (IList<string>)values[VALUE_COMBO];
+                                    int i = (int)expr.Value;
+                                    if (i >= 0 && i < combo.Count) {
+                                        txt = combo[i];
+                                    }
                                 }
                             }
+                        
                         }
                         //                } else if (Double.IsNaN(expr.Value)) {
                         //                    txt = "Not evaluated";

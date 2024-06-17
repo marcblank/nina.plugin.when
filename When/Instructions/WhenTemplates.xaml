@@ -9,6 +9,7 @@
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:behaviors="clr-namespace:NINA.Sequencer.Behaviors;assembly=NINA.Sequencer"
     xmlns:wpfutil="clr-namespace:NINA.WPF.Base.Utility;assembly=NINA.WPF.Base"
@@ -870,7 +871,7 @@
     We want validation of the variable name, but Validate=ValidateVariable will cause the
     validation warning to appear with the new value of the variable, which is WRONG
     -->
-    
+
     <DataTemplate DataType="{x:Type local:ResetVariable}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -882,6 +883,112 @@
                        Text="{Binding Variable}"
                        TextAlignment="Center" />
                     <local:ExprControl Label="New value:" Exp="{Binding Expr, Mode=TwoWay}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:ResetVariableToDate}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                    <TextBox
+                       MinWidth="40"
+                       Margin="5,1,10,-2"
+                       Text="{Binding Variable}"
+                       TextAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSource}" />
+                        <ComboBox
+                           Margin="5,0,0,0"
+                           VerticalAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           DisplayMemberPath="Name"
+                           ItemsSource="{Binding DateTimeProviders}"
+                           SelectedItem="{Binding SelectedProvider}" />
+                            <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTime}" />
+                            <TextBox
+                               MinWidth="40"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                                <TextBox.Text>
+                                <Binding Path="Hours">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="23" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Minutes">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Text=":" />
+                        <TextBox
+                           MinWidth="40"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           IsEnabled="{Binding HasFixedTimeProvider, Converter={StaticResource InverseBooleanConverter}}">
+                            <TextBox.Text>
+                                <Binding Path="Seconds">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRule>
+                                            <rules:IntRangeRule.ValidRange>
+                                                <rules:IntRangeChecker Maximum="59" Minimum="0" />
+                                            </rules:IntRangeRule.ValidRange>
+                                        </rules:IntRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding HasFixedTimeProvider, Converter={StaticResource VisibilityConverter}}">
+                            <TextBlock
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{ns:Loc LblTimeOffset}"
+                               ToolTip="{ns:Loc LblTimeOffsetTooltip}" />
+                            <TextBox
+                               MinWidth="30"
+                               Margin="5,0,0,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Right"
+                               Text="{Binding MinutesOffset}" />
+                            <TextBlock Margin="0,-2,0,0" VerticalAlignment="Center">m</TextBlock>
+                        </StackPanel>
+                        <TextBlock Margin="10,-4,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}{" />
+                        <TextBlock Margin="0,-4,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{Binding TimeString}" />
+                        <TextBlock Margin="0,-4,0,0" Foreground="GreenYellow" VerticalAlignment="Center" Text="{}}" />
+                    </StackPanel>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
