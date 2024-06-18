@@ -75,10 +75,6 @@ namespace WhenPlugin.When {
             // Execute the conditional
             condition.Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
 
-            //var titleProperty = condition.GetType().GetProperty("Title");
-            //if (titleProperty == null) {
-            //    throw new SequenceEntityFailedException("Not a Ground Station instruction?");
-            //}
             var messageProperty = condition.GetType().GetProperty("Message");
             if (messageProperty == null) {
                 throw new SequenceEntityFailedException("Not a Ground Station instruction?");
@@ -90,6 +86,7 @@ namespace WhenPlugin.When {
             }
             messageProperty.SetValue(condition, processedMessage, null);
             await condition.Run(progress, token);
+            messageProperty.SetValue(condition, message, null);
         }
 
         // Allow only ONE instruction to be added to Condition
@@ -112,6 +109,19 @@ namespace WhenPlugin.When {
                 Condition.Items.Clear();
                 Condition.Items.Add(item);
            }
+        }
+
+        public override bool Validate() {
+            Issues.Clear();
+            if (Condition == null || Condition.Items.Count == 0) {
+                issues.Add("There must be a Ground Station instruction included in this instruction");
+            } else {
+                string name = Condition.Items[0].Name;
+                if (!name.StartsWith("Send to") && !name.Equals("Send Email")) {
+                    issues.Add("The Ground Station instruction must be \"Send to xxx\" or \"Send email\"");
+                }
+             }
+            return issues.Count == 0;
         }
 
         public override string ToString() {

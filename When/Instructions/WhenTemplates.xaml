@@ -1340,7 +1340,7 @@
                                 Foreground="White"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="Ground Station instruction: " />
+                                Text="Send via Ground Station: " />
 
                             <Border
                               Width="20"
@@ -1378,7 +1378,7 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontStyle="Italic"
-                                       Text="Instruction to check goes here"
+                                       Text="Ground station instruction goes here"
                                        TextAlignment="Center"
                                        MinWidth="400"
                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
@@ -1408,28 +1408,6 @@
                         </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
-                <StackPanel Grid.Row="1" Orientation="Vertical">
-                    <Border
-                     MinHeight="35"
-                     Margin="0,0,0,0"
-                     BorderBrush="{StaticResource BorderBrush}"
-                     BorderThickness="1">
-                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                            <TextBlock
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             FontStyle="Italic"
-                             Opacity="0.4"
-                             Text="Conditional instructions go here"
-                             Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                            <i:Interaction.Behaviors>
-                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
-                            </i:Interaction.Behaviors>
-                        </Grid>
-                    </Border>
-                </StackPanel>
             </ninactrl:DetachingExpander>
         </Border>
     </DataTemplate>
