@@ -1308,7 +1308,8 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type local:IfFailed}">
+
+    <DataTemplate DataType="{x:Type local:GSSend}">
         <Border>
             <Border.Resources>
                 <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
@@ -1339,7 +1340,7 @@
                                 Foreground="White"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="If Failed: " />
+                                Text="Ground Station instruction: " />
 
                             <Border
                               Width="20"
