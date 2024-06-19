@@ -44,10 +44,13 @@ namespace WhenPlugin.When {
 
         public string ProcessedScript(string message) {
             string value = message;
-            RaisePropertyChanged();
             if (value != null) {
                 while (true) {
                     string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
+                    if (toReplace == null) {
+                        Logger.Error("toReplace is null?");
+                        break;
+                    }
                     if (toReplace.Length == 0) break;
                     Expr ex = new Expr(this, toReplace);
                     ProcessedScriptError = null;
@@ -59,7 +62,6 @@ namespace WhenPlugin.When {
                     value = value.Replace("{" + toReplace + "}", ex.ValueString);
                 }
             }
-            RaisePropertyChanged("ProcessedScriptAnnotated");
             return value;
         }
 
@@ -80,10 +82,17 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("Not a Ground Station instruction?");
             }
             string message = (string)messageProperty.GetValue(condition);
+            if (message == null) {
+                throw new SequenceEntityFailedException("Message is null?");
+            }
             var processedMessage = ProcessedScript(message);
             if (ProcessedScriptError != null) {
                 throw new SequenceEntityFailedException("Error processing message for Ground Station: " + ProcessedScriptError);
             }
+            if (processedMessage == null) {
+                throw new SequenceEntityFailedException("Processed message is null?");
+            }
+            Logger.Warning("Processed message: " + processedMessage);
             messageProperty.SetValue(condition, processedMessage, null);
             await condition.Run(progress, token);
             messageProperty.SetValue(condition, message, null);
