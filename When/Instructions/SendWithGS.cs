@@ -92,7 +92,6 @@ namespace WhenPlugin.When {
             if (processedMessage == null) {
                 throw new SequenceEntityFailedException("Processed message is null?");
             }
-            Logger.Warning("Processed message: " + processedMessage);
             messageProperty.SetValue(condition, processedMessage, null);
             await condition.Run(progress, token);
             messageProperty.SetValue(condition, message, null);
@@ -130,6 +129,7 @@ namespace WhenPlugin.When {
                     issues.Add("The Ground Station instruction must be \"Send to xxx\" or \"Send email\"");
                 }
              }
+            RaisePropertyChanged("Issues");
             return issues.Count == 0;
         }
 

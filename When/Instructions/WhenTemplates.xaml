@@ -16,7 +16,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <ControlTemplate x:Key="PowerupsButtons">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
             <Button
                    Width="25"
@@ -100,21 +100,21 @@
                     Command="{Binding AddCloneToParentCommand}"
                     Style="{StaticResource SecondaryBackgroundButton}"
                     Visibility="{Binding AddCloneToParentCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-                    <Grid>
-                        <Path
+                <Grid>
+                    <Path
                             Margin="5"
                             Data="{StaticResource CopySVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
-                    </Grid>
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Duplicate_Tooltip}" />
-                        </ToolTip>
-                    </Button.ToolTip>
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_Duplicate_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
             </Button>
- 
+
             <Button
                     x:Name="MoveUpButton"
                     Width="25"
@@ -124,21 +124,21 @@
                     VerticalAlignment="Center"
                     Command="{Binding MoveUpCommand}"
                     Style="{StaticResource SecondaryBackgroundButton}">
-                    <Grid>
-                        <Path
+                <Grid>
+                    <Path
                             Margin="5"
                             Data="{StaticResource ArrowUpSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
-                    </Grid>
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveUp_Tooltip}" />
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Button
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveUp_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Button
                     x:Name="MoveDownButton"
                     Width="25"
                     Height="25"
@@ -148,21 +148,21 @@
                     Command="{Binding MoveDownCommand}"
                     Style="{StaticResource SecondaryBackgroundButton}"
                     Visibility="{Binding MoveDownCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
-                    <Grid>
-                        <Path
+                <Grid>
+                    <Path
                             Margin="5"
                             Data="{StaticResource ArrowDownSVG}"
                             Fill="{StaticResource ButtonForegroundBrush}"
                             Stretch="Uniform"
                             UseLayoutRounding="True" />
-                    </Grid>
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveDown_Tooltip}" />
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-            </StackPanel>
+                </Grid>
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Foreground="{StaticResource PrimaryBrush}" Text="{ns:Loc Lbl_SequenceContainer_MoveDown_Tooltip}" />
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+        </StackPanel>
     </ControlTemplate>
 
     <Style x:Name="PowerupsStyle" TargetType="{x:Type ninactrl:DetachingExpander}">
@@ -210,12 +210,12 @@
                                                                  x:Name="Head"
                                                                  Background="{StaticResource SecondaryBackgroundBrush}"
                                                                  UseLayoutRounding="True">
-                                                                 <Grid.ColumnDefinitions>
+                                                                <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="30" />
                                                                     <ColumnDefinition Width="30" />
                                                                     <ColumnDefinition Width="*" />
-                                                                 </Grid.ColumnDefinitions>
-                                                                 <Path
+                                                                </Grid.ColumnDefinitions>
+                                                                <Path
                                                                     x:Name="iconarrow"
                                                                     Grid.Column="0"
                                                                     Width="10"
@@ -327,7 +327,7 @@
                         Opacity="0.5"
                         Text="{TemplateBinding HintText}"
                         TextAlignment="{TemplateBinding TextAlignment}">
-                            
+
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -369,13 +369,13 @@
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:MoveRotatorMechanical}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <local:ExprControl Label="Angle:" Exp="{Binding RExpr}" />
-                 </StackPanel>
+                </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
@@ -715,7 +715,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                     <TextBox
+                    <TextBox
                       Grid.Column="1"
                       MinWidth="40"
                       Margin="5,2,0,0"
@@ -729,7 +729,7 @@
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
- 
+
     <DataTemplate x:Key="WhenPlugin.When.CoolCamera_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
@@ -842,7 +842,7 @@
     We want validation of the variable name, but Validate=ValidateVariable will cause the
     validation warning to appear with the new value of the variable, which is WRONG
     -->
-    
+
     <DataTemplate DataType="{x:Type local:ResetVariable}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -965,7 +965,7 @@
                             <local:ExprControl 
                                 Label="Wait "
                                 Exp="{Binding Path=WaitExpr, Mode=TwoWay}" />
-                           <TextBlock VerticalAlignment="Center" Margin="0,-1,0,0" Text=" s before repeating " />
+                            <TextBlock VerticalAlignment="Center" Margin="0,-1,0,0" Text=" s before repeating " />
                         </StackPanel>
                     </ninactrl:DetachingExpander.Header>
                     <Grid>
@@ -1001,8 +1001,8 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
- 
- 
+
+
     <DataTemplate DataType="{x:Type local:IfSafe}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -1321,20 +1321,18 @@
                  DragAboveSize="25"
                  DragBelowSize="15" />
             </i:Interaction.Behaviors>
-            <ninactrl:DetachingExpander>
-                <ninactrl:DetachingExpander.Header>
-                    <Grid
+            <Grid
                      MinHeight="35"
                      Margin="0"
                      HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
                      Background="{StaticResource SecondaryBackgroundBrush}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock 
                                 MinHeight="25"
                                 Margin="10,10,10,0"
                                 Foreground="White"
@@ -1342,39 +1340,39 @@
                                 VerticalAlignment="Center"
                                 Text="Send via Ground Station: " />
 
-                            <Border
+                    <Border
                               Width="20"
                               Height="20"
                               Margin="5,0,5,0"
                               Background="{StaticResource NotificationErrorBrush}"
                               BorderBrush="Transparent"
                               CornerRadius="10">
-                                <Border.Visibility>
-                                    <PriorityBinding>
-                                        <Binding
+                        <Border.Visibility>
+                            <PriorityBinding>
+                                <Binding
                                           Converter="{StaticResource ZeroToVisibilityConverter}"
                                           FallbackValue="Collapsed"
                                           Path="Issues.Count" />
-                                    </PriorityBinding>
-                                </Border.Visibility>
-                                <Path
+                            </PriorityBinding>
+                        </Border.Visibility>
+                        <Path
                                   HorizontalAlignment="Right"
                                   Data="{StaticResource ExclamationCircledSVG}"
                                   Fill="{StaticResource ButtonForegroundBrush}"
                                   Stretch="Uniform" />
-                                <Border.ToolTip>
-                                    <ItemsControl ItemsSource="{Binding Issues}" />
-                                </Border.ToolTip>
-                            </Border>
+                        <Border.ToolTip>
+                            <ItemsControl ItemsSource="{Binding Issues}" />
+                        </Border.ToolTip>
+                    </Border>
 
-                            <Border
+                    <Border
                                MinHeight="35"
                                Margin="8,1,0,0"
                                BorderBrush="{StaticResource BorderBrush}"
                                BorderThickness="1">
-                                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
-                                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                    <TextBlock
+                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                            <TextBlock
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontStyle="Italic"
@@ -1382,36 +1380,34 @@
                                        TextAlignment="Center"
                                        MinWidth="400"
                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                    <i:Interaction.Behaviors>
-                                        <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    </i:Interaction.Behaviors>
-                                </Grid>
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
-                                </i:Interaction.Behaviors>
-                            </Border>
-                        </StackPanel>
-                        <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
-                            <ContentPresenter
+                            <i:Interaction.Behaviors>
+                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                            </i:Interaction.Behaviors>
+                        </Grid>
+                        <i:Interaction.Behaviors>
+                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
+                        </i:Interaction.Behaviors>
+                    </Border>
+                </StackPanel>
+                <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                    <ContentPresenter
                              Margin="2,0,10,0"
                              HorizontalAlignment="Right"
                              Content="{Binding}"
                              DockPanel.Dock="Right"
                              Style="{StaticResource ProgressPresenter}" />
-                        </Border>
-                        <Border
+                </Border>
+                <Border
                           x:Name="ButtonCommands"
                           Grid.Column="2"
                           HorizontalAlignment="Stretch"
                           Background="{StaticResource SecondaryBackgroundBrush}">
-                            <Control Template="{StaticResource PowerupsButtons}" />
-                        </Border>
-                    </Grid>
-                </ninactrl:DetachingExpander.Header>
-            </ninactrl:DetachingExpander>
+                    <Control Template="{StaticResource PowerupsButtons}" />
+                </Border>
+            </Grid>
         </Border>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:IfTimeout}">
         <Border>
             <Border.Resources>
@@ -2007,7 +2003,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
        x:Key="TakeFlatExposureDetails"
        x:Shared="false"
        Orientation="Horizontal">
- 
+
         <local:ExprControl Label="#" Exp="{Binding Parent.IterExpr}" />
 
         <TextBlock
@@ -2200,7 +2196,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
             </mini:MiniSequenceItem.SequenceItemContent>
         </mini:MiniSequenceItem>
     </DataTemplate>-->
-    
+
     <DataTemplate DataType="{x:Type local:SwitchFilter}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
@@ -2228,7 +2224,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                        Combo="{Binding Path=FilterNames}"/>
                 </StackPanel>
 
- 
+
 
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -2481,7 +2477,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:EndInstructionSet}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -2606,7 +2602,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         </WrapPanel.Resources>
 
         <local:ExprControl Margin="0,0,0,0" Label="{ns:Loc LblTime}" Exp="{Binding EExpr}"/>
- 
+
         <TextBlock
             Margin="7,-2,7.5,0"
             HorizontalAlignment="Center"
@@ -2874,7 +2870,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
-                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                    <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
@@ -3122,7 +3118,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
             </mini:MiniSequenceItem.SequenceItemContent>
         </mini:MiniSequenceItem>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:FlipRotator}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
