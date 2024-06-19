@@ -38,7 +38,7 @@ namespace NINA.Sequencer.SequenceItem.Autofocus {
     [ExportMetadata("Description", "Lbl_SequenceItem_Autofocus_RunAutofocus_Description")]
     [ExportMetadata("Icon", "AutoFocusSVG")]
     [ExportMetadata("Category", "Powerups (Test)")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class RunAutofocus : SequenceItem, IValidatable {
         private IProfileService profileService;

@@ -51,8 +51,8 @@ namespace WhenPlugin.When {
         }
 
         public void ValidateTime(Expr expr) {
-            if (expr.Value <= 0) {
-                expr.Error = "Must be greater than zero";
+            if (expr.Value < 0) {
+                expr.Error = "Must be greater than or equal to zero";
             }
         }
 
@@ -80,6 +80,7 @@ namespace WhenPlugin.When {
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Symbol.UpdateSwitchWeatherData();
             WaitExpr.Evaluate();
+            if (WaitExpr.Value == 0) return Task.CompletedTask;
             return NINA.Core.Utility.CoreUtil.Wait(GetEstimatedDuration(), true, token, progress, "");
         }
 
@@ -94,7 +95,7 @@ namespace WhenPlugin.When {
             IList<string> i = new List<string>();
             if (WaitExpr != null && WaitExpr.Error != null) {
                 i.Add(WaitExpr.Error);
-            } else if (WaitExpr.Value <= 0) {
+            } else if (WaitExpr.Value < 0) {
                 i.Add("Wait time must be greater than zero");
             }
             WaitExpr.Validate();

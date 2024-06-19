@@ -48,7 +48,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Lbl_SequenceTrigger_AutofocusAfterExposures_Description")]
     [ExportMetadata("Icon", "AutoFocusAfterExposuresSVG")]
     [ExportMetadata("Category", "Powerups (Test)")]
-    [Export(typeof(ISequenceTrigger))]
+    //[Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class AutofocusAfterExposures : SequenceTrigger, IValidatable {
         private IProfileService profileService;

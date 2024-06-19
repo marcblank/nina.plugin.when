@@ -88,6 +88,7 @@ namespace WhenPlugin.When {
                 }
             } catch (Exception ex) {
                 Logger.Error("ExprConverter: " + ex.Message);
+                Logger.Error(ex.StackTrace);
                 return "{Exception}";
             }
         }
