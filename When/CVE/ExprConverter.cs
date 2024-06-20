@@ -66,7 +66,7 @@ namespace WhenPlugin.When {
                                 txt = expr.ValueString;
                             } else {
                                 txt = Math.Round(expr.Value, 2).ToString();
-                                if (values.Length > 2) {
+                                if (values.Length > 2 && values[VALUE_COMBO] != null) {
                                     IList<string> combo = (IList<string>)values[VALUE_COMBO];
                                     int i = (int)expr.Value;
                                     if (i >= 0 && i < combo.Count) {
