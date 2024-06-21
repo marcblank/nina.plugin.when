@@ -360,6 +360,17 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:Center}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type nina:SequenceBlockView}}, Path=DataContext.Inherited, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <local:ExprControl Label="RA (decimal hours):" Exp="{Binding RAExpr}" />
+                    <local:ExprControl Margin="8,0,0,0" Label="Dec (decimal degrees):" Exp="{Binding DecExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:SlewToAltAz}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>

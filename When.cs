@@ -39,14 +39,14 @@ namespace WhenPlugin.When {
     /// </summary>
     [Export(typeof(IPluginManifest))]
     public class WhenPlugin : PluginBase, INotifyPropertyChanged {
-        private readonly IPluginOptionsAccessor pluginSettings;
-        private readonly IProfileService profileService;
+        private static IPluginOptionsAccessor PluginSettings;
+        private static IProfileService ProfileService;
 
         // Implementing a file pattern
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
 
         [ImportingConstructor]
-        public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator, 
+        public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator,
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                 IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
                 IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator) {
@@ -57,14 +57,14 @@ namespace WhenPlugin.When {
             }
 
             // This helper class can be used to store plugin settings that are dependent on the current profile
-            this.pluginSettings = new PluginOptionsAccessor(profileService, Guid.Parse(this.Identifier));
-            this.profileService = profileService;
+            PluginSettings = new PluginOptionsAccessor(profileService, Guid.Parse(this.Identifier));
+            ProfileService = profileService;
             // React on a changed profile
             profileService.ProfileChanged += ProfileService_ProfileChanged;
 
             // Hook into image saving for adding FITS keywords or image file patterns
             Symbol.WhenPluginObject = this;
-            Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService, 
+            Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService,
                 rotatorMediator, safetyMonitorMediator, focuserMediator, telescopeMediator);
             CreateGlobalSetConstants(this);
 
@@ -76,7 +76,7 @@ namespace WhenPlugin.When {
 
         public override Task Teardown() {
             // Make sure to unregister an event when the object is no longer in use. Otherwise garbage collection will be prevented.
-            profileService.ProfileChanged -= ProfileService_ProfileChanged;
+            ProfileService.ProfileChanged -= ProfileService_ProfileChanged;
             return base.Teardown();
         }
         private Task ImageSaveMediator_BeforeFinalizeImageSaved(object sender, BeforeFinalizeImageSavedEventArgs e) {
@@ -105,6 +105,14 @@ namespace WhenPlugin.When {
         public SequenceContainer Globals {
             get => Symbol.GlobalContainer;
             set { }
+        }
+
+        public static double GetLatitude() {
+            return ProfileService.ActiveProfile.AstrometrySettings.Latitude;
+        }
+
+        public static double GetLongitude() {
+            return ProfileService.ActiveProfile.AstrometrySettings.Longitude;
         }
 
         public ICommand OpenRoofFilePathDiagCommand { get; private set; }
@@ -156,14 +164,14 @@ namespace WhenPlugin.When {
         public string RoofStatus {
             get {
                 if (!All1) {
-                    return pluginSettings.GetValueString(nameof(RoofStatus), Settings.Default.RoofStatus);
+                    return PluginSettings.GetValueString(nameof(RoofStatus), Settings.Default.RoofStatus);
                 } else {
                     return Settings.Default.RoofStatus;
                 }
             }
             set {
                 if (!All1) {
-                    pluginSettings.SetValueString(nameof(RoofStatus), value);
+                    PluginSettings.SetValueString(nameof(RoofStatus), value);
                 } else {
                     Settings.Default.RoofStatus = value;
                 }
@@ -174,14 +182,14 @@ namespace WhenPlugin.When {
         public string RoofOpenString {
             get {
                 if (!All1) {
-                    return pluginSettings.GetValueString(nameof(RoofOpenString), Settings.Default.RoofOpenString);
+                    return PluginSettings.GetValueString(nameof(RoofOpenString), Settings.Default.RoofOpenString);
                 } else {
                     return Settings.Default.RoofOpenString;
                 }
             }
             set {
                 if (!All1) {
-                    pluginSettings.SetValueString(nameof(RoofOpenString), value);
+                    PluginSettings.SetValueString(nameof(RoofOpenString), value);
                 } else {
                     Settings.Default.RoofOpenString = value;
                 }
@@ -193,14 +201,14 @@ namespace WhenPlugin.When {
         public string Name1 {
             get {
                 if (!All1) {
-                    return pluginSettings.GetValueString(nameof(Name1), Settings.Default.Name1);
+                    return PluginSettings.GetValueString(nameof(Name1), Settings.Default.Name1);
                 } else {
                     return Settings.Default.Name1;
                 }
             }
             set {
                 if (!All1) {
-                    pluginSettings.SetValueString(nameof(Name1), value);
+                    PluginSettings.SetValueString(nameof(Name1), value);
                 } else {
                     Settings.Default.Name1 = value;
                 }
@@ -212,14 +220,14 @@ namespace WhenPlugin.When {
         public string Value1 {
             get {
                 if (!All1) {
-                    return pluginSettings.GetValueString(nameof(Value1), Settings.Default.Value1);
+                    return PluginSettings.GetValueString(nameof(Value1), Settings.Default.Value1);
                 } else {
                     return Settings.Default.Value1;
                 }
             }
             set {
                 if (!All1) {
-                    pluginSettings.SetValueString(nameof(Value1), value);
+                    PluginSettings.SetValueString(nameof(Value1), value);
                 } else {
                     Settings.Default.Value1 = value;
                 }
@@ -231,14 +239,14 @@ namespace WhenPlugin.When {
         public string Name2 {
             get {
                 if (!All2) {
-                    return pluginSettings.GetValueString(nameof(Name2), Settings.Default.Name2);
+                    return PluginSettings.GetValueString(nameof(Name2), Settings.Default.Name2);
                 } else {
                     return Settings.Default.Name2;
                 }
             }
             set {
                 if (!All2) {
-                    pluginSettings.SetValueString(nameof(Name2), value);
+                    PluginSettings.SetValueString(nameof(Name2), value);
                 } else {
                     Settings.Default.Name2 = value;
                 }
@@ -250,14 +258,14 @@ namespace WhenPlugin.When {
         public string Value2 {
             get {
                 if (!All2) {
-                    return pluginSettings.GetValueString(nameof(Value2), Settings.Default.Value2);
+                    return PluginSettings.GetValueString(nameof(Value2), Settings.Default.Value2);
                 } else {
                     return Settings.Default.Value2;
                 }
             }
             set {
                 if (!All2) {
-                    pluginSettings.SetValueString(nameof(Value2), value);
+                    PluginSettings.SetValueString(nameof(Value2), value);
                 } else {
                     Settings.Default.Value2 = value;
                 }
@@ -269,14 +277,14 @@ namespace WhenPlugin.When {
         public string Name3 {
             get {
                 if (!All3) {
-                    return pluginSettings.GetValueString(nameof(Name3), Settings.Default.Name3);
+                    return PluginSettings.GetValueString(nameof(Name3), Settings.Default.Name3);
                 } else {
                     return Settings.Default.Name3;
                 }
             }
             set {
                 if (!All3) {
-                    pluginSettings.SetValueString(nameof(Name3), value);
+                    PluginSettings.SetValueString(nameof(Name3), value);
                 } else {
                     Settings.Default.Name3 = value;
                 }
@@ -288,14 +296,14 @@ namespace WhenPlugin.When {
         public string Value3 {
             get {
                 if (!All3) {
-                    return pluginSettings.GetValueString(nameof(Value3), Settings.Default.Value4);
+                    return PluginSettings.GetValueString(nameof(Value3), Settings.Default.Value4);
                 } else {
                     return Settings.Default.Value3;
                 }
             }
             set {
                 if (!All3) {
-                    pluginSettings.SetValueString(nameof(Value3), value);
+                    PluginSettings.SetValueString(nameof(Value3), value);
                 } else {
                     Settings.Default.Value3 = value;
                 }
@@ -307,14 +315,14 @@ namespace WhenPlugin.When {
         public string Name4 {
             get {
                 if (!All4) {
-                    return pluginSettings.GetValueString(nameof(Name4), Settings.Default.Name4);
+                    return PluginSettings.GetValueString(nameof(Name4), Settings.Default.Name4);
                 } else {
                     return Settings.Default.Name4;
                 }
             }
             set {
                 if (!All4) {
-                    pluginSettings.SetValueString(nameof(Name4), value);
+                    PluginSettings.SetValueString(nameof(Name4), value);
                 } else {
                     Settings.Default.Name4 = value;
                 }
@@ -326,14 +334,14 @@ namespace WhenPlugin.When {
         public string Value4 {
             get {
                 if (!All4) {
-                    return pluginSettings.GetValueString(nameof(Value4), Settings.Default.Value4);
+                    return PluginSettings.GetValueString(nameof(Value4), Settings.Default.Value4);
                 } else {
                     return Settings.Default.Value4;
                 }
             }
             set {
                 if (!All4) {
-                    pluginSettings.SetValueString(nameof(Value4), value);
+                    PluginSettings.SetValueString(nameof(Value4), value);
                 } else {
                     Settings.Default.Value4 = value;
                 }
@@ -345,14 +353,14 @@ namespace WhenPlugin.When {
         public string Name5 {
             get {
                 if (!All5) {
-                    return pluginSettings.GetValueString(nameof(Name5), Settings.Default.Name5);
+                    return PluginSettings.GetValueString(nameof(Name5), Settings.Default.Name5);
                 } else {
                     return Settings.Default.Name5;
                 }
             }
             set {
                 if (!All5) {
-                    pluginSettings.SetValueString(nameof(Name5), value);
+                    PluginSettings.SetValueString(nameof(Name5), value);
                 } else {
                     Settings.Default.Name5 = value;
                 }
@@ -364,14 +372,14 @@ namespace WhenPlugin.When {
         public string Value5 {
             get {
                 if (!All5) {
-                    return pluginSettings.GetValueString(nameof(Value5), Settings.Default.Value5);
+                    return PluginSettings.GetValueString(nameof(Value5), Settings.Default.Value5);
                 } else {
                     return Settings.Default.Value5;
                 }
             }
             set {
                 if (!All5) {
-                    pluginSettings.SetValueString(nameof(Value5), value);
+                    PluginSettings.SetValueString(nameof(Value5), value);
                 } else {
                     Settings.Default.Value5 = value;
                 }
@@ -383,14 +391,14 @@ namespace WhenPlugin.When {
         public string Name6 {
             get {
                 if (!All6) {
-                    return pluginSettings.GetValueString(nameof(Name6), Settings.Default.Name6);
+                    return PluginSettings.GetValueString(nameof(Name6), Settings.Default.Name6);
                 } else {
                     return Settings.Default.Name6;
                 }
             }
             set {
                 if (!All6) {
-                    pluginSettings.SetValueString(nameof(Name6), value);
+                    PluginSettings.SetValueString(nameof(Name6), value);
                 } else {
                     Settings.Default.Name6 = value;
                 }
@@ -402,14 +410,14 @@ namespace WhenPlugin.When {
         public string Value6 {
             get {
                 if (!All6) {
-                    return pluginSettings.GetValueString(nameof(Value6), Settings.Default.Value6);
+                    return PluginSettings.GetValueString(nameof(Value6), Settings.Default.Value6);
                 } else {
                     return Settings.Default.Value6;
                 }
             }
             set {
                 if (!All6) {
-                    pluginSettings.SetValueString(nameof(Value6), value);
+                    PluginSettings.SetValueString(nameof(Value6), value);
                 } else {
                     Settings.Default.Value6 = value;
                 }
@@ -421,14 +429,14 @@ namespace WhenPlugin.When {
         public string Name7 {
             get {
                 if (!All7) {
-                    return pluginSettings.GetValueString(nameof(Name7), Settings.Default.Name7);
+                    return PluginSettings.GetValueString(nameof(Name7), Settings.Default.Name7);
                 } else {
                     return Settings.Default.Name7;
                 }
             }
             set {
                 if (!All7) {
-                    pluginSettings.SetValueString(nameof(Name7), value);
+                    PluginSettings.SetValueString(nameof(Name7), value);
                 } else {
                     Settings.Default.Name7 = value;
                 }
@@ -440,14 +448,14 @@ namespace WhenPlugin.When {
         public string Value7 {
             get {
                 if (!All7) {
-                    return pluginSettings.GetValueString(nameof(Value7), Settings.Default.Value7);
+                    return PluginSettings.GetValueString(nameof(Value7), Settings.Default.Value7);
                 } else {
                     return Settings.Default.Value7;
                 }
             }
             set {
                 if (!All7) {
-                    pluginSettings.SetValueString(nameof(Value7), value);
+                    PluginSettings.SetValueString(nameof(Value7), value);
                 } else {
                     Settings.Default.Value7 = value;
                 }
@@ -459,14 +467,14 @@ namespace WhenPlugin.When {
         public string Name8 {
             get {
                 if (!All8) {
-                    return pluginSettings.GetValueString(nameof(Name8), Settings.Default.Name8);
+                    return PluginSettings.GetValueString(nameof(Name8), Settings.Default.Name8);
                 } else {
                     return Settings.Default.Name8;
                 }
             }
             set {
                 if (!All8) {
-                    pluginSettings.SetValueString(nameof(Name8), value);
+                    PluginSettings.SetValueString(nameof(Name8), value);
                 } else {
                     Settings.Default.Name8 = value;
                 }
@@ -478,14 +486,14 @@ namespace WhenPlugin.When {
         public string Value8 {
             get {
                 if (!All8) {
-                    return pluginSettings.GetValueString(nameof(Value8), Settings.Default.Value8);
+                    return PluginSettings.GetValueString(nameof(Value8), Settings.Default.Value8);
                 } else {
                     return Settings.Default.Value8;
                 }
             }
             set {
                 if (!All8) {
-                    pluginSettings.SetValueString(nameof(Value8), value);
+                    PluginSettings.SetValueString(nameof(Value8), value);
                 } else {
                     Settings.Default.Value8 = value;
                 }
@@ -497,14 +505,14 @@ namespace WhenPlugin.When {
         public string Name9 {
             get {
                 if (!All9) {
-                    return pluginSettings.GetValueString(nameof(Name9), Settings.Default.Name9);
+                    return PluginSettings.GetValueString(nameof(Name9), Settings.Default.Name9);
                 } else {
                     return Settings.Default.Name9;
                 }
             }
             set {
                 if (!All9) {
-                    pluginSettings.SetValueString(nameof(Name9), value);
+                    PluginSettings.SetValueString(nameof(Name9), value);
                 } else {
                     Settings.Default.Name9 = value;
                 }
@@ -516,14 +524,14 @@ namespace WhenPlugin.When {
         public string Value9 {
             get {
                 if (!All9) {
-                    return pluginSettings.GetValueString(nameof(Value9), Settings.Default.Value9);
+                    return PluginSettings.GetValueString(nameof(Value9), Settings.Default.Value9);
                 } else {
                     return Settings.Default.Value9;
                 }
             }
             set {
                 if (!All9) {
-                    pluginSettings.SetValueString(nameof(Value9), value);
+                    PluginSettings.SetValueString(nameof(Value9), value);
                 } else {
                     Settings.Default.Value9 = value;
                 }
@@ -535,14 +543,14 @@ namespace WhenPlugin.When {
         public string Name10 {
             get {
                 if (!All10) {
-                    return pluginSettings.GetValueString(nameof(Name10), Settings.Default.Name10);
+                    return PluginSettings.GetValueString(nameof(Name10), Settings.Default.Name10);
                 } else {
                     return Settings.Default.Name10;
                 }
             }
             set {
                 if (!All10) {
-                    pluginSettings.SetValueString(nameof(Name10), value);
+                    PluginSettings.SetValueString(nameof(Name10), value);
                 } else {
                     Settings.Default.Name10 = value;
                 }
@@ -554,14 +562,14 @@ namespace WhenPlugin.When {
         public string Value10 {
             get {
                 if (!All10) {
-                    return pluginSettings.GetValueString(nameof(Value10), Settings.Default.Value10);
+                    return PluginSettings.GetValueString(nameof(Value10), Settings.Default.Value10);
                 } else {
                     return Settings.Default.Value10;
                 }
             }
             set {
                 if (!All10) {
-                    pluginSettings.SetValueString(nameof(Value10), value);
+                    PluginSettings.SetValueString(nameof(Value10), value);
                 } else {
                     Settings.Default.Value10 = value;
                 }
@@ -675,21 +683,21 @@ namespace WhenPlugin.When {
 
 
         private string GetValue(string name) {
-            return pluginSettings.GetValueString(name, string.Empty);
+            return PluginSettings.GetValueString(name, string.Empty);
         }
 
         private void SetValue(string name, string value) {
-            pluginSettings.SetValueString(name, value);
+            PluginSettings.SetValueString(name, value);
             CoreUtil.SaveSettings(Settings.Default);
         }
 
 
         public string ProfileSpecificNotificationMessage {
             get {
-                return pluginSettings.GetValueString(nameof(ProfileSpecificNotificationMessage), string.Empty);
+                return PluginSettings.GetValueString(nameof(ProfileSpecificNotificationMessage), string.Empty);
             }
             set {
-                pluginSettings.SetValueString(nameof(ProfileSpecificNotificationMessage), value);
+                PluginSettings.SetValueString(nameof(ProfileSpecificNotificationMessage), value);
                 RaisePropertyChanged();
             }
         }

@@ -1,7 +1,9 @@
 ﻿using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
+using NINA.Astrometry;
 using NINA.Core.Utility;
+using NINA.Profile;
 using NINA.Sequencer;
 using PanoramicData.NCalcExtensions;
 using System;
@@ -190,7 +192,7 @@ namespace WhenPlugin.When {
                         gsData.Add(s.Substring(s.StartsWith('G') ? 7 : 8));
                     } else {
                         int sp = s.IndexOf(' ');
-                        data.Add(s.Substring(sp+1));
+                        data.Add(s.Substring(sp + 1));
                     }
                 }
                 if (gsData.Count > 0) {
@@ -233,8 +235,8 @@ namespace WhenPlugin.When {
             set { }
         }
 
-        
-        private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object> ();
+
+        private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object>();
 
         private double _value = Double.NaN;
         public double Value {
@@ -258,7 +260,7 @@ namespace WhenPlugin.When {
                 }
             }
         }
-        
+
         private string _error;
         public string Error {
             get => _error;
@@ -308,7 +310,7 @@ namespace WhenPlugin.When {
 
         // Resolved are the Symbol's that have been found (from the References)
         public Dictionary<string, Symbol> Resolved = new Dictionary<string, Symbol>();
-        
+
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
@@ -374,7 +376,17 @@ namespace WhenPlugin.When {
             } else {
                 dt = DateTime.Now;
             }
-            if (name == "now") {
+            if (name == "altitude") {
+                if (args.Parameters.Length < 2) {
+                    throw new ArgumentException();
+                }
+                double _longitude = WhenPlugin.GetLongitude();
+                double _latitude = WhenPlugin.GetLatitude();
+                var siderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, _longitude);
+                var hourAngle = AstroUtil.GetHourAngle(siderealTime, Convert.ToDouble(args.Parameters[0].Evaluate()));
+                var degAngle = AstroUtil.HoursToDegrees(hourAngle);
+                args.Result = AstroUtil.GetAltitude(degAngle, _latitude, Convert.ToDouble(args.Parameters[1].Evaluate()));
+            } else if (name == "now") {
                 args.Result = UnixTimeNow();
             } else if (name == "hour") {
                 args.Result = (int)dt.Hour;
@@ -392,7 +404,7 @@ namespace WhenPlugin.When {
                 args.Result = 0;
             }
         }
-        public void RemoveParameter (string identifier) {
+        public void RemoveParameter(string identifier) {
             Parameters.Remove(identifier);
             Resolved.Remove(identifier);
             Evaluate();
@@ -400,14 +412,14 @@ namespace WhenPlugin.When {
 
         public bool Dirty { get; set; } = false;
 
-        public bool Volatile {  get; set; } = false;
-        public bool ImageVolatile {  get; set; } = false;
+        public bool Volatile { get; set; } = false;
+        public bool ImageVolatile { get; set; } = false;
 
         public void DebugWrite() {
             Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (Symbol != null ? Symbol : SequenceEntity) + ")");
         }
 
-        public void ReferenceRemoved (Symbol sym) {
+        public void ReferenceRemoved(Symbol sym) {
             // A definition we use was removed
             string identifier = sym.Identifier;
             Parameters.Remove(identifier);
@@ -426,7 +438,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        public void Refresh () {
+        public void Refresh() {
             Parameters.Clear();
             Resolved.Clear();
             Evaluate();
@@ -444,7 +456,7 @@ namespace WhenPlugin.When {
             }
             if (SequenceEntity == null) return;
             if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
-               return;
+                return;
             }
             //Debug.WriteLine("Evaluate " + this);
             Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
@@ -618,7 +630,7 @@ namespace WhenPlugin.When {
             Validate(null);
         }
 
-        public void NotNegative (Expr expr) {
+        public void NotNegative(Expr expr) {
             if (expr.Value < 0) {
                 expr.Error = "Must not be negative";
             }
