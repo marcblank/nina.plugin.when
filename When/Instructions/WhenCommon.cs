@@ -220,6 +220,25 @@ namespace WhenPlugin.When {
 
         private bool Critical {  get; set; } = false;
 
+        private ISequenceContainer FindRun() {
+            ISequenceContainer sc = ItemUtility.GetRootContainer(Parent);
+            if (sc != null) {
+                return FindRunningItem((ISequenceContainer)sc.Items[1]);
+            }
+            return null;
+        }
+
+        private ISequenceContainer FindRunningItem(ISequenceContainer c) {
+            if (c != null) {
+                foreach (var item in c.Items) {
+                    if (item is ISequenceContainer sc && (item.Status == SequenceEntityStatus.RUNNING || item.Status == SequenceEntityStatus.CREATED)) {
+                        Logger.Info("Running container: " + sc.Name);
+                        return sc;
+                    }
+                }
+            }
+            return null;
+        }
 
         private async Task InterruptWhen() {
             Logger.Trace("*When Interrupt*");
@@ -319,7 +338,10 @@ namespace WhenPlugin.When {
             }
         }
 
+        public ISequenceContainer Context = null;
+
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
+            Context = FindRun();
             return Execute(progress, token);
         }
     }
