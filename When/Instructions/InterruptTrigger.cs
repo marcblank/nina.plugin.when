@@ -1,10 +1,13 @@
 ﻿using Accord.Diagnostics;
 using Newtonsoft.Json;
+using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Model;
+using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -12,6 +15,7 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace WhenPlugin.When {
@@ -23,16 +27,20 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]
-    public class InterruptTrigger : SequenceTrigger, IValidatable {
+    public class InterruptTrigger : SequenceTrigger, IValidatable, IDSOTargetProxy {
 
         private GeometryGroup HourglassIcon = (GeometryGroup)Application.Current.Resources["HourglassSVG"];
 
+        [JsonProperty]
+        public IfContainer Runner { get; set; }
+
         [ImportingConstructor]
         public InterruptTrigger() {
-            AddItem(TriggerRunner, new WaitIndefinitely() { Name="Wait Indefinitely", Icon = HourglassIcon }); ;
+            Runner = new IfContainer();
+            AddItem(Runner, new WaitIndefinitely() { Name="Wait Indefinitely", Icon = HourglassIcon }); ;
         }
 
-        private void AddItem(SequentialContainer runner, ISequenceItem item) {
+        private void AddItem(IfContainer runner, ISequenceItem item) {
             runner.Items.Add(item);
             item.AttachNewParent(runner);
         }
@@ -41,7 +49,9 @@ namespace WhenPlugin.When {
             CopyMetaData(copyMe);
             Name = copyMe.Name;
             Icon = copyMe.Icon;
-            TriggerRunner = (SequentialContainer)copyMe.TriggerRunner.Clone();
+            Runner = (IfContainer)copyMe.Runner.Clone();
+            Runner.AttachNewParent(Parent);
+            Runner.PseudoParent = this;
         }
 
         public override object Clone() {
@@ -55,17 +65,44 @@ namespace WhenPlugin.When {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             try {
-                await TriggerRunner.Run(progress, token);
+                Target = DSOTarget.FindTarget(Parent);
+                if (Target != null) {
+                    Logger.Info("Found Target: " + Target);
+                    UpdateChildren(Runner);
+                }
+                await Runner.Run(progress, token);
             } finally {
                 //InFlight = false;
+            }
+        }
+        
+        
+        public InputTarget DSOProxyTarget() {
+            return Target;
+        }
+        
+        public InputTarget Target = null;
+
+        public InputTarget FindTarget(ISequenceContainer c) {
+            while (c != null) {
+                if (c is IDeepSkyObjectContainer dso) {
+                    return dso.Target;
+                } else {
+                    c = c.Parent;
+                }
+            }
+            return null;
+        }
+
+        private void UpdateChildren(ISequenceContainer c) {
+            foreach (var item in c.Items) {
+                c.AfterParentChanged();
             }
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             return !InFlight;
         }
-
-        Random random = new Random();
 
         /// <summary>
         /// This string will be used for logging
@@ -77,8 +114,8 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             // Make sure a proper tree is maintained
-            foreach (ISequenceItem item in TriggerRunner.Items) {
-                item.AttachNewParent(TriggerRunner);
+            foreach (ISequenceItem item in Runner.Items) {
+                item.AttachNewParent(Runner);
             }
             return true;
         }

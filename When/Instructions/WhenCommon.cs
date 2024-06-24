@@ -45,7 +45,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Icon", "ShieldSVG")]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public abstract class When : SequenceTrigger, IValidatable {
+    public abstract class When : SequenceTrigger, IValidatable, IDSOTargetProxy {
         protected ISafetyMonitorMediator safetyMediator;
         protected ISequenceMediator sequenceMediator;
         protected ISequenceNavigationVM sequenceNavigationVM;
@@ -221,37 +221,6 @@ namespace WhenPlugin.When {
 
         private bool Critical { get; set; } = false;
 
-        private InputTarget FindTarget() {
-            ISequenceContainer sc = ItemUtility.GetRootContainer(Parent);
-            if (sc != null) {
-                return FindRunningItem((ISequenceContainer)sc.Items[1]);
-            }
-            return null;
-        }
-
-        private InputTarget FindRunningItem(ISequenceContainer c) {
-            if (c != null) {
-                foreach (var item in c.Items) {
-                    if (item is ISequenceContainer sc && (item.Status == SequenceEntityStatus.RUNNING || item.Status == SequenceEntityStatus.CREATED)) {
-                        if (item is IDeepSkyObjectContainer dso) {
-                            return dso.Target;
-                        } else if (item is SequenceContainer cont) {
-                            foreach (ISequenceItem item2 in cont.Items) {
-                                if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
-                                    if (item2 is IDeepSkyObjectContainer dso2) {
-                                        return dso2.Target;
-                                    } else if (item2 is ISequenceContainer cont2) {
-                                        return FindRunningItem(cont2);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
         private void UpdateChildren(ISequenceContainer c) {
             foreach (var item in c.Items) {
                 c.AfterParentChanged();
@@ -270,7 +239,7 @@ namespace WhenPlugin.When {
             if (ShouldTrigger(null, null) && Parent != null) {
                 Logger.Info("InterruptWhen; shouldTrigger = true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
-                    Target = FindTarget();
+                    Target = DSOTarget.FindTarget(Parent);
                     if (Target != null) {
                         Logger.Info("Found Target: " + Target);
                         UpdateChildren(Instructions);
@@ -365,9 +334,13 @@ namespace WhenPlugin.When {
             }
         }
 
+        public InputTarget DSOProxyTarget() {
+            return Target;
+        }
+        
         public InputTarget Target = null;
 
-        public InputTarget GetTarget(ISequenceContainer c) {
+        public InputTarget FindTarget(ISequenceContainer c) {
             while (c != null) {
                 if (c is IDeepSkyObjectContainer dso) {
                     return dso.Target;

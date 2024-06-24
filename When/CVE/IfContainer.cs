@@ -48,8 +48,8 @@ namespace WhenPlugin.When {
 
         public InputTarget Target {
             get {
-                if (PseudoParent is When w && w.Target != null) {
-                    return w.Target;
+                if (PseudoParent is IDSOTargetProxy w && w.DSOProxyTarget() != null) {
+                    return w.DSOProxyTarget();
                 }
                 IProfileService profileService = WhenPlugin.ProfileService;
                 return Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);

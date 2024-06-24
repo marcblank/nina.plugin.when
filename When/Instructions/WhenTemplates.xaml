@@ -635,7 +635,7 @@
                         MinHeight="65"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">
+                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Runner}">
                                 <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                                 <TextBlock
                                 HorizontalAlignment="Center"
@@ -1456,29 +1456,31 @@
 
 
     <DataTemplate DataType="{x:Type local:GSSend}">
-        <Border>
-            <Border.Resources>
-                <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
-            </Border.Resources>
-            <i:Interaction.Behaviors>
-                <!--  Drop area above and below the Sequence Container  -->
-                <behaviors:DragOverBehavior
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <Border>
+                    <Border.Resources>
+                        <wpfutil:SharedResourceDictionary Source="/NINA.Sequencer;component/Resources/Styles/ProgressStyle.xaml" />
+                    </Border.Resources>
+                    <i:Interaction.Behaviors>
+                        <!--  Drop area above and below the Sequence Container  -->
+                        <behaviors:DragOverBehavior
                  AllowDragCenter="False"
                  DragAboveSize="25"
                  DragBelowSize="15" />
-            </i:Interaction.Behaviors>
-            <Grid
+                    </i:Interaction.Behaviors>
+                    <Grid
                      MinHeight="35"
                      Margin="0"
                      HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
                      Background="{StaticResource SecondaryBackgroundBrush}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock 
                                 MinHeight="25"
                                 Margin="10,10,10,0"
                                 Foreground="White"
@@ -1486,39 +1488,39 @@
                                 VerticalAlignment="Center"
                                 Text="Send via Ground Station: " />
 
-                    <Border
+                            <Border
                               Width="20"
                               Height="20"
                               Margin="5,0,5,0"
                               Background="{StaticResource NotificationErrorBrush}"
                               BorderBrush="Transparent"
                               CornerRadius="10">
-                        <Border.Visibility>
-                            <PriorityBinding>
-                                <Binding
+                                <Border.Visibility>
+                                    <PriorityBinding>
+                                        <Binding
                                           Converter="{StaticResource ZeroToVisibilityConverter}"
                                           FallbackValue="Collapsed"
                                           Path="Issues.Count" />
-                            </PriorityBinding>
-                        </Border.Visibility>
-                        <Path
+                                    </PriorityBinding>
+                                </Border.Visibility>
+                                <Path
                                   HorizontalAlignment="Right"
                                   Data="{StaticResource ExclamationCircledSVG}"
                                   Fill="{StaticResource ButtonForegroundBrush}"
                                   Stretch="Uniform" />
-                        <Border.ToolTip>
-                            <ItemsControl ItemsSource="{Binding Issues}" />
-                        </Border.ToolTip>
-                    </Border>
+                                <Border.ToolTip>
+                                    <ItemsControl ItemsSource="{Binding Issues}" />
+                                </Border.ToolTip>
+                            </Border>
 
-                    <Border
+                            <Border
                                MinHeight="35"
                                Margin="8,1,0,0"
                                BorderBrush="{StaticResource BorderBrush}"
                                BorderThickness="1">
-                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
-                            <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                            <TextBlock
+                                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
+                                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                                    <TextBlock
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontStyle="Italic"
@@ -1526,32 +1528,34 @@
                                        TextAlignment="Center"
                                        MinWidth="400"
                                        Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                            <i:Interaction.Behaviors>
-                                <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                            </i:Interaction.Behaviors>
-                        </Grid>
-                        <i:Interaction.Behaviors>
-                            <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
-                        </i:Interaction.Behaviors>
-                    </Border>
-                </StackPanel>
-                <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
-                    <ContentPresenter
+                                    <i:Interaction.Behaviors>
+                                        <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                                    </i:Interaction.Behaviors>
+                                </Grid>
+                                <i:Interaction.Behaviors>
+                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
+                                </i:Interaction.Behaviors>
+                            </Border>
+                        </StackPanel>
+                        <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                            <ContentPresenter
                              Margin="2,0,10,0"
                              HorizontalAlignment="Right"
                              Content="{Binding}"
                              DockPanel.Dock="Right"
                              Style="{StaticResource ProgressPresenter}" />
-                </Border>
-                <Border
+                        </Border>
+                        <Border
                           x:Name="ButtonCommands"
                           Grid.Column="2"
                           HorizontalAlignment="Stretch"
                           Background="{StaticResource SecondaryBackgroundBrush}">
-                    <Control Template="{StaticResource PowerupsButtons}" />
+                            <Control Template="{StaticResource PowerupsButtons}" />
+                        </Border>
+                    </Grid>
                 </Border>
-            </Grid>
-        </Border>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:IfTimeout}">
