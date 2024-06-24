@@ -40,7 +40,7 @@ namespace WhenPlugin.When {
     [Export(typeof(IPluginManifest))]
     public class WhenPlugin : PluginBase, INotifyPropertyChanged {
         private static IPluginOptionsAccessor PluginSettings;
-        private static IProfileService ProfileService;
+        public static IProfileService ProfileService;
 
         // Implementing a file pattern
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];

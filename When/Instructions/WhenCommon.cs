@@ -29,13 +29,14 @@ using NINA.Core.Enum;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Container;
-using NINA.Core.Model;
 using NINA.Sequencer.Conditions;
 using Newtonsoft.Json;
 using System.Reflection;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.ViewModel.Sequencer;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Core.Model;
+using NINA.Astrometry;
 
 namespace WhenPlugin.When {
 
@@ -77,7 +78,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        public void Exex (object foo, EventArgs args) {
+        public void Exex(object foo, EventArgs args) {
             Logger.Trace("Foo");
 
         }
@@ -117,7 +118,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
-        
+
         private bool iInterrupt = true;
 
         [JsonProperty]
@@ -218,9 +219,9 @@ namespace WhenPlugin.When {
 
         private bool Triggered { get; set; } = false;
 
-        private bool Critical {  get; set; } = false;
+        private bool Critical { get; set; } = false;
 
-        private ISequenceContainer FindRun() {
+        private InputTarget FindTarget() {
             ISequenceContainer sc = ItemUtility.GetRootContainer(Parent);
             if (sc != null) {
                 return FindRunningItem((ISequenceContainer)sc.Items[1]);
@@ -228,16 +229,33 @@ namespace WhenPlugin.When {
             return null;
         }
 
-        private ISequenceContainer FindRunningItem(ISequenceContainer c) {
+        private InputTarget FindRunningItem(ISequenceContainer c) {
             if (c != null) {
                 foreach (var item in c.Items) {
                     if (item is ISequenceContainer sc && (item.Status == SequenceEntityStatus.RUNNING || item.Status == SequenceEntityStatus.CREATED)) {
-                        Logger.Info("Running container: " + sc.Name);
-                        return sc;
+                        if (item is IDeepSkyObjectContainer dso) {
+                            return dso.Target;
+                        } else if (item is SequenceContainer cont) {
+                            foreach (ISequenceItem item2 in cont.Items) {
+                                if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
+                                    if (item2 is IDeepSkyObjectContainer dso2) {
+                                        return dso2.Target;
+                                    } else if (item2 is ISequenceContainer cont2) {
+                                        return FindRunningItem(cont2);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
             return null;
+        }
+
+        private void UpdateChildren(ISequenceContainer c) {
+            foreach (var item in c.Items) {
+                c.AfterParentChanged();
+            }
         }
 
         private async Task InterruptWhen() {
@@ -250,40 +268,45 @@ namespace WhenPlugin.When {
             }
 
             if (ShouldTrigger(null, null) && Parent != null) {
-                Logger.Info("When; shouldTrigger = true");
+                Logger.Info("InterruptWhen; shouldTrigger = true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
+                    Target = FindTarget();
+                    if (Target != null) {
+                        Logger.Info("Found Target: " + Target);
+                        UpdateChildren(Instructions);
+                    }
                     Triggered = true;
-                    Logger.Info("When: Interrupting current Instruction Set");
+                    Logger.Info("InterruptWhen: Interrupting current Instruction Set");
 
                     Critical = true;
                     try {
 
                         sequenceMediator.CancelAdvancedSequence();
-                        Logger.Info("When: Canceling sequence...");
+                        Logger.Info("InterruptWhen: Canceling sequence...");
 
                         await Task.Delay(1000);
                         while (sequenceMediator.IsAdvancedSequenceRunning()) {
-                            Logger.Info("Delay 1000");
+                            Logger.Info("InterruptWhen: Delay 1000");
                             await Task.Delay(1000);
                         }
-                        Logger.Info("When: Sequence longer running");
+                        Logger.Info("InterruptWhen: Sequence longer running");
                     } finally {
                         Critical = false;
                     }
 
                     await sequenceMediator.StartAdvancedSequence(true);
-                    Logger.Trace("When: Starting sequence, Triggered -> true");
+                    Logger.Trace("InterruptWhen: Starting sequence, Triggered -> true");
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
-                        Logger.Trace("When: Parent not in root container?");
+                        Logger.Trace("InterruptWhen: Parent not in root container?");
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
-                        Logger.Trace("When: Parent is not running?");
+                        Logger.Trace("InterruptWhen: Parent is not running?");
                     } else {
-                        Logger.Trace("WhenL Disabled?");
+                        Logger.Trace("InterruptWhen: Disabled?");
                     }
                 }
             } else {
-                Logger.Trace("When: Should trigger = false");
+                Logger.Trace("InterruptWhen: Should trigger = false");
             }
         }
 
@@ -297,6 +320,10 @@ namespace WhenPlugin.When {
                 return false;
             }
             if (!Check()) {
+                if (previousItem == null && nextItem == null) {
+                    Logger.Info("ShouldTrigger TRUE in InterruptWhen");
+                    return true;
+                }
                 Logger.Info("ShouldTrigger: TRUE, TriggerRunner set");
                 TriggerRunner = Instructions;
                 return true;
@@ -338,10 +365,20 @@ namespace WhenPlugin.When {
             }
         }
 
-        public ISequenceContainer Context = null;
+        public InputTarget Target = null;
+
+        public InputTarget GetTarget(ISequenceContainer c) {
+            while (c != null) {
+                if (c is IDeepSkyObjectContainer dso) {
+                    return dso.Target;
+                } else {
+                    c = c.Parent;
+                }
+            }
+            return null;
+        }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Context = FindRun();
             return Execute(progress, token);
         }
     }

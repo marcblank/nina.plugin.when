@@ -1,4 +1,7 @@
-﻿using NINA.Sequencer;
+﻿using NINA.Astrometry;
+using NINA.Profile;
+using NINA.Profile.Interfaces;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -16,7 +19,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceContainer))]
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
 
-    public class IfContainer : SequentialContainer, ISequenceContainer, IValidatable {
+    public class IfContainer : SequentialContainer, ISequenceContainer, IValidatable, IDeepSkyObjectContainer {
 
 
         public IfContainer() : base() {
@@ -43,6 +46,17 @@ namespace WhenPlugin.When {
             }
         }
 
+        public InputTarget Target {
+            get {
+                if (PseudoParent is When w && w.Target != null) {
+                    return w.Target;
+                }
+                IProfileService profileService = WhenPlugin.ProfileService;
+                return Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
+            }
+            set { }
+        }
+        public NighttimeData NighttimeData => throw new NotImplementedException();
         public override void ResetProgress() {
             base.ResetProgress();
             if (PseudoParent != null && PseudoParent is WhenSwitch pp) {

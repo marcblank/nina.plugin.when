@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem;
+using ASCOM.Common.Alpaca;
 
 namespace WhenPlugin.When {
 
@@ -138,8 +139,10 @@ namespace WhenPlugin.When {
             }
 
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            Coordinates.Coordinates.RA = RAExpr.Value;
-            Coordinates.Coordinates.Dec = DecExpr.Value;
+            if (!Inherited) {
+                Coordinates.Coordinates.RA = RAExpr.Value;
+                Coordinates.Coordinates.Dec = DecExpr.Value;
+            }
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
@@ -149,7 +152,7 @@ namespace WhenPlugin.When {
         private Coordinates RetrieveContextCoordinates(ISequenceContainer parent) {
             if (parent != null) {
                 var container = parent as IDeepSkyObjectContainer;
-                if (container != null) {
+                if (container != null && container.Target != null) {
                     return container.Target.InputCoordinates.Coordinates;
                 } else {
                     return RetrieveContextCoordinates(parent.Parent);
@@ -160,7 +163,7 @@ namespace WhenPlugin.When {
         }
         public override void AfterParentChanged() {
             var coordinates = RetrieveContextCoordinates(this.Parent);
-            if (coordinates != null) {
+            if (coordinates != null && coordinates.RA != 0 && coordinates.Dec != 0) {
                 Coordinates.Coordinates = coordinates;
                 Inherited = true;
             } else {
