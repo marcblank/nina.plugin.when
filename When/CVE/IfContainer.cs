@@ -4,6 +4,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.ObjectModel;
@@ -38,8 +39,8 @@ namespace WhenPlugin.When {
         private Object lockObj = new Object();
 
         private ISequenceEntity iPseudoParent;
-        
-        public ISequenceEntity PseudoParent  {
+
+        public ISequenceEntity PseudoParent {
             get => iPseudoParent;
             set {
                 iPseudoParent = value;
@@ -52,7 +53,14 @@ namespace WhenPlugin.When {
                     return w.DSOProxyTarget();
                 }
                 IProfileService profileService = WhenPlugin.ProfileService;
-                return Target = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
+                InputTarget t = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
+                if (Parent != null) {
+                    ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(Parent);
+                    if (cc != null) {
+                        t.InputCoordinates.Coordinates = cc.Coordinates;
+                    }
+                }
+                return t;
             }
             set { }
         }
@@ -69,7 +77,7 @@ namespace WhenPlugin.When {
             foreach (ISequenceItem item in Items) {
                 item.Initialize();
             }
-            
+
         }
 
         public new void MoveUp(ISequenceItem item) {
