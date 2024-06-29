@@ -234,10 +234,10 @@ namespace WhenPlugin.When {
 
             Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
 
-            if (!HandlerInit) {
-                imagingMediator.ImagePrepared += ProcessResults;
-                HandlerInit = true;
-            }
+            //if (!HandlerInit) {
+            //    imagingMediator.ImagePrepared += ProcessResults;
+            //    HandlerInit = true;
+            //}
 
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
@@ -323,7 +323,7 @@ namespace WhenPlugin.When {
         static Symbol.Keys iLastImageResult;
         public static Symbol.Keys LastImageResults {
             get {
-                lock (LastImageLock) {
+                lock (Symbol.SYMBOL_LOCK) {
                     return iLastImageResult;
                 }
             }
@@ -345,8 +345,8 @@ namespace WhenPlugin.When {
             }
         }
 
-        private static void ProcessResults(object sender, ImagePreparedEventArgs e) {
-            lock (LastImageLock) {
+        public static void ProcessResults(object sender, ImagePreparedEventArgs e) {
+            lock (Symbol.SYMBOL_LOCK) {
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 TakeExposure.LastImageProcessTime = time.TotalSeconds;
 
@@ -359,7 +359,8 @@ namespace WhenPlugin.When {
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
-                    { "Image_StarCount", a.DetectedStars }
+                    { "Image_StarCount", a.DetectedStars },
+                    { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id }
                 };
 
                 // Add these if they exist

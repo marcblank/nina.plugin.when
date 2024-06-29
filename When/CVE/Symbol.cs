@@ -512,13 +512,13 @@ namespace WhenPlugin.When {
         public static Keys SwitchWeatherKeys { get; set; } = new Keys();
 
         public static Keys GetSwitchWeatherKeys() {
-            lock (SwitchMediator) {
+            lock (SYMBOL_LOCK) {
                 return SwitchWeatherKeys;
             }
         }
 
         public static IList<string> GetSwitches() {
-            lock (SwitchMediator) {
+            lock (SYMBOL_LOCK) {
                 return Switches;
             }
         }
@@ -526,7 +526,7 @@ namespace WhenPlugin.When {
         public static Symbol.SymbolDictionary DataSymbols { get; set; } = new Symbol.SymbolDictionary();
 
         public ConcurrentDictionary<string, Symbol> GetDataSymbols() {
-            lock (SwitchMediator) {
+            lock (SYMBOL_LOCK) {
                 return DataSymbols;
             }
         }
@@ -567,6 +567,8 @@ namespace WhenPlugin.When {
 
         private static ObserverInfo Observer = null;
 
+        public static Object SYMBOL_LOCK = new object();
+
         public static Task UpdateSwitchWeatherData() {
 
             //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
@@ -580,7 +582,7 @@ namespace WhenPlugin.When {
             //    Logger.Info("Removed container " + c.Name + " from SymbolCache");
             //}
 
-            lock (SwitchMediator) {
+            lock (SYMBOL_LOCK) {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
 
