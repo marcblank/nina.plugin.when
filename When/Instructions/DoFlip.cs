@@ -68,10 +68,10 @@ namespace WhenPlugin.When {
             DIYMeridianFlipTrigger diymf = FindTrigger();
             ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(diymf != null ? diymf.TriggerContext : Parent);
             if (cc != null) {
-                Logger.Info("Getting coordinates from Context/Parent");
+                //Logger.Info("Getting coordinates from Context/Parent");
                 return cc.Coordinates;
             }
-            Logger.Info("Getting coordinates from telescope");
+            //Logger.Info("Getting coordinates from telescope");
             return telescopeMediator?.GetInfo().Coordinates;
         }
 

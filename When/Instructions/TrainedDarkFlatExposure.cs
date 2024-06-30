@@ -342,6 +342,9 @@ namespace WhenPlugin.When {
             var gain = takeExposure.Gain == -1 ? ProfileService.ActiveProfile.CameraSettings.Gain ?? -1 : takeExposure.Gain;
             var offset = takeExposure.Offset == -1 ? ProfileService.ActiveProfile.CameraSettings.Offset ?? -1 : takeExposure.Offset;
             var info = ProfileService.ActiveProfile.FlatDeviceSettings.GetTrainedFlatExposureSetting(filter?.Position, binning, gain, offset);
+            if (info == null) {
+                throw new SequenceEntityFailedException("No trained exposure found for this dark flat, filter = " + filter + ", gain = " + gain + ", offset = " + offset);
+            }
 
             (Items[3] as SetBrightness).Brightness = 0;
             takeExposure.ExposureTime = info.Time;
@@ -399,7 +402,6 @@ namespace WhenPlugin.When {
                     valid = false;
                 }
             }
-
 
             if (FilterNames.Count == 0) {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;

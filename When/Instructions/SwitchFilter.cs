@@ -185,7 +185,7 @@ namespace WhenPlugin.When {
 
         public bool Validate() {
             var i = new List<string>();
-            if (FInfo != null && !FilterWheelMediator.GetInfo().Connected) {
+            if (!FilterWheelMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFilterWheelNotConnected"]);
             }
 
