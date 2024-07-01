@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace WhenPlugin.When.WhenPluginDockables {
+namespace WhenPlugin.When {
     /// <summary>
     /// This Class shows the basic principle on how to add a new panel to N.I.N.A. Imaging tab via the plugin interface
     /// In this example an altitude chart is added to the imaging tab that shows the altitude chart based on the position of the telescope    
@@ -32,16 +32,10 @@ namespace WhenPlugin.When.WhenPluginDockables {
             ITelescopeMediator telescopeMediator,
             INighttimeCalculator nighttimeCalculator) : base(profileService) {
 
-            // This will reference the resource dictionary to import the SVG graphic and assign it as the icon for the header bar
-            var dict = new ResourceDictionary();
-            dict.Source = new Uri("WhenPlugin.When;component/WhenPluginDockables/WhenPluginDockableTemplates.xaml", UriKind.RelativeOrAbsolute);
-            ImageGeometry = (System.Windows.Media.GeometryGroup)dict["WhenPlugin.When_AltitudeSVG"];
-            ImageGeometry.Freeze();
-
             this.nighttimeCalculator = nighttimeCalculator;
             this.telescopeMediator = telescopeMediator;
             telescopeMediator.RegisterConsumer(this);
-            Title = "Altitude Chart";
+            Title = "Powerups Panel";
             Target = null;
 
             // Some asynchronous initialization
