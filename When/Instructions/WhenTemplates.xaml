@@ -635,7 +635,7 @@
                         MinHeight="65"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">
+                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Runner}">
                                 <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                                 <TextBlock
                                 HorizontalAlignment="Center"

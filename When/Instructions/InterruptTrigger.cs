@@ -12,6 +12,7 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -116,6 +117,15 @@ namespace WhenPlugin.When {
             // Make sure a proper tree is maintained
             foreach (ISequenceItem item in Runner.Items) {
                 item.AttachNewParent(Runner);
+            }
+            try {
+                Target = DSOTarget.FindTarget(Parent);
+                if (Target != null) {
+                    Logger.Info("Found Target: " + Target);
+                    UpdateChildren(Runner);
+                }
+            } finally {
+                //InFlight = false;
             }
             return true;
         }

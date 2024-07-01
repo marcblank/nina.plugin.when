@@ -80,6 +80,11 @@ namespace WhenPlugin.When {
             } finally {
                 InFlight = false;
                 if (cts != null) cts.Cancel();
+                if (Parent is IfContainer ifc) {
+                    if (ifc.PseudoParent is InterruptTrigger it) {
+                        it.Validate();
+                    }
+                }
             }
         }
 
