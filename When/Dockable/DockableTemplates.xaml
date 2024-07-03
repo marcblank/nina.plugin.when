@@ -15,25 +15,39 @@
             <TextBlock Margin="5,0,0,0" Text="{Binding DockableValue}" />
         </UniformGrid>
     </DataTemplate>
-    
-    <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
 
-                <Border
+    <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
+        <Grid>
+            <Button Grid.Row="0"
+                     MinHeight="20"
+                     Margin="5,-2,0,0"
+                     Width="100"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Stretch"
+                     Command="{Binding AddInstruction}">
+                <TextBlock
+                         Foreground="{StaticResource ButtonForegroundBrush}"
+                         Text="Add"
+                         TextWrapping="Wrap" />
+            </Button>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border
                        Grid.Row="1"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
-                    <Grid Background="{StaticResource BackgroundBrush}">
-                        <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
+                            <Grid Background="{StaticResource BackgroundBrush}">
+                                <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
+                            </Grid>
+                        </Border>
                     </Grid>
-                </Border>
-            </Grid>
-        </ScrollViewer>
+                </ScrollViewer>
+        </Grid>
     </DataTemplate>
 
     <!--  This geometrygroup defines a custom SVG to be used with the plugin dockable  -->

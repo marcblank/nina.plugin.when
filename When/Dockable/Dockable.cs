@@ -1,5 +1,6 @@
 ﻿using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
+using NINA.Core.Utility;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
@@ -11,6 +12,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
 using Nito.Mvvm;
+using Serilog.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -59,6 +61,14 @@ namespace WhenPlugin.When {
         
         public static void RemoveExpr (DockableExpr e) {
             ExpressionList.Remove(e);
+        }
+
+        private GalaSoft.MvvmLight.Command.RelayCommand addInstruction;
+
+        public ICommand AddInstruction => addInstruction ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformAddInstruction);
+
+        private void PerformAddInstruction() {
+            ExpressionList.Add(new DockableExpr("New"));
         }
     }
 }
