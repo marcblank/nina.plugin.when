@@ -30,7 +30,7 @@
                          Text="Add"
                          TextWrapping="Wrap" />
             </Button>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
