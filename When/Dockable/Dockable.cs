@@ -10,8 +10,10 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
+using Nito.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -44,8 +46,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private SequenceRootContainer PseudoRoot = new SequenceRootContainer();
-
         public static Task UpdateData() {
             foreach (Expr e in ExpressionList) {
                 e.Evaluate();
@@ -55,6 +55,10 @@ namespace WhenPlugin.When {
 
         public string ExpressionString { get; private set; }
 
-        public static IList<Expr> ExpressionList { get; private set; } = new List<Expr>();
+        public static ObservableCollection<DockableExpr> ExpressionList { get; private set; } = new ObservableCollection<DockableExpr>();
+        
+        public static void RemoveExpr (DockableExpr e) {
+            ExpressionList.Remove(e);
+        }
     }
 }
