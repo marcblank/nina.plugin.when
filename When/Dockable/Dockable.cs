@@ -40,9 +40,7 @@ namespace WhenPlugin.When {
         private void BuildExprList() {
             string[] l = ExpressionString.Split('\0');
             foreach (string s in l) {
-                SetVariable sv = new SetVariable();
-                sv.AttachNewParent(PseudoRoot);
-                ExpressionList.Add(new Expr(sv, s));
+                ExpressionList.Add(new DockableExpr(s));
             }
         }
 

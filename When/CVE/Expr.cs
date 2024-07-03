@@ -62,7 +62,7 @@ namespace WhenPlugin.When {
         private string _expression = "";
 
         [JsonProperty]
-        public string Expression {
+        public virtual string Expression {
             get => _expression;
             set {
                 if (value == null) return;
