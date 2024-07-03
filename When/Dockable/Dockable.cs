@@ -5,6 +5,9 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Conditions;
+using NINA.Sequencer.Container;
+using NINA.Sequencer.SequenceItem;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
 using System;
@@ -22,7 +25,7 @@ namespace WhenPlugin.When {
     /// In this example an altitude chart is added to the imaging tab that shows the altitude chart based on the position of the telescope    
     /// </summary>
     [Export(typeof(IDockableVM))]
-    public class WhenPluginDockable : DockableVM, ITelescopeConsumer {
+    public class WhenPluginDockable : DockableVM {
         private INighttimeCalculator nighttimeCalculator;
         private ITelescopeMediator telescopeMediator;
 
@@ -34,7 +37,6 @@ namespace WhenPlugin.When {
 
             this.nighttimeCalculator = nighttimeCalculator;
             this.telescopeMediator = telescopeMediator;
-            telescopeMediator.RegisterConsumer(this);
             Title = "Powerups Panel";
             Target = null;
 
@@ -52,42 +54,44 @@ namespace WhenPlugin.When {
             profileService.HorizonChanged += (object sender, EventArgs e) => {
                 Target?.SetCustomHorizon(profileService.ActiveProfile.AstrometrySettings.Horizon);
             };
+
+            ExpressionString = "WindSpeed\0WindGust\0Temperature\0Altitude";
+            BuildExprList();
+            ConditionWatchdog = new ConditionWatchdog(UpdateData, TimeSpan.FromSeconds(5));
+            ConditionWatchdog.Start();
         }
+
+        public static ConditionWatchdog ConditionWatchdog { get; set; }
+
+        private void BuildExprList() {
+            string[] l = ExpressionString.Split('\0');
+            foreach (string s in l) {
+                SetVariable sv = new SetVariable();
+                sv.AttachNewParent(rootytooty);
+                ExpressionList.Add(new Expr(sv, s));
+            }
+        }
+
+        private SequenceRootContainer rootytooty = new SequenceRootContainer();
 
         private void NighttimeCalculator_OnReferenceDayChanged(object sender, EventArgs e) {
             NighttimeData = nighttimeCalculator.Calculate();
             RaisePropertyChanged(nameof(NighttimeData));
         }
 
-        public void Dispose() {
-            // On shutdown cleanup
-            telescopeMediator.RemoveConsumer(this);
+        private static Task UpdateData() {
+            foreach (Expr e in ExpressionList) {
+                e.Evaluate();
+            }
+            return Task.CompletedTask;
         }
+
         public NighttimeData NighttimeData { get; private set; }
         public TelescopeInfo TelescopeInfo { get; private set; }
         public DeepSkyObject Target { get; private set; }
 
-        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
-            // The IsVisible flag indicates if the dock window is active or hidden
-            if (IsVisible) {
-                TelescopeInfo = deviceInfo;
-                if (TelescopeInfo.Connected && TelescopeInfo.TrackingEnabled && NighttimeData != null) {
-                    var showMoon = Target != null ? Target.Moon.DisplayMoon : false;
-                    if (Target == null || (Target?.Coordinates - deviceInfo.Coordinates)?.Distance.Degree > 1) {
-                        Target = new DeepSkyObject("", deviceInfo.Coordinates, "", profileService.ActiveProfile.AstrometrySettings.Horizon);
-                        Target.SetDateAndPosition(NighttimeCalculator.GetReferenceDate(DateTime.Now), profileService.ActiveProfile.AstrometrySettings.Latitude, profileService.ActiveProfile.AstrometrySettings.Longitude);
-                        if (showMoon) {
-                            Target.Refresh();
-                            Target.Moon.DisplayMoon = true;
-                        }
-                        RaisePropertyChanged(nameof(Target));
-                    }
-                } else {
-                    Target = null;
-                    RaisePropertyChanged(nameof(Target));
-                }
-                RaisePropertyChanged(nameof(TelescopeInfo));
-            }
-        }
+        public string ExpressionString { get; private set; }
+
+        public static IList<Expr> ExpressionList { get; private set; } = new List<Expr>();
     }
 }

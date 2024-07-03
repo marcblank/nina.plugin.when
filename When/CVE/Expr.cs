@@ -257,7 +257,15 @@ namespace WhenPlugin.When {
                     }
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
+                    RaisePropertyChanged("EvalValue");
                 }
+            }
+        }
+
+        public double EvalValue {
+            get {
+                Evaluate();
+                return _value;
             }
         }
 
