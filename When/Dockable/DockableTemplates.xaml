@@ -12,7 +12,7 @@
     <DataTemplate DataType="{x:Type local:Expr}">
         <UniformGrid VerticalAlignment="Center" Columns="2">
             <TextBox Text="{Binding Expression}" />
-            <TextBlock Margin="5,0,0,0" Text="{Binding EvalValue}" />
+            <TextBlock Margin="5,0,0,0" Text="{Binding DockableValue}" />
         </UniformGrid>
     </DataTemplate>
     

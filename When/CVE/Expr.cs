@@ -257,15 +257,18 @@ namespace WhenPlugin.When {
                     }
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
-                    RaisePropertyChanged("EvalValue");
+                    RaisePropertyChanged("DockableValue");
                 }
             }
         }
 
-        public double EvalValue {
+        public string DockableValue {
             get {
                 Evaluate();
-                return _value;
+                if (Error != null) {
+                    return "Error";
+                }
+                return Math.Round(Value, 2).ToString();
             }
         }
 
