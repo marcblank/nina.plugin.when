@@ -10,24 +10,28 @@
     <!--  The datatemplae for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
     <DataTemplate DataType="{x:Type local:Expr}">
-        <UniformGrid VerticalAlignment="Center" Columns="2">
-            <TextBox Text="{Binding Expression}" />
-            <TextBlock Margin="5,0,0,0" Text="{Binding DockableValue}" />
-        </UniformGrid>
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding Expression}" />
+            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
+        </Grid>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
         <Grid>
             <Button Grid.Row="0"
-                     MinHeight="20"
-                     Margin="5,-2,0,0"
-                     Width="100"
+                     MinHeight="15"
+                     Width="50"
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Command="{Binding AddInstruction}">
                 <TextBlock
                          Foreground="{StaticResource ButtonForegroundBrush}"
                          Text="Add"
+                         FontSize="12"
                          TextWrapping="Wrap" />
             </Button>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
