@@ -771,6 +771,9 @@ namespace WhenPlugin.When {
                 }
 
                 Switches = i;
+
+                WhenPluginDockable.UpdateData();
+
                 return Task.CompletedTask;
             }
         }
