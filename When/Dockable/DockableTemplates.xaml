@@ -24,13 +24,13 @@
         <Grid>
             <Button Grid.Row="0"
                      MinHeight="15"
-                     Width="50"
+                     Width="100"
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Command="{Binding AddInstruction}">
                 <TextBlock
                          Foreground="{StaticResource ButtonForegroundBrush}"
-                         Text="Add"
+                         Text="Add Expression"
                          FontSize="12"
                          TextWrapping="Wrap" />
             </Button>

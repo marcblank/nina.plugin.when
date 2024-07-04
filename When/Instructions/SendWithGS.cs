@@ -93,6 +93,7 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("Processed message is null?");
             }
             messageProperty.SetValue(condition, processedMessage, null);
+            condition.AttachNewParent(Parent);
             await condition.Run(progress, token);
             messageProperty.SetValue(condition, message, null);
         }

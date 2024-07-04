@@ -31,8 +31,6 @@ namespace WhenPlugin.When {
     /// </summary>
     [Export(typeof(IDockableVM))]
     public class WhenPluginDockable : DockableVM {
-        private INighttimeCalculator nighttimeCalculator;
-        private ITelescopeMediator telescopeMediator;
 
         [ImportingConstructor]
         public WhenPluginDockable(IProfileService profileService) : base(profileService) {
