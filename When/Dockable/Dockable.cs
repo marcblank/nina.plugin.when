@@ -6,6 +6,7 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Interfaces.ViewModel;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
@@ -37,22 +38,46 @@ namespace WhenPlugin.When {
         public WhenPluginDockable(IProfileService profileService) : base(profileService) {
             Title = "Powerups Panel";
 
-            ExpressionString = "WindSpeed\0WindGust\0Temperature\0Altitude";
+            ExpressionString = Symbol.WhenPluginObject.DockableExprs;
             BuildExprList();
         }
 
         private void BuildExprList() {
             string[] l = ExpressionString.Split('\0');
             foreach (string s in l) {
-                ExpressionList.Add(new DockableExpr(s));
+                if (s.Length > 0) {
+                    ExpressionList.Add(new DockableExpr(s));
+                }
             }
         }
 
         public static Task UpdateData() {
+            ISequenceItem runningItem = null;
+
+            if (ExpressionList.Count > 0) {
+                runningItem = WhenPlugin.GetRunningItem();
+            }
             foreach (Expr e in ExpressionList) {
-                e.Evaluate();
+                ISequenceEntity se = e.SequenceEntity;
+                if (runningItem != null) {
+                    e.SequenceEntity = runningItem;
+                }
+
+                e.Refresh();
+                if (runningItem != null) {
+                    e.SequenceEntity = se;
+                }
             }
             return Task.CompletedTask;
+        }
+
+        public static void SaveDockableExprs() {
+            StringBuilder sb = new StringBuilder();
+            foreach (Expr e in ExpressionList) {
+                sb.Append(e.Expression);
+                sb.Append("\0");
+            }
+            Symbol.WhenPluginObject.DockableExprs = sb.ToString();
         }
 
         public string ExpressionString { get; private set; }
@@ -61,6 +86,7 @@ namespace WhenPlugin.When {
         
         public static void RemoveExpr (DockableExpr e) {
             ExpressionList.Remove(e);
+            SaveDockableExprs();
         }
 
         private GalaSoft.MvvmLight.Command.RelayCommand addInstruction;
@@ -69,6 +95,7 @@ namespace WhenPlugin.When {
 
         private void PerformAddInstruction() {
             ExpressionList.Add(new DockableExpr("New"));
+            SaveDockableExprs();
         }
     }
 }

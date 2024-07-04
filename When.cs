@@ -28,6 +28,12 @@ using System.Windows;
 using NINA.Equipment.Interfaces.Mediator;
 using System.Windows.Input;
 using System.IO;
+using NINA.Sequencer.Interfaces.Mediator;
+using Accord.Collections;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Mediator;
+using NINA.ViewModel.Sequencer;
+using NINA.Equipment.Model;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -41,6 +47,9 @@ namespace WhenPlugin.When {
     public class WhenPlugin : PluginBase, INotifyPropertyChanged {
         private static IPluginOptionsAccessor PluginSettings;
         public static IProfileService ProfileService;
+        private static ISequenceMediator SequenceMediator;
+        static protected ISequenceNavigationVM sequenceNavigationVM;
+        private static protected ISequence2VM s2vm;
 
         // Implementing a file pattern
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
@@ -49,7 +58,7 @@ namespace WhenPlugin.When {
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator,
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                 IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-                IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator) {
+                IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, ISequenceMediator sequenceMediator) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -64,6 +73,8 @@ namespace WhenPlugin.When {
             
             // Add image data variables
             imagingMediator.ImagePrepared += TakeExposure.ProcessResults;
+
+            SequenceMediator = sequenceMediator;
             
             // Hook into image saving for adding FITS keywords or image file patterns
             Symbol.WhenPluginObject = this;
@@ -96,6 +107,39 @@ namespace WhenPlugin.When {
                 e.AddImagePattern(new ImagePattern(p.Key, p.Description, p.Category) { Value = v });
             }
             return Task.CompletedTask;
+        }
+
+        public static ISequenceItem GetRunningItem() {
+            if (sequenceNavigationVM == null) {
+                FieldInfo fi = SequenceMediator.GetType().GetField("sequenceNavigation", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (fi != null) {
+                    sequenceNavigationVM = (ISequenceNavigationVM)fi.GetValue(SequenceMediator);
+                    s2vm = sequenceNavigationVM.Sequence2VM;
+                }
+            } else if (s2vm == null) {
+                s2vm = sequenceNavigationVM.Sequence2VM;
+            }
+
+            try {
+                if (SequenceMediator.IsAdvancedSequenceRunning()) {
+                    ISequenceRootContainer root = s2vm.Sequencer.MainContainer;
+                    Type type = typeof(SequenceRootContainer);
+                    FieldInfo f = type.GetField("runningItems", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (f != null) {
+                        try {
+                            List<ISequenceItem> runningItems = (List<ISequenceItem>)f.GetValue(root);
+                            if (runningItems.Count > 0) {
+                                return runningItems[0];
+                            }
+                        } catch (Exception ex) {
+                            Logger.Error("Can't get running items!");
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+
+            }
+            return null;
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {
@@ -162,6 +206,15 @@ namespace WhenPlugin.When {
 
             Globals.Validate();
             RaisePropertyChanged("Globals");
+        }
+
+        public string DockableExprs {
+            get {
+                return PluginSettings.GetValueString(nameof(DockableExprs), Settings.Default.DockableExprs);
+            }
+            set {
+                PluginSettings.SetValueString(nameof(DockableExprs), value);
+            }
         }
 
         public string RoofStatus {

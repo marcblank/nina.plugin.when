@@ -418,5 +418,17 @@ namespace WhenPlugin.When.Properties {
                 this["RoofOpenString"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DockableExprs {
+            get {
+                return ((string)(this["DockableExprs"]));
+            }
+            set {
+                this["DockableExprs"] = value;
+            }
+        }
     }
 }

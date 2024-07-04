@@ -266,8 +266,10 @@ namespace WhenPlugin.When {
             get {
                 Evaluate();
                 if (Error != null) {
-                    return "Error";
+                    return Error;
                 }
+                if (Value == 0) return "False";
+                if (Value == 1) return "True";
                 return Math.Round(Value, 2).ToString();
             }
         }
