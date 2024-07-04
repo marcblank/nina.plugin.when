@@ -350,8 +350,8 @@ namespace WhenPlugin.When {
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 TakeExposure.LastImageProcessTime = time.TotalSeconds;
 
-                Logger.Info("TakeExposure+ Processed at " + TakeExposure.LastImageProcessTime);
-                Logger.Info("Elapsed: " + (TakeExposure.LastImageProcessTime - TakeExposure.LastExposureTIme) + "s");
+                Logger.Debug("TakeExposure+ Processed at " + TakeExposure.LastImageProcessTime);
+                Logger.Debug("Elapsed: " + (TakeExposure.LastImageProcessTime - TakeExposure.LastExposureTIme) + "s");
 
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
@@ -360,7 +360,9 @@ namespace WhenPlugin.When {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
                     { "Image_StarCount", a.DetectedStars },
-                    { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id }
+                    { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id },
+                    { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime },
+                    { "Image_RMS", e.RenderedImage.RawImageData.MetaData.Image.RecordedRMS.Total }
                 };
 
                 // Add these if they exist
