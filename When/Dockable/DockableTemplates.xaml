@@ -22,35 +22,77 @@
 
     <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
         <Grid>
-            <Button Grid.Row="0"
-                     MinHeight="15"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Grid.Row="0"
+                     MinHeight="20"
                      Width="100"
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Command="{Binding AddInstruction}">
-                <TextBlock
+                    <TextBlock
                          Foreground="{StaticResource ButtonForegroundBrush}"
                          Text="Add Expression"
                          FontSize="12"
                          TextWrapping="Wrap" />
-            </Button>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                </Button>
+                <TextBlock 
+                   Margin="5,-2,0,0" 
+                   Text="&#x1F6C8;" 
+                   FontSize="18">
+                    <TextBlock.ToolTip>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
+                                <Grid.Resources >
+                                    <Style TargetType="ItemsControl" >
+                                        <Setter Property="Padding" Value="5,0,5,0" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
+                                <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                                <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                            </Grid>
+                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
+                                <Grid.Resources >
+                                    <Style TargetType="ItemsControl" >
+                                        <Setter Property="Padding" Value="0,0,0,0" />
+                                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210"/>
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
+                                <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
+                            </Grid>
+                        </StackPanel>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </StackPanel>
 
-                        <Border
+            <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Border
                        Grid.Row="1"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </ScrollViewer>
+                        <Grid Background="{StaticResource BackgroundBrush}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </DataTemplate>
 

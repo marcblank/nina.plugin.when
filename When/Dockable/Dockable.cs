@@ -10,6 +10,7 @@ using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
 using Nito.Mvvm;
@@ -68,6 +69,8 @@ namespace WhenPlugin.When {
             }
             return Task.CompletedTask;
         }
+
+        public Expr Exp { get; private set; } = new Expr(new SetVariable(), "Foo");
 
         public static void SaveDockableExprs() {
             StringBuilder sb = new StringBuilder();
