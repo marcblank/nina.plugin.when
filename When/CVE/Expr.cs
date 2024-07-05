@@ -9,7 +9,9 @@ using PanoramicData.NCalcExtensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows.Controls.Primitives;
 using static WhenPlugin.When.Symbol;
 using Expression = NCalc.Expression;
 
@@ -57,6 +59,15 @@ namespace WhenPlugin.When {
         public Expr(Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
             Setter = cloneMe.Setter;
             Symbol = cloneMe.Symbol;
+        }
+
+        private bool isOpen = false;
+        public bool IsOpen {
+            get { return isOpen; }
+            set {
+                isOpen = value;
+                RaisePropertyChanged(nameof(IsOpen));
+            }
         }
 
         private string _expression = "";

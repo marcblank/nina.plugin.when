@@ -7,7 +7,7 @@
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core">
 
-    <!--  The datatemplae for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
+    <!--  The datatemplate for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
     <DataTemplate DataType="{x:Type local:Expr}">
         <Grid VerticalAlignment="Center">
@@ -18,9 +18,26 @@
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Text="{Binding Expression}" />
             <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
-            <TextBlock Grid.Column="2" Margin="0,0,0,0" TextAlignment="Right" Text="&#x2630;" />
+            <TextBlock Grid.Column="2" Margin="0,0,0,0" TextAlignment="Right" Text="&#x2630;" ToolTip="" ToolTipOpening="OpenTooltip" />
+            <Popup PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="True" StaysOpen="False" IsOpen="{Binding IsOpen}" >
+                <Border Background="AntiqueWhite" BorderBrush="Bisque" CornerRadius="3" BorderThickness="1">
+                    <StackPanel Margin="10" Orientation="Horizontal" >
+                        <Button Content="Update" HorizontalAlignment="Center"  />
+                        <TextBlock HorizontalAlignment="Center" x:Name="TestClickTarget" Margin="20 0 0 0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Popup>
         </Grid>
     </DataTemplate>
+
+    <!--<StackPanel>
+        <RadioButton GroupName="colorgrp">Red</RadioButton>
+        <RadioButton GroupName="colorgrp">Blue</RadioButton>
+        <RadioButton GroupName="numgrp">1</RadioButton>
+        <RadioButton GroupName="numgrp">2</RadioButton>
+    </StackPanel>-->
+
+    <!--https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.radiobutton?view=windowsdesktop-8.0-->
 
     <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
         <Grid>
