@@ -39,5 +39,10 @@ namespace WhenPlugin.When {
             expr.DisplayType = displayType;
             Logger.Info("Checked display box: " + displayType);
         }
+
+        public void DeleteExpr(object sender, RoutedEventArgs e) {
+            DockableExpr expr = (DockableExpr)((Button)sender).DataContext;
+            WhenPluginDockable.RemoveExpr(expr);
+        }
     }
 }

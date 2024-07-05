@@ -17,8 +17,8 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Text="{Binding Expression}" />
-            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
-            <TextBlock Grid.Column="2" Margin="0,0,0,0" TextAlignment="Right" Text="&#x2630;" ToolTip="" ToolTipOpening="OpenTooltip" />
+            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"/>
+            <Button Grid.Column="2" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
             <Popup Width="100" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="False" StaysOpen="False" IsOpen="{Binding IsOpen}" >
                 <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource ButtonBackgroundBrush}" CornerRadius="3" BorderThickness="3">
                     <ContentControl Background="{StaticResource ButtonBackgroundBrush}"  FontSize="12" Margin="5,5,5,5">
