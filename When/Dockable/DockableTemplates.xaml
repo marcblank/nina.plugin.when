@@ -10,7 +10,7 @@
     <!--  The datatemplate for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
     <DataTemplate DataType="{x:Type local:DockableExpr}">
-        <Grid Background="{StaticResource ButtonBackgroundBrush}" VerticalAlignment="Center">
+        <Grid Background="{StaticResource BackgroundBrush}" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*" />
                 <ColumnDefinition Width="4*" />
