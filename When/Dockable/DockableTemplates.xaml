@@ -19,12 +19,23 @@
             <TextBox Grid.Column="0" Text="{Binding Expression}" />
             <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
             <TextBlock Grid.Column="2" Margin="0,0,0,0" TextAlignment="Right" Text="&#x2630;" ToolTip="" ToolTipOpening="OpenTooltip" />
-            <Popup PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="True" StaysOpen="False" IsOpen="{Binding IsOpen}" >
-                <Border Background="AntiqueWhite" BorderBrush="Bisque" CornerRadius="3" BorderThickness="1">
-                    <StackPanel Margin="10" Orientation="Horizontal" >
-                        <Button Content="Update" HorizontalAlignment="Center"  />
-                        <TextBlock HorizontalAlignment="Center" x:Name="TestClickTarget" Margin="20 0 0 0" VerticalAlignment="Center" />
-                    </StackPanel>
+            <Popup Width="200" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="True" StaysOpen="False" IsOpen="{Binding IsOpen}" >
+                <Border Background="Green" BorderBrush="Bisque" CornerRadius="3" BorderThickness="1">
+                    <ContentControl FontSize="14">
+                        <StackPanel>
+                            <TextBlock Margin="0,10,0,10" Text="Display Type" />
+                            <StackPanel Orientation="Vertical">
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="True" GroupName="displaygrp">Numeric</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="displaygrp">Boolean</RadioButton>
+                            </StackPanel>
+                            <TextBlock Margin="0,10,0,10" Text="Alert Type" />
+                            <StackPanel Margin="0,0,0,10">
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="True" GroupName="numgrp">None</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">True</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">False</RadioButton>
+                            </StackPanel>
+                        </StackPanel>
+                    </ContentControl>
                 </Border>
             </Popup>
         </Grid>
