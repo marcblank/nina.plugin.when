@@ -41,12 +41,24 @@ namespace WhenPlugin.When {
             BuildExprList();
         }
 
+        private static bool InhibitSave { get; set; } = false;
+
         private void BuildExprList() {
-            string[] l = ExpressionString.Split('\0');
-            foreach (string s in l) {
-                if (s.Length > 0) {
-                    ExpressionList.Add(new DockableExpr(s));
+            InhibitSave = true;
+            try {
+                string[] l = ExpressionString.Split(EXPR_DIVIDER);
+                foreach (string s in l) {
+                    if (s.Length > 0) {
+                        string[] parts = s.Split(EXPR_INTERNAL_DIVIDER);
+                        DockableExpr expr = new DockableExpr(parts[0]);
+                        if (parts.Length > 1) {
+                            expr.DisplayType = parts[1];
+                        }
+                        ExpressionList.Add(expr);
+                    }
                 }
+            } finally {
+                InhibitSave = false;
             }
         }
 
@@ -70,12 +82,18 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
+        private const char EXPR_DIVIDER = (char)0x0;
+        private const char EXPR_INTERNAL_DIVIDER = (char)0x1;
+
         public static void SaveDockableExprs() {
+            if (InhibitSave) return;
             int count = 0;
             StringBuilder sb = new StringBuilder();
             foreach (DockableExpr e in ExpressionList) {
                 sb.Append(e.Expression);
-                sb.Append("\0");
+                sb.Append(EXPR_INTERNAL_DIVIDER);
+                sb.Append(e.DisplayType);
+                sb.Append(EXPR_DIVIDER);
                 count++;
             }
             Logger.Info("SaveDockableExprs saving " + count + " Exprs");

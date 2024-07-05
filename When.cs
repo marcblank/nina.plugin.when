@@ -48,6 +48,7 @@ namespace WhenPlugin.When {
         private static IPluginOptionsAccessor PluginSettings;
         public static IProfileService ProfileService;
         private static ISequenceMediator SequenceMediator;
+        public static IFilterWheelMediator FilterWheelMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
         private static protected ISequence2VM s2vm;
 
@@ -75,6 +76,7 @@ namespace WhenPlugin.When {
             imagingMediator.ImagePrepared += TakeExposure.ProcessResults;
 
             SequenceMediator = sequenceMediator;
+            FilterWheelMediator = filterWheelMediator;
             
             // Hook into image saving for adding FITS keywords or image file patterns
             Symbol.WhenPluginObject = this;
