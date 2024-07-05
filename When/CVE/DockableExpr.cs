@@ -28,5 +28,42 @@ namespace WhenPlugin.When {
                 WhenPluginDockable.SaveDockableExprs();
             }
         }
+
+        private bool isOpen = false;
+        public bool IsOpen {
+            get { return isOpen; }
+            set {
+                isOpen = value;
+                RaisePropertyChanged(nameof(IsOpen));
+            }
+        }
+
+        private string displayType = "Numeric";
+        public string DisplayType {
+            get => displayType;
+            set {
+                displayType = value;
+                RaisePropertyChanged("DockableValue");
+            }
+        }
+
+        public string DockableValue {
+            get {
+                Evaluate();
+                if (Error != null) {
+                    return Error;
+                }
+                if (DisplayType.Equals("Numeric")) {
+                    return Math.Round(Value, 2).ToString();
+                } else if (DisplayType.Equals("Boolean")) {
+                    return (Value == 0) ? "False" : "True";
+                } else {
+                    return "Filter_X";
+                }
+            }
+        }
+
+
+
     }
 }

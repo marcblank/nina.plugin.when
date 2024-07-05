@@ -29,13 +29,14 @@ namespace WhenPlugin.When {
         }
 
         public void OpenTooltip(object sender, ToolTipEventArgs e) {
-            ((Expr)((TextBlock)sender).DataContext).IsOpen = true;
+            ((DockableExpr)((TextBlock)sender).DataContext).IsOpen = true;
             e.Handled = true;
         }
 
         public void CheckDisplay(object sender, RoutedEventArgs e) {
-            Expr expr = (Expr)((RadioButton)sender).DataContext;
+            DockableExpr expr = (DockableExpr)((RadioButton)sender).DataContext;
             String displayType = (string)((RadioButton)sender).Content;
+            expr.DisplayType = displayType;
             Logger.Info("Checked display box: " + displayType);
         }
     }

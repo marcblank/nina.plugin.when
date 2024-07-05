@@ -61,15 +61,6 @@ namespace WhenPlugin.When {
             Symbol = cloneMe.Symbol;
         }
 
-        private bool isOpen = false;
-        public bool IsOpen {
-            get { return isOpen; }
-            set {
-                isOpen = value;
-                RaisePropertyChanged(nameof(IsOpen));
-            }
-        }
-
         private string _expression = "";
 
         [JsonProperty]
@@ -270,18 +261,6 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("DockableValue");
                 }
-            }
-        }
-
-        public string DockableValue {
-            get {
-                Evaluate();
-                if (Error != null) {
-                    return Error;
-                }
-                if (Value == 0) return "False";
-                if (Value == 1) return "True";
-                return Math.Round(Value, 2).ToString();
             }
         }
 

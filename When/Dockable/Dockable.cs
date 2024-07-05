@@ -56,7 +56,7 @@ namespace WhenPlugin.When {
             if (ExpressionList.Count > 0) {
                 runningItem = WhenPlugin.GetRunningItem();
             }
-            foreach (Expr e in ExpressionList) {
+            foreach (DockableExpr e in ExpressionList) {
                 ISequenceEntity se = e.SequenceEntity;
                 if (runningItem != null) {
                     e.SequenceEntity = runningItem;
@@ -70,12 +70,10 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
-        public Expr Exp { get; private set; } = new Expr(new SetVariable(), "Foo");
-
         public static void SaveDockableExprs() {
             int count = 0;
             StringBuilder sb = new StringBuilder();
-            foreach (Expr e in ExpressionList) {
+            foreach (DockableExpr e in ExpressionList) {
                 sb.Append(e.Expression);
                 sb.Append("\0");
                 count++;

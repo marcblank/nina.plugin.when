@@ -9,8 +9,8 @@
 
     <!--  The datatemplate for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
-    <DataTemplate DataType="{x:Type local:Expr}">
-        <Grid VerticalAlignment="Center">
+    <DataTemplate DataType="{x:Type local:DockableExpr}">
+        <Grid Background="{StaticResource ButtonBackgroundBrush}" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*" />
                 <ColumnDefinition Width="4*" />
@@ -19,17 +19,17 @@
             <TextBox Grid.Column="0" Text="{Binding Expression}" />
             <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
             <TextBlock Grid.Column="2" Margin="0,0,0,0" TextAlignment="Right" Text="&#x2630;" ToolTip="" ToolTipOpening="OpenTooltip" />
-            <Popup Width="200" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="True" StaysOpen="False" IsOpen="{Binding IsOpen}" >
-                <Border Background="Green" BorderBrush="Bisque" CornerRadius="3" BorderThickness="1">
-                    <ContentControl FontSize="14">
+            <Popup Width="100" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="False" StaysOpen="False" IsOpen="{Binding IsOpen}" >
+                <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource ButtonBackgroundBrush}" CornerRadius="3" BorderThickness="3">
+                    <ContentControl Background="{StaticResource ButtonBackgroundBrush}"  FontSize="12" Margin="5,5,5,5">
                         <StackPanel>
-                            <TextBlock Margin="0,10,0,10" Text="Display Type" />
+                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}"  Margin="0,10,0,10" Text="Display Type" />
                             <StackPanel Orientation="Vertical">
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="True" GroupName="displaygrp">Numeric</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Boolean</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Filter</RadioButton>
                             </StackPanel>
-                            <TextBlock Margin="0,10,0,10" Text="Alert Type" />
+                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}" Margin="0,10,0,10" Text="Alert Type" />
                             <StackPanel Margin="0,0,0,10">
                                 <RadioButton VerticalContentAlignment="Center" IsChecked="True" GroupName="numgrp">None</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">True</RadioButton>
