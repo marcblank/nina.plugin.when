@@ -1,4 +1,5 @@
-﻿using NINA.Core.Utility;
+﻿using Accord.Math;
+using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -28,9 +29,14 @@ namespace WhenPlugin.When {
         }
 
         public void OpenTooltip(object sender, ToolTipEventArgs e) {
-            Logger.Info("Open tooltip");
             ((Expr)((TextBlock)sender).DataContext).IsOpen = true;
+            e.Handled = true;
+        }
 
+        public void CheckDisplay(object sender, RoutedEventArgs e) {
+            Expr expr = (Expr)((RadioButton)sender).DataContext;
+            String displayType = (string)((RadioButton)sender).Content;
+            Logger.Info("Checked display box: " + displayType);
         }
     }
 }

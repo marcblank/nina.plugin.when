@@ -73,11 +73,14 @@ namespace WhenPlugin.When {
         public Expr Exp { get; private set; } = new Expr(new SetVariable(), "Foo");
 
         public static void SaveDockableExprs() {
+            int count = 0;
             StringBuilder sb = new StringBuilder();
             foreach (Expr e in ExpressionList) {
                 sb.Append(e.Expression);
                 sb.Append("\0");
+                count++;
             }
+            Logger.Info("SaveDockableExprs saving " + count + " Exprs");
             Symbol.WhenPluginObject.DockableExprs = sb.ToString();
         }
 
