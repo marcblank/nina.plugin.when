@@ -43,8 +43,14 @@ namespace WhenPlugin.When {
 
         private static bool InhibitSave { get; set; } = false;
 
+        public DockableExpr Exp {  get; set; }
+
         private void BuildExprList() {
             InhibitSave = true;
+            if (Exp == null) {
+                Exp = new DockableExpr("foo");
+                Exp.Evaluate();
+            }
             try {
                 string[] l = ExpressionString.Split(EXPR_DIVIDER);
                 foreach (string s in l) {
