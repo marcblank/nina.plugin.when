@@ -9,6 +9,7 @@ using NINA.Sequencer.DragDrop;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using NINA.Core.Utility;
+using Serilog.Debugging;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Send via Ground Station")]
@@ -60,6 +61,7 @@ namespace WhenPlugin.When {
                         return "Error";
                     }
                     value = value.Replace("{" + toReplace + "}", ex.ValueString);
+                    Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                 }
             }
             return value;
@@ -86,6 +88,7 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("Message is null?");
             }
             var processedMessage = ProcessedScript(message);
+            Logger.Info("Sending to Ground Station: " + processedMessage);
             if (ProcessedScriptError != null) {
                 throw new SequenceEntityFailedException("Error processing message for Ground Station: " + ProcessedScriptError);
             }

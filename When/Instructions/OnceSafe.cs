@@ -30,6 +30,7 @@ using NINA.Core.Locale;
 using NINA.WPF.Base.Mediator;
 using System.Runtime.CompilerServices;
 using NINA.Sequencer.Conditions;
+using NINA.Astrometry;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Once Safe")]
@@ -39,7 +40,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     
-    public class OnceSafe : IfCommand, IValidatable {
+    public class OnceSafe : IfCommand, IValidatable, IDSOTargetProxy {
         private ISafetyMonitorMediator safetyMonitorMediator;
 
         [ImportingConstructor]
@@ -80,12 +81,25 @@ namespace WhenPlugin.When {
         }
 
         public TimeSpan WaitInterval { get; set; } = TimeSpan.FromSeconds(5);
+
+        private void UpdateChildren(ISequenceContainer c) {
+            foreach (var item in c.Items) {
+                c.AfterParentChanged();
+            }
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             bool IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             while (!IsSafe && !(Parent == null)) {
                 progress?.Report(new ApplicationStatus() { Status = Loc.Instance["Lbl_SequenceItem_SafetyMonitor_WaitUntilSafe_Waiting"] });
                 await CoreUtil.Wait(WaitInterval, token, default);
                 IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
+            }
+
+            Target = DSOTarget.FindTarget(Parent);
+            if (Target != null) {
+                Logger.Info("Found Target: " + Target);
+                UpdateChildren(Instructions);
             }
 
             // Execute instructions now
@@ -105,5 +119,20 @@ namespace WhenPlugin.When {
             Issues = i;
             return i.Count == 0;
         }
-     }
+        public InputTarget DSOProxyTarget() {
+            return Target;
+        }
+
+        public InputTarget Target = null;
+
+        public InputTarget FindTarget(ISequenceContainer c) {
+            while (c != null) {
+                if (c is IDSOTargetProxy dso) {
+                    return dso.DSOProxyTarget();
+                }
+                c = c.Parent;
+            }
+            return null;
+        }
+    }
 }

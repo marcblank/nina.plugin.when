@@ -356,6 +356,11 @@ namespace WhenPlugin.When {
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
+                //var foo = new Random();
+                //a.HFR = foo.NextDouble();
+                if (Double.IsNaN(a.HFR)) {
+                    a.HFR = 0;
+                }
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
