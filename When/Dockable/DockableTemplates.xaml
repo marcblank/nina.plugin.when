@@ -7,50 +7,123 @@
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core">
 
-    <!--  The datatemplae for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
+    <!--  The datatemplate for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
-    <DataTemplate DataType="{x:Type local:Expr}">
-        <Grid VerticalAlignment="Center">
+    <DataTemplate DataType="{x:Type local:DockableExpr}">
+        <Grid Background="{StaticResource BackgroundBrush}" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Text="{Binding Expression}" />
-            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" />
+            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"/>
+            <Button Grid.Column="2" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
+            <Popup Width="100" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="False" StaysOpen="False" IsOpen="{Binding IsOpen}" >
+                <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource ButtonBackgroundBrush}" CornerRadius="3" BorderThickness="3">
+                    <ContentControl Background="{StaticResource ButtonBackgroundBrush}"  FontSize="12" Margin="5,5,5,5">
+                        <StackPanel>
+                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}"  Margin="0,10,0,10" Text="Display Type" />
+                            <StackPanel Orientation="Vertical">
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="True" GroupName="displaygrp">Numeric</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Boolean</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Filter</RadioButton>
+                            </StackPanel>
+                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}" Margin="0,10,0,10" Text="Alert Type" />
+                            <StackPanel Margin="0,0,0,10">
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="True" GroupName="numgrp">None</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">True</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">False</RadioButton>
+                            </StackPanel>
+                        </StackPanel>
+                    </ContentControl>
+                </Border>
+            </Popup>
         </Grid>
     </DataTemplate>
 
+    <!--<StackPanel>
+        <RadioButton GroupName="colorgrp">Red</RadioButton>
+        <RadioButton GroupName="colorgrp">Blue</RadioButton>
+        <RadioButton GroupName="numgrp">1</RadioButton>
+        <RadioButton GroupName="numgrp">2</RadioButton>
+    </StackPanel>-->
+
+    <!--https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.radiobutton?view=windowsdesktop-8.0-->
+
     <DataTemplate DataType="{x:Type local:WhenPluginDockable}">
         <Grid>
-            <Button Grid.Row="0"
-                     MinHeight="15"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Grid.Row="0"
+                     MinHeight="20"
                      Width="100"
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Command="{Binding AddInstruction}">
-                <TextBlock
+                    <TextBlock
                          Foreground="{StaticResource ButtonForegroundBrush}"
                          Text="Add Expression"
                          FontSize="12"
                          TextWrapping="Wrap" />
-            </Button>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                </Button>
+                <TextBlock 
+                   Margin="5,-2,0,0" 
+                   Text="&#x1F6C8;" 
+                   FontSize="18">
+                    <TextBlock.ToolTip>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
+                                <Grid.Resources >
+                                    <Style TargetType="ItemsControl" >
+                                        <Setter Property="Padding" Value="5,0,5,0" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
+                                <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                                <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
+                            </Grid>
+                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
+                                <Grid.Resources >
+                                    <Style TargetType="ItemsControl" >
+                                        <Setter Property="Padding" Value="0,0,0,0" />
+                                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210"/>
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
+                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
+                                <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
+                            </Grid>
+                        </StackPanel>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </StackPanel>
 
-                        <Border
+            <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Border
                        Grid.Row="1"
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </ScrollViewer>
+                        <Grid Background="{StaticResource BackgroundBrush}">
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </DataTemplate>
 

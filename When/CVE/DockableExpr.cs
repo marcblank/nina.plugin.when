@@ -1,4 +1,6 @@
-﻿using NINA.Sequencer.Container;
+﻿using NINA.Equipment.Equipment.MyFilterWheel;
+using NINA.Profile;
+using NINA.Sequencer.Container;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +30,51 @@ namespace WhenPlugin.When {
                 WhenPluginDockable.SaveDockableExprs();
             }
         }
+
+        private bool isOpen = false;
+        public bool IsOpen {
+            get { return isOpen; }
+            set {
+                isOpen = value;
+                RaisePropertyChanged(nameof(IsOpen));
+            }
+        }
+
+        private string displayType = "Numeric";
+        public string DisplayType {
+            get => displayType;
+            set {
+                displayType = value;
+                RaisePropertyChanged("DockableValue");
+                WhenPluginDockable.SaveDockableExprs();
+            }
+        }
+
+        public string DockableValue {
+            get {
+                Evaluate();
+                if (Error != null) {
+                    return Error;
+                }
+                if (DisplayType.Equals("Numeric")) {
+                    return Math.Round(Value, 2).ToString();
+                } else if (DisplayType.Equals("Boolean")) {
+                    return (Value == 0) ? "False" : "True";
+                } else {
+                    FilterWheelInfo fwi = WhenPlugin.FilterWheelMediator.GetInfo();
+                    if (fwi == null || fwi.Connected == false) {
+                        return "Not connected";
+                    }
+                    var filters = WhenPlugin.ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                    if (Value < filters.Count) {
+                        return filters[(int)Value].Name;
+                    }
+                    return "No filter";
+                }
+            }
+        }
+
+
+
     }
 }

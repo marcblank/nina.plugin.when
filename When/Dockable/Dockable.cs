@@ -10,6 +10,7 @@ using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Trigger;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
 using Nito.Mvvm;
@@ -40,12 +41,30 @@ namespace WhenPlugin.When {
             BuildExprList();
         }
 
+        private static bool InhibitSave { get; set; } = false;
+
+        public DockableExpr Exp {  get; set; }
+
         private void BuildExprList() {
-            string[] l = ExpressionString.Split('\0');
-            foreach (string s in l) {
-                if (s.Length > 0) {
-                    ExpressionList.Add(new DockableExpr(s));
+            InhibitSave = true;
+            if (Exp == null) {
+                Exp = new DockableExpr("foo");
+                Exp.Evaluate();
+            }
+            try {
+                string[] l = ExpressionString.Split(EXPR_DIVIDER);
+                foreach (string s in l) {
+                    if (s.Length > 0) {
+                        string[] parts = s.Split(EXPR_INTERNAL_DIVIDER);
+                        DockableExpr expr = new DockableExpr(parts[0]);
+                        if (parts.Length > 1) {
+                            expr.DisplayType = parts[1];
+                        }
+                        ExpressionList.Add(expr);
+                    }
                 }
+            } finally {
+                InhibitSave = false;
             }
         }
 
@@ -55,7 +74,7 @@ namespace WhenPlugin.When {
             if (ExpressionList.Count > 0) {
                 runningItem = WhenPlugin.GetRunningItem();
             }
-            foreach (Expr e in ExpressionList) {
+            foreach (DockableExpr e in ExpressionList) {
                 ISequenceEntity se = e.SequenceEntity;
                 if (runningItem != null) {
                     e.SequenceEntity = runningItem;
@@ -69,12 +88,21 @@ namespace WhenPlugin.When {
             return Task.CompletedTask;
         }
 
+        private const char EXPR_DIVIDER = (char)0x0;
+        private const char EXPR_INTERNAL_DIVIDER = (char)0x1;
+
         public static void SaveDockableExprs() {
+            if (InhibitSave) return;
+            int count = 0;
             StringBuilder sb = new StringBuilder();
-            foreach (Expr e in ExpressionList) {
+            foreach (DockableExpr e in ExpressionList) {
                 sb.Append(e.Expression);
-                sb.Append("\0");
+                sb.Append(EXPR_INTERNAL_DIVIDER);
+                sb.Append(e.DisplayType);
+                sb.Append(EXPR_DIVIDER);
+                count++;
             }
+            Logger.Info("SaveDockableExprs saving " + count + " Exprs");
             Symbol.WhenPluginObject.DockableExprs = sb.ToString();
         }
 

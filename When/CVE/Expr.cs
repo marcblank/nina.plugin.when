@@ -9,7 +9,9 @@ using PanoramicData.NCalcExtensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Windows.Controls.Primitives;
 using static WhenPlugin.When.Symbol;
 using Expression = NCalc.Expression;
 
@@ -259,18 +261,6 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("DockableValue");
                 }
-            }
-        }
-
-        public string DockableValue {
-            get {
-                Evaluate();
-                if (Error != null) {
-                    return Error;
-                }
-                if (Value == 0) return "False";
-                if (Value == 1) return "True";
-                return Math.Round(Value, 2).ToString();
             }
         }
 
