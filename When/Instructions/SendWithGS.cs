@@ -54,13 +54,12 @@ namespace WhenPlugin.When {
                     }
                     if (toReplace.Length == 0) break;
                     Expr ex = new Expr(this, toReplace);
-                    ProcessedScriptError = null;
                     if (ex.Error != null) {
-                        ProcessedScriptError = ex.Error;
                         Logger.Warning("Send via Ground Station, error processing script, " + ex.Error);
-                        return "Error";
+                        value = value.Replace("{" + toReplace + "}", ex.Error);
+                    } else {
+                        value = value.Replace("{" + toReplace + "}", ex.ValueString);
                     }
-                    value = value.Replace("{" + toReplace + "}", ex.ValueString);
                     Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                 }
             }
@@ -89,9 +88,6 @@ namespace WhenPlugin.When {
             }
             var processedMessage = ProcessedScript(message);
             Logger.Info("Sending to Ground Station: " + processedMessage);
-            if (ProcessedScriptError != null) {
-                throw new SequenceEntityFailedException("Error processing message for Ground Station: " + ProcessedScriptError);
-            }
             if (processedMessage == null) {
                 throw new SequenceEntityFailedException("Processed message is null?");
             }
