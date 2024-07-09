@@ -52,6 +52,15 @@ namespace WhenPlugin.When {
                 if (PseudoParent is IDSOTargetProxy w && w.DSOProxyTarget() != null) {
                     return w.DSOProxyTarget();
                 }
+                
+                ISequenceContainer parent = PseudoParent as ISequenceContainer;
+                while (parent != null) {
+                    if (parent is IDeepSkyObjectContainer dso) {
+                        return dso.Target;
+                    }
+                    parent = parent.Parent;
+                }
+            
                 IProfileService profileService = WhenPlugin.ProfileService;
                 InputTarget t = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
                 if (Parent != null) {

@@ -340,7 +340,7 @@ namespace WhenPlugin.When {
             if (a.HasProperty(name)) {
                 var v = a.GetType().GetProperty(name).GetValue(a, null);
                 if (v is double vDouble) {
-                    results.Add(name, Math.Round(vDouble, 2));
+                    results.Add("Image_" + name, Math.Round(vDouble, 2));
                 }
             }
         }
@@ -370,8 +370,8 @@ namespace WhenPlugin.When {
                 };
 
                 // Add these if they exist
-                AddOptionalResult(results, a, "Image_Eccentricity");
-                AddOptionalResult(results, a, "Image_FWHM");
+                AddOptionalResult(results, a, "Eccentricity");
+                AddOptionalResult(results, a, "FWHM");
 
                 // We might also get guider info as well...
 
