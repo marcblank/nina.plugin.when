@@ -223,7 +223,7 @@ namespace WhenPlugin.When {
 
         private void UpdateChildren(ISequenceContainer c) {
             foreach (var item in c.Items) {
-                c.AfterParentChanged();
+                item.AfterParentChanged();
             }
         }
 
