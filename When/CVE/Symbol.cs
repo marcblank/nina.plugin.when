@@ -668,6 +668,7 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
                     SwitchWeatherKeys.Add("camera__XSize", cameraInfo.XSize);
                     SwitchWeatherKeys.Add("camera__YSize", cameraInfo.YSize);
+                    SwitchWeatherKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
                 }
 
                 DomeInfo domeInfo = DomeMediator.GetInfo();
