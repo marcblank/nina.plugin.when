@@ -663,6 +663,11 @@ namespace WhenPlugin.When {
                 if (CameraConnected) {
                     SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
                     i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
+
+                    // Hidden
+                    SwitchWeatherKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
+                    SwitchWeatherKeys.Add("camera__XSize", cameraInfo.XSize);
+                    SwitchWeatherKeys.Add("camera__YSize", cameraInfo.YSize);
                 }
 
                 DomeInfo domeInfo = DomeMediator.GetInfo();
