@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
  
-    public class DIYMeridianFlipTrigger : SequenceTrigger, IMeridianFlipTrigger, IValidatable {
+    public class DIYMeridianFlipTrigger : SequenceTrigger, IMeridianFlipTrigger, IValidatable, IDSOTargetProxy {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
         protected IApplicationStatusMediator applicationStatusMediator;
@@ -108,23 +108,19 @@ namespace WhenPlugin.When {
             Name = Name;
             Icon = Icon;
             FlipStatus = "Waiting for a NINA sequence to start...";
+            TriggerRunner = new IfContainer();
             AddItem(TriggerRunner, new StopGuiding(guiderMediator) { Name = "Stop Guiding", Icon = GuiderIcon }); ;
             AddItem(TriggerRunner, new PassMeridian(telescopeMediator, profileService) { Name = "Wait to Pass Meridian", Icon = MeridianFlipIcon });
             AddItem(TriggerRunner, new DoFlip(telescopeMediator, domeMediator, domeFollower) { Name = "Flip Scope", Icon = MeridianFlipIcon });
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 10 });
             AddItem(TriggerRunner, new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator,
                 autoFocusVMFactory) { Name = "Run Autofocus", Icon = CameraIcon });
-            Center c = new Center(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
+            NINA.Sequencer.SequenceItem.Platesolving.Center c = new (profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
                 domeMediator, domeFollower, plateSolverFactory, windowServiceFactory) { Name = "Center", Icon = PlatesolveIcon };
             AddItem(TriggerRunner, c);
-            MFCenter = c;
-            //SetCoords(c);
-            //AddItem(new AutoselectGuideStar(guiderMediator) { Name = "Autoselect Guide Star", Icon = GuiderIcon });
             AddItem(TriggerRunner, new StartGuiding(guiderMediator) { Name = "Start Guiding", Icon = GuiderIcon });
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 5 });
             
-            // Do this so that TriggerRunner's children will be able to see the DSO Sequence
-            TriggerRunner.AttachNewParent(this.Parent);
             PauseTimeBeforeMeridian = profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
             MaxMinutesAfterMeridian = profileService.ActiveProfile.MeridianFlipSettings.MaxMinutesAfterMeridian;
             MinutesAfterMeridian = profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
@@ -134,8 +130,6 @@ namespace WhenPlugin.When {
             runner.Items.Add(item);
             item.AttachNewParent(runner);
         }
-
-        private Center MFCenter {  get; set; }
 
         private DIYMeridianFlipTrigger(DIYMeridianFlipTrigger copyMe) : this(copyMe.profileService,
                                                                copyMe.cameraMediator,
@@ -157,10 +151,10 @@ namespace WhenPlugin.When {
             Icon = copyMe.Icon;
             FlipStatus = copyMe.FlipStatus;
             // Fix for crash; unsure how we get here...
-            if (copyMe.MFCenter.Coordinates.Coordinates == null) {
-                copyMe.MFCenter.Coordinates.Coordinates = new Coordinates(Angle.Zero, Angle.Zero, Epoch.JNOW);
-            }
-            TriggerRunner = (SequentialContainer)copyMe.TriggerRunner.Clone();
+            TriggerRunner = (IfContainer)copyMe.TriggerRunner.Clone();
+            TriggerRunner.AttachNewParent(Parent);
+            ((IfContainer)TriggerRunner).PseudoParent = this;
+
             PauseTimeBeforeMeridian = copyMe.PauseTimeBeforeMeridian;
             MaxMinutesAfterMeridian = copyMe.MaxMinutesAfterMeridian;
             MinutesAfterMeridian = copyMe.MinutesAfterMeridian;
@@ -291,7 +285,7 @@ namespace WhenPlugin.When {
             if (!telescopeInfo.Connected || double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
                 EarliestFlipTime = DateTime.MinValue;
                 LatestFlipTime = DateTime.MinValue;
-                FlipStatus = "Telescope is not connected to evaluate if a flip should happen!";
+                FlipStatus = "Telescope is not connected.";
                 RaisePropertyChanged("FlipStatus");
                 Logger.Error(FlipStatus);
                 return false;
@@ -305,6 +299,8 @@ namespace WhenPlugin.When {
                 Logger.Info("Telescope is not tracking. Skip flip evaluation");
                 return false;
             }
+
+            CheckTarget();
 
             // When side of pier is disabled - check if the last flip time was less than 11 hours ago and further check if the current position is similar to the last flip position. If all are true, no flip is required.
             if (UseSideOfPier == false && (DateTime.Now - lastFlipTime) < TimeSpan.FromHours(11) && lastFlipCoordiantes != null && (lastFlipCoordiantes - telescopeInfo.Coordinates).Distance.ArcMinutes < 20) {
@@ -330,14 +326,14 @@ namespace WhenPlugin.When {
             UpdateMeridianFlipTimeTriggerValues(minimumTimeRemaining, originalMaximumTimeRemaining, TimeSpan.FromMinutes(PauseTimeBeforeMeridian), TimeSpan.FromMinutes(MaxMinutesAfterMeridian));
 
             if (minimumTimeRemaining <= TimeSpan.Zero && maximumTimeRemaining > TimeSpan.Zero) {
-                FlipStatus = $"Flip due now through {TimeString(maximumTimeRemaining)}. Flip should happen now";
+                FlipStatus = $"Flip due now through {TimeString(maximumTimeRemaining)}.";
                 RaisePropertyChanged("FlipStatus");
                 Logger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
                 return true;
             }
             else {
                 if (UseSideOfPier && telescopeInfo.SideOfPier == PierSide.pierUnknown) {
-                    FlipStatus = "Side of Pier usage is enabled, but the side of pier is unknown. Ignoring side of pier to calculate the flip time";
+                    FlipStatus = "Side of pier is unknown; ignoring when calculating the flip time";
                     RaisePropertyChanged("FlipStatus");
                     Logger.Error("Side of Pier usage is enabled, however the side of pier reported by the driver is unknown. Ignoring side of pier to calculate the flip time");
                 }
@@ -444,6 +440,19 @@ namespace WhenPlugin.When {
             }
         }
 
+        private void CheckTarget() {
+            InputTarget t = DSOTarget.FindTarget(Parent);
+            if (t != null && t != Target) {
+                Target = t;
+                Logger.Info("Found Target: " + Target);
+                RaisePropertyChanged("Target");
+                RaisePropertyChanged("Target.TargetName");
+                UpdateChildren(TriggerRunner);
+            }
+        }
+
+
+
         private string TimeString(DateTime min) {
             return min.ToString("T", CultureInfo.CurrentCulture);
         }
@@ -475,46 +484,26 @@ namespace WhenPlugin.When {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
             try {
-                TriggerContext = context;
-                SetCoords(MFCenter);
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
-            }
-         }
-
-
-        private void SetCoords(Center c) {
-            if (c == null) return;
-            var cc = ItemUtility.RetrieveContextCoordinates(Parent);
-            if (cc != null) {
-                Coordinates coord = cc.Coordinates;
-                //Logger.Info("** SetCoords from Parent ** " + coord);
-                if (coord != null) {
-                    c.Coordinates = new InputCoordinates(coord);
-                    if (coord.RADegrees == 0 && coord.Dec == 0) {
-                        Coordinates x = telescopeMediator.GetInfo().Coordinates;
-                        //Logger.Info("** SetCoords from Scope ** " + x);
-                        if (x != null) {
-                            c.Coordinates = new InputCoordinates(x);
-                        }
-                    }
-                }
-            } else if (telescopeMediator.GetInfo() != null) {
-                Coordinates x = telescopeMediator.GetInfo().Coordinates;
-                //Logger.Info("** SetCoords from Scope ** " + x);
-                if (x != null) {
-                    c.Coordinates = new InputCoordinates(x);
-                }
-            } else {
-                //Logger.Info("** SetCoords to zero");
-                c.Coordinates = new InputCoordinates();
             }
         }
 
         public virtual bool Validate() {
             // Validate the Items (this will update their status)
             if (TriggerRunner == null) return true;
+            if (!(TriggerRunner is IfContainer)) {
+                IfContainer ifc = new IfContainer();
+                foreach (ISequenceItem item in TriggerRunner.Items) {
+                    ISequenceItem i = (ISequenceItem)item.Clone();
+                    ifc.Items.Add(i);
+                    i.AttachNewParent(ifc);
+                }
+                ifc.AttachNewParent(Parent);
+                ifc.PseudoParent = this;
+                TriggerRunner = ifc;
+            }
             bool valid = true;
             foreach (ISequenceItem item in TriggerRunner.Items) {
                 if (item is IValidatable vitem) {
@@ -522,13 +511,7 @@ namespace WhenPlugin.When {
                 }
             }
 
-            foreach(ISequenceItem item in TriggerRunner.Items) {
-                if (item is Center c) {
-                    MFCenter = c;
-                    break;
-                }
-            }
-            SetCoords(MFCenter);
+            CheckTarget();
 
             Issues.Clear();
             if (!valid) {
@@ -536,6 +519,29 @@ namespace WhenPlugin.When {
             }
             RaisePropertyChanged("Issues");
             return valid;
+        }
+
+        private void UpdateChildren(ISequenceContainer c) {
+            foreach (var item in c.Items) {
+                item.AfterParentChanged();
+            }
+        }
+
+        public InputTarget DSOProxyTarget() {
+            return Target;
+        }
+
+        public InputTarget Target { get; set; }
+
+        public InputTarget FindTarget(ISequenceContainer c) {
+            while (c != null) {
+                if (c is IDeepSkyObjectContainer dso) {
+                    return dso.Target;
+                } else {
+                    c = c.Parent;
+                }
+            }
+            return null;
         }
     }
 }

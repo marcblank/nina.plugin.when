@@ -64,23 +64,9 @@ namespace WhenPlugin.When {
             }
         }
 
-        private Coordinates GetCoords() {
-            DIYMeridianFlipTrigger diymf = FindTrigger();
-            ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(diymf != null ? diymf.TriggerContext : Parent);
-            if (cc != null) {
-                //Logger.Info("Getting coordinates from Context/Parent");
-                return cc.Coordinates;
-            }
-            //Logger.Info("Getting coordinates from telescope");
-            return telescopeMediator?.GetInfo().Coordinates;
-        }
-
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblFlippingScope"] });
-            Coordinates targetCoordinates = GetCoords();
-            if (targetCoordinates == null) {
-                throw new SequenceEntityFailedException("No coordinates found");
-            }
+            Coordinates targetCoordinates = ItemUtility.RetrieveContextCoordinates(Parent).Coordinates; 
             Logger.Info($"Meridian Flip - Scope will flip to coordinates RA: {targetCoordinates.RAString} Dec: {targetCoordinates.DecString} Epoch: {targetCoordinates.Epoch}");
             var flipsuccess = await telescopeMediator.MeridianFlip(targetCoordinates, token);
             Logger.Trace($"Meridian Flip - Successful flip: {flipsuccess}");
@@ -140,7 +126,7 @@ namespace WhenPlugin.When {
                 FlipStatus = "Telescope not connected";
                 RaisePropertyChanged("FlipStatus");
             } else {
-                Coordinates target = GetCoords();
+                Coordinates target = ItemUtility.RetrieveContextCoordinates(Parent)?.Coordinates;
                 if (target != null) {
                     //Logger.Info("**Got target from Parent: " + target);
                     if (target.RADegrees == 0 && target.Dec == 0) {
