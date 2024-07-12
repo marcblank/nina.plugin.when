@@ -27,6 +27,9 @@
     <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
+    <Compile Remove="When\Instructions\IfSafe.cs" />
+    <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
+    <Compile Remove="When\Instructions\IfUnsafe.cs" />
     <Compile Remove="When\Instructions\SetVariable.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />

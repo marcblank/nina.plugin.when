@@ -376,7 +376,7 @@ namespace WhenPlugin.When {
                 // We might also get guider info as well...
 
                 LastImageResults = results;
-                Logger.Info("TakeExposure+ Updating with " + results.Count + " image results");
+                Logger.Debug("TakeExposure+ Updating with " + results.Count + " image results");
                 Symbol.UpdateSwitchWeatherData();
             }
         }

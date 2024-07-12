@@ -1147,44 +1147,6 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-
-
-    <DataTemplate DataType="{x:Type local:IfSafe}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <ninactrl:DetachingExpander>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock
-                               MinHeight="30"
-                               HorizontalAlignment="Left"
-                               Margin="0,10,0,-20"
-                               VerticalAlignment="Center"
-                               Text="Instructions to execute if your gear is 'safe':" />
-                        <Border
-                       MinHeight="35"
-                       Margin="0,0,0,0"
-                       BorderBrush="{StaticResource BorderBrush}"
-                       BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontStyle="Italic"
-                               Text="Instructions go here"
-                               Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </ninactrl:DetachingExpander>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type local:OnceSafe}">
         <Border>
             <Border.Resources>
@@ -2814,46 +2776,6 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         </nina:SequenceBlockView>
     </DataTemplate>
 
-
-
-    <DataTemplate DataType="{x:Type local:IfUnsafe}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
-                <ninactrl:DetachingExpander>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock
-                                MinHeight="30"
-                                HorizontalAlignment="Left"
-                                Margin="0,10,0,-20"
-                                VerticalAlignment="Center"
-                                Opacity="0.4"
-                                Text="Instructions to execute if your gear is 'unssafe':" />
-                        <Border
-                        MinHeight="35"
-                        Margin="0,0,0,0"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
-                            <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                                <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontStyle="Italic"
-                                Opacity="0.4"
-                                Text="Instructions will go here..."
-                                Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.Container.ISequenceContainer;NINA.Sequencer.SequenceItem.ISequenceItem;NINA.Sequencer.TemplatedSequenceContainer" OnDropCommand="DropIntoCommand" />
-                                </i:Interaction.Behaviors>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </ninactrl:DetachingExpander>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>
-
     <DataTemplate x:Key="NINA.Plugins.Generics.Instructions.GenericTrigger_Mini">
         <mini:MiniSequenceItem>
             <mini:MiniSequenceItem.SequenceItemContent>
@@ -3154,26 +3076,6 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemProgressContent>
         </nina:SequenceBlockView>
-    </DataTemplate>
-
-    <DataTemplate x:Key="WhenPlugin.When.IfSafe_Mini" DataType="{x:Type local:IfSafe}">
-        <mini:MiniContainer DataContext="{Binding Instructions}">
-            <mini:MiniContainer.Content>
-                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                </Grid>
-            </mini:MiniContainer.Content>
-        </mini:MiniContainer>
-    </DataTemplate>
-
-    <DataTemplate x:Key="WhenPlugin.When.IfUnsafe_Mini" DataType="{x:Type local:IfUnsafe}">
-        <mini:MiniContainer DataContext="{Binding Instructions}">
-            <mini:MiniContainer.Content>
-                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
-                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                </Grid>
-            </mini:MiniContainer.Content>
-        </mini:MiniContainer>
     </DataTemplate>
 
     <DataTemplate x:Key="WhenPlugin.When.WhenUnsafe_Mini" DataType="{x:Type local:WhenUnsafe}">
