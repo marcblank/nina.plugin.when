@@ -142,6 +142,7 @@ namespace WhenPlugin.When {
             if (!Inherited) {
                 Coordinates.Coordinates.RA = RAExpr.Value;
                 Coordinates.Coordinates.Dec = DecExpr.Value;
+                Coordinates.Coordinates.Transform(Epoch.J2000);
             }
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
             if (stoppedGuiding) {

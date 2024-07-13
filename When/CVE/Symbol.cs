@@ -616,10 +616,13 @@ namespace WhenPlugin.When {
                     i.Add("Telescope: Azimuth (" + Math.Round(telescopeInfo.Azimuth, 2) + ")");
                     SwitchWeatherKeys.Add("AtPark", telescopeInfo.AtPark ? 1 : 0);
                     i.Add("Telescope: AtPark (" + (telescopeInfo.AtPark ? "True" : "False") + ")");
-                    SwitchWeatherKeys.Add("RightAscension", telescopeInfo.RightAscension);
-                    i.Add("Telescope: RightAscension (" + Math.Round(telescopeInfo.RightAscension, 2) + ")");
-                    SwitchWeatherKeys.Add("Declination", telescopeInfo.Declination);
-                    i.Add("Telescope: Declination (" + Math.Round(telescopeInfo.Declination, 2) + ")");
+                    Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
+                    Double ra = c.RA;
+                    Double dec = c.Dec;
+                    SwitchWeatherKeys.Add("RightAscension", ra); // telescopeInfo.RightAscension);
+                    i.Add("Telescope: RightAscension (" + Math.Round(ra, 2) + ")");
+                    SwitchWeatherKeys.Add("Declination", dec); // telescopeInfo.Declination);
+                    i.Add("Telescope: Declination (" + Math.Round(dec, 2) + ")");
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
