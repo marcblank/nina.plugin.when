@@ -34,6 +34,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Mediator;
 using NINA.ViewModel.Sequencer;
 using NINA.Equipment.Model;
+using GalaSoft.MvvmLight.Command;
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -51,11 +52,13 @@ namespace WhenPlugin.When {
         public static IFilterWheelMediator FilterWheelMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
         private static protected ISequence2VM s2vm;
+        public CustomObstruction Obstructions;
 
         // Implementing a file pattern
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
 
         [ImportingConstructor]
+        [Obsolete]
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator,
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                 IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
@@ -86,9 +89,75 @@ namespace WhenPlugin.When {
 
             imageSaveMediator.BeforeFinalizeImageSaved += ImageSaveMediator_BeforeFinalizeImageSaved;
 
-            OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
+            OpenRoofFilePathDiagCommand = new NINA.Core.Utility.RelayCommand(OpenRoofFilePathDiag);
+
+            // From SMF
+            IDictionary<double, double[]> defaultObstructions = new Dictionary<double, double[]>();
+            double[] obstructions = new double[2];
+            obstructions[0] = profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
+            obstructions[1] = profileService.ActiveProfile.MeridianFlipSettings.MaxMinutesAfterMeridian;
+            defaultObstructions.Add(0, obstructions);
+            defaultObstructions.Add(180, obstructions);
+            Obstructions = new CustomObstruction(defaultObstructions);
+            LoadObstructionFile();
+            OpenObstructionsFilePathDiagCommand = new RelayCommand<object>(OpenObstructionsFilePathDiag);
+
 
         }
+
+        public ICommand OpenObstructionsFilePathDiagCommand { get; private set; }
+
+        protected void LoadObstructionFile() {
+            if (!string.IsNullOrEmpty(ObstructionFile)) {
+                Logger.Info($"Loading obstruction file {ObstructionFile}");
+                try {
+                    Obstructions = CustomObstruction.FromFile(ObstructionFile, ProfileService.ActiveProfile.AstrometrySettings.Latitude);
+                } catch (FileNotFoundException) {
+                    ObstructionFile = string.Empty;
+                }
+            }
+        }
+
+        public string ObstructionFile {
+            get {
+                var obstructionFilename = PluginSettings.GetValueString(nameof(ObstructionFile), string.Empty);
+                if (string.IsNullOrEmpty(obstructionFilename)) {
+                    obstructionFilename = Settings.Default.ObstructionFileName;
+                    if (string.IsNullOrEmpty(obstructionFilename) || File.Exists(obstructionFilename)) {
+                        obstructionFilename = string.Empty;
+                        Settings.Default.ObstructionFileName = string.Empty;
+                    }
+                    PluginSettings.SetValueString(nameof(ObstructionFile), obstructionFilename);
+                } else {
+                    if (!File.Exists(obstructionFilename)) {
+                        obstructionFilename = string.Empty;
+                        PluginSettings.SetValueString(nameof(ObstructionFile), obstructionFilename);
+                    }
+                }
+                return obstructionFilename;
+            }
+            set {
+                if (!string.IsNullOrEmpty(value) && value != ObstructionFile) {
+                    if (File.Exists(value)) {
+                        PluginSettings.SetValueString(nameof(ObstructionFile), value);
+                        LoadObstructionFile();
+                        RaisePropertyChanged();
+                    }
+                }
+            }
+        }
+
+        private void OpenObstructionsFilePathDiag(object obj) {
+            var dialog = new Microsoft.Win32.OpenFileDialog {
+                FileName = string.Empty,
+                Filter = "Obstructions File|*.obs|APCC meridian file|*.mlm"
+            };
+
+            if (dialog.ShowDialog() == true) {
+                ObstructionFile = dialog.FileName;
+            }
+        }
+
 
         public override Task Teardown() {
             // Make sure to unregister an event when the object is no longer in use. Otherwise garbage collection will be prevented.

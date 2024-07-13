@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
+    <Compile Remove="When\CustomObstruction.cs" />
     <Compile Remove="When\CVE\ExpressionConverter.cs" />
     <Compile Remove="When\CVE\GlobalConstantView.xaml.cs" />
     <Compile Remove="When\CVE\ISettable.cs" />
@@ -40,6 +41,8 @@
     <Compile Remove="When\Obsolete\Retry.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
+    <Compile Remove="When\SmartMeridianFlipTrigger.cs" />
+    <Compile Remove="When\SmartMeridianFlipTriggerTemplate.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
   </ItemGroup>
   <ItemGroup>

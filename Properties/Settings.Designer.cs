@@ -22,7 +22,8 @@ namespace WhenPlugin.When.Properties {
                 return defaultInstance;
             }
         }
-        
+
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -421,13 +422,25 @@ namespace WhenPlugin.When.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
         public string DockableExprs {
             get {
                 return ((string)(this["DockableExprs"]));
             }
             set {
                 this["DockableExprs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ObstructionFileName {
+            get {
+                return ((string)(this["ObstructionFileName"]));
+            }
+            set {
+                this["ObstructionFileName"] = value;
             }
         }
     }
