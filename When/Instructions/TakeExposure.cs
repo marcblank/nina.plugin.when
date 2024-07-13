@@ -308,7 +308,7 @@ namespace WhenPlugin.When {
         private IDeepSkyObjectContainer RetrieveTarget(ISequenceContainer parent) {
             if (parent != null) {
                 var container = parent as IDeepSkyObjectContainer;
-                if (container != null) {
+                if (container != null && !(container is IfContainer)) {
                     return container;
                 } else {
                     return RetrieveTarget(parent.Parent);
