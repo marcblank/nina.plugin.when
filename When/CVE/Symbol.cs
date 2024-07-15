@@ -65,6 +65,8 @@ namespace WhenPlugin.When {
 
         static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
 
+        public bool IsGlobalVariable { get; set; } = false;
+
         public class Keys : Dictionary<string, object>;
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
@@ -134,7 +136,7 @@ namespace WhenPlugin.When {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -297,6 +299,8 @@ namespace WhenPlugin.When {
         public ISequenceContainer SParent() {
             if (Parent == null) {
                 return null;
+            } else if (this is SetGlobalVariable) {
+                return GlobalContainer;
             } else if (Parent is CVContainer cvc) {
                 if (cvc.Parent is TemplateContainer tc) {
                     return tc.Parent;
