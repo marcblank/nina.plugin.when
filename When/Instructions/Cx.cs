@@ -66,7 +66,7 @@ namespace WhenPlugin.When {
 
             Expr.Validate();
             foreach (var kvp in Expr.Resolved) {
-                if (kvp.Value == null || kvp.Value is SetVariable || kvp.Value is SetGlobalVariable) {
+                if (kvp.Value == null || kvp.Value is SetVariable) {
                     i.Add("Constant definitions may not include Variables");
                     break;
                 }

@@ -18,20 +18,14 @@ namespace WhenPlugin.When {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class SetGlobalVariable : Symbol {
+    public class SetGlobalVariable : SetVariable {
 
         [ImportingConstructor]
         public SetGlobalVariable() : base() {
-            Name = Name;
-            Icon = Icon;
-            OriginalExpr = new Expr(this);
             IsGlobalVariable = true;
         }
         public SetGlobalVariable(SetGlobalVariable copyMe) : base(copyMe) {
             if (copyMe != null) {
-                CopyMetaData(copyMe);
-                Name = copyMe.Name;
-                Icon = copyMe.Icon;
                 IsGlobalVariable = true;
             }
         }
@@ -44,55 +38,13 @@ namespace WhenPlugin.When {
             sv.Executed = true;
         }
 
-        private int CloneNum = 0;
-
         public override object Clone() {
             SetGlobalVariable clone = new SetGlobalVariable(this);
- 
             clone.Identifier = Identifier;
             clone.Definition = Definition;
             clone.OriginalExpr = new Expr(OriginalExpr);
             return clone;
         }
-
-        private bool iExecuted = false;
-        public bool Executed {
-            get => iExecuted;
-            set {
-                iExecuted = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public string OriginalDefinition {
-            get => OriginalExpr?.Expression;
-            set {
-                OriginalExpr.Expression = value;
-                RaisePropertyChanged("OriginalExpr");
-            }
-        }
-
-        private Expr _originalExpr = null;
-        public Expr OriginalExpr {
-            get => _originalExpr;
-            set {
-                _originalExpr = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public override void AfterParentChanged() {
-            base.AfterParentChanged();
-            OriginalExpr = new Expr(OriginalDefinition, this);
-            if (!Executed && Parent != null && Expr != null) {
-                Expr.IsExpression = true;
-                if (Expr.Expression.Length > 0) {
-                    Expr.Error = "Not evaluated";
-                }
-            }
-        }
-
 
         public override string ToString() {
             if (Expr != null) {
@@ -100,73 +52,6 @@ namespace WhenPlugin.When {
 
             } else {
                 return $"Global Variable: {Identifier}, Definition: {Definition}, Parent {Parent?.Name} Expr: null";
-            }
-        }
-
-        public override bool Validate() {
-            if (!IsAttachedToRoot()) return true;
-            IList<string> i = new List<string>();
-
-            if (Identifier.Length == 0 || OriginalDefinition?.Length == 0) {
-                i.Add("A name and an initial value must be specified");
-            } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
-                i.Add("The name of a Constant must be alphanumeric");
-            }
-
-            if (!Executed) {
-                OriginalExpr.Validate();
-            }
-            if (Expr.Error != null) {
-                Expr.Validate();
-            }
-
-            if (Definition != Expr.Expression) {
-                Definition = Expr.Expression;
-                Logger.Info("Validate: Definition diverges from Expr; fixing");
-            }
-
-            Issues = i;
-            RaisePropertyChanged("Issues");
-            return i.Count == 0;
-        }
-
-        public override void ResetProgress() {
-            base.ResetProgress();
-            Executed = false;
-            Definition = "";
-            if (Expr != null) {
-                Expr.IsExpression = true;
-                Expr.Evaluate();
-            }
-            SymbolDirty(this);
-        }
-
-
-        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Definition = OriginalDefinition;
-            Executed = true;
-            return Task.CompletedTask;
-        }
-
-        // Legacy
-
-        [JsonProperty]
-        public string Variable {
-            get => null;
-            set {
-                if (value != null) {
-                    Identifier = value;
-                }
-            }
-        }
-        
-        [JsonProperty]
-        public string OValueExpr {
-            get => null;
-            set {
-                if (value != null) {
-                    OriginalDefinition = value;
-                }
             }
         }
     }

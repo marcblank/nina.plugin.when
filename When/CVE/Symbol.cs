@@ -157,7 +157,6 @@ namespace WhenPlugin.When {
                         Warn("Deleting " + this + " but SParent has no cache?");
                     }
                 }
-                //LastSParent = sParent;
                 return;
             }
             LastSParent = sParent;
@@ -326,6 +325,10 @@ namespace WhenPlugin.When {
         }
 
         public static Symbol FindSymbol(string identifier, ISequenceContainer context) {
+            return FindSymbol(identifier, context, false);
+        }
+
+        public static Symbol FindSymbol(string identifier, ISequenceContainer context, bool includeGlobal) {
             while (context != null) {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(context, out cached)) {
@@ -333,9 +336,21 @@ namespace WhenPlugin.When {
                         return cached[identifier];
                     }
                 }
-                //ConstantExpression.GetSwitchWeatherKeys();
                 context = context.Parent;
             }
+            if (includeGlobal) return FindGlobalSymbol(identifier);
+            return null;
+        }
+
+        public static Symbol FindGlobalSymbol(string identifier) {
+            SymbolDictionary cached;
+            Symbol global = null;
+            if (SymbolCache.TryGetValue(GlobalContainer, out cached)) {
+                if (cached.ContainsKey(identifier)) {
+                    global = cached[identifier];
+                }
+            }
+            if (global is SetGlobalVariable) return global;
             return null;
         }
 
