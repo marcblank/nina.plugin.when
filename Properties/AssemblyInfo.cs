@@ -6,13 +6,15 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.14.8.4")]
-[assembly: AssemblyFileVersion("3.14.8.4")]
+
+// Odd minor releases for Beta
+[assembly: AssemblyVersion("3.14.9.1")]
+[assembly: AssemblyFileVersion("3.14.9.1")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("Get the most out of the NINA Advanced Sequencer!")]
+[assembly: AssemblyDescription("*** BETA RELEASE ***")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 
