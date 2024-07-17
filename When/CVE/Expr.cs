@@ -63,6 +63,8 @@ namespace WhenPlugin.When {
 
         private string _expression = "";
 
+        private object LOCK = new object();
+
         [JsonProperty]
         public virtual string Expression {
             get => _expression;
@@ -448,122 +450,107 @@ namespace WhenPlugin.When {
         }
 
         public void Evaluate() {
-            if (!IsExpression) return;
-            if (Expression.Length == 0) {
-                // How the hell to clear the Expr
-                IsExpression = false;
-                RaisePropertyChanged("Value");
-                RaisePropertyChanged("ValueString");
-                RaisePropertyChanged("IsExpression");
-                return;
-            }
-            if (SequenceEntity == null) return;
-            if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
-                return;
-            }
-            //Debug.WriteLine("Evaluate " + this);
-            Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
+            lock (LOCK) {
+                if (!IsExpression) return;
+                if (Expression.Length == 0) {
+                    // How the hell to clear the Expr
+                    IsExpression = false;
+                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged("ValueString");
+                    RaisePropertyChanged("IsExpression");
+                    return;
+                }
+                if (SequenceEntity == null) return;
+                if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
+                    return;
+                }
+                //Debug.WriteLine("Evaluate " + this);
+                Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
-            if (Volatile) {
-                IList<string> volatiles = new List<string>();
-                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
-                    if (kvp.Value == null) {
-                        volatiles.Add(kvp.Key);
+                if (Volatile) {
+                    IList<string> volatiles = new List<string>();
+                    foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                        if (kvp.Value == null) {
+                            volatiles.Add(kvp.Key);
+                        }
+                    }
+                    foreach (string key in volatiles) {
+                        Resolved.Remove(key);
+                        Parameters.Remove(key);
                     }
                 }
-                foreach (string key in volatiles) {
-                    Resolved.Remove(key);
-                    Parameters.Remove(key);
-                }
-            }
 
-            Volatile = false;
-            ImageVolatile = false;
+                Volatile = false;
+                ImageVolatile = false;
 
-            // First, validate References
-            foreach (string sRef in References) {
-                Symbol sym;
-                // Take care of "by reference" arguments
-                string symReference = sRef;
-                if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
-                    symReference = sRef.Substring(1);
-                }
-                // Remember if we have any image data
-                if (!ImageVolatile && symReference.StartsWith("Image_")) {
-                    ImageVolatile = true;
-                }
-                bool found = Resolved.TryGetValue(symReference, out sym);
-                if (!found || sym == null) {
-                    // !found -> couldn't find it; sym == null -> it's a DataSymbol
-                    if (!found) {
-                        sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                // First, validate References
+                foreach (string sRef in References) {
+                    Symbol sym;
+                    // Take care of "by reference" arguments
+                    string symReference = sRef;
+                    if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
+                        symReference = sRef.Substring(1);
                     }
-                    if (sym != null) {
-                        // Link Expression to the Symbol
-                        Resolve(symReference, sym);
-                        sym.AddConsumer(this);
-                    } else {
-                        SymbolDictionary cached;
-                        found = false;
-                        if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
-                            Symbol global;
-                            if (cached != null && cached.TryGetValue(symReference, out global)) {
-                                Resolve(symReference, global);
-                                global.AddConsumer(this);
-                                found = true;
+                    // Remember if we have any image data
+                    if (!ImageVolatile && symReference.StartsWith("Image_")) {
+                        ImageVolatile = true;
+                    }
+                    bool found = Resolved.TryGetValue(symReference, out sym);
+                    if (!found || sym == null) {
+                        // !found -> couldn't find it; sym == null -> it's a DataSymbol
+                        if (!found) {
+                            sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                        }
+                        if (sym != null) {
+                            // Link Expression to the Symbol
+                            Resolve(symReference, sym);
+                            sym.AddConsumer(this);
+                        } else {
+                            SymbolDictionary cached;
+                            found = false;
+                            if (SymbolCache.TryGetValue(WhenPluginObject.Globals, out cached)) {
+                                Symbol global;
+                                if (cached != null && cached.TryGetValue(symReference, out global)) {
+                                    Resolve(symReference, global);
+                                    global.AddConsumer(this);
+                                    found = true;
+                                }
+                            }
+                            // Try in the old Switch/Weather keys
+                            object Val;
+                            if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
+                                // We don't want these resolved, just added to Parameters
+                                Resolved.Remove(symReference);
+                                Resolved.Add(symReference, null);
+                                Parameters.Remove(symReference);
+                                Parameters.Add(symReference, Val);
+                                Volatile = true;
+                            }
+                            if (!found && symReference.StartsWith("__ENV_")) {
+                                string env = Environment.GetEnvironmentVariable(symReference.Substring(6), EnvironmentVariableTarget.User);
+                                UInt32 val;
+                                if (env == null || !UInt32.TryParse(env, out val)) {
+                                    val = 0;
+                                }
+                                // We don't want these resolved, just added to Parameters
+                                Resolved.Remove(symReference);
+                                Resolved.Add(symReference, null);
+                                Parameters.Remove(symReference);
+                                Parameters.Add(symReference, val);
+                                Volatile = true;
                             }
                         }
-                        // Try in the old Switch/Weather keys
-                        object Val;
-                        if (!found && DataSymbols.TryGetValue(symReference, out Val)) {
-                            // We don't want these resolved, just added to Parameters
-                            Resolved.Remove(symReference);
-                            Resolved.Add(symReference, null);
-                            Parameters.Remove(symReference);
-                            Parameters.Add(symReference, Val);
-                            Volatile = true;
-                        }
-                        if (!found && symReference.StartsWith("__ENV_")) {
-                            string env = Environment.GetEnvironmentVariable(symReference.Substring(6), EnvironmentVariableTarget.User);
-                            UInt32 val;
-                            if (env == null || !UInt32.TryParse(env, out val)) {
-                                val = 0;
-                            }
-                            // We don't want these resolved, just added to Parameters
-                            Resolved.Remove(symReference);
-                            Resolved.Add(symReference, null);
-                            Parameters.Remove(symReference);
-                            Parameters.Add(symReference, val);
-                            Volatile = true;
-                        }
                     }
                 }
-            }
 
-            // Then evaluate
-            Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
-            e.EvaluateFunction += ExtensionFunction;
-            e.Parameters = Parameters;
+                // Then evaluate
+                Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+                e.EvaluateFunction += ExtensionFunction;
+                e.Parameters = Parameters;
 
-            if (Parameters.Count != References.Count) {
-                // We have some undefineds...
-                List<string> orphans = new List<string>();
-                foreach (string r in References) {
-                    if (!Resolved.ContainsKey(r)) {
-                        // Try to find this; it might have been defined since last evaluation
-                        orphans.Add(r);
-                    }
-                }
-                // Save away our orphans in case they appear later
-                if (Symbol != null) {
-                    Orphans.TryRemove(Symbol, out _);
-                    Orphans.TryAdd(Symbol, orphans);
-                }
-            }
-
-            Error = null;
-            try {
                 if (Parameters.Count != References.Count) {
+                    // We have some undefineds...
+                    List<string> orphans = new List<string>();
                     foreach (string r in References) {
                         if (!Parameters.ContainsKey(r)) {
                             // Not defined or evaluated
@@ -579,42 +566,66 @@ namespace WhenPlugin.When {
                             }
                         }
                     }
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("Value");
-                } else {
-                    object eval = e.Evaluate();
-                    // We got an actual value
-                    if (eval is Boolean b) {
-                        Value = b ? 1 : 0;
-                    } else {
-                        Value = Convert.ToDouble(eval);
+                    // Save away our orphans in case they appear later
+                    if (Symbol != null) {
+                        Orphans.TryRemove(Symbol, out _);
+                        Orphans.TryAdd(Symbol, orphans);
                     }
-                    Error = null;
-                    RaisePropertyChanged("ValueString");
-                    RaisePropertyChanged("Value");
                 }
 
-            } catch (ArgumentException ex) {
-                string error = ex.Message;
-                // Shorten this common error from NCalc
-                int pos = error.IndexOf(NOT_DEFINED);
-                if (pos == 0) {
-                    string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
-                    if (!var.StartsWith("'_")) {
-                        Logger.Error("? Linda's error: " + ex.Message);
-                        error = "Reference";
+                Error = null;
+                try {
+                    if (Parameters.Count != References.Count) {
+                        foreach (string r in References) {
+                            if (!Parameters.ContainsKey(r)) {
+                                // Not defined or evaluated
+                                Symbol s = FindSymbol(r, SequenceEntity.Parent);
+                                if (s is SetVariable sv && !sv.Executed) {
+                                    Error = "Not evaluated: " + r;
+                                } else if (r.StartsWith("_")) {
+                                    Error = "Reference";
+                                } else {
+                                    Error = "Undefined: " + r;
+                                }
+                            }
+                        }
+                        RaisePropertyChanged("ValueString");
+                        RaisePropertyChanged("Value");
                     } else {
-                        error = "Undefined: " + var;
+                        object eval = e.Evaluate();
+                        // We got an actual value
+                        if (eval is Boolean b) {
+                            Value = b ? 1 : 0;
+                        } else {
+                            Value = Convert.ToDouble(eval);
+                        }
+                        Error = null;
+                        RaisePropertyChanged("ValueString");
+                        RaisePropertyChanged("Value");
                     }
+
+                } catch (ArgumentException ex) {
+                    string error = ex.Message;
+                    // Shorten this common error from NCalc
+                    int pos = error.IndexOf(NOT_DEFINED);
+                    if (pos == 0) {
+                        string var = error.Substring(NOT_DEFINED.Length).TrimEnd(')');
+                        if (!var.StartsWith("'_")) {
+                            Logger.Error("? Linda's error: " + ex.Message);
+                            error = "Reference";
+                        } else {
+                            error = "Undefined: " + var;
+                        }
+                    }
+                    Error = error;
+                } catch (NCalc.EvaluationException) {
+                    Error = "Syntax Error";
+                    return;
+                } catch (Exception ex) {
+                    Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
                 }
-                Error = error;
-            } catch (NCalc.EvaluationException) {
-                Error = "Syntax Error";
-                return;
-            } catch (Exception ex) {
-                Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
+                Dirty = false;
             }
-            Dirty = false;
         }
 
         public void Validate(IList<string> issues) {

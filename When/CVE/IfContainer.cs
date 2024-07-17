@@ -52,7 +52,7 @@ namespace WhenPlugin.When {
                 if (PseudoParent is IDSOTargetProxy w && w.DSOProxyTarget() != null) {
                     return w.DSOProxyTarget();
                 }
-                
+
                 ISequenceContainer parent = PseudoParent as ISequenceContainer;
 
                 if (parent != null) {
@@ -68,6 +68,7 @@ namespace WhenPlugin.When {
             }
             set { }
         }
+
         public NighttimeData NighttimeData => throw new NotImplementedException();
         public override void ResetProgress() {
             base.ResetProgress();

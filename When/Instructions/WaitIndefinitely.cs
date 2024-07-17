@@ -89,7 +89,7 @@ namespace WhenPlugin.When {
         }
 
         public override TimeSpan GetEstimatedDuration() {
-            return TimeSpan.FromSeconds(Time);
+            return TimeSpan.FromSeconds(5);
         }
 
         public override string ToString() {
