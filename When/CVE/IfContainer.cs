@@ -54,22 +54,17 @@ namespace WhenPlugin.When {
                 }
                 
                 ISequenceContainer parent = PseudoParent as ISequenceContainer;
-                while (parent != null) {
-                    if (parent is IDeepSkyObjectContainer dso) {
-                        return dso.Target;
-                    }
-                    parent = parent.Parent;
-                }
-            
-                IProfileService profileService = WhenPlugin.ProfileService;
-                InputTarget t = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
-                if (Parent != null) {
-                    ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(Parent);
+
+                if (parent != null) {
+                    IProfileService profileService = WhenPlugin.ProfileService;
+                    ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(parent);
                     if (cc != null) {
+                        InputTarget t = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
                         t.InputCoordinates.Coordinates = cc.Coordinates;
+                        return t;
                     }
                 }
-                return t;
+                return null;
             }
             set { }
         }
