@@ -14,7 +14,7 @@ namespace WhenPlugin.When {
 
         public static InputTarget FindTarget(ISequenceContainer parent) {
             ISequenceContainer sc = ItemUtility.GetRootContainer(parent);
-            if (sc != null) {
+            if (sc != null && sc.Items.Count == 3) {
                 return FindRunningItem((ISequenceContainer)sc.Items[1]);
             }
             return null;
