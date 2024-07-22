@@ -586,6 +586,14 @@ namespace WhenPlugin.When {
 
         public static Object SYMBOL_LOCK = new object();
 
+        
+        private static HashSet<string> LoggedOnce = new HashSet<string>();
+        public static void LogOnce (string message) {
+            if (LoggedOnce.Contains(message)) return;
+            Logger.Warning(message);
+            LoggedOnce.Add(message);
+        }
+
         public static Task UpdateSwitchWeatherData() {
 
             //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
@@ -690,6 +698,8 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
                     SwitchWeatherKeys.Add("camera__XSize", cameraInfo.XSize);
                     SwitchWeatherKeys.Add("camera__YSize", cameraInfo.YSize);
+                    SwitchWeatherKeys.Add("camera__CoolerPower", cameraInfo.CoolerPower);
+                    SwitchWeatherKeys.Add("camera__CoolerOn", cameraInfo.CoolerOn);
                     SwitchWeatherKeys.Add("telescope__FocalLength", ProfileService.ActiveProfile.TelescopeSettings.FocalLength);
                 }
 
@@ -736,7 +746,7 @@ namespace WhenPlugin.When {
                         try {
                             SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
                         } catch (Exception ex) {
-                            Logger.Warning("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
+                            LogOnce("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
                         }
                     }
 

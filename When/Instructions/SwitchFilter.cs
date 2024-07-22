@@ -117,9 +117,11 @@ namespace WhenPlugin.When {
 
         private void SetFInfo() {
             FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
+
             var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+
             if (Filter == -1) {
-                if (filterWheelInfo.Connected) {
+                if (filterWheelInfo.Connected && filterWheelInfo.SelectedFilter != null) {
                     Filter = filterWheelInfo.SelectedFilter.Position;
                 }
                 FInfo = filterWheelInfo.SelectedFilter;
@@ -153,7 +155,8 @@ namespace WhenPlugin.When {
                         FExpr.Error = null;
                         break;
                     }
-                }
+               }
+
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
                     CVFilter = true;
@@ -161,7 +164,7 @@ namespace WhenPlugin.When {
                         Filter = (int)FExpr.Value;
                     }
                 }
-
+ 
                 SetFInfo();
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();
