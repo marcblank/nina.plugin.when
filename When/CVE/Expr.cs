@@ -499,7 +499,7 @@ namespace WhenPlugin.When {
                     if (!found || sym == null) {
                         // !found -> couldn't find it; sym == null -> it's a DataSymbol
                         if (!found) {
-                            sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
+                            sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent, true);
                         }
                         if (sym != null) {
                             // Link Expression to the Symbol

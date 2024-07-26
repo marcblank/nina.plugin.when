@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility;
+using System.Data;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
@@ -159,6 +160,7 @@ namespace WhenPlugin.When {
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Definition = OriginalDefinition;
             Executed = true;
+            Expr.Evaluate();
             return Task.CompletedTask;
         }
 

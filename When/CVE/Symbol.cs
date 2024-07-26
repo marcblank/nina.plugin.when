@@ -65,6 +65,8 @@ namespace WhenPlugin.When {
 
         static public SequenceContainer GlobalContainer = new SequentialContainer() { Name = "Global Constants" };
 
+        static public SequenceContainer GlobalVariables = new SequentialContainer() { Name = "Global Variables" };
+
         public bool IsGlobalVariable { get; set; } = false;
 
         public class Keys : Dictionary<string, object>;
@@ -299,7 +301,7 @@ namespace WhenPlugin.When {
             if (Parent == null) {
                 return null;
             } else if (this is SetGlobalVariable) {
-                return GlobalContainer;
+                return GlobalVariables;
             } else if (Parent is CVContainer cvc) {
                 if (cvc.Parent is TemplateContainer tc) {
                     return tc.Parent;
@@ -345,7 +347,7 @@ namespace WhenPlugin.When {
         public static Symbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             Symbol global = null;
-            if (SymbolCache.TryGetValue(GlobalContainer, out cached)) {
+            if (SymbolCache.TryGetValue(GlobalVariables, out cached)) {
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
                 }
