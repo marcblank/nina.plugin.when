@@ -30,6 +30,7 @@
     <Compile Remove="When\Instructions\IfSafe.cs" />
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />
+    <Compile Remove="When\Instructions\RunAutofocus.cs" />
     <Compile Remove="When\Instructions\SetVariable.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />

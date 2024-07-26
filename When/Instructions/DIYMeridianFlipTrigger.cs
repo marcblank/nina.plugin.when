@@ -116,7 +116,7 @@ namespace WhenPlugin.When {
             AddItem(TriggerRunner, new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator,
                 autoFocusVMFactory) { Name = "Run Autofocus", Icon = CameraIcon });
             NINA.Sequencer.SequenceItem.Platesolving.Center c = new (profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
-                domeMediator, domeFollower, plateSolverFactory, windowServiceFactory) { Name = "Center", Icon = PlatesolveIcon };
+                domeMediator, domeFollower, plateSolverFactory, windowServiceFactory) { Name = "Slew and center", Icon = PlatesolveIcon };
             AddItem(TriggerRunner, c);
             AddItem(TriggerRunner, new StartGuiding(guiderMediator) { Name = "Start Guiding", Icon = GuiderIcon });
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 5 });
@@ -501,9 +501,9 @@ namespace WhenPlugin.When {
                     i.AttachNewParent(ifc);
                 }
                 ifc.AttachNewParent(Parent);
-                ifc.PseudoParent = this;
                 TriggerRunner = ifc;
             }
+            ((IfContainer)TriggerRunner).PseudoParent = this;
             bool valid = true;
             foreach (ISequenceItem item in TriggerRunner.Items) {
                 if (item is IValidatable vitem) {
