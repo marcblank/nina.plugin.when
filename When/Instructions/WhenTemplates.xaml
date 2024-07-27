@@ -349,6 +349,26 @@
         </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type local:SetSwitchValue}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSwitch}" />
+                    <ComboBox
+                        Margin="5,0,0,0"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding WritableSwitches}"
+                        SelectedItem="{Binding SelectedSwitch}"
+                        SelectedValuePath="Name" />
+                    <local:ExprControl 
+                        Visibility="{Binding SelectedSwitch, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
+                        Label="Value" 
+                        Exp="{Binding ValueExpr}" />
+                 </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:SlewToRADec}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
