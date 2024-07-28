@@ -34,6 +34,7 @@ using NINA.Astrometry.Interfaces;
 using System.Collections.Concurrent;
 using NINA.Astrometry;
 using Accord;
+using NCalc.Domain;
 
 namespace WhenPlugin.When {
 
@@ -100,6 +101,9 @@ namespace WhenPlugin.When {
 
         // Must prevent cycles
         public static void SymbolDirty(Symbol sym) {
+            if (Debugging) {
+                Logger.Info("SymbolDirty: " + sym);
+            }
             List<Symbol> dirtyList = new List<Symbol>();
             iSymbolDirty(sym, dirtyList);
         }
@@ -170,6 +174,9 @@ namespace WhenPlugin.When {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
                     try {
+                        if (Debugging) {
+                            Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                        }
                         cached.TryAdd(Identifier, this);
                     } catch (ArgumentException ex) {
                         if (sParent != WhenPluginObject.Globals) {
@@ -182,6 +189,11 @@ namespace WhenPlugin.When {
                     SymbolDictionary newSymbols = new SymbolDictionary();
                     newSymbols.TryAdd(Identifier, this);
                     SymbolCache.TryAdd(sParent, newSymbols);
+                    if (Debugging) {
+                        Logger.Info("APC: Added " + sParent.Name + " to SymbolCache");
+                        Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                    }
+
                     foreach (var consumer in Consumers) {
                         consumer.Key.RemoveParameter(Identifier);
                     }
@@ -193,6 +205,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        protected static bool Debugging = false;
+        
         private string _identifier = "";
 
         [JsonProperty]
@@ -212,6 +226,9 @@ namespace WhenPlugin.When {
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
                     if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
+                        if (Debugging) {
+                            Logger.Info("Removing " + _identifier + " from " + sParent.Name);
+                        }
                         cached.TryRemove(_identifier, out _);
                         SymbolDirty(this);
                     }
@@ -226,11 +243,17 @@ namespace WhenPlugin.When {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
                         try {
                             cached.TryAdd(Identifier, this);
+                            if (Debugging) {
+                                Logger.Info("Adding " + Identifier + " to " + sParent.Name);
+                            }
                         } catch (ArgumentException ex) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
+                        if (Debugging) {
+                            Logger.Info("Creating new SymbolCache entry for " + this.Name);
+                        }
                         SymbolCache.TryAdd(sParent, newSymbols);
                         newSymbols.TryAdd(Identifier, this);
                     }
@@ -256,8 +279,11 @@ namespace WhenPlugin.When {
                     }
                 }
                 _definition = value;
-                if (Parent != null) {
+                if (SParent != null) {
                     if (Expr != null) {
+                        if (Debugging) {
+                            Logger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
+                        }
                         Expr.Expression = value;
                     }
                 }
@@ -335,13 +361,28 @@ namespace WhenPlugin.When {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(context, out cached)) {
                     if (cached.ContainsKey(identifier)) {
+                        if (Debugging) {
+                            Logger.Info("FindSymbol '" + identifier + "' returning " + cached[identifier]);
+                        }
                         return cached[identifier];
                     }
                 }
                 context = context.Parent;
             }
             if (includeGlobal) return FindGlobalSymbol(identifier);
+            if (Debugging) {
+                Logger.Info("FindSymbol '" + identifier + "' returning null");
+            }
             return null;
+        }
+
+        protected static void DumpSymbols () {
+            foreach (var c in SymbolCache) {
+                Logger.Info("\r\nIn SymbolCache for " + c.Key.Name);
+                foreach (var d in c.Value) {
+                    Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
+                }
+            }
         }
 
         public static Symbol FindGlobalSymbol(string identifier) {

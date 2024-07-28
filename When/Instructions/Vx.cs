@@ -158,9 +158,20 @@ namespace WhenPlugin.When {
 
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            if (Debugging) {
+                Logger.Info("Executing Vx");
+                DumpSymbols();
+            }
             Definition = OriginalDefinition;
             Executed = true;
             Expr.Evaluate();
+            if (this is SetGlobalVariable) {
+                // Find the one in Globals and set it
+                Symbol global = FindGlobalSymbol(Identifier);
+                if (global is SetGlobalVariable) {
+                    global.Expr = Expr;
+                }
+            }
             return Task.CompletedTask;
         }
 
