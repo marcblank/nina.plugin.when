@@ -103,7 +103,7 @@ namespace WhenPlugin.When {
             Symbol.UpdateSwitchWeatherData();
             Expr.Evaluate();
             sym.Definition = Expr.Value.ToString();
-
+ 
             return Task.CompletedTask;
         }
 

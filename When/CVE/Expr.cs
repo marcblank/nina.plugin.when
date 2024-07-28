@@ -579,7 +579,7 @@ namespace WhenPlugin.When {
                         foreach (string r in References) {
                             if (!Parameters.ContainsKey(r)) {
                                 // Not defined or evaluated
-                                Symbol s = FindSymbol(r, SequenceEntity.Parent);
+                                Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
                                 if (s is SetVariable sv && !sv.Executed) {
                                     Error = "Not evaluated: " + r;
                                 } else if (r.StartsWith("_")) {
