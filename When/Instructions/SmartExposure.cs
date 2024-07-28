@@ -229,7 +229,7 @@ namespace WhenPlugin.When {
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 if (Filter == -1) {
-                    if (filterWheelInfo.Connected) {
+                    if (filterWheelInfo.Connected && filterWheelInfo.SelectedFilter != null) {
                         Filter = filterWheelInfo.SelectedFilter.Position;
                     }
                     sw.FilterExpr = null;
