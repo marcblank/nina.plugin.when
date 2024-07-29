@@ -168,8 +168,9 @@ namespace WhenPlugin.When {
             if (this is SetGlobalVariable) {
                 // Find the one in Globals and set it
                 Symbol global = FindGlobalSymbol(Identifier);
-                if (global is SetGlobalVariable) {
-                    global.Expr = Expr;
+                if (global is SetGlobalVariable sgv) {
+                    sgv.Expr = Expr;
+                    sgv.Executed = true;
                 }
             }
             return Task.CompletedTask;
