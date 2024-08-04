@@ -8,14 +8,14 @@ using System.Runtime.InteropServices;
 //Should be incremented for each new release build of a plugin
 
 // Odd minor releases for Beta
-[assembly: AssemblyVersion("3.14.11.1")]
-[assembly: AssemblyFileVersion("3.14.11.1")]
+[assembly: AssemblyVersion("3.14.12.0")]
+[assembly: AssemblyFileVersion("3.14.12.0")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
 // [MANDATORY] A short description of your plugin
-//[assembly: AssemblyDescription("*** BETA RELEASE ***")]
-[assembly: AssemblyDescription("Get the most out of the Advanced Sequencer!")]
+[assembly: AssemblyDescription("*** BETA RELEASE ***")]
+//[assembly: AssemblyDescription("Get the most out of the Advanced Sequencer!")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Powerups.png")]
-[assembly: AssemblyMetadata("ScreenshotURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Constants_Screen.png")]
+[assembly: AssemblyMetadata("ScreenshotURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/LoopWhile.png")]
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
