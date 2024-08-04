@@ -111,16 +111,16 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public InputCoordinates Coordinates { get; set; }
 
-        private bool inherited;
+        //private bool inherited;
 
-        [JsonProperty]
-        public bool Inherited {
-            get => inherited;
-            set {
-                inherited = value;
-                RaisePropertyChanged();
-            }
-        }
+        //[JsonProperty]
+        //public bool Inherited {
+        //    get => inherited;
+        //    set {
+        //        inherited = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         private IList<string> issues = new List<string>();
 
@@ -139,37 +139,39 @@ namespace WhenPlugin.When {
             }
 
             var stoppedGuiding = await guiderMediator.StopGuiding(token);
-            if (!Inherited) {
-                Coordinates.Coordinates.RA = RAExpr.Value;
-                Coordinates.Coordinates.Dec = DecExpr.Value;
-                Coordinates.Coordinates.Transform(Epoch.J2000);
-            }
+            //if (!Inherited) {
+            //    Coordinates.Coordinates.RA = RAExpr.Value;
+            //    Coordinates.Coordinates.Dec = DecExpr.Value;
+            //    Coordinates.Coordinates.Transform(Epoch.J2000);
+            //}
+            Coordinates.Coordinates.Dec = DecExpr.Value;
+            Coordinates.Coordinates.RA = RAExpr.Value;
             await telescopeMediator.SlewToCoordinatesAsync(Coordinates.Coordinates, token);
             if (stoppedGuiding) {
                 await guiderMediator.StartGuiding(false, progress, token);
             }
         }
 
-        private Coordinates RetrieveContextCoordinates(ISequenceContainer parent) {
-            if (parent != null) {
-                var container = parent as IDeepSkyObjectContainer;
-                if (container != null && container.Target != null) {
-                    return container.Target.InputCoordinates.Coordinates;
-                } else {
-                    return RetrieveContextCoordinates(parent.Parent);
-                }
-            } else {
-                return null;
-            }
-        }
+        //private Coordinates RetrieveContextCoordinates(ISequenceContainer parent) {
+        //    if (parent != null) {
+        //        var container = parent as IDeepSkyObjectContainer;
+        //        if (container != null && container.Target != null) {
+        //            return container.Target.InputCoordinates.Coordinates;
+        //        } else {
+        //            return RetrieveContextCoordinates(parent.Parent);
+        //        }
+        //    } else {
+        //        return null;
+        //    }
+        //}
         public override void AfterParentChanged() {
-            var coordinates = RetrieveContextCoordinates(this.Parent);
-            if (coordinates != null && coordinates.RA != 0 && coordinates.Dec != 0) {
-                Coordinates.Coordinates = coordinates;
-                Inherited = true;
-            } else {
-                Inherited = false;
-            }
+            //var coordinates = RetrieveContextCoordinates(this.Parent);
+            //if (coordinates != null && coordinates.RA != 0 && coordinates.Dec != 0) {
+            //    Coordinates.Coordinates = coordinates;
+            //    Inherited = true;
+            //} else {
+            //    Inherited = false;
+            //}
             Validate();
         }
         public bool Validate() {
