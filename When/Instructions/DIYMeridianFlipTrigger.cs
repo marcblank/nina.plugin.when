@@ -442,16 +442,19 @@ namespace WhenPlugin.When {
 
         private void CheckTarget() {
             InputTarget t = DSOTarget.FindTarget(Parent);
-            if (t != null && t != Target) {
-                Target = t;
-                Logger.Info("Found Target: " + Target);
-                RaisePropertyChanged("Target");
-                RaisePropertyChanged("Target.TargetName");
-                UpdateChildren(TriggerRunner);
+            if (t != null) {
+                if (t != Target) {
+                    Target = t;
+                    Logger.Debug("Found Target: " + Target);
+                    RaisePropertyChanged("Target");
+                    RaisePropertyChanged("Target.TargetName");
+                    UpdateChildren(TriggerRunner);
+                }
+            } else {
+                Logger.Debug("Running target not found");
+
             }
         }
-
-
 
         private string TimeString(DateTime min) {
             return min.ToString("T", CultureInfo.CurrentCulture);
