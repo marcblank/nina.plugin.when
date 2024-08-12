@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 //Should be incremented for each new release build of a plugin
 
 // Odd minor releases for Beta
-[assembly: AssemblyVersion("3.14.11.5")]
-[assembly: AssemblyFileVersion("3.14.11.5")]
+[assembly: AssemblyVersion("3.14.11.8")]
+[assembly: AssemblyFileVersion("3.14.11.8")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -38,7 +38,7 @@ using System.Runtime.InteropServices;
 // The following attributes are optional for the official manifest meta data
 
 //[Optional] Common tags that quickly describe your plugin
-[assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Interrupt,If,When")]
+[assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Variables,Expressions,Safety,Interrupt,If,When")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Powerups.png")]

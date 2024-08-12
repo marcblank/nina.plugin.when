@@ -479,17 +479,11 @@
                         </Border>
                     </ninactrl:DetachingExpander.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock
-                                HorizontalAlignment="Left"
-                                Margin="0,6,0,-10"
-                                VerticalAlignment="Center"
-                                Opacity="0.6"
-                                Text="Instructions when triggered:"/>
                         <Border
-                        MinHeight="35"
-                        Margin="0,0,0,0"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1">
+                            MinHeight="35"
+                            Margin="0,0,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1">
                             <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding TriggerRunner}">
                                 <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                                 <TextBlock
@@ -649,7 +643,6 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-
                         <Border
                         Grid.Row="1"
                         MinHeight="65"

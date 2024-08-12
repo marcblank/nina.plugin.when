@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Meridian Flip)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
- 
+
     public class DIYMeridianFlipTrigger : SequenceTrigger, IMeridianFlipTrigger, IValidatable, IDSOTargetProxy {
         protected IProfileService profileService;
         protected ITelescopeMediator telescopeMediator;
@@ -83,7 +83,7 @@ namespace WhenPlugin.When {
         static public DIYMeridianFlipTrigger INSTANCE = null;
 
         static public bool SequenceRunning = false;
- 
+
         [ImportingConstructor]
         public DIYMeridianFlipTrigger(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator,
             IFocuserMediator focuserMediator, IApplicationStatusMediator applicationStatusMediator, IMeridianFlipVMFactory meridianFlipVMFactory,
@@ -115,12 +115,12 @@ namespace WhenPlugin.When {
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 10 });
             AddItem(TriggerRunner, new RunAutofocus(profileService, history, cameraMediator, filterWheelMediator, focuserMediator,
                 autoFocusVMFactory) { Name = "Run Autofocus", Icon = CameraIcon });
-            NINA.Sequencer.SequenceItem.Platesolving.Center c = new (profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
+            NINA.Sequencer.SequenceItem.Platesolving.Center c = new(profileService, telescopeMediator, imagingMediator, filterWheelMediator, guiderMediator,
                 domeMediator, domeFollower, plateSolverFactory, windowServiceFactory) { Name = "Slew and center", Icon = PlatesolveIcon };
             AddItem(TriggerRunner, c);
             AddItem(TriggerRunner, new StartGuiding(guiderMediator) { Name = "Start Guiding", Icon = GuiderIcon });
             AddItem(TriggerRunner, new WaitForTimeSpan() { Name = "Settle (Wait for Time Span)", Icon = HourglassIcon, Time = 5 });
-            
+
             PauseTimeBeforeMeridian = profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
             MaxMinutesAfterMeridian = profileService.ActiveProfile.MeridianFlipSettings.MaxMinutesAfterMeridian;
             MinutesAfterMeridian = profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
@@ -142,9 +142,9 @@ namespace WhenPlugin.When {
                                                                copyMe.filterWheelMediator,
                                                                copyMe.autoFocusVMFactory,
                                                                copyMe.domeMediator,
-                                                               copyMe.domeFollower, 
+                                                               copyMe.domeFollower,
                                                                copyMe.plateSolverFactory,
-                                                               copyMe.windowServiceFactory, 
+                                                               copyMe.windowServiceFactory,
                                                                copyMe.imagingMediator) {
             CopyMetaData(copyMe);
             Name = copyMe.Name;
@@ -162,14 +162,14 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new DIYMeridianFlipTrigger(this) {
-             };
+            };
         }
 
         [JsonProperty]
         public String FlipStatus { get; set; }
 
         public bool InFlight { get; set; }
- 
+
         protected IList<string> issues = new List<string>();
 
         public IList<string> Issues {
@@ -186,7 +186,7 @@ namespace WhenPlugin.When {
         private double minutesAfterMeridian;
 
         public ISequenceContainer TriggerContext { get; set; }
-        
+
         [JsonProperty]
         public virtual double MinutesAfterMeridian {
             get => minutesAfterMeridian;
@@ -197,7 +197,7 @@ namespace WhenPlugin.When {
         }
 
         private double pauseTimeBeforeMeridian;
-        
+
         [JsonProperty]
         public virtual double PauseTimeBeforeMeridian {
             get => pauseTimeBeforeMeridian;
@@ -208,7 +208,7 @@ namespace WhenPlugin.When {
         }
 
         private double maxMinutesAfterMeridian;
-        
+
         [JsonProperty]
         public virtual double MaxMinutesAfterMeridian {
             get => maxMinutesAfterMeridian;
@@ -247,7 +247,7 @@ namespace WhenPlugin.When {
             }
             set { }
         }
-        
+
         public override void AfterParentChanged() {
             lastFlipTime = DateTime.MinValue;
             lastFlipCoordiantes = null;
@@ -281,7 +281,7 @@ namespace WhenPlugin.When {
 
             var telescopeInfo = telescopeMediator.GetInfo();
             IMeridianFlipSettings settings = profileService.ActiveProfile.MeridianFlipSettings;
-            
+
             if (!telescopeInfo.Connected || double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
                 EarliestFlipTime = DateTime.MinValue;
                 LatestFlipTime = DateTime.MinValue;
@@ -330,8 +330,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FlipStatus");
                 Logger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
                 return true;
-            }
-            else {
+            } else {
                 if (UseSideOfPier && telescopeInfo.SideOfPier == PierSide.pierUnknown) {
                     FlipStatus = "Side of pier is unknown; ignoring when calculating the flip time";
                     RaisePropertyChanged("FlipStatus");
@@ -351,12 +350,10 @@ namespace WhenPlugin.When {
                         if (telescopeInfo.SideOfPier == targetSideOfPier) {
                             Logger.Info($"Meridian Flip - Telescope already reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
                             return false;
-                        }
-                        else {
+                        } else {
                             if (nextItem != null) {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}. Flip should happen now");
-                             }
-                            else {
+                            } else {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                             }
                             FlipStatus = $"Flip sequence start due now through {TimeString(maximumTimeRemaining)}!";
@@ -364,8 +361,7 @@ namespace WhenPlugin.When {
                             Logger.Info(FlipStatus);
                             return true;
                         }
-                    }
-                    else {
+                    } else {
                         // There is still time remaining. A flip is likely not required. Double check by checking the current expected side of pier with the actual side of pier
                         var targetSideOfPier = NINA.Astrometry.MeridianFlip.ExpectedPierSide(
                             coordinates: telescopeInfo.Coordinates,
@@ -378,16 +374,14 @@ namespace WhenPlugin.When {
                                 "unknown";
                             if (minimumTimeRemaining == maximumTimeRemaining) {
                                 FlipStatus = $"Flip sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
-                            }
-                            else {
+                            } else {
                                 FlipStatus = $"Flip sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side is {pier}.";
 
                             }
                             RaisePropertyChanged("FlipStatus");
                             Logger.Info($"Meridian Flip - There is still time remaining - max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem} - and the telescope reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
                             return false;
-                        }
-                        else {
+                        } else {
                             // When pier side doesn't match the target, but remaining time indicating that a flip happened, the flip seems to have not happened yet and must be done immediately
                             // Only allow delayed flip behavior for the first hour after a flip should've happened
                             var delayedFlip =
@@ -406,8 +400,7 @@ namespace WhenPlugin.When {
                             return delayedFlip;
                         }
                     }
-                }
-                else {
+                } else {
                     //The minimum time to flip has not been reached yet. Check if a flip is required based on the estimation of the next instruction plus a 2 minute window due to not having side of pier access for dalyed flip evaluation
                     var noRemainingTime = maximumTimeRemaining <= (TimeSpan.FromSeconds(nextInstructionTime) + TimeSpan.FromMinutes(2));
 
@@ -416,19 +409,16 @@ namespace WhenPlugin.When {
                             FlipStatus = $"Latest sequence start time is  {TimeString(maximumTimeRemaining)}, {nextItem} due at {nextInstructionTime}. Flip should happen now";
                             RaisePropertyChanged("FlipStatus");
                             Logger.Info(FlipStatus);
-                        }
-                        else {
+                        } else {
                             FlipStatus = $"Latest sequence start time is {TimeString(maximumTimeRemaining)}. Flip should happen now!";
                             RaisePropertyChanged("FlipStatus");
                             Logger.Info(FlipStatus);
                         }
                         return true;
-                    }
-                    else {
+                    } else {
                         if (minimumTimeRemaining == maximumTimeRemaining) {
                             FlipStatus = $"Flip sequence start expected around {TimeString(minimumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
-                        }
-                        else {
+                        } else {
                             FlipStatus = $"Flip sequence start expected between {TimeString(minimumTimeRemaining)} and {TimeString(maximumTimeRemaining)}; transit at {TimeString(CalculateTransitTime())}; telescope side unknown.";
 
                         }
@@ -443,23 +433,20 @@ namespace WhenPlugin.When {
         private void CheckTarget() {
             InputTarget t = DSOTarget.FindTarget(Parent);
             if (t != null) {
-                if (t != Target) {
-                    Target = t;
-                    Logger.Debug("Found Target: " + Target);
-                    RaisePropertyChanged("Target");
-                    RaisePropertyChanged("Target.TargetName");
-                    UpdateChildren(TriggerRunner);
-                }
+                Target = t;
+                Logger.Debug("Found Target: " + Target);
+                RaisePropertyChanged("Target");
+                RaisePropertyChanged("Target.TargetName");
+                UpdateChildren(TriggerRunner);
             } else {
                 Logger.Debug("Running target not found");
-
             }
         }
 
         private string TimeString(DateTime min) {
             return min.ToString("T", CultureInfo.CurrentCulture);
         }
-         
+
         private string TimeString(TimeSpan min) {
             return (DateTime.Now + min).ToString("T", CultureInfo.CurrentCulture);
         }
@@ -469,8 +456,7 @@ namespace WhenPlugin.When {
             if (pauseBeforeMeridian == TimeSpan.Zero) {
                 EarliestFlipTime = DateTime.Now + minimumTimeRemaining;
                 LatestFlipTime = DateTime.Now + maximumTimeRemaining;
-            }
-            else {
+            } else {
                 EarliestFlipTime = DateTime.Now + maximumTimeRemaining - maximumTimeAfterMeridian - pauseBeforeMeridian;
                 LatestFlipTime = DateTime.Now + maximumTimeRemaining - maximumTimeAfterMeridian - pauseBeforeMeridian;
             }

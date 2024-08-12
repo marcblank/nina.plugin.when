@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
                     if (item is ISequenceContainer sc && (item.Status == SequenceEntityStatus.RUNNING || item.Status == SequenceEntityStatus.CREATED)) {
                         if (item is IDeepSkyObjectContainer dso) {
                             return dso.Target;
-                        } else if (item is SequenceContainer cont) {
+                        } else if (item is ISequenceContainer cont) {
                             foreach (ISequenceItem item2 in cont.Items) {
                                 if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
                                     if (item2 is IDeepSkyObjectContainer dso2) {

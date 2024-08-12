@@ -38,6 +38,8 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public InterruptTrigger() {
             Runner = new IfContainer();
+            Runner.AttachNewParent(Parent);
+            Runner.PseudoParent = this;
             AddItem(Runner, new WaitIndefinitely() { Name="Wait Indefinitely", Icon = HourglassIcon }); ;
         }
 
@@ -76,8 +78,18 @@ namespace WhenPlugin.When {
                 //InFlight = false;
             }
         }
-        
-        
+
+
+        public override void AfterParentChanged() {
+            foreach (ISequenceTrigger item in Runner.Triggers) {
+                if (item.Parent == null) item.AttachNewParent(Runner);
+            }
+            foreach (ISequenceItem item in Runner.Items) {
+                if (item.Parent == null) item.AttachNewParent(Runner);
+            }
+            Runner.AttachNewParent(Parent);
+        }
+
         public InputTarget DSOProxyTarget() {
             return Target;
         }
@@ -127,6 +139,9 @@ namespace WhenPlugin.When {
             } finally {
                 //InFlight = false;
             }
+
+            Runner.Validate();
+
             return true;
         }
     }
