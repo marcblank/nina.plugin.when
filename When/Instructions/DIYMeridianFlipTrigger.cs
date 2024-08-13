@@ -436,7 +436,6 @@ namespace WhenPlugin.When {
                 Target = t;
                 Logger.Debug("Found Target: " + Target);
                 RaisePropertyChanged("Target");
-                RaisePropertyChanged("Target.TargetName");
                 UpdateChildren(TriggerRunner);
             } else {
                 Logger.Debug("Running target not found");
