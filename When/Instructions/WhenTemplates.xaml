@@ -1205,6 +1205,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock 
                                  MinHeight="25"
+                                 Foreground="White"
                                  Margin="10,10,10,0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
@@ -1796,6 +1797,7 @@
         </Border>
     </DataTemplate>
 
+ 
     <DataTemplate DataType="{x:Type local:IfConstant}">
         <Border>
             <Border.Resources>
@@ -2631,11 +2633,11 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock 
                                     MinHeight="25"
                                     Margin="10,10,10,0"
+                                    Foreground="White"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Text="When Becomes Unsafe" />
@@ -2664,7 +2666,6 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                                     </Border.ToolTip>
                                 </Border>
                             </StackPanel>
-                        </Grid>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
                                Margin="2,0,10,0"

@@ -202,6 +202,7 @@ namespace WhenPlugin.When {
             set {
                 hours = value;
                 RaisePropertyChanged();
+                Validate();
             }
         }
 
@@ -211,6 +212,7 @@ namespace WhenPlugin.When {
             set {
                 minutes = value;
                 RaisePropertyChanged();
+                Validate();
             }
         }
 
@@ -230,6 +232,7 @@ namespace WhenPlugin.When {
             set {
                 seconds = value;
                 RaisePropertyChanged();
+                Validate();
             }
         }
 
@@ -256,7 +259,19 @@ namespace WhenPlugin.When {
                 if (lastReferenceDate != referenceDate) {
                     UpdateTime();
                 }
+            } else {
+                DateTime today = System.DateTime.Today;
+                today = today.AddHours(Hours);
+                today = today.AddMinutes(Minutes);
+                today = today.AddSeconds(Seconds);
+                Expr.Value = ((DateTimeOffset)today).ToUnixTimeSeconds();
+                TimeString = Expr.ValueString;
+                RaisePropertyChanged("Expr.Value");
+                RaisePropertyChanged("Expr.ValueString");
+                RaisePropertyChanged("Expr");
+                RaisePropertyChanged("TimeString");
             }
+
             if (!timeDeterminedSuccessfully) {
                 i.Add(Loc.Instance["LblSelectedTimeSourceInvalid"]);
             }
