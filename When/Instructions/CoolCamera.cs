@@ -153,7 +153,8 @@ namespace WhenPlugin.When {
             if (cameraSettings.Temperature != null) {
                 TempExpr.Default = (double)cameraSettings.Temperature;
             }
-            
+            DurExpr.Default = (double)cameraSettings.CoolingDuration;
+
             // Always Validate our Expr's
             TempExpr.Validate();
             DurExpr.Validate();
