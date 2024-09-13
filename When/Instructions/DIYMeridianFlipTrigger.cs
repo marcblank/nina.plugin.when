@@ -260,19 +260,27 @@ namespace WhenPlugin.When {
         protected virtual TimeSpan CalculateMinimumTimeRemaining() {
             //Substract delta from maximum to get minimum time
             var delta = MaxMinutesAfterMeridian - MinutesAfterMeridian;
-            var time = CalculateMaximumTimeRemainaing() - TimeSpan.FromMinutes(delta);
+            var time = CalculateMaximumTimeRemaining() - TimeSpan.FromMinutes(delta);
             if (time < TimeSpan.Zero) {
                 time = TimeSpan.Zero;
             }
             return time;
         }
 
-        protected virtual TimeSpan CalculateMaximumTimeRemainaing() {
-            return TimeSpan.FromHours(TimeToMeridianFlip);
+        private TimeSpan TTMF () {
+            TimeSpan ttmf = TimeSpan.FromHours(TimeToMeridianFlip);
+            ttmf -= TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MaxMinutesAfterMeridian);
+            return ttmf;
+        }
+
+        protected virtual TimeSpan CalculateMaximumTimeRemaining() {
+            TimeSpan ttmf = TTMF();
+            ttmf += TimeSpan.FromMinutes(MaxMinutesAfterMeridian);
+            return ttmf;
         }
 
         protected virtual TimeSpan CalculateTransitTime() {
-            return TimeSpan.FromHours(TimeToMeridianFlip) - TimeSpan.FromMinutes(MaxMinutesAfterMeridian);
+            return TTMF();
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -315,7 +323,7 @@ namespace WhenPlugin.When {
 
             //The time to meridian flip reported by the telescope is the latest time for a flip to happen
             var minimumTimeRemaining = CalculateMinimumTimeRemaining();
-            var maximumTimeRemaining = CalculateMaximumTimeRemainaing();
+            var maximumTimeRemaining = CalculateMaximumTimeRemaining();
             var originalMaximumTimeRemaining = maximumTimeRemaining;
             if (PauseTimeBeforeMeridian != 0) {
                 //A pause prior to a meridian flip is a hard limit due to equipment obstruction. There is no possibility for a timerange as we have to pause early and wait for meridian to pass
