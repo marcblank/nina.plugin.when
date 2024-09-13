@@ -173,12 +173,11 @@ namespace WhenPlugin.When {
                 if (Identifier != null && Identifier.Length == 0) return;
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
-                    try {
+                    if (cached.TryAdd(Identifier, this)) {
                         if (Debugging) {
                             Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
-                        cached.TryAdd(Identifier, this);
-                    } catch (ArgumentException ex) {
+                    } else {
                         if (sParent != WhenPluginObject.Globals) {
                             IsDuplicate = true;
                             Identifier = GenId(cached, Identifier);
@@ -241,13 +240,15 @@ namespace WhenPlugin.When {
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
-                        try {
-                            cached.TryAdd(Identifier, this);
+                        if (cached.TryAdd(Identifier, this)) {
                             if (Debugging) {
                                 Logger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
-                        } catch (ArgumentException ex) {
-                            Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
+                        } else {
+                            string oldIdentifier = Identifier;
+                            _identifier = GenId(cached, Identifier);
+                            Logger.Warning("Attempt to add " + oldIdentifier + " multiple times to " + sParent.Name + "; using " + Identifier);
+                            cached.TryAdd(Identifier, this);
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
@@ -639,17 +640,6 @@ namespace WhenPlugin.When {
 
         public static Task UpdateSwitchWeatherData() {
 
-            //IList<ISequenceContainer> orphans = new List<ISequenceContainer>();
-            //foreach (ISequenceContainer c in SymbolCache.Keys) {
-            //    if (!IsAttachedToRoot(c)) {
-            //        orphans.Add(c);
-            //    }
-            //}
-            //foreach (ISequenceContainer c in orphans) {
-            //    SymbolCache.Remove(c);
-            //    Logger.Info("Removed container " + c.Name + " from SymbolCache");
-            //}
-
             lock (SYMBOL_LOCK) {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
@@ -668,6 +658,10 @@ namespace WhenPlugin.When {
                 double sunAltitude = AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer);
                 SwitchWeatherKeys.Add("SunAltitude", sunAltitude);
                 i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
+
+                double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
+                SwitchWeatherKeys.Add("LocalSiderealTime", lst);
+                i.Add(" LocalSiderealTime: " + Math.Round(lst, 4));
 
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
@@ -716,7 +710,7 @@ namespace WhenPlugin.When {
                             status = 1;
                         }
                     } catch (Exception e) {
-                        Logger.Info("Roof status, error: " + e.Message);
+                        LogOnce("Roof status, error: " + e.Message);
                         status = 2;
                     }
                     SwitchWeatherKeys.Add("RoofStatus", status);
@@ -727,7 +721,9 @@ namespace WhenPlugin.When {
                 FocuserConnected = fInfo.Connected;
                 if (fInfo != null && FocuserConnected) {
                     SwitchWeatherKeys.Add("FocuserPosition", fInfo.Position);
+                    SwitchWeatherKeys.Add("FocuserTemperature", fInfo.Temperature);
                     i.Add("Focuser: FocuserPosition (" + fInfo.Position + ")");
+                    i.Add("Focuser: FocuserTemperature (" + fInfo.Temperature + ")");
                 }
 
                 // Get SensorTemp
@@ -763,8 +759,7 @@ namespace WhenPlugin.When {
 
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
                 FlatConnected = flatInfo.Connected;
-                if (FlatConnected) {
-                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
+                if (FlatConnected) {                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
                     i.Add("Flat-Panel: CoverState (Cover" + flatInfo.CoverState + ")");
                     SwitchWeatherKeys.Add("CoverUnknown", 0);
                     SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
