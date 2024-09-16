@@ -173,11 +173,12 @@ namespace WhenPlugin.When {
                 if (Identifier != null && Identifier.Length == 0) return;
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
-                    if (cached.TryAdd(Identifier, this)) {
+                    try {
                         if (Debugging) {
                             Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
-                    } else {
+                        cached.TryAdd(Identifier, this);
+                    } catch (ArgumentException ex) {
                         if (sParent != WhenPluginObject.Globals) {
                             IsDuplicate = true;
                             Identifier = GenId(cached, Identifier);
@@ -240,15 +241,13 @@ namespace WhenPlugin.When {
                 // Store the symbol in the SymbolCache for this Parent
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
-                        if (cached.TryAdd(Identifier, this)) {
+                        try {
+                            cached.TryAdd(Identifier, this);
                             if (Debugging) {
                                 Logger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
-                        } else {
-                            string oldIdentifier = Identifier;
-                            _identifier = GenId(cached, Identifier);
-                            Logger.Warning("Attempt to add " + oldIdentifier + " multiple times to " + sParent.Name + "; using " + Identifier);
-                            cached.TryAdd(Identifier, this);
+                        } catch (ArgumentException ex) {
+                            Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
                         }
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
@@ -654,7 +653,7 @@ namespace WhenPlugin.When {
                 double moonAltitude = AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer);
                 SwitchWeatherKeys.Add("MoonAltitude", moonAltitude);
                 i.Add(" MoonAltitude: " + Math.Round(moonAltitude, 2));
-                
+
                 double sunAltitude = AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer);
                 SwitchWeatherKeys.Add("SunAltitude", sunAltitude);
                 i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
@@ -755,11 +754,12 @@ namespace WhenPlugin.When {
                     SwitchWeatherKeys.Add("ShutterError", 4);
                     SwitchWeatherKeys.Add("DomeAzimuth", domeInfo.Azimuth);
                     i.Add("Dome: DomeAzimuth (" + Math.Round(domeInfo.Azimuth, 2) + ")");
-              }
+                }
 
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
                 FlatConnected = flatInfo.Connected;
-                if (FlatConnected) {                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
+                if (FlatConnected) {
+                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
                     i.Add("Flat-Panel: CoverState (Cover" + flatInfo.CoverState + ")");
                     SwitchWeatherKeys.Add("CoverUnknown", 0);
                     SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
@@ -851,7 +851,5 @@ namespace WhenPlugin.When {
                 return Task.CompletedTask;
             }
         }
-
-
     }
 }

@@ -215,24 +215,19 @@ namespace WhenPlugin.When {
         private Stack<string> cycleStack = new Stack<string>();
 
         private TemplatedSequenceContainer FindTemplate(string name) {
-            if (Monitor.TryEnter(TemplateControllerLite.TemplateLock)) {
-                try {
-                    for (int i = 0; i < 4; i++) {
-                        try {
-                            foreach (var tmp in Templates) {
-                                if (tmp.Container.Name.Equals(name)) {
-                                    return tmp;
-                                }
+
+            lock (TemplateControllerLite.TemplateLock) {
+                for (int i = 0; i < 4; i++) {
+                    try {
+                        foreach (var tmp in Templates) {
+                            if (tmp.Container.Name.Equals(name)) {
+                                return tmp;
                             }
-                        } catch (Exception) {
-                            Thread.Sleep(100);
                         }
+                    } catch (Exception) {
+                        Thread.Sleep(100);
                     }
-                    return null;
-                } finally {
-                    Monitor.Exit(TemplateControllerLite.TemplateLock);
                 }
-            } else {
                 return null;
             }
         }
