@@ -266,8 +266,8 @@ namespace WhenPlugin.When {
                 today = today.AddSeconds(Seconds);
                 Expr.Value = ((DateTimeOffset)today).ToUnixTimeSeconds();
                 TimeString = Expr.ValueString;
-                RaisePropertyChanged("Expr.Value");
-                RaisePropertyChanged("Expr.ValueString");
+                //RaisePropertyChanged("Expr.Value");
+                //RaisePropertyChanged("Expr.ValueString");
                 RaisePropertyChanged("Expr");
                 RaisePropertyChanged("TimeString");
             }
