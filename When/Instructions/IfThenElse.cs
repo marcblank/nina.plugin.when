@@ -76,6 +76,22 @@ namespace WhenPlugin.When {
 
             Runner runner;
             try {
+                // Always get latest data...
+                await Symbol.UpdateSwitchWeatherData();
+
+                if (IfExpr.ImageVolatile) {
+                    Logger.Info("ImageVolatile");
+                    while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
+                        Logger.Info("Waiting 250ms for processing...");
+                        progress?.Report(new ApplicationStatus() { Status = "" });
+                        await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
+                    }
+                    // Get latest values
+                    Logger.Info("ImageVolatile, new data");
+                }
+
+                IfExpr.Evaluate();
+
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("Predicate is true; running Then");
                     runner = new Runner(Instructions, progress, token);

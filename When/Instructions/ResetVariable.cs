@@ -102,6 +102,8 @@ namespace WhenPlugin.When {
             // Whew!
             Symbol.UpdateSwitchWeatherData();
             Expr.Evaluate();
+            Logger.Info("ResetVariable: " + Variable + " from " + sym.Definition + " to " + Expr.Value.ToString());
+
             sym.Definition = Expr.Value.ToString();
  
             return Task.CompletedTask;

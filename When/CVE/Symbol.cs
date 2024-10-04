@@ -70,6 +70,8 @@ namespace WhenPlugin.When {
 
         public bool IsGlobalVariable { get; set; } = false;
 
+        public bool isDataSymbol { get; set; } = false;
+
         public class Keys : Dictionary<string, object>;
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";

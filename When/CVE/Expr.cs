@@ -422,6 +422,7 @@ namespace WhenPlugin.When {
 
         public bool Volatile { get; set; } = false;
         public bool ImageVolatile { get; set; } = false;
+        public bool GlobalVolatile { get; set; } = false;
 
         public void DebugWrite() {
             Debug.WriteLine("* Expression " + Expression + " evaluated to " + ((Error != null) ? Error : Value) + " (in " + (Symbol != null ? Symbol : SequenceEntity) + ")");
@@ -471,10 +472,10 @@ namespace WhenPlugin.When {
                     //Debug.WriteLine("Evaluate " + this);
                     Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
-                    if (Volatile) {
+                    if (Volatile || GlobalVolatile) {
                         IList<string> volatiles = new List<string>();
                         foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
-                            if (kvp.Value == null) {
+                            if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
                                 volatiles.Add(kvp.Key);
                             }
                         }
@@ -484,7 +485,8 @@ namespace WhenPlugin.When {
                         }
                     }
 
-                    Volatile = false;
+                    Volatile = GlobalVolatile;
+
                     ImageVolatile = false;
 
                     // First, validate References
@@ -649,6 +651,11 @@ namespace WhenPlugin.When {
                     Error = null;
                 }
                 Evaluate();
+                foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
+                    if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
+                        GlobalVolatile = true;
+                    }
+                }
             } else if (Double.IsNaN(Value) && Expression.Length > 0) {
                 Error = "Not evaluated";
             } else if (Expression.Length != 0 && Value == Default && Error == null) {

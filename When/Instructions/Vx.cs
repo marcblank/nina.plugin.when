@@ -165,10 +165,20 @@ namespace WhenPlugin.When {
             Definition = OriginalDefinition;
             Executed = true;
             Expr.Evaluate();
+
             if (this is SetGlobalVariable) {
                 // Find the one in Globals and set it
                 Symbol global = FindGlobalSymbol(Identifier);
                 if (global is SetGlobalVariable sgv) {
+
+                    // Bug fix
+                    foreach (var res in Expr.Resolved) {
+                        if (res.Value == null) {
+                            Expr.GlobalVolatile = true;
+                            break;
+                        }
+                    }
+
                     sgv.Expr = Expr;
                     sgv.Executed = true;
                 }
