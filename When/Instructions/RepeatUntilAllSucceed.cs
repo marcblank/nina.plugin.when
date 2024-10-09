@@ -116,8 +116,12 @@ namespace WhenPlugin.When {
                         } else {
                             Logger.Info(item.Name + ": ok");
                         }
-                    } catch (Exception) {
-                        // What?
+                    } catch (Exception ex) {
+                        Logger.Warning("Exception running instruction in RUOS: " + ex);
+                        failedItem = item;
+                        failed = true;
+                        attempts++;
+                        break;
                     }
                 }
 

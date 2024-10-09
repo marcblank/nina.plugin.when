@@ -656,6 +656,10 @@ namespace WhenPlugin.When {
                 SwitchWeatherKeys.Add("MoonAltitude", moonAltitude);
                 i.Add(" MoonAltitude: " + Math.Round(moonAltitude, 2));
 
+                double moonIllumination = AstroUtil.GetMoonIllumination(DateTime.Now);
+                SwitchWeatherKeys.Add("MoonIllumination", moonIllumination);
+                i.Add(" MoonIllumination: " + Math.Round(moonIllumination, 2));
+
                 double sunAltitude = AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer);
                 SwitchWeatherKeys.Add("SunAltitude", sunAltitude);
                 i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
