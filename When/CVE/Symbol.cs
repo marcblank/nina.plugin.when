@@ -35,6 +35,7 @@ using System.Collections.Concurrent;
 using NINA.Astrometry;
 using Accord;
 using NCalc.Domain;
+using NINA.Core.Enum;
 
 namespace WhenPlugin.When {
 
@@ -692,6 +693,12 @@ namespace WhenPlugin.When {
                     i.Add("Telescope: RightAscension (" + Math.Round(ra, 2) + ")");
                     SwitchWeatherKeys.Add("Declination", dec); // telescopeInfo.Declination);
                     i.Add("Telescope: Declination (" + Math.Round(dec, 2) + ")");
+
+                    SwitchWeatherKeys.Add("SideOfPier", (int)telescopeInfo.SideOfPier);
+                    i.Add("Telescope: SideOfPier (" + (telescopeInfo.SideOfPier == PierSide.pierEast ? "PierEast" : telescopeInfo.SideOfPier == PierSide.pierWest ? "PierWest" : "PierUnknown") + ")");
+                    SwitchWeatherKeys.Add("PierEast", 0);
+                    SwitchWeatherKeys.Add("PierWest", 1);
+                    SwitchWeatherKeys.Add("PierUnknown", -1);
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();

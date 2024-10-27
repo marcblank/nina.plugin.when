@@ -68,16 +68,8 @@ namespace WhenPlugin.When {
             };
         }
 
-        public Expr WaitExpr { get; set; }
-
-
         [JsonProperty]
-        public string WaitTimeExpr {
-            get => null;
-            set {
-                WaitExpr.Expression = value;
-            }
-        }
+        public Expr WaitExpr { get; set; }
 
         public override void ResetProgress() {
             Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
