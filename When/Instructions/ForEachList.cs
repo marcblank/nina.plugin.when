@@ -12,16 +12,17 @@ using NINA.Core.Utility;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility.Converters;
+using System.Diagnostics;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each in List")]
-    [ExportMetadata("Description", "Iterates over a list of numerics, executing the embedded instructions for each")]
+    [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class ForEachList : IfCommand, IValidatable, ITrueFalse {
+    public class ForEachList : IfCommand, IValidatable {
 
         [ImportingConstructor]
         public ForEachList() {
@@ -63,6 +64,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged();
             }
         }
+
         private string listExpression = "";
 
         [JsonProperty]
@@ -87,17 +89,12 @@ namespace WhenPlugin.When {
 
             if (ETokens.Length == 0 || VTokens.Length == 0) {
                 return "There must be at least one Variable and List Expression";
-            } else if (ETokens.Length != VTokens.Length) {
-                return "There must be equal numbers of Variables and List Expressions";
             }
 
-            int exps = 0;
             foreach (string et in ETokens) {
                 string[] etokens = et.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                if (exps == 0) {
-                    exps = etokens.Length;
-                } else if (exps != etokens.Length) {
-                    return "There must be equal number of list members in each List Expression";
+                if (etokens.Length != VTokens.Length) {
+                    return "There must be " + VTokens.Length + " elements in each semicolon-separated Expression; one for each Variable" ;
                 }
             }
 
@@ -120,13 +117,13 @@ namespace WhenPlugin.When {
             string[] vtokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             try {
-                for (int e = 0; e < ETokens[0].Length; e++) {
+                for (int e = 0; e < ETokens.Length; e++) {
 
-                    for (int v = 0;v < VTokens.Length; v++) {
+                    for (int v = 0; v < VTokens.Length; v++) {
                         string var = VTokens[v];
 
-                        string[] exprsList = ETokens[v].Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        string expr = exprsList[e];
+                        string[] exprsList = ETokens[e].Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        string expr = exprsList[v];
 
                         ResetVariable rv = new ResetVariable();
                         rv.AttachNewParent(Parent);
@@ -136,9 +133,10 @@ namespace WhenPlugin.When {
                         await rv.Execute(progress, token);
                     }
 
-                    Runner runner = new Runner(Instructions, progress, token);
-                    await runner.RunConditional();
-                    Instructions.ResetAll();
+
+                    //Runner runner = new Runner(Instructions, progress, token);
+                    //await runner.RunConditional();
+                    //Instructions.ResetAll();
                 }
             } catch (Exception ex) {
                 Logger.Info("ForEach error: " + ex.Message);
@@ -151,10 +149,6 @@ namespace WhenPlugin.When {
         }
 
         public IList<string> Switches { get; set; } = null;
-
-        public override void AfterParentChanged() {
-            base.AfterParentChanged();
-        }
 
         private bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
@@ -179,27 +173,8 @@ namespace WhenPlugin.When {
                 i.Add(e);
             }
 
-            //if (ListExpression.Length == 0 || (Variable == null || Variable.Length == 0)) {
-            //    i.Add("The variable and list expression must both be specified");
-            //} else if (Variable.Length > 0 && !Regex.IsMatch(Variable, Symbol.VALID_SYMBOL)) {
-            //    i.Add("'" + Variable + "' is not a legal Variable name");
-            //} else {
-            //    Symbol sym = Symbol.FindSymbol(Variable, Parent, true);
-            //    if (sym == null) {
-            //        i.Add("The Variable '" + Variable + "' is not in scope.");
-            //    } else if (sym is SetConstant) {
-            //        i.Add("The symbol '" + Variable + "' is a Constant and may not be used with this instruction");
-            //    }
-            //}
-
-            //string[] tokens = ListExpression.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            //if (tokens.Length == 0) {
-            //    i.Add("There must be at least one value in the list expression");
-            //}
-
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
-
 
             Issues = i;
             return i.Count == 0;
