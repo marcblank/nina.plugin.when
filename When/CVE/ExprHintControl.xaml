@@ -15,9 +15,11 @@
         <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
         <TextBlock Margin="5,-2,0,0" 
                    Text="&#x1F6C8;" 
+                   Foreground="{Binding Exp.InfoButtonColor}"
                    FontSize="24">
             <TextBlock.ToolTip>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                    <TextBlock MinHeight="20" Text="{Binding Exp.ExprErrors}" Margin="0,-2,0,0" VerticalAlignment="Center" Foreground="Orange" FontSize="14"  FontStyle="Italic"/>
                     <Grid Background="{StaticResource ButtonBackgroundBrush}">
                         <Grid.Resources >
                             <Style TargetType="ItemsControl" >

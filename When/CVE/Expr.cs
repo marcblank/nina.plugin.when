@@ -69,7 +69,7 @@ namespace WhenPlugin.When {
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
-                return new SolidColorBrush(Colors.DarkRed);
+                return new SolidColorBrush(Colors.IndianRed);
             }
             set { }
         }
