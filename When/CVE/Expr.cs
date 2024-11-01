@@ -562,9 +562,9 @@ namespace WhenPlugin.When {
                                 // Not defined or evaluated
                                 Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
                                 if (s is SetVariable sv && !sv.Executed) {
-                                    Error = "Not evaluated: " + r;
+                                    Error = "*" + r;
                                 } else if (s is SetGlobalVariable sgv && !sgv.Executed) {
-                                    Error = "Not evaluated: " + r;
+                                    Error = "*" + r;
                                 } else if (r.StartsWith("_")) {
                                     Error = "Reference";
                                 } else {
@@ -587,7 +587,7 @@ namespace WhenPlugin.When {
                                     // Not defined or evaluated
                                     Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
                                     if (s is SetVariable sv && !sv.Executed) {
-                                        Error = "Not evaluated: " + r;
+                                        Error = "*" + r;
                                     } else if (r.StartsWith("_")) {
                                         Error = "Reference";
                                     } else {

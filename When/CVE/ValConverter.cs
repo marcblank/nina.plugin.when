@@ -35,6 +35,9 @@ namespace WhenPlugin.When {
             if (expr != null && expr.Error == null && expr.Value != 0) {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
+            if (expr != null && expr.Error != null && expr.Error.StartsWith("*")) {
+                return new SolidColorBrush(Colors.Yellow);
+            }
             return new SolidColorBrush(Colors.Orange);
         }
 
