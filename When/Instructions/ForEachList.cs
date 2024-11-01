@@ -136,9 +136,9 @@ namespace WhenPlugin.When {
                         await rv.Execute(progress, token);
                     }
 
-                    //Runner runner = new Runner(Instructions, progress, token);
-                    //await runner.RunConditional();
-                    //Instructions.ResetAll();
+                    Runner runner = new Runner(Instructions, progress, token);
+                    await runner.RunConditional();
+                    Instructions.ResetAll();
                 }
             } catch (Exception ex) {
                 Logger.Info("ForEach error: " + ex.Message);
