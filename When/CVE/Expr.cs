@@ -12,9 +12,11 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using static WhenPlugin.When.Symbol;
 using Expression = NCalc.Expression;
 
@@ -62,6 +64,14 @@ namespace WhenPlugin.When {
         public Expr(Expr cloneMe) : this(cloneMe.SequenceEntity, cloneMe.Expression, cloneMe.Type) {
             Setter = cloneMe.Setter;
             Symbol = cloneMe.Symbol;
+        }
+
+        public SolidColorBrush InfoButtonColor {
+            get {
+                if (Error == null) return new SolidColorBrush(Colors.White);
+                return new SolidColorBrush(Colors.DarkRed);
+            }
+            set { }
         }
 
         private string _expression = "";
@@ -162,6 +172,17 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("Value");
                 RaisePropertyChanged("ValueString");
             }
+        }
+
+        public string ExprErrors {
+            get {
+                if (Error == null) {
+                    return "No errors in Expression";
+                } else {
+                    return "Error(s): " + Error;
+                }
+            }
+            set { }
         }
 
         public static void CheckExprError(Expr expr, IList<string> issues) {
@@ -278,6 +299,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("IsAnnotated");
+                    RaisePropertyChanged("InfoButtonColor");
                 }
             }
         }
@@ -453,6 +475,14 @@ namespace WhenPlugin.When {
             Evaluate();
         }
 
+        private void AddError (string s) {
+            if (Error == null) {
+                Error = s;
+            } else {
+                Error = Error + "; " + s;
+            }
+        }
+
         public void Evaluate() {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
                 try {
@@ -587,11 +617,11 @@ namespace WhenPlugin.When {
                                     // Not defined or evaluated
                                     Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
                                     if (s is SetVariable sv && !sv.Executed) {
-                                        Error = "*" + r;
+                                        AddError("Not evaluated: " + r);
                                     } else if (r.StartsWith("_")) {
-                                        Error = "Reference";
+                                        AddError("Reference: " + r);
                                     } else {
-                                        Error = "Undefined: " + r;
+                                        AddError("Undefined: " + r);
                                     }
                                 }
                             }

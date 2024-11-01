@@ -50,7 +50,7 @@ namespace WhenPlugin.When {
 
             try {
                 if (expr != null) {
-                    if (expr.Error != null) return "{" + expr.Error + "}";
+                    if (expr.Error != null) return ""; // "{" + expr.Error + "}";
                     if (!expr.IsExpression) return "";
                     string txt;
                     if (expr.Error == null) {

@@ -58,7 +58,7 @@ namespace WhenPlugin.When {
             get => variable;
             set {
                 if (Parent == null) {
-                    return;
+                    //return;
                 }
                 variable = value;
                 RaisePropertyChanged();
@@ -72,7 +72,7 @@ namespace WhenPlugin.When {
             get => listExpression;
             set {
                 if (Parent == null) {
-                    return;
+                    //return;
                 }
                 listExpression = value;
                 RaisePropertyChanged();
