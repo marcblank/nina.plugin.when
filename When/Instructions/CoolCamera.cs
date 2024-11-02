@@ -155,9 +155,7 @@ namespace WhenPlugin.When {
             }
             DurExpr.Default = (double)cameraSettings.CoolingDuration;
 
-            // Always Validate our Expr's
-            TempExpr.Validate();
-            DurExpr.Validate();
+            Expr.AddExprIssues(i, TempExpr, DurExpr);
 
             if (!Double.IsNaN(TempExpr.Value) && (TempExpr.Value < -40 || TempExpr.Value > 30)) {
                 i.Add(BAD_TEMPERATURE);

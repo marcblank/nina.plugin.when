@@ -3167,7 +3167,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
             <nina:SequenceBlockView.SequenceItemContent>
 
                 <WrapPanel Orientation="Horizontal">
-                    <local:ExprHintControl Margin="0,-4,0,0" Label="#" Exp="{Binding IterExpr}" />
+                    <local:ExprHintControl Margin="0,1,0,0" Label="#" Exp="{Binding IterExpr}" />
                     <TextBlock
                         Margin="7.5,-2,7.5,0"
                         HorizontalAlignment="Center"

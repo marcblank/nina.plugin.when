@@ -66,10 +66,25 @@ namespace WhenPlugin.When {
             Symbol = cloneMe.Symbol;
         }
 
+        public static bool JustWarnings (string error) {
+            string[] errors = error.Split(";");
+            bool red = false;
+            bool orange = false;
+            foreach (string e in errors) {
+                if (e.Contains("Not evaluated")) {
+                    orange = true;
+                } else {
+                    red = true;
+                }
+            }
+            if (orange && !red) return true;
+            return false;
+        }
+
         public SolidColorBrush InfoButtonColor {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
-                return new SolidColorBrush(Colors.IndianRed);
+                return JustWarnings(Error) ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.Red);
             }
             set { }
         }
@@ -178,6 +193,8 @@ namespace WhenPlugin.When {
             get {
                 if (Error == null) {
                     return "No errors in Expression";
+                } else if (JustWarnings(Error)) {
+                    return "Warning(s): " + Error;
                 } else {
                     return "Error(s): " + Error;
                 }
@@ -701,6 +718,15 @@ namespace WhenPlugin.When {
         public void NotNegative(Expr expr) {
             if (expr.Value < 0) {
                 expr.Error = "Must not be negative";
+            }
+        }
+
+        public static void AddExprIssues (IList<string> issues, params Expr[] exprs) {
+            foreach (Expr expr in exprs) {
+                expr.Validate();
+                if (expr.Error != null && !Expr.JustWarnings(expr.Error)) {
+                    issues.Add(expr.Error);
+                }
             }
         }
 

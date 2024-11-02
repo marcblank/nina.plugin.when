@@ -112,6 +112,14 @@ namespace WhenPlugin.When {
             if (ValidateArguments() != null) {
                 throw new SequenceEntityFailedException("Syntax error in Variable/List Expression");
             }
+
+            foreach (string var in VTokens) {
+                SetVariable v = new SetVariable();
+                v.AttachNewParent(Parent);
+                v.Variable = var;
+                v.Expr.Expression = "0";
+                await v.Execute(progress, token);
+            }
             
             string[] etokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             string[] vtokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -133,10 +141,9 @@ namespace WhenPlugin.When {
                         await rv.Execute(progress, token);
                     }
 
-
-                    //Runner runner = new Runner(Instructions, progress, token);
-                    //await runner.RunConditional();
-                    //Instructions.ResetAll();
+                    Runner runner = new Runner(Instructions, progress, token);
+                    await runner.RunConditional();
+                    Instructions.ResetAll();
                 }
             } catch (Exception ex) {
                 Logger.Info("ForEach error: " + ex.Message);

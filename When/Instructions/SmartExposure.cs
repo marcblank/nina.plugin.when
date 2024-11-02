@@ -348,9 +348,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("FilterNames");
                 }
 
-                IterExpr.Validate();
-                DExpr.Validate();
-                FExpr.Validate();
+                Expr.AddExprIssues(i, IterExpr, DExpr, FExpr);
 
                 Issues = i;
                 RaisePropertyChanged("Issues");

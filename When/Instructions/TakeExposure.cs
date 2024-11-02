@@ -38,6 +38,7 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Diagnostics;
+using Antlr.Runtime;
 
 namespace WhenPlugin.When {
 
@@ -436,9 +437,7 @@ namespace WhenPlugin.When {
                 OExpr.Default = CameraInfo.DefaultOffset;
             }
 
-            GExpr.Validate();
-            OExpr.Validate();
-            EExpr.Validate();
+            Expr.AddExprIssues(i, GExpr, OExpr, EExpr);
 
             Issues = i;
             return i.Count == 0;

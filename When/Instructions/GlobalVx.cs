@@ -22,7 +22,7 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public SetGlobalVariable() : base() {
-            IsGlobalVariable = true;
+            IsGlobalVariable = true; 
             OriginalExpr = new Expr(GlobalVariables);
         }
         public SetGlobalVariable(SetGlobalVariable copyMe) : base(copyMe) {
