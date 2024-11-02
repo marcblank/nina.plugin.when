@@ -98,7 +98,7 @@ namespace WhenPlugin.When {
             } else if (WaitExpr.Value < 0) {
                 i.Add("Wait time must be greater than zero");
             }
-            WaitExpr.Validate();
+            Expr.AddExprIssues(i, WaitExpr);
             Issues = i;
             RaisePropertyChanged("Issues");
             return i.Count == 0;

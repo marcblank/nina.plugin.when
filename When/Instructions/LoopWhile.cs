@@ -69,12 +69,13 @@ namespace WhenPlugin.When {
         public bool Validate() {
 
             var i = new List<string>();
-            Expr.CheckExprError(PredicateExpr, i);
 
             PredicateExpr.Validate(i);
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
+
+            Expr.AddExprIssues(i, PredicateExpr);
 
             Issues = i;
             RaisePropertyChanged("Issues");

@@ -64,7 +64,8 @@ namespace WhenPlugin.When {
                 i.Add("The Constant is already defined here; this definition will be ignored.");
             }
 
-            Expr.Validate();
+            Expr.AddExprIssues(i, Expr);
+
             foreach (var kvp in Expr.Resolved) {
                 if (kvp.Value == null || kvp.Value is SetVariable) {
                     i.Add("Constant definitions may not include Variables");

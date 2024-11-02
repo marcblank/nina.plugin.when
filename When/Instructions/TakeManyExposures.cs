@@ -147,9 +147,9 @@ namespace WhenPlugin.When {
         }
 
         public override bool Validate() {
-            IterExpr.Validate();
             var valid = GetTakeExposure().Validate();
             IList<string> i = GetTakeExposure().Issues;
+            Expr.AddExprIssues(i, IterExpr);
             Issues = i;
             RaisePropertyChanged("Issues");
             return valid && (Issues.Count == 0);

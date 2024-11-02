@@ -415,12 +415,7 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Arg1Expr.Validate();
-            Arg2Expr.Validate();
-            Arg3Expr.Validate();
-            Arg4Expr.Validate();
-            Arg5Expr.Validate();
-            Arg6Expr.Validate();
+            Expr.AddExprIssues(i, Arg1Expr, Arg2Expr, Arg3Expr, Arg4Expr, Arg5Expr, Arg6Expr);
 
             Issues = i;
             return i.Count == 0;

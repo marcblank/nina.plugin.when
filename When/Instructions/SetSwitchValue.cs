@@ -206,7 +206,7 @@ namespace WhenPlugin.When {
                         i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Validation_InvalidSwitchValue"], s.Minimum, s.Maximum, s.StepSize));
                 }
 
-                ValueExpr.Validate();
+                Expr.AddExprIssues(i, ValueExpr);
 
                 Issues = i;
                 RaisePropertyChanged("Issues");

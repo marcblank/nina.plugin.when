@@ -146,8 +146,7 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
 
-            AltExpr.Validate();
-            AzExpr.Validate();
+            Expr.AddExprIssues(i, AltExpr, AzExpr);
 
             Issues = i;
             return i.Count == 0;

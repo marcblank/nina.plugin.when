@@ -95,7 +95,7 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["LblRotatorNotConnected"]);
             }
 
-            RExpr.Validate();
+            Expr.AddExprIssues(i, RExpr);
             Issues = i;
             return i.Count == 0;
         }

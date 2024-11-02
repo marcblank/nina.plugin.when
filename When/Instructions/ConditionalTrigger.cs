@@ -169,7 +169,7 @@ namespace WhenPlugin.When {
             IfExpr.Validate();
 
             IList<string> i = new List<string>();
-            Expr.CheckExprError(IfExpr, i);
+            Expr.AddExprIssues(i, IfExpr);
 
             if (TriggerRunner.Triggers.Count == 0) {
                 i.Add("There must be a Trigger specified for this instruction");

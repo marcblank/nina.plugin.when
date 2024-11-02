@@ -202,14 +202,6 @@ namespace WhenPlugin.When {
             set { }
         }
 
-        public static void CheckExprError(Expr expr, IList<string> issues) {
-            if (string.IsNullOrEmpty(expr.Expression)) {
-                issues.Add("Expression cannot be empty!");
-            } else if (expr.Error != null && !expr.Error.StartsWith("Not evaluated:")) {
-                issues.Add("Expression error: " + expr.Error);
-            }
-        }
-
         public Symbol Symbol { get; set; } = null;
         public ISequenceEntity SequenceEntity { get; set; } = null;
 

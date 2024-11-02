@@ -127,12 +127,11 @@ namespace WhenPlugin.When {
             CommonValidate();
 
             var i = new List<string>();
-            Expr.CheckExprError(IfExpr, i);
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
-            IfExpr.Validate();
+            Expr.AddExprIssues(i, IfExpr);
  
             Issues = i;
             return i.Count == 0;

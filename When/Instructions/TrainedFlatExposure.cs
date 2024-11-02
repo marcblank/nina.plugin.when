@@ -425,13 +425,12 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("FilterNames");
             }
 
-            IterExpr.Validate();
-            FExpr.Validate();
-
             IList<string> sfi = new List<string>();
             if (switchFilter != null) {
                 sfi = switchFilter.Issues;
             }
+
+            Expr.AddExprIssues(sfi, IterExpr, FExpr);
 
             Issues = issues.Concat(takeExposure.Issues).Concat(sfi).Concat(setBrightness.Issues).Distinct().ToList();
             RaisePropertyChanged(nameof(Issues));

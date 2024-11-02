@@ -130,10 +130,15 @@ namespace WhenPlugin.When {
 
             if (!Executed) {
                 OriginalExpr.Validate();
+                if (OriginalExpr.Error != null) {
+                    Expr.AddExprIssues(i, OriginalExpr);
+                }
             }
             if (Expr.Error != null) {
-                Expr.Validate();
+                Expr.AddExprIssues(i, Expr);
             }
+
+
 
             if (Definition != Expr.Expression) {
                 Definition = Expr.Expression;

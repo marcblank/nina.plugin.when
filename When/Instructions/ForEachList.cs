@@ -19,7 +19,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
-    [Export(typeof(ISequenceItem))]
+    //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
 
     public class ForEachList : IfCommand, IValidatable {

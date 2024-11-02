@@ -181,8 +181,7 @@ namespace WhenPlugin.When {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
 
-            RAExpr.Validate();
-            DecExpr.Validate();
+            Expr.AddExprIssues(i, RAExpr, DecExpr);
 
             Issues = i;
             return i.Count == 0;

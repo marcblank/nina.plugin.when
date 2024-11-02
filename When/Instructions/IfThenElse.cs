@@ -150,9 +150,8 @@ namespace WhenPlugin.When {
 
             ValidateInstructions(Instructions);
             ValidateInstructions(ElseInstructions);
-            IfExpr.Validate(i);
 
-            Expr.CheckExprError(IfExpr, i);
+            Expr.AddExprIssues(i, IfExpr);
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");

@@ -90,7 +90,7 @@ namespace WhenPlugin.When {
             if (!focuserMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblFocuserNotConnected"]);
             }
-            PExpr.Validate();
+            Expr.AddExprIssues(i, PExpr);
             Issues = i;
             return i.Count == 0;
         }
