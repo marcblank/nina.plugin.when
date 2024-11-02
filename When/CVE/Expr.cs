@@ -72,7 +72,7 @@ namespace WhenPlugin.When {
             bool orange = false;
             foreach (string e in errors) {
                 if (e.Contains("Not evaluated")) {
-                    orange = true;
+                    orange = true; ;
                 } else {
                     red = true;
                 }
@@ -85,6 +85,22 @@ namespace WhenPlugin.When {
             get {
                 if (Error == null) return new SolidColorBrush(Colors.White);
                 return JustWarnings(Error) ? new SolidColorBrush(Colors.Orange) : new SolidColorBrush(Colors.Red);
+            }
+            set { }
+        }
+
+        public string InfoButtonChar {
+            get {
+                if (Error == null) return "\u24D8"; // "?";
+                return "\u26A0";
+            }
+            set { }
+        }
+
+        public double InfoButtonSize {
+            get {
+                if (Error == null) return 24;
+                return 18;
             }
             set { }
         }
@@ -309,6 +325,8 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("IsAnnotated");
                     RaisePropertyChanged("InfoButtonColor");
+                    RaisePropertyChanged("InfoButtonChar");
+                    RaisePropertyChanged("InfoButtonSize");
                 }
             }
         }
