@@ -105,6 +105,14 @@ namespace WhenPlugin.When {
             set { }
         }
 
+        public string InfoButtonMargin {
+            get {
+                if (Error == null) return "5,-2,0,0";
+                return "5,2,0,0";
+            }
+            set { }
+        }
+
         private string _expression = "";
 
         private object LOCK = new object();
@@ -327,6 +335,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("InfoButtonColor");
                     RaisePropertyChanged("InfoButtonChar");
                     RaisePropertyChanged("InfoButtonSize");
+                    RaisePropertyChanged("InfoButtonMargin");
                 }
             }
         }
