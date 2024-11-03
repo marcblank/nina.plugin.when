@@ -242,6 +242,7 @@ namespace WhenPlugin.When {
             if (!telescopeMediator.GetInfo().Connected) {
                 i.Add(Loc.Instance["LblTelescopeNotConnected"]);
             }
+            Expr.AddExprIssues(i, RAExpr, DecExpr);
             Issues = i;
             return i.Count == 0;
         }

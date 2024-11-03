@@ -415,7 +415,7 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Expr.AddExprIssues(i, Arg1Expr, Arg2Expr, Arg3Expr, Arg4Expr, Arg5Expr, Arg6Expr);
+            Expr.AddExprIssues(i, Arg1Expr, Arg2Expr, Arg3Expr, Arg4Expr, Arg5Expr, Arg6Expr, ResultExpr);
 
             Issues = i;
             return i.Count == 0;

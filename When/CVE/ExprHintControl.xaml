@@ -14,9 +14,9 @@
                 DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExprHintControl}}}">
         <TextBlock Margin="0,8,0,0" Text="{Binding Label}" />
         <TextBlock Margin="5,-2,0,0" 
-                   Text="&#x1F6C8;" 
+                   Text="{Binding Exp.InfoButtonChar}" 
                    Foreground="{Binding Exp.InfoButtonColor}"
-                   FontSize="24">
+                   FontSize="{Binding Exp.InfoButtonSize}">
             <TextBlock.ToolTip>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                     <TextBlock MinHeight="20" Text="{Binding Exp.ExprErrors}" Margin="0,-2,0,0" VerticalAlignment="Center" Foreground="Orange" FontSize="14"  FontStyle="Italic"/>
