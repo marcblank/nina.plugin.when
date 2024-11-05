@@ -98,10 +98,10 @@ namespace WhenPlugin.When {
             }
         }
 
-        private string[] ETokens;
-        private string[] VTokens;
+        public string[] ETokens;
+        public string[] VTokens;
 
-        private string ValidateArguments () {
+        public string ValidateArguments () {
             
             ETokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             VTokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -116,10 +116,6 @@ namespace WhenPlugin.When {
                     return "Each group in the Expression list must have " + VTokens.Length + " items; one for each Variable";
                 }
             }
-
-            //if (ETokens.Length != VTokens.Length) {
-            //    return "There must be " + VTokens.Length + " elements in each semicolon-separated Expression; one for each Variable";
-            //}
 
             return null;
         }

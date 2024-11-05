@@ -2615,6 +2615,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <Grid>
+                    <TextBlock Text="{Binding Assignments}" VerticalAlignment="Center" />
                     <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                         <ContentPresenter
                                   Margin="2,0,10,0"
