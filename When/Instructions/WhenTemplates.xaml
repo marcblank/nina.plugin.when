@@ -1998,7 +1998,7 @@
                       Margin="0,0,0,0"
                       BorderBrush="{StaticResource BorderBrush}"
                       BorderThickness="1">
-                        <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Instructions}">
+                        <Grid Background="{StaticResource BackgroundBrush}" >
                             <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
                             <TextBlock
                               HorizontalAlignment="Center"
@@ -2611,7 +2611,34 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
         </nina:SequenceBlockView>
     </DataTemplate>
 
-
+    <DataTemplate DataType="{x:Type local:AssignVariables}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <Grid>
+                    <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
+                        <ContentPresenter
+                                  Margin="2,0,10,0"
+                                  HorizontalAlignment="Right"
+                                  Content="{Binding}"
+                                  DockPanel.Dock="Right"
+                                  Style="{StaticResource ProgressPresenter}" />
+                    </Border>
+                </Grid>
+            </nina:SequenceBlockView.SequenceItemContent>
+            <nina:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel DataContext="{Binding Parent}" Orientation="Horizontal" Margin="0,-4,0,0">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </nina:SequenceBlockView.SequenceItemProgressContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+    
     <DataTemplate DataType="{x:Type local:WhenSwitch}">
         <Border>
             <Border.Resources>

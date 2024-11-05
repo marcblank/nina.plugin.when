@@ -13,16 +13,19 @@ using System.Text.RegularExpressions;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility.Converters;
 using System.Diagnostics;
+using NINA.Sequencer.Conditions;
+using System.Runtime.Serialization;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each in List")]
     [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class ForEachList : IfCommand, IValidatable {
+    public class ForEachList : SequentialContainer, IValidatable {
 
         [ImportingConstructor]
         public ForEachList() {
@@ -43,8 +46,24 @@ namespace WhenPlugin.When {
                 Instructions.Icon = copyMe.Icon;
                 Variable = copyMe.Variable;
                 ListExpression = copyMe.ListExpression;
+                Add(new LoopCondition());
+                Add(new AssignVariables() { Name="Assign Variables" });
             }
         }
+
+        [OnDeserializing]
+        public void OnDeserializing(StreamingContext context) {
+            this.Items.Clear();
+            this.Conditions.Clear();
+            this.Triggers.Clear();
+        }
+
+        public override Task Interrupt() {
+            return this.Parent?.Interrupt();
+        }
+
+        [JsonProperty]
+        public IfContainer Instructions { get; protected set; }
 
         public override object Clone() {
             return new ForEachList(this) {
@@ -91,65 +110,65 @@ namespace WhenPlugin.When {
                 return "There must be at least one Variable and List Expression";
             }
 
-            foreach (string et in ETokens) {
-                string[] etokens = et.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                if (etokens.Length != VTokens.Length) {
-                    return "There must be " + VTokens.Length + " elements in each semicolon-separated Expression; one for each Variable" ;
-                }
-            }
+            //if (ETokens.Length != VTokens.Length) {
+            //    return "There must be " + VTokens.Length + " elements in each semicolon-separated Expression; one for each Variable";
+            //}
 
             return null;
         }
 
-        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+//        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("ForEach: " + Variable + " in " + ListExpression);
-            if (string.IsNullOrEmpty(ListExpression)) {
-                Status = SequenceEntityStatus.FAILED;
-                return;
-            }
+//            Logger.Info("ForEach: " + Variable + " in " + ListExpression);
 
-            if (ValidateArguments() != null) {
-                throw new SequenceEntityFailedException("Syntax error in Variable/List Expression");
-            }
 
-            foreach (string var in VTokens) {
-                SetVariable v = new SetVariable();
-                v.AttachNewParent(Parent);
-                v.Variable = var;
-                v.Expr.Expression = "0";
-                await v.Execute(progress, token);
-            }
+            //if (string.IsNullOrEmpty(ListExpression)) {
+            //    Status = SequenceEntityStatus.FAILED;
+            //    return;
+            //}
+
+            //if (ValidateArguments() != null) {
+            //    throw new SequenceEntityFailedException("Syntax error in Variable/List Expression");
+            //}
+
+            //foreach (string var in VTokens) {
+            //    SetVariable v = new SetVariable();
+            //    v.AttachNewParent(Parent);
+            //    v.Variable = var;
+            //    v.Expr.Expression = "0";
+            //    await v.Execute(progress, token);
+            //}
             
-            string[] etokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            string[] vtokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            //string[] etokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            //string[] vtokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            try {
-                for (int e = 0; e < ETokens.Length; e++) {
+            //try {
+            //    // EToken length is # iterations (set in Validate)
+            //    for (int e = 0; e < ETokens.Length; e++) {
 
-                    for (int v = 0; v < VTokens.Length; v++) {
-                        string var = VTokens[v];
+            //        for (int v = 0; v < VTokens.Length; v++) {
+            //            string var = VTokens[v];
 
-                        string[] exprsList = ETokens[e].Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        string expr = exprsList[v];
+            //            string[] exprsList = ETokens[e].Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            //            string expr = exprsList[v];
 
-                        ResetVariable rv = new ResetVariable();
-                        rv.AttachNewParent(Parent);
-                        rv.Variable = var;
-                        rv.Expr.Expression = expr;
-                        Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
-                        await rv.Execute(progress, token);
-                    }
+            //            ResetVariable rv = new ResetVariable();
+            //            rv.AttachNewParent(Parent);
+            //            rv.Variable = var;
+            //            rv.Expr.Expression = expr;
+            //            Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
+            //            await rv.Execute(progress, token);
+            //        }
 
-                    Runner runner = new Runner(Instructions, progress, token);
-                    await runner.RunConditional();
-                    Instructions.ResetAll();
-                }
-            } catch (Exception ex) {
-                Logger.Info("ForEach error: " + ex.Message);
-                Status = SequenceEntityStatus.FAILED;
-            }
-        }
+            //        Runner runner = new Runner(Instructions, progress, token);
+            //        await runner.RunConditional();
+            //        Instructions.ResetAll();
+            //    }
+            //} catch (Exception ex) {
+            //    Logger.Info("ForEach error: " + ex.Message);
+            //    Status = SequenceEntityStatus.FAILED;
+            //}
+//        }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(ForEachList)}, Variable: {Variable}, List Expression: {ListExpression}";
@@ -170,7 +189,7 @@ namespace WhenPlugin.When {
 
         public new bool Validate() {
 
-            CommonValidate();
+            //CommonValidate();
 
             var i = new List<string>();
             if (!IsAttachedToRoot()) return true;
@@ -178,12 +197,18 @@ namespace WhenPlugin.When {
             string e = ValidateArguments();
             if (e != null) {
                 i.Add(e);
+            } else if (Conditions.Count > 0) {
+                LoopCondition lp = Conditions[0] as LoopCondition;
+                if (lp != null) {
+                    lp.Iterations = ETokens.Length;
+                }
             }
 
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
             Issues = i;
+            RaisePropertyChanged("Issues");
             return i.Count == 0;
         }
     }
