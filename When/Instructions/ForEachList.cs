@@ -110,6 +110,13 @@ namespace WhenPlugin.When {
                 return "There must be at least one Variable and List Expression";
             }
 
+            foreach (string et in ETokens) {
+                string[] ets = et.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (ets.Length != VTokens.Length) {
+                    return "Each group in the Expression list must have " + VTokens.Length + " items; one for each Variable";
+                }
+            }
+
             //if (ETokens.Length != VTokens.Length) {
             //    return "There must be " + VTokens.Length + " elements in each semicolon-separated Expression; one for each Variable";
             //}
