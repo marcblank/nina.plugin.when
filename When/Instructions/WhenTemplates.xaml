@@ -1919,7 +1919,7 @@
             <ninactrl:DetachingExpander>
                 <ninactrl:DetachingExpander.Header>
                     <Grid
-                      MinHeight="35"
+                      MinHeight="45"
                       Margin="0"
                       HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}"
                       Background="{StaticResource SecondaryBackgroundBrush}">
@@ -1935,7 +1935,7 @@
                                  Foreground="White"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
-                                 Text="For Each in List" />
+                                 Text="For Each" />
                             <Border
                                Width="20"
                                Height="20"
@@ -1960,14 +1960,14 @@
                                     <ItemsControl ItemsSource="{Binding Issues}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Text="Variable:" />
+                            <TextBlock VerticalAlignment="Center" Text="Variable(s):" />
                             <TextBox
                                 MinWidth="40"
                                 Margin="5,2,10,-2"
                                 Text="{Binding Variable}"
                                 VerticalAlignment="Center"
                                 TextAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Comma-separated list:" />
+                            <TextBlock VerticalAlignment="Center" Text="Expression(s):" />
                             <TextBox
                                 MinWidth="40"
                                 Margin="5,2,10,-2"
@@ -2616,15 +2616,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
             <nina:SequenceBlockView.SequenceItemContent>
                 <Grid>
                     <TextBlock Text="{Binding Assignments}" VerticalAlignment="Center" />
-                    <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
-                        <ContentPresenter
-                                  Margin="2,0,10,0"
-                                  HorizontalAlignment="Right"
-                                  Content="{Binding}"
-                                  DockPanel.Dock="Right"
-                                  Style="{StaticResource ProgressPresenter}" />
-                    </Border>
-                </Grid>
+                 </Grid>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
                 <WrapPanel DataContext="{Binding Parent}" Orientation="Horizontal" Margin="0,-4,0,0">

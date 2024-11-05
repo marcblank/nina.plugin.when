@@ -207,6 +207,12 @@ namespace WhenPlugin.When {
                 }
             }
 
+            foreach (ISequenceItem item in Items) {
+                if (item is IValidatable v) {
+                    _ = v.Validate();
+                }
+            }
+
             Switches = Symbol.GetSwitches();
             RaisePropertyChanged("Switches");
 
