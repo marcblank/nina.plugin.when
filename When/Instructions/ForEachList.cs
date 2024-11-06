@@ -15,6 +15,10 @@ using NINA.Core.Utility.Converters;
 using System.Diagnostics;
 using NINA.Sequencer.Conditions;
 using System.Runtime.Serialization;
+using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Accord.IO;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each in List")]
@@ -29,34 +33,34 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public ForEachList() {
-            Instructions = new IfContainer();
-            Instructions.AttachNewParent(Parent);
-            Instructions.PseudoParent = this;
-            Instructions.Name = Name;
-            Instructions.Icon = Icon;
+            if (Conditions.Count == 0) {
+                Add(new LoopCondition());
+            }
+            Add(new AssignVariables() { Name = "Assign Variables" });
+
         }
 
         public ForEachList(ForEachList copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Instructions = (IfContainer)copyMe.Instructions.Clone();
-                Instructions.AttachNewParent(Parent);
-                Instructions.PseudoParent = this;
-                Instructions.Name = copyMe.Name;
-                Instructions.Icon = copyMe.Icon;
                 Variable = copyMe.Variable;
                 ListExpression = copyMe.ListExpression;
-                Add(new LoopCondition());
-                Add(new AssignVariables() { Name="Assign Variables" });
             }
         }
 
-        [OnDeserializing]
-        public void OnDeserializing(StreamingContext context) {
-            this.Items.Clear();
-            this.Conditions.Clear();
-            this.Triggers.Clear();
+        [OnSerializing]
+        public void OnSerializing(StreamingContext context) {
+            ISequenceItem toRemove = null;
+            foreach (ISequenceItem item in Items) {
+                if (item is AssignVariables) {
+                    toRemove = item;
+                }
+            }
+            if (toRemove != null) {
+                Items.Remove(toRemove);
+            }
         }
+
 
         public override Task Interrupt() {
             return this.Parent?.Interrupt();
@@ -66,8 +70,13 @@ namespace WhenPlugin.When {
         public IfContainer Instructions { get; protected set; }
 
         public override object Clone() {
-            return new ForEachList(this) {
-            };
+            ForEachList ic = new ForEachList(this);
+            ic.Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
+            foreach (var item in ic.Items) {
+                item.AttachNewParent(ic);
+            }
+            AttachNewParent(Parent);
+            return ic;
         }
 
         private string variable = "";
@@ -119,59 +128,6 @@ namespace WhenPlugin.When {
 
             return null;
         }
-
-//        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-
-//            Logger.Info("ForEach: " + Variable + " in " + ListExpression);
-
-
-            //if (string.IsNullOrEmpty(ListExpression)) {
-            //    Status = SequenceEntityStatus.FAILED;
-            //    return;
-            //}
-
-            //if (ValidateArguments() != null) {
-            //    throw new SequenceEntityFailedException("Syntax error in Variable/List Expression");
-            //}
-
-            //foreach (string var in VTokens) {
-            //    SetVariable v = new SetVariable();
-            //    v.AttachNewParent(Parent);
-            //    v.Variable = var;
-            //    v.Expr.Expression = "0";
-            //    await v.Execute(progress, token);
-            //}
-            
-            //string[] etokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            //string[] vtokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-            //try {
-            //    // EToken length is # iterations (set in Validate)
-            //    for (int e = 0; e < ETokens.Length; e++) {
-
-            //        for (int v = 0; v < VTokens.Length; v++) {
-            //            string var = VTokens[v];
-
-            //            string[] exprsList = ETokens[e].Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            //            string expr = exprsList[v];
-
-            //            ResetVariable rv = new ResetVariable();
-            //            rv.AttachNewParent(Parent);
-            //            rv.Variable = var;
-            //            rv.Expr.Expression = expr;
-            //            Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
-            //            await rv.Execute(progress, token);
-            //        }
-
-            //        Runner runner = new Runner(Instructions, progress, token);
-            //        await runner.RunConditional();
-            //        Instructions.ResetAll();
-            //    }
-            //} catch (Exception ex) {
-            //    Logger.Info("ForEach error: " + ex.Message);
-            //    Status = SequenceEntityStatus.FAILED;
-            //}
-//        }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(ForEachList)}, Variable: {Variable}, List Expression: {ListExpression}";
