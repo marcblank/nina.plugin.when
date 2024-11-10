@@ -21,7 +21,7 @@ using System.Linq;
 using Accord.IO;
 
 namespace WhenPlugin.When {
-    [ExportMetadata("Name", "For Each in List")]
+    [ExportMetadata("Name", "For Each")]
     [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
@@ -113,7 +113,7 @@ namespace WhenPlugin.When {
         public string ValidateArguments () {
             
             ETokens = ListExpression.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            VTokens = Variable.Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            VTokens = Variable.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             if (ETokens.Length == 0 || VTokens.Length == 0) {
                 return "There must be at least one Variable and List Expression";

@@ -21,6 +21,7 @@ using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
+using NINA.Core.Utility;
 
 namespace WhenPlugin.When {
 
@@ -66,11 +67,16 @@ namespace WhenPlugin.When {
             var info = safetyMediator.GetInfo();
             bool safe = info.Connected && info.IsSafe;
 
+            if (!safe) {
+                Logger.Info("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+            }
+
             
             double safeValue = Double.NaN;
             Symbol sym = Symbol.FindSymbol("SAFE", item.Parent);
             if (sym != null) {
                 // If "SAFE" is defined, safe is the value
+                Logger.Info("SAFE is defined with value: " + sym.Expr.Value);
                 safeValue = sym.Expr.Value;
                 return (safeValue != 0);
             }

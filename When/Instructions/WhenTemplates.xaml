@@ -3205,7 +3205,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
                     <ComboBox
-                        Margin="5,-4,0,0"
+                        Margin="5,0,0,0"
                         IsEditable="True"
                         DisplayMemberPath="Name"
                         VerticalAlignment="Center"
