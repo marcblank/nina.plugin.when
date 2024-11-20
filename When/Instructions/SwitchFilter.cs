@@ -209,6 +209,7 @@ namespace WhenPlugin.When {
                     Filter = (int)FExpr.Value;
                 }
                 SetFInfo();
+                Expr.AddExprIssues(i, FExpr);
             }
 
             Issues = i;

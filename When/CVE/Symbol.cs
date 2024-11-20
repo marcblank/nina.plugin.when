@@ -635,13 +635,47 @@ namespace WhenPlugin.When {
 
         public static Object SYMBOL_LOCK = new object();
 
-        
         private static HashSet<string> LoggedOnce = new HashSet<string>();
         public static void LogOnce (string message) {
             if (LoggedOnce.Contains(message)) return;
             Logger.Warning(message);
             LoggedOnce.Add(message);
         }
+
+        private static void AddSymbol(List<string> i, string token, object value) {
+            AddSymbol(i, token, value, null);
+        }
+
+        private static void AddSymbol(List<string> i, string token, object value, string[] values) {
+            SwitchWeatherKeys.TryAdd(token, value);
+            StringBuilder sb = new StringBuilder(token);
+            sb.Append(": ");
+            if (values != null) {
+                sb.Append(values[(int)value + 1]);
+            } else if (value is double d) {
+                sb.Append(Math.Round(d, 2));
+            } else {
+                sb.Append(value.ToString());
+            }
+            //sb.Append(')');
+            i.Add(sb.ToString());
+
+            if (values != null) {
+                for (int v = 0; v < values.Length; v++) {
+                    if (values[v] != null) {
+                        SwitchWeatherKeys.TryAdd(values[v], v - 1);
+                    }
+                }
+            }
+        }
+
+        private static string[] PierConstants = new string[] { "PierUnknown", "PierEast", "PierWest" };
+
+        private static string[] RoofConstants = new string[] { null, "RoofNotOpen", "RoofOpen", "RoofCannotOpenOrRead" };
+
+        private static string[] ShutterConstants = new string[] { "ShutterNone", "ShutterOpen", "ShutterClosed", "ShutterOpening", "ShutterClosing", "ShutterError" };
+
+        private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError" };
 
         public static Task UpdateSwitchWeatherData() {
 
@@ -656,70 +690,45 @@ namespace WhenPlugin.When {
                     };
                 }
 
-                double moonAltitude = AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer);
-                SwitchWeatherKeys.Add("MoonAltitude", moonAltitude);
-                i.Add(" MoonAltitude: " + Math.Round(moonAltitude, 2));
-
-                double moonIllumination = AstroUtil.GetMoonIllumination(DateTime.Now);
-                SwitchWeatherKeys.Add("MoonIllumination", moonIllumination);
-                i.Add(" MoonIllumination: " + Math.Round(moonIllumination, 2));
-
-                double sunAltitude = AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer);
-                SwitchWeatherKeys.Add("SunAltitude", sunAltitude);
-                i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
+                AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
+                AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
+                AddSymbol(i, "SunAltitude", AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer));
 
                 double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
                 if (lst < 0) {
                     lst = AstroUtil.EuclidianModulus(lst, 24);
                 }
-                SwitchWeatherKeys.Add("LocalSiderealTime", lst);
-                i.Add(" LocalSiderealTime: " + Math.Round(lst, 4));
+                AddSymbol(i, "LocalSiderealTime", lst);
 
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 double timeSeconds = Math.Floor(time.TotalSeconds);
-                SwitchWeatherKeys.Add("TIME", timeSeconds);
-                i.Add(" TIME: " + timeSeconds);
+                AddSymbol(i, "TIME", timeSeconds);
 
-                SwitchWeatherKeys.Add("EXITCODE", LastExitCode);
-                i.Add(" EXITCODE: " + LastExitCode);
+                AddSymbol(i, "EXITCODE", LastExitCode);
 
                 TelescopeInfo telescopeInfo = TelescopeMediator.GetInfo();
                 TelescopeConnected = telescopeInfo.Connected;
                 if (TelescopeConnected) {
-                    SwitchWeatherKeys.Add("Altitude", telescopeInfo.Altitude);
-                    i.Add("Telescope: Altitude (" + Math.Round(telescopeInfo.Altitude, 2) + ")");
-                    SwitchWeatherKeys.Add("Azimuth", telescopeInfo.Azimuth);
-                    i.Add("Telescope: Azimuth (" + Math.Round(telescopeInfo.Azimuth, 2) + ")");
-                    SwitchWeatherKeys.Add("AtPark", telescopeInfo.AtPark ? 1 : 0);
-                    i.Add("Telescope: AtPark (" + (telescopeInfo.AtPark ? "True" : "False") + ")");
+                    AddSymbol(i, "Altitude", telescopeInfo.Altitude);
+                    AddSymbol(i, "Azimuth", telescopeInfo.Azimuth);
+                    AddSymbol(i, "AtPark", telescopeInfo.AtPark);
+                    
                     Coordinates c = telescopeInfo.Coordinates.Transform(Epoch.J2000);
-                    Double ra = c.RA;
-                    Double dec = c.Dec;
-                    SwitchWeatherKeys.Add("RightAscension", ra); // telescopeInfo.RightAscension);
-                    i.Add("Telescope: RightAscension (" + Math.Round(ra, 2) + ")");
-                    SwitchWeatherKeys.Add("Declination", dec); // telescopeInfo.Declination);
-                    i.Add("Telescope: Declination (" + Math.Round(dec, 2) + ")");
+                    AddSymbol(i, "RightAscension", c.RA); // telescopeInfo.RightAscension);
+                    AddSymbol(i, "Declination", c.Dec); // telescopeInfo.Declination);
 
-                    SwitchWeatherKeys.Add("SideOfPier", (int)telescopeInfo.SideOfPier);
-                    i.Add("Telescope: SideOfPier (" + (telescopeInfo.SideOfPier == PierSide.pierEast ? "PierEast" : telescopeInfo.SideOfPier == PierSide.pierWest ? "PierWest" : "PierUnknown") + ")");
-                    SwitchWeatherKeys.Add("PierEast", 0);
-                    SwitchWeatherKeys.Add("PierWest", 1);
-                    SwitchWeatherKeys.Add("PierUnknown", -1);
+                    AddSymbol(i, "SideOfPier", (int)telescopeInfo.SideOfPier, PierConstants);
                 }
 
                 SafetyMonitorInfo safetyInfo = SafetyMonitorMediator.GetInfo();
                 SafetyConnected = safetyInfo.Connected;
                 if (SafetyConnected) {
-                    SwitchWeatherKeys.Add("IsSafe", safetyInfo.IsSafe);
-                    i.Add("Safety: IsSafe (" + safetyInfo.IsSafe + ")");
+                    AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
                 }
 
                 string roofStatus = WhenPluginObject.RoofStatus;
                 string roofOpenString = WhenPluginObject.RoofOpenString;
                 if (roofStatus?.Length > 0 && roofOpenString?.Length > 0) {
-                    SwitchWeatherKeys.Add("RoofOpen", 1);
-                    SwitchWeatherKeys.Add("RoofNotOpen", 0);
-                    SwitchWeatherKeys.Add("RoofCannotOpenOrRead", 2);
                     // It's actually a file name..
                     int status = 0;
                     try {
@@ -731,25 +740,21 @@ namespace WhenPlugin.When {
                         LogOnce("Roof status, error: " + e.Message);
                         status = 2;
                     }
-                    SwitchWeatherKeys.Add("RoofStatus", status);
-                    i.Add("Roof: RoofStatus (" + (status == 0 ? "RoofNotOpen" : status == 1 ? "RoofOpen" : "RoofCannotOpenOrRead") + ")");
+                    AddSymbol(i, "RoofStatus", status, RoofConstants);
                 }
 
                 FocuserInfo fInfo = FocuserMediator.GetInfo();
                 FocuserConnected = fInfo.Connected;
                 if (fInfo != null && FocuserConnected) {
-                    SwitchWeatherKeys.Add("FocuserPosition", fInfo.Position);
-                    SwitchWeatherKeys.Add("FocuserTemperature", fInfo.Temperature);
-                    i.Add("Focuser: FocuserPosition (" + fInfo.Position + ")");
-                    i.Add("Focuser: FocuserTemperature (" + fInfo.Temperature + ")");
+                    AddSymbol(i, "FocuserPosition", fInfo.Position);
+                    AddSymbol(i, "FocuserTemperature", fInfo.Temperature);
                 }
 
                 // Get SensorTemp
                 CameraInfo cameraInfo = CameraMediator.GetInfo();
                 CameraConnected = cameraInfo.Connected;
                 if (CameraConnected) {
-                    SwitchWeatherKeys.Add("SensorTemp", cameraInfo.Temperature);
-                    i.Add("Camera: SensorTemp (" + cameraInfo.Temperature + ")");
+                    AddSymbol(i, "SensorTemp", cameraInfo.Temperature);
 
                     // Hidden
                     SwitchWeatherKeys.Add("camera__PixelSize", cameraInfo.PixelSize);
@@ -763,36 +768,20 @@ namespace WhenPlugin.When {
                 DomeInfo domeInfo = DomeMediator.GetInfo();
                 DomeConnected = domeInfo.Connected;
                 if (DomeConnected) {
-                    SwitchWeatherKeys.Add("ShutterStatus", (int)domeInfo.ShutterStatus);
-                    i.Add("Dome: ShutterStatus (" + domeInfo.ShutterStatus + ")");
-                    SwitchWeatherKeys.Add("ShutterNone", -1);
-                    SwitchWeatherKeys.Add("ShutterOpen", 0);
-                    SwitchWeatherKeys.Add("ShutterClosed", 1);
-                    SwitchWeatherKeys.Add("ShutterOpening", 2);
-                    SwitchWeatherKeys.Add("ShutterClosing", 3);
-                    SwitchWeatherKeys.Add("ShutterError", 4);
-                    SwitchWeatherKeys.Add("DomeAzimuth", domeInfo.Azimuth);
-                    i.Add("Dome: DomeAzimuth (" + Math.Round(domeInfo.Azimuth, 2) + ")");
+                    AddSymbol(i, "ShutterStatus", (int)domeInfo.ShutterStatus, ShutterConstants);
+                    AddSymbol(i, "DomeAzimuth", domeInfo.Azimuth);
                 }
 
                 FlatDeviceInfo flatInfo = FlatMediator.GetInfo();
                 FlatConnected = flatInfo.Connected;
                 if (FlatConnected) {
-                    SwitchWeatherKeys.Add("CoverState", (int)flatInfo.CoverState);
-                    i.Add("Flat-Panel: CoverState (Cover" + flatInfo.CoverState + ")");
-                    SwitchWeatherKeys.Add("CoverUnknown", 0);
-                    SwitchWeatherKeys.Add("CoverNeitherOpenNorClosed", 1);
-                    SwitchWeatherKeys.Add("CoverClosed", 2);
-                    SwitchWeatherKeys.Add("CoverOpen", 3);
-                    SwitchWeatherKeys.Add("CoverError", 4);
+                    AddSymbol(i, "CoverState", (int)flatInfo.CoverState, CoverConstants);
                 }
 
                 RotatorInfo rotatorInfo = RotatorMediator.GetInfo();
                 RotatorConnected = rotatorInfo.Connected;
                 if (RotatorConnected) {
-                    SwitchWeatherKeys.Add("RotatorMechanicalPosition", rotatorInfo.MechanicalPosition);
-                    SwitchWeatherKeys.Add("RotatorPosition", rotatorInfo.MechanicalPosition);
-                    i.Add("Rotator: RotatorPosition (" + rotatorInfo.MechanicalPosition + ")");
+                    AddSymbol(i, "RotatorPosition", rotatorInfo.MechanicalPosition);
                 }
 
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
@@ -809,7 +798,7 @@ namespace WhenPlugin.When {
 
                     if (filterWheelInfo.SelectedFilter != null) {
                         SwitchWeatherKeys.Add("CurrentFilter", filterWheelInfo.SelectedFilter.Position);
-                        i.Add(" CurrentFilter (Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name) + ")");
+                        i.Add("CurrentFilter: Filter_" + RemoveSpecialCharacters(filterWheelInfo.SelectedFilter.Name));
                     }
                 }
 
@@ -820,12 +809,12 @@ namespace WhenPlugin.When {
                     foreach (ISwitch sw in switchInfo.ReadonlySwitches) {
                         string key = RemoveSpecialCharacters(sw.Name);
                         SwitchWeatherKeys.TryAdd(key, sw.Value);
-                        i.Add("Gauge: " + key + " (" + sw.Value + ")");
+                        i.Add("G: " + key + ": " + sw.Value);
                     }
                     foreach (ISwitch sw in switchInfo.WritableSwitches) {
                         string key = RemoveSpecialCharacters(sw.Name);
                         SwitchWeatherKeys.TryAdd(key, sw.Value);
-                        i.Add("Switch: " + key + " (" + sw.Value + ")");
+                        i.Add("S: " + key + ": " + sw.Value);
                     }
                 }
 
@@ -839,7 +828,7 @@ namespace WhenPlugin.When {
                             t = Math.Round(t, 2);
                             string key = RemoveSpecialCharacters(dataName);
                             SwitchWeatherKeys.TryAdd(key, t);
-                            i.Add("Weather: " + key + " (" + t + ")");
+                            i.Add("W: " + key + ": " + t);
                         }
                     }
                 }
@@ -852,8 +841,7 @@ namespace WhenPlugin.When {
                         if (v is double d) {
                             v = Math.Round(d, 2);
                         }
-                        i.Add(" Last Image: " + kvp.Key + " (" + v + ")");
-                        Logger.Trace(" Last Image: " + kvp.Key + " (" + kvp.Value + ")");
+                        i.Add(kvp.Key + ": " + v);
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);

@@ -252,13 +252,12 @@ namespace WhenPlugin.When {
                 List<string> gsData = [];
                 List<string> wData = [];
                 foreach (string s in sw) {
-                    if (s.StartsWith("Weather")) {
-                        wData.Add(s.Substring(9));
-                    } else if (s.StartsWith("Gauge") || s.StartsWith("Switch")) {
-                        gsData.Add(s.Substring(s.StartsWith('G') ? 7 : 8));
+                    if (s.StartsWith("W:")) {
+                        wData.Add(s.Substring(3));
+                    } else if (s.StartsWith("G:") || s.StartsWith("S:")) {
+                        gsData.Add(s.Substring(3));
                     } else {
-                        int sp = s.IndexOf(' ');
-                        data.Add(s.Substring(sp + 1));
+                        data.Add(s);
                     }
                 }
                 if (gsData.Count > 0) {

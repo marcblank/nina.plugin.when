@@ -18,10 +18,7 @@
                 </MultiBinding>
             </TextBlock.Text>
             <TextBlock.Foreground>
-                <MultiBinding Converter="{StaticResource vc}">
-                    <Binding Path="Exp" />
-                    <Binding Path="Exp.ValueString"  />
-                </MultiBinding>
+                <SolidColorBrush Color="GreenYellow" />
             </TextBlock.Foreground>
         </TextBlock>
     </StackPanel>
