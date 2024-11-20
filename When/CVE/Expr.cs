@@ -142,6 +142,11 @@ namespace WhenPlugin.When {
                     value = "__ENV_" + value.Substring(1, value.Length - 2);
                 }
 
+                if (value.StartsWith("~~")) {
+                    Symbol.DumpSymbols();
+                    value = value.Substring(2);
+                }
+
                 if (value != _expression && IsExpression) {
                     // The value has changed.  Clear what we had...cle
                     foreach (var symKvp in Resolved) {
@@ -522,7 +527,10 @@ namespace WhenPlugin.When {
         public void Evaluate() {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
                 try {
-                    if (!IsExpression) return;
+                    if (!IsExpression) {
+                        Error = null;
+                        return;
+                    }
                     if (Expression.Length == 0) {
                         // How the hell to clear the Expr
                         IsExpression = false;

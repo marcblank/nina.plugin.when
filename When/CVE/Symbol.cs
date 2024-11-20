@@ -145,7 +145,7 @@ namespace WhenPlugin.When {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
+            if (!IsAttachedToRoot(Parent)) { //} && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -379,12 +379,15 @@ namespace WhenPlugin.When {
             return null;
         }
 
-        protected static void DumpSymbols () {
+        public static void DumpSymbols () {
             foreach (var c in SymbolCache) {
                 Logger.Info("\r\nIn SymbolCache for " + c.Key.Name);
                 foreach (var d in c.Value) {
                     Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
                 }
+            }
+            foreach (var x in Symbol.GetSwitchWeatherKeys()) {
+                Logger.Info(x.Key + ": " + x.Value.ToString());
             }
         }
 
@@ -444,7 +447,7 @@ namespace WhenPlugin.When {
                                     sb.Append("-" + tbr.TemplateName);
                                 }
                             }
-                        } else {
+                        } else if (sParent != GlobalVariables) {
                             sb.Append(" - WTF");
                         }
                     }
@@ -666,6 +669,9 @@ namespace WhenPlugin.When {
                 i.Add(" SunAltitude: " + Math.Round(sunAltitude, 2));
 
                 double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
+                if (lst < 0) {
+                    lst = AstroUtil.EuclidianModulus(lst, 24);
+                }
                 SwitchWeatherKeys.Add("LocalSiderealTime", lst);
                 i.Add(" LocalSiderealTime: " + Math.Round(lst, 4));
 
