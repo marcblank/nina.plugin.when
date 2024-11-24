@@ -39,6 +39,7 @@ using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Diagnostics;
 using Antlr.Runtime;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace WhenPlugin.When {
 
@@ -207,38 +208,92 @@ namespace WhenPlugin.When {
             }
         }
 
-        private static bool HandlerInit = false;
+        private double roi;
+
+        [JsonProperty]
+        public double ROI {
+            get => roi;
+            set {
+                if (value <= 0) { value = 1; }
+                if (value > 1) { value = 1; }
+                roi = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool roiType = true;
+        public bool ROIType {
+            get => roiType;
+            set {
+                roiType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool subsample = false;
+        public bool Subsample {
+            get => subsample;
+            set {
+                subsample = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public static double LastExposureTIme = 0;
         public static double LastImageProcessTime = 0;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
            var count = ExposureCount;
-           var dsoContainer = RetrieveTarget(this.Parent);
-           var specificDSOContainer = dsoContainer as DeepSkyObjectContainer;
-           if (specificDSOContainer != null) {                
-               count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
-           }
-           var capture = new CaptureSequence() {
-                ExposureTime = EExpr.Value,
+            var dsoContainer = RetrieveTarget(this.Parent);
+            var specificDSOContainer = dsoContainer as DeepSkyObjectContainer;
+            if (specificDSOContainer != null) {
+                count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
+            }
+
+            var info = cameraMediator.GetInfo();
+            bool useSubsample = info.CanSubSample && Subsample;
+            ObservableRectangle rect = null;
+
+            if (useSubsample) {
+                if (ROIType) {
+                    if (ROI < 1) {
+                        var centerX = info.XSize / 2d;
+                        var centerY = info.YSize / 2d;
+                        var subWidth = info.XSize * ROI;
+                        var subHeight = info.YSize * ROI;
+                        var startX = centerX - subWidth / 2d;
+                        var startY = centerY - subHeight / 2d;
+                        rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
+                    } else {
+                        useSubsample = false;
+                    }
+                } else {
+
+                }
+
+                //if (!info.CanSubSample && ROI < 1) {
+                //    Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
+                //}
+            }
+
+            var capture = new CaptureSequence() {
+                ExposureTime = ExposureTime,
                 Binning = Binning,
-                Gain = (int)GExpr.Value,
-                Offset = (int)OExpr.Value,
+                Gain = Gain,
+                Offset = Offset,
                 ImageType = ImageType,
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
+                EnableSubSample = useSubsample,
+                SubSambleRectangle = rect
             };
+
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             LastExposureTIme = time.TotalSeconds;
 
             Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
-
-            //if (!HandlerInit) {
-            //    imagingMediator.ImagePrepared += ProcessResults;
-            //    HandlerInit = true;
-            //}
 
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
