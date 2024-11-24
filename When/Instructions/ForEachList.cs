@@ -129,6 +129,12 @@ namespace WhenPlugin.When {
             return null;
         }
 
+        public override void ResetProgress() {
+            base.ResetProgress();
+            LoopCondition lp = Conditions[0] as LoopCondition;
+            lp.CompletedIterations = 0;
+        }
+
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(ForEachList)}, Variable: {Variable}, List Expression: {ListExpression}";
         }
@@ -148,10 +154,13 @@ namespace WhenPlugin.When {
 
         public new bool Validate() {
 
-            //CommonValidate();
-
             var i = new List<string>();
             if (!IsAttachedToRoot()) return true;
+
+            if (Items.Count == 0 || !(Items[0] is AssignVariables)) {
+                Items.Insert(0, new AssignVariables() { Name = "Assign Variables" });
+                Logger.Warning("AssignVariables not found in ForEach");
+            }
 
             string e = ValidateArguments();
             if (e != null) {

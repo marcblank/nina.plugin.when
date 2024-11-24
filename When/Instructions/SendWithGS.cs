@@ -127,9 +127,14 @@ namespace WhenPlugin.When {
             if (Condition == null || Condition.Items.Count == 0) {
                 issues.Add("There must be a Ground Station instruction included in this instruction");
             } else {
-                string name = Condition.Items[0].Name;
-                if (!name.StartsWith("Send to") && !name.Equals("Send Email")) {
-                    issues.Add("The Ground Station instruction must be \"Send to xxx\" or \"Send email\"");
+                var c = Condition.Items[0];
+
+                var messageProperty = c.GetType().GetProperty("Message");
+                if (messageProperty == null) {
+                    messageProperty = c.GetType().GetProperty("Payload");
+                    if (messageProperty == null) {
+                        issues.Add("This Ground Station instruction cannot be used with Send via Ground Station");
+                    }
                 }
              }
             RaisePropertyChanged("Issues");

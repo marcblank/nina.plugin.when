@@ -347,6 +347,10 @@ namespace WhenPlugin.When {
                 throw new SequenceItemSkippedException($"The Trained Flat Exposure progress is already complete ({loop.CompletedIterations}/{loop.Iterations}). The instruction will be skipped");
             }
 
+            if (CVFilter) {
+                FilterExpr = FilterExpr;
+            }
+            
             /* Lookup trained values and set brightness and exposure time accordingly */
             var filter = (Items[2] as SwitchFilter)?.FInfo;
             var takeExposure = ((Items[4] as SequentialContainer).Items[0] as TakeExposure);
