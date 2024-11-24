@@ -40,6 +40,7 @@ using Namotion.Reflection;
 using System.Diagnostics;
 using Antlr.Runtime;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Windows.Media.Converters;
 
 namespace WhenPlugin.When {
 
@@ -162,6 +163,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool CanSubsample { get; set; } = false;
+        
         private BinningMode binning;
 
         [JsonProperty]
@@ -463,6 +466,8 @@ namespace WhenPlugin.When {
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
+            bool canSubsample = true;
+
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {
@@ -475,7 +480,12 @@ namespace WhenPlugin.When {
                 if (ValidateExposureTime && EExpr.Expression?.Length == 0) {
                     i.Add("There must be an exposure time set");
                 }
+                if (!CameraInfo.CanSubSample) {
+                    canSubsample = false;
+                }
             }
+            CanSubsample = canSubsample;
+            RaisePropertyChanged("CanSubsample");
 
             var fileSettings = profileService.ActiveProfile.ImageFileSettings;
 

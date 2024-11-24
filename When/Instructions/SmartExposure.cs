@@ -194,6 +194,13 @@ namespace WhenPlugin.When {
             return Conditions[0] as LoopCondition;
         }
 
+        public bool CanSubsample { 
+            get {
+                return GetTakeExposure().CanSubsample;
+            }
+            set { }
+        }
+
         [JsonProperty]
         public string IterationsExpr {
             get => null;
@@ -301,6 +308,8 @@ namespace WhenPlugin.When {
         public void SetROI (Expr expr) {
             if (expr.Value < 0 || expr.Value > 100) {
                 expr.Error = "ROI must be between 0 and 100 (percent)";
+            } else {
+                GetTakeExposure().ROI = expr.Value;
             }
         }
 
@@ -359,7 +368,9 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("FilterNames");
                 }
 
-                Expr.AddExprIssues(i, IterExpr, DExpr, RExpr); // FExpr?   
+                Expr.AddExprIssues(i, IterExpr, DExpr, RExpr); // FExpr?
+                                                               // 
+                RaisePropertyChanged("CanSubsample");
 
                 Issues = i;
                 RaisePropertyChanged("Issues");

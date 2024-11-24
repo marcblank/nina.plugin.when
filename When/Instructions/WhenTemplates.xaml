@@ -3231,12 +3231,14 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         VerticalAlignment="Center"
                         Text="|" />
                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
-                    <TextBlock
-                        Margin="7.5,-2,7.5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="|" />
-                    <local:ExprHintControl Label="ROI(%)" Exp="{Binding RExpr}" />
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding CanSubsample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <TextBlock
+                            Margin="7.5,-2,7.5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="|" />
+                        <local:ExprHintControl Label="ROI(%)" Exp="{Binding RExpr}" />
+                    </StackPanel>
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>
