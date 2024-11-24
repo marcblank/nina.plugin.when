@@ -649,23 +649,28 @@ namespace WhenPlugin.When {
         private static void AddSymbol(List<string> i, string token, object value, string[] values) {
             SwitchWeatherKeys.TryAdd(token, value);
             StringBuilder sb = new StringBuilder(token);
-            sb.Append(": ");
-            if (values != null) {
-                sb.Append(values[(int)value + 1]);
-            } else if (value is double d) {
-                sb.Append(Math.Round(d, 2));
-            } else {
-                sb.Append(value.ToString());
-            }
-            //sb.Append(')');
-            i.Add(sb.ToString());
+            try {
+                sb.Append(": ");
+                if (values != null) {
+                    sb.Append(values[(int)value + 1]);
+                } else if (value is double d) {
+                    sb.Append(Math.Round(d, 2));
+                } else {
+                    sb.Append(value.ToString());
+                }
+                //sb.Append(')');
+                i.Add(sb.ToString());
 
-            if (values != null) {
-                for (int v = 0; v < values.Length; v++) {
-                    if (values[v] != null) {
-                        SwitchWeatherKeys.TryAdd(values[v], v - 1);
+                if (values != null) {
+                    for (int v = 0; v < values.Length; v++) {
+                        if (values[v] != null) {
+                            SwitchWeatherKeys.TryAdd(values[v], v - 1);
+                        }
                     }
                 }
+            } catch (Exception e) {
+                i.Add("Error adding " + token);
+                Logger.Warning("Exception (" + e.Message + "): " + token + ", " + value + ", " + values);
             }
         }
 
