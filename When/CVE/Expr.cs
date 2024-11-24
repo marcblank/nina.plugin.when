@@ -527,7 +527,7 @@ namespace WhenPlugin.When {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
                 try {
                     if (!IsExpression) {
-                        Error = null;
+                        //Error = null;
                         return;
                     }
                     if (Expression.Length == 0) {

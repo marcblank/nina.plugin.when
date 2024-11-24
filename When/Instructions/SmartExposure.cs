@@ -44,6 +44,7 @@ using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
+using System.ComponentModel.DataAnnotations;
 
 namespace WhenPlugin.When {
 
@@ -90,6 +91,7 @@ namespace WhenPlugin.When {
             IterExpr = new Expr(this, "", "Integer");
             DExpr = new Expr(this, "", "Integer");
             FExpr = new Expr(this, "", "Integer");
+            RExpr = new Expr(this, "", "Integer");
 
         }
 
@@ -116,6 +118,7 @@ namespace WhenPlugin.When {
                 IterExpr = new Expr(this, cloneMe.IterExpr.Expression, "Integer", SetIterationCount, 1);
                 DExpr = new Expr(this, cloneMe.DExpr.Expression, "Integer", SetDitherCount, 0);
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
+                RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", SetROI, 100);
                 FilterExpr = cloneMe.FilterExpr;
             }
         }
@@ -132,7 +135,9 @@ namespace WhenPlugin.When {
         [JsonProperty]
         public Expr DExpr { get; set; }
         [JsonProperty]
-        public Expr FExpr {  get; set; }
+        public Expr FExpr { get; set; }
+        [JsonProperty]
+        public Expr RExpr { get; set; }
 
 
         [JsonProperty]
@@ -293,6 +298,12 @@ namespace WhenPlugin.When {
 
         }
 
+        public void SetROI (Expr expr) {
+            if (expr.Value < 0 || expr.Value > 100) {
+                expr.Error = "ROI must be between 0 and 100 (percent)";
+            }
+        }
+
 
         [JsonProperty]
         public string DitherExpr {
@@ -348,7 +359,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("FilterNames");
                 }
 
-                Expr.AddExprIssues(i, IterExpr, DExpr); // FExpr?   
+                Expr.AddExprIssues(i, IterExpr, DExpr, RExpr); // FExpr?   
 
                 Issues = i;
                 RaisePropertyChanged("Issues");

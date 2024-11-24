@@ -3052,7 +3052,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                 </PriorityBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,4,7.5,0"
+                Margin="7.5,-1,7.5,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
@@ -3073,7 +3073,7 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                 </MultiBinding>
             </WrapPanel.Visibility>
             <TextBlock
-                Margin="7.5,4,7.5,0"
+                Margin="7.5,-1,7.5,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="|" />
@@ -3201,11 +3201,11 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         VerticalAlignment="Center"
                         Text="|" />
                     <TextBlock
-                        Margin="5,-4,0,0"
+                        Margin="5,-2,0,0"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblFilter}" />
                     <ComboBox
-                        Margin="5,0,0,0"
+                        Margin="5,-1,0,0"
                         IsEditable="True"
                         DisplayMemberPath="Name"
                         VerticalAlignment="Center"
@@ -3226,11 +3226,17 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         Exp="{Binding Path=FExpr, Mode=TwoWay}"
                         Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
                     <TextBlock
-                        Margin="7.5,-4,7.5,0"
+                        Margin="7.5,-2,7.5,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="|" />
                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                    <TextBlock
+                        Margin="7.5,-2,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="|" />
+                    <local:ExprHintControl Label="ROI(%)" Exp="{Binding RExpr}" />
                 </WrapPanel>
             </nina:SequenceBlockView.SequenceItemContent>
             <nina:SequenceBlockView.SequenceItemProgressContent>

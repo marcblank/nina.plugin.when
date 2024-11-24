@@ -208,14 +208,14 @@ namespace WhenPlugin.When {
             }
         }
 
-        private double roi;
+        private double roi = 100;
 
         [JsonProperty]
         public double ROI {
             get => roi;
             set {
-                if (value <= 0) { value = 1; }
-                if (value > 1) { value = 1; }
+                if (value <= 0) { value = 100; }
+                if (value > 100) { value = 100; }
                 roi = value;
                 RaisePropertyChanged();
             }
@@ -230,7 +230,7 @@ namespace WhenPlugin.When {
             }
         }
 
-        private bool subsample = false;
+        private bool subsample = true;
         public bool Subsample {
             get => subsample;
             set {
@@ -256,11 +256,12 @@ namespace WhenPlugin.When {
 
             if (useSubsample) {
                 if (ROIType) {
-                    if (ROI < 1) {
+                    if (ROI < 100) {
+                        double r = ROI / 100;
                         var centerX = info.XSize / 2d;
                         var centerY = info.YSize / 2d;
-                        var subWidth = info.XSize * ROI;
-                        var subHeight = info.YSize * ROI;
+                        var subWidth = info.XSize * r;
+                        var subHeight = info.YSize * r;
                         var startX = centerX - subWidth / 2d;
                         var startY = centerY - subHeight / 2d;
                         rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
@@ -465,10 +466,10 @@ namespace WhenPlugin.When {
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {
-                if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
+                if (CameraInfo.CanSetGain && GExpr.Value != -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
                 }
-                if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
+                if (CameraInfo.CanSetOffset && OExpr.Value != -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
                 }
                 if (ValidateExposureTime && EExpr.Expression?.Length == 0) {
