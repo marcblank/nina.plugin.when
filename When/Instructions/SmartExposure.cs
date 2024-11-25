@@ -45,6 +45,7 @@ using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 using System.ComponentModel.DataAnnotations;
+using NINA.Equipment.Equipment.MyCamera;
 
 namespace WhenPlugin.When {
 
@@ -93,6 +94,11 @@ namespace WhenPlugin.When {
             FExpr = new Expr(this, "", "Integer");
             RExpr = new Expr(this, "", "Integer");
 
+            XExpr = new Expr(this, "", "Integer");
+            YExpr = new Expr(this, "", "Integer");
+            WExpr = new Expr(this, "", "Integer");
+            HExpr = new Expr(this, "", "Integer");
+
         }
 
         /// <summary>
@@ -120,8 +126,16 @@ namespace WhenPlugin.When {
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", SetROI, 100);
                 FilterExpr = cloneMe.FilterExpr;
+                
                 ROIOption = cloneMe.ROIOption;
                 IsROI = cloneMe.IsROI;
+                IsDimensions = cloneMe.IsDimensions;
+
+                XExpr = new Expr(this, cloneMe.XExpr.Expression, "Integer", SetX, 0);
+                YExpr = new Expr(this, cloneMe.YExpr.Expression, "Integer", SetY, 0);
+                WExpr = new Expr(this, cloneMe.WExpr.Expression, "Integer", SetWidth, 0);
+                HExpr = new Expr(this, cloneMe.HExpr.Expression, "Integer", SetHeight, 0);
+
             }
         }
 
@@ -140,7 +154,48 @@ namespace WhenPlugin.When {
         public Expr FExpr { get; set; }
         [JsonProperty]
         public Expr RExpr { get; set; }
+        [JsonProperty]
+        public Expr XExpr { get; set; }
+        [JsonProperty]
+        public Expr YExpr { get; set; }
+        [JsonProperty]
+        public Expr WExpr { get; set; }
+        [JsonProperty]
+        public Expr HExpr { get; set; }
 
+        public void SetX(Expr expr) {
+            int x = (int)expr.Value;
+            TakeExposure te = GetTakeExposure();
+            if (te != null && WExpr != null && (x < 0 || (x + WExpr.Value > te.CameraInfo.XSize))) {
+                expr.Error = "Invalid dimensions";
+            }
+            if (WExpr != null) WExpr.Evaluate();
+        }
+        public void SetY(Expr expr) {
+            int y = (int)expr.Value;
+            TakeExposure te = GetTakeExposure();
+            if (te != null && HExpr != null && (y < 0 || (y + HExpr.Value > te.CameraInfo.YSize))) {
+                expr.Error = "Invalid dimensions";
+            }
+            if (HExpr != null) HExpr.Evaluate();
+        }
+        public void SetWidth(Expr expr) {
+            int w = (int)expr.Value;
+            TakeExposure te = GetTakeExposure();
+            if (te != null && XExpr != null && (w < 0 || (w + XExpr.Value > te.CameraInfo.XSize))) {
+                expr.Error = "Invalid dimensions";
+            }
+            if (XExpr != null) XExpr.Evaluate();
+        }
+
+        public void SetHeight(Expr expr) {
+            int h = (int)expr.Value;
+            TakeExposure te = GetTakeExposure();
+            if (te != null && YExpr != null && (h < 0 || (h + YExpr.Value > te.CameraInfo.YSize))) {
+                expr.Error = "Invalid dimensions";
+            }
+            if (YExpr != null) YExpr.Evaluate();
+        }
 
         [JsonProperty]
         public override InstructionErrorBehavior ErrorBehavior {
@@ -334,15 +389,30 @@ namespace WhenPlugin.When {
             }
             set {
                 iROIOption = value;
+                TakeExposure te = GetTakeExposure();
+                if (te != null) {
+                    te.ROIType = value.Equals("ROI");
+                }
                 RaisePropertyChanged("ROIOption");
                 RaisePropertyChanged("IsROI");
+                RaisePropertyChanged("IsDimensions");
+            }
+        }
+
+        [JsonProperty]
+        public bool IsDimensions {
+            get {
+                return iROIOption.Equals("Dimensions");
+            }
+            set {
+
             }
         }
 
         [JsonProperty]
         public bool IsROI {
             get {
-                return iROIOption.Equals("ROI");    
+                return iROIOption.Equals("ROI");
             }
             set {
 
@@ -403,7 +473,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("FilterNames");
                 }
 
-                Expr.AddExprIssues(i, IterExpr, DExpr, RExpr); // FExpr?
+                Expr.AddExprIssues(i, IterExpr, DExpr, RExpr, XExpr, YExpr, WExpr, HExpr); // FExpr?
                                                                // 
                 RaisePropertyChanged("CanSubsample");
 

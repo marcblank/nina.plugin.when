@@ -272,7 +272,9 @@ namespace WhenPlugin.When {
                         useSubsample = false;
                     }
                 } else {
-
+                    if (Parent is SmartExposure se) {
+                        rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
+                    }
                 }
 
                 //if (!info.CanSubSample && ROI < 1) {
