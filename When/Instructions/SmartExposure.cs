@@ -315,7 +315,7 @@ namespace WhenPlugin.When {
 
         public string[] ROIOptions {
             get {
-                return new string[] { "None", "ROI", "Manual" };
+                return new string[] { "None", "ROI", "Dimensions" };
             }
             set { }
         }
@@ -327,6 +327,17 @@ namespace WhenPlugin.When {
             }
             set {
                 iROIOption = value;
+                RaisePropertyChanged("ROIOption");
+                RaisePropertyChanged("IsROI");
+            }
+        }
+
+        public bool IsROI {
+            get {
+                return iROIOption.Equals("ROI");    
+            }
+            set {
+
             }
         }
 
