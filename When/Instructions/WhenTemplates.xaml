@@ -3232,6 +3232,10 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         Text="|" />
                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                     <StackPanel Orientation="Horizontal" Visibility="{Binding CanSubsample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <ComboBox
+                            Margin="5,0,0,0"
+                            ItemsSource="{Binding ROIOptions}"
+                            SelectedItem="{Binding ROIOption}" />
                         <TextBlock
                             Margin="7.5,-2,7.5,0"
                             HorizontalAlignment="Center"

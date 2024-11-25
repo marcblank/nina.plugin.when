@@ -313,6 +313,22 @@ namespace WhenPlugin.When {
             }
         }
 
+        public string[] ROIOptions {
+            get {
+                return new string[] { "None", "ROI", "Manual" };
+            }
+            set { }
+        }
+
+        private string iROIOption = "None";
+        public string ROIOption {
+            get {
+                return iROIOption;
+            }
+            set {
+                iROIOption = value;
+            }
+        }
 
         [JsonProperty]
         public string DitherExpr {
