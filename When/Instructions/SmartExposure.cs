@@ -120,6 +120,8 @@ namespace WhenPlugin.When {
                 FExpr = new Expr(this, cloneMe.FExpr.Expression, "Integer");
                 RExpr = new Expr(this, cloneMe.RExpr.Expression, "Integer", SetROI, 100);
                 FilterExpr = cloneMe.FilterExpr;
+                ROIOption = cloneMe.ROIOption;
+                IsROI = cloneMe.IsROI;
             }
         }
 
@@ -183,7 +185,10 @@ namespace WhenPlugin.When {
         }
 
         public TakeExposure GetTakeExposure() {
-            return Items[1] as TakeExposure;
+            if (Items.Count > 1) {
+                return Items[1] as TakeExposure;
+            }
+            return null;
         }
 
         public DitherAfterExposures GetDitherAfterExposures() {
@@ -196,7 +201,8 @@ namespace WhenPlugin.When {
 
         public bool CanSubsample { 
             get {
-                return GetTakeExposure().CanSubsample;
+                var te = GetTakeExposure();
+                return (te == null) ? false : te.CanSubsample;
             }
             set { }
         }
@@ -308,7 +314,7 @@ namespace WhenPlugin.When {
         public void SetROI (Expr expr) {
             if (expr.Value < 0 || expr.Value > 100) {
                 expr.Error = "ROI must be between 0 and 100 (percent)";
-            } else {
+            } else if (GetTakeExposure() != null) {
                 GetTakeExposure().ROI = expr.Value;
             }
         }
@@ -321,6 +327,7 @@ namespace WhenPlugin.When {
         }
 
         private string iROIOption = "None";
+        [JsonProperty]
         public string ROIOption {
             get {
                 return iROIOption;
@@ -332,6 +339,7 @@ namespace WhenPlugin.When {
             }
         }
 
+        [JsonProperty]
         public bool IsROI {
             get {
                 return iROIOption.Equals("ROI");    
