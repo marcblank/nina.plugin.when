@@ -41,6 +41,7 @@ using System.Diagnostics;
 using Antlr.Runtime;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Windows.Media.Converters;
+using NINA.Sequencer.SequenceItem.Imaging;
 
 namespace WhenPlugin.When {
 
@@ -233,15 +234,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private bool subsample = true;
-        public bool Subsample {
-            get => subsample;
-            set {
-                subsample = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public static double LastExposureTIme = 0;
         public static double LastImageProcessTime = 0;
 
@@ -254,7 +246,7 @@ namespace WhenPlugin.When {
             }
 
             var info = cameraMediator.GetInfo();
-            bool useSubsample = info.CanSubSample && Subsample;
+            bool useSubsample = info.CanSubSample && Parent is SmartSubframeExposure;
             ObservableRectangle rect = null;
 
             if (useSubsample) {
@@ -272,7 +264,7 @@ namespace WhenPlugin.When {
                         useSubsample = false;
                     }
                 } else {
-                    if (Parent is SmartExposure se) {
+                    if (Parent is SmartSubframeExposure se) {
                         rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
                     }
                 }

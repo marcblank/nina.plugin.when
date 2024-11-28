@@ -3231,6 +3231,71 @@ WhenPlugin.When.SetVariable, WhenPlugin, Culture=neutral, PublicKeyToken=null;NI
                         VerticalAlignment="Center"
                         Text="|" />
                     <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
+                </WrapPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+            <nina:SequenceBlockView.SequenceItemProgressContent>
+                <WrapPanel Margin="0,-4,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblProgress}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Conditions[0].CompletedIterations}" />
+                    <TextBlock VerticalAlignment="Center" Text="/" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Conditions[0].Iterations}" />
+                </WrapPanel>
+            </nina:SequenceBlockView.SequenceItemProgressContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:SmartSubframeExposure}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+
+                <WrapPanel Orientation="Horizontal">
+                    <local:ExprHintControl Margin="0,1,0,0" Label="#" Exp="{Binding IterExpr}" />
+                    <TextBlock
+                        Margin="7.5,-2,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="|" />
+                    <ContentPresenter Content="{StaticResource TakeExposureDetails}" DataContext="{Binding Items[1]}" />
+
+                    <TextBlock
+                        Margin="7.5,-4,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="|" />
+                    <TextBlock
+                        Margin="5,-2,0,0"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblFilter}" />
+                    <ComboBox
+                        Margin="5,-1,0,0"
+                        IsEditable="True"
+                        DisplayMemberPath="Name"
+                        VerticalAlignment="Center"
+                        SelectedItem="{Binding SelectedFilter}"
+                        Text="{Binding FilterExpr, Mode=TwoWay, UpdateSourceTrigger=LostFocus}">
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource ProfileService}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <x:Static Member="filter:NullFilter.Instance" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <local:ExprComboControl
+                        Visibility="{Binding CVFilter, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                        Exp="{Binding Path=FExpr, Mode=TwoWay}"
+                        Combo="{Binding Path=FilterNames, Mode=TwoWay}"/>
+                    <TextBlock
+                        Margin="7.5,-2,7.5,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="|" />
+                    <local:ExprHintControl Label="{ns:Loc LblDitherEveryNoFrame}" Exp="{Binding DExpr}" />
                     <StackPanel Orientation="Horizontal" Visibility="{Binding CanSubsample, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                         <TextBlock
                             Margin="5,-2,0,0"
