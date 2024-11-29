@@ -70,7 +70,8 @@ namespace WhenPlugin.When {
         public void OnDeserialized(StreamingContext context) {
             if (Items.Count == 0 || !(Items[0] is AssignVariables)) {
                 AssignVariables av = new AssignVariables() { Name = "Assign Variables" };
-                Add(av);
+                Items.Insert(0, av);
+                av.AttachNewParent(this);
                 Logger.Warning("AssignVariables wasn't found in ForEach, adding...");
             }
         }

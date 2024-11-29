@@ -61,7 +61,9 @@ namespace WhenPlugin.When {
                                 txt = "True";
                             }
                         } else {
-                            if (expr.Value > NowMinusOneYear && expr.Value < NowPlusOneYear) {
+                            if (expr.Value == double.NegativeInfinity) {
+                                txt = expr.ValueString;
+                            } else if (expr.Value > NowMinusOneYear && expr.Value < NowPlusOneYear) {
                                 // Handle dates
                                 txt = expr.ValueString;
                             } else {

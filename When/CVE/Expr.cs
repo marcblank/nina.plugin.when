@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using Google.Protobuf.WellKnownTypes;
+using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Astrometry;
@@ -346,9 +347,14 @@ namespace WhenPlugin.When {
 
         private const long ONE_YEAR = 60 * 60 * 24 * 365;
 
+        public string StringValue { get; set; }
+
         public string ValueString {
             get {
                 if (Error != null) return Error;
+                if (Value is double.NegativeInfinity) {
+                    return StringValue;
+                }
                 long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
                 long end = start + (2 * ONE_YEAR);
                 if (Value > start && Value < end) {
@@ -436,7 +442,7 @@ namespace WhenPlugin.When {
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
-            if (args.Parameters.Length > 0) {
+             if (args.Parameters.Length > 0) {
                 try {
                     var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
                     dt = utc.ToLocalTime();
@@ -472,6 +478,11 @@ namespace WhenPlugin.When {
                 args.Result = (int)dt.DayOfWeek;
             } else if (name == "datetime") {
                 args.Result = 0;
+            } else if (name == "datestring") {
+                if (args.Parameters.Length < 2) {
+                    throw new ArgumentException();
+                }
+                args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
             }
         }
         public void RemoveParameter(string identifier) {
@@ -561,6 +572,8 @@ namespace WhenPlugin.When {
                     Volatile = GlobalVolatile;
 
                     ImageVolatile = false;
+
+                    StringValue = null;
 
                     // First, validate References
                     foreach (string sRef in References) {
@@ -676,7 +689,13 @@ namespace WhenPlugin.When {
                             if (eval is Boolean b) {
                                 Value = b ? 1 : 0;
                             } else {
-                                Value = Convert.ToDouble(eval);
+                                try {
+                                    Value = Convert.ToDouble(eval);
+                                } catch (Exception ex) {
+                                    string str = (string)eval;
+                                    Value = double.NegativeInfinity;
+                                    StringValue = str;
+                                }
                             }
                             Error = null;
                             RaisePropertyChanged("ValueString");
