@@ -39,6 +39,9 @@ using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Diagnostics;
 using Antlr.Runtime;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Windows.Media.Converters;
+using NINA.Sequencer.SequenceItem.Imaging;
 
 namespace WhenPlugin.When {
 
@@ -161,6 +164,8 @@ namespace WhenPlugin.When {
             }
         }
 
+        public bool CanSubsample { get; set; } = false;
+        
         private BinningMode binning;
 
         [JsonProperty]
@@ -207,38 +212,86 @@ namespace WhenPlugin.When {
             }
         }
 
-        private static bool HandlerInit = false;
+        private double roi = 100;
+
+        [JsonProperty]
+        public double ROI {
+            get => roi;
+            set {
+                if (value <= 0) { value = 100; }
+                if (value > 100) { value = 100; }
+                roi = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool roiType = true;
+        public bool ROIType {
+            get => roiType;
+            set {
+                roiType = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public static double LastExposureTIme = 0;
         public static double LastImageProcessTime = 0;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
            var count = ExposureCount;
-           var dsoContainer = RetrieveTarget(this.Parent);
-           var specificDSOContainer = dsoContainer as DeepSkyObjectContainer;
-           if (specificDSOContainer != null) {                
-               count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
-           }
-           var capture = new CaptureSequence() {
-                ExposureTime = EExpr.Value,
+            var dsoContainer = RetrieveTarget(this.Parent);
+            var specificDSOContainer = dsoContainer as DeepSkyObjectContainer;
+            if (specificDSOContainer != null) {
+                count = specificDSOContainer.GetOrCreateExposureCountForItemAndCurrentFilter(this, 1)?.Count ?? ExposureCount;
+            }
+
+            var info = cameraMediator.GetInfo();
+            bool useSubsample = info.CanSubSample && Parent is SmartSubframeExposure;
+            ObservableRectangle rect = null;
+
+            if (useSubsample) {
+                if (ROIType) {
+                    if (ROI < 100) {
+                        double r = ROI / 100;
+                        var centerX = info.XSize / 2d;
+                        var centerY = info.YSize / 2d;
+                        var subWidth = info.XSize * r;
+                        var subHeight = info.YSize * r;
+                        var startX = centerX - subWidth / 2d;
+                        var startY = centerY - subHeight / 2d;
+                        rect = new ObservableRectangle(startX, startY, subWidth, subHeight);
+                    } else {
+                        useSubsample = false;
+                    }
+                } else {
+                    if (Parent is SmartSubframeExposure se) {
+                        rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
+                    }
+                }
+
+                //if (!info.CanSubSample && ROI < 1) {
+                //    Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
+                //}
+            }
+
+            var capture = new CaptureSequence() {
+                ExposureTime = ExposureTime,
                 Binning = Binning,
-                Gain = (int)GExpr.Value,
-                Offset = (int)OExpr.Value,
+                Gain = Gain,
+                Offset = Offset,
                 ImageType = ImageType,
                 ProgressExposureCount = count,
                 TotalExposureCount = count + 1,
+                EnableSubSample = useSubsample,
+                SubSambleRectangle = rect
             };
+
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             LastExposureTIme = time.TotalSeconds;
 
             Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
-
-            //if (!HandlerInit) {
-            //    imagingMediator.ImagePrepared += ProcessResults;
-            //    HandlerInit = true;
-            //}
 
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
@@ -407,19 +460,26 @@ namespace WhenPlugin.When {
         public bool Validate() {
             var i = new List<string>();
             CameraInfo = this.cameraMediator.GetInfo();
+            bool canSubsample = true;
+
             if (!CameraInfo.Connected) {
                 i.Add(Loc.Instance["LblCameraNotConnected"]);
             } else {
-                if (CameraInfo.CanSetGain && GExpr.Value > -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
+                if (CameraInfo.CanSetGain && GExpr.Value != -1 && (GExpr.Value < CameraInfo.GainMin || GExpr.Value > CameraInfo.GainMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Gain"], CameraInfo.GainMin, CameraInfo.GainMax, GExpr.Value));
                 }
-                if (CameraInfo.CanSetOffset && OExpr.Value > -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
+                if (CameraInfo.CanSetOffset && OExpr.Value != -1 && (OExpr.Value < CameraInfo.OffsetMin || OExpr.Value > CameraInfo.OffsetMax)) {
                     i.Add(string.Format(Loc.Instance["Lbl_SequenceItem_Imaging_TakeExposure_Validation_Offset"], CameraInfo.OffsetMin, CameraInfo.OffsetMax, OExpr.Value));
                 }
                 if (ValidateExposureTime && EExpr.Expression?.Length == 0) {
                     i.Add("There must be an exposure time set");
                 }
+                if (!CameraInfo.CanSubSample) {
+                    canSubsample = false;
+                }
             }
+            CanSubsample = canSubsample;
+            RaisePropertyChanged("CanSubsample");
 
             var fileSettings = profileService.ActiveProfile.ImageFileSettings;
 

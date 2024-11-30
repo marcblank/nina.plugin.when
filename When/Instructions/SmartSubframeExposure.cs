@@ -49,14 +49,14 @@ using NINA.Equipment.Equipment.MyCamera;
 
 namespace WhenPlugin.When {
 
-    [ExportMetadata("Name", "Smart Exposure +")]
-    [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartExposure_Description")]
+    [ExportMetadata("Name", "Smart Subframe Exposure +")]
+    [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartSubframeExposure_Description")]
     [ExportMetadata("Icon", "CameraSVG")]
     [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SmartExposure : SequentialContainer, IImmutableContainer {
+    public class SmartSubframeExposure : SequentialContainer, IImmutableContainer {
 
         private static IProfileService ProfileService;
         private static IFilterWheelMediator FilterWheelMediator;
@@ -71,7 +71,7 @@ namespace WhenPlugin.When {
         }
 
         [ImportingConstructor]
-        public SmartExposure(
+        public SmartSubframeExposure(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
                 IImagingMediator imagingMediator,
@@ -104,8 +104,8 @@ namespace WhenPlugin.When {
         /// <summary>
         /// Clone Constructor
         /// </summary>
-        public SmartExposure(
-                SmartExposure cloneMe,
+        public SmartSubframeExposure(
+                SmartSubframeExposure cloneMe,
                 SwitchFilter switchFilter,
                 TakeExposure takeExposure,
                 LoopCondition loopCondition,
@@ -504,7 +504,7 @@ namespace WhenPlugin.When {
             } else {
                 dae = (DitherAfterExposures)dae.Clone();
             }
-            var clone = new SmartExposure(this, sf, te, lc, dae);
+            var clone = new SmartSubframeExposure(this, sf, te, lc, dae);
             return clone;
         }
 

@@ -33,11 +33,7 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public ForEachList() {
-            if (Conditions.Count == 0) {
-                Add(new LoopCondition());
-            }
             Add(new AssignVariables() { Name = "Assign Variables" });
-
         }
 
         public ForEachList(ForEachList copyMe) : this() {
@@ -59,6 +55,25 @@ namespace WhenPlugin.When {
             if (toRemove != null) {
                 Items.Remove(toRemove);
             }
+            Conditions.Clear();
+        }
+
+        [OnSerialized]
+        public void OnSerialized(StreamingContext context) {
+            OnDeserialized(context);
+            if (Conditions.Count == 0) {
+                Add(new LoopCondition());
+            }
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (Items.Count == 0 || !(Items[0] is AssignVariables)) {
+                AssignVariables av = new AssignVariables() { Name = "Assign Variables" };
+                Items.Insert(0, av);
+                av.AttachNewParent(this);
+                Logger.Warning("AssignVariables wasn't found in ForEach, adding...");
+            }
         }
 
 
@@ -76,6 +91,9 @@ namespace WhenPlugin.When {
                 item.AttachNewParent(ic);
             }
             AttachNewParent(Parent);
+            if (ic.Conditions.Count == 0) {
+                ic.Add(new LoopCondition());
+            }
             return ic;
         }
 
@@ -156,11 +174,6 @@ namespace WhenPlugin.When {
 
             var i = new List<string>();
             if (!IsAttachedToRoot()) return true;
-
-            if (Items.Count == 0 || !(Items[0] is AssignVariables)) {
-                Items.Insert(0, new AssignVariables() { Name = "Assign Variables" });
-                Logger.Warning("AssignVariables not found in ForEach");
-            }
 
             string e = ValidateArguments();
             if (e != null) {
