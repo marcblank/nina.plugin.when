@@ -32,6 +32,15 @@ namespace WhenPlugin.When {
             }
         }
 
+        //public static InputTarget FindTarget() {
+        //    ISequenceContainer sc = ItemUtility.GetRootContainer(parent);
+        //    if (sc != null && sc.Items.Count == 3) {
+        //        return FindRunningItem((ISequenceContainer)sc.Items[1]);
+        //    } else {
+        //        return null;
+        //    }
+        //}
+
         public static InputTarget RetrieveTarget(ISequenceContainer parent) {
             if (parent != null) {
                 var container = parent as IDeepSkyObjectContainer;

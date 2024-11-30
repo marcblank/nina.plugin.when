@@ -336,6 +336,10 @@ namespace WhenPlugin.When {
             }
 
             /* Lookup trained values and set brightness and exposure time accordingly */
+            if (CVFilter) {
+                FilterExpr = FilterExpr;
+            }
+
             var filter = GetSwitchFilterItem()?.FInfo;
             var takeExposure = GetExposureItem();
             var binning = takeExposure.Binning;
