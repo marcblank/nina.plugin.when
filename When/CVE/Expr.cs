@@ -514,9 +514,13 @@ namespace WhenPlugin.When {
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
-            if (sym.Expr.Error == null && !Double.IsNaN(sym.Expr.Value)) {
+            if (sym.Expr.Error == null) {
                 Resolved.Add(reference, sym);
-                Parameters.Add(reference, sym.Expr.Value);
+                if (sym.Expr.Value == double.NegativeInfinity) {
+                    Parameters.Add(reference, sym.Expr.StringValue);
+                } else if (!Double.IsNaN(sym.Expr.Value)) {
+                    Parameters.Add(reference, sym.Expr.Value);
+                }
             }
         }
 
