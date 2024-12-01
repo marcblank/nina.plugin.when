@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using Google.Protobuf.WellKnownTypes;
+using NCalc;
 using NCalc.Domain;
 using Newtonsoft.Json;
 using NINA.Astrometry;
