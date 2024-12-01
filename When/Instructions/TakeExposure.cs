@@ -249,6 +249,8 @@ namespace WhenPlugin.When {
             bool useSubsample = info.CanSubSample && Parent is SmartSubframeExposure;
             ObservableRectangle rect = null;
 
+            Logger.Info("useSubsample = " + useSubsample + "; " + "ROIType = " + ROIType);
+
             if (useSubsample) {
                 if (ROIType) {
                     if (ROI < 100) {
@@ -266,12 +268,9 @@ namespace WhenPlugin.When {
                 } else {
                     if (Parent is SmartSubframeExposure se) {
                         rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
+                        Logger.Info(se.XExpr.ValueString + "; " + se.YExpr.ValueString + "; " + se.WExpr.ValueString + "; " + se.HExpr.ValueString);
                     }
                 }
-
-                //if (!info.CanSubSample && ROI < 1) {
-                //    Logger.Warning($"ROI {ROI} was specified, but the camera is not able to take sub frames");
-                //}
             }
 
             var capture = new CaptureSequence() {
@@ -286,12 +285,12 @@ namespace WhenPlugin.When {
                 SubSambleRectangle = rect
             };
 
+            Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; rect = " + capture.SubSambleRectangle.X + "," + capture.SubSambleRectangle.Y);
+
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 
             TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
             LastExposureTIme = time.TotalSeconds;
-
-            Logger.Info("TakeExposure+ capture ends at " + LastExposureTIme);
 
             var imageParams = new PrepareImageParameters(null, false);
             if (IsLightSequence()) {
@@ -404,9 +403,6 @@ namespace WhenPlugin.When {
                 TimeSpan time = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 TakeExposure.LastImageProcessTime = time.TotalSeconds;
 
-                Logger.Debug("TakeExposure+ Processed at " + TakeExposure.LastImageProcessTime);
-                Logger.Debug("Elapsed: " + (TakeExposure.LastImageProcessTime - TakeExposure.LastExposureTIme) + "s");
-
                 StarDetectionAnalysis a = (StarDetectionAnalysis)e.RenderedImage.RawImageData.StarDetectionAnalysis;
 
                 // Clean out any old results since this instruction may be called many times
@@ -430,7 +426,6 @@ namespace WhenPlugin.When {
                 // We might also get guider info as well...
 
                 LastImageResults = results;
-                Logger.Debug("TakeExposure+ Updating with " + results.Count + " image results");
                 Symbol.UpdateSwitchWeatherData();
             }
         }

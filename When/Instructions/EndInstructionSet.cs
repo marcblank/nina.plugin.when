@@ -101,8 +101,9 @@ namespace WhenPlugin.When {
                 List<string> list = new List<string>();
                 ISequenceContainer p = Parent;
                 while (p != null) {
-                    //if (p.Parent is ISequenceRootContainer) break;
-                    list.Add(p.Name);
+                    if (p.Name.Length > 0) {
+                        list.Add(p.Name);
+                    }
                     p = p.Parent;
                 }
                 return list;
