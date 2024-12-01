@@ -59,7 +59,7 @@ namespace WhenPlugin.When {
         public WhenPlugin(IProfileService profileService, IOptionsVM options, IImageSaveMediator imageSaveMediator,
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                 IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-                IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, ISequenceMediator sequenceMediator) {
+                IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, ISequenceMediator sequenceMediator, IMessageBroker messageBroker) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -81,7 +81,7 @@ namespace WhenPlugin.When {
             // Hook into image saving for adding FITS keywords or image file patterns
             Symbol.WhenPluginObject = this;
             Symbol.InitMediators(switchMediator, weatherDataMediator, cameraMediator, domeMediator, flatMediator, filterWheelMediator, profileService,
-                rotatorMediator, safetyMonitorMediator, focuserMediator, telescopeMediator);
+                rotatorMediator, safetyMonitorMediator, focuserMediator, telescopeMediator, messageBroker);
             CreateGlobalSetConstants(this);
 
             imageSaveMediator.BeforeFinalizeImageSaved += ImageSaveMediator_BeforeFinalizeImageSaved;

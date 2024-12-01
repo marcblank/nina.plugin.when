@@ -34,8 +34,8 @@ using NINA.Astrometry.Interfaces;
 using System.Collections.Concurrent;
 using NINA.Astrometry;
 using Accord;
-using NCalc.Domain;
-using NINA.Core.Enum;
+using NINA.Plugin.Messaging;
+using NINA.Plugin.Interfaces;
 
 namespace WhenPlugin.When {
 
@@ -551,14 +551,24 @@ namespace WhenPlugin.When {
         private static ISafetyMonitorMediator SafetyMonitorMediator { get; set; }
         private static IFocuserMediator FocuserMediator { get; set; }
         private static ITelescopeMediator TelescopeMediator { get; set; }
+        private static IMessageBroker MessageBroker { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches { get; set; } = new List<string>();
 
+        public class Subscriber : ISubscriber {
+            Task ISubscriber.OnMessageReceived(IMessage message) {
+                Logger.Info("Received message from " + message.Sender + " re: " + message.Topic);
+                return Task.CompletedTask;
+            }
+        }
+
+        public static ISubscriber PowerupsSubscriber { get; set; }
+
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator) {
+            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IMessageBroker messageBroker) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -570,9 +580,15 @@ namespace WhenPlugin.When {
             SafetyMonitorMediator = safetyMonitorMediator;
             FocuserMediator = focuserMediator;
             TelescopeMediator = telescopeMediator;
+            MessageBroker = messageBroker;
 
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
+
+            PowerupsSubscriber = new Subscriber();
+
+            MessageBroker.Subscribe("TargetScheduler-WaitStart", PowerupsSubscriber);
+            MessageBroker.Subscribe("TargetScheduler-TargetStart", PowerupsSubscriber);
         }
 
         public static Keys SwitchWeatherKeys { get; set; } = new Keys();
