@@ -317,6 +317,10 @@ namespace WhenPlugin.When {
 
                 var imageData = await exposureData.ToImageData(progress, token);
 
+                if (imageData.Properties != null) {
+                    Logger.Info("Processed image: Width = " + imageData.Properties.Width + ", Height = " + imageData.Properties.Height);
+                }
+                
                 var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);
 
                 if (IsLightSequence()) {
