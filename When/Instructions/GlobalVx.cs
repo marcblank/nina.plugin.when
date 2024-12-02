@@ -44,6 +44,7 @@ namespace WhenPlugin.When {
             clone.Identifier = Identifier;
             clone.Definition = Definition;
             clone.OriginalExpr = new Expr(OriginalExpr);
+            clone.OriginalExpr.Type = "Any";
             return clone;
         }
 

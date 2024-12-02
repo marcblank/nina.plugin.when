@@ -100,6 +100,7 @@ namespace WhenPlugin.When {
         public override void AfterParentChanged() {
             base.AfterParentChanged();
             OriginalExpr = new Expr(OriginalDefinition, this);
+            OriginalExpr.Type = "Any";
             if (!Executed && Parent != null && Expr != null) {
                 Expr.IsExpression = true;
                 if (Expr.Expression.Length > 0) {

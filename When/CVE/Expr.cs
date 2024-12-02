@@ -704,6 +704,9 @@ namespace WhenPlugin.When {
                                     string str = (string)eval;
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
+                                    if (Type != "Any") {
+                                        Error = "Syntax error";
+                                    }
                                 }
                             }
                             RaisePropertyChanged("ValueString");

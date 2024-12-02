@@ -43,6 +43,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             ResetVariable clone = new ResetVariable(this) { };
             clone.Expr = new Expr(clone, this.Expr.Expression);
+            clone.Expr.Type = "Any";
             clone.Variable = this.Variable;
             return clone;
         }
