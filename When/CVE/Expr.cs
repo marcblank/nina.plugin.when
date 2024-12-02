@@ -315,6 +315,9 @@ namespace WhenPlugin.When {
             set {
                 if (value != _value) {
                     if ("Integer".Equals(Type)) {
+                        if (StringValue != null) {
+                            Error = "Value must be an Integer";
+                        }
                         value = Double.Floor(value);
                     }
                     _value = value;
@@ -692,16 +695,17 @@ namespace WhenPlugin.When {
                             // We got an actual value
                             if (eval is Boolean b) {
                                 Value = b ? 1 : 0;
+                                Error = null;
                             } else {
                                 try {
                                     Value = Convert.ToDouble(eval);
+                                    Error = null;
                                 } catch (Exception ex) {
                                     string str = (string)eval;
-                                    Value = double.NegativeInfinity;
                                     StringValue = str;
+                                    Value = double.NegativeInfinity;
                                 }
                             }
-                            Error = null;
                             RaisePropertyChanged("ValueString");
                             RaisePropertyChanged("Value");
                         }
