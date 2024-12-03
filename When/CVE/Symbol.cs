@@ -698,22 +698,28 @@ namespace WhenPlugin.When {
 
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
+        private static string LastTargetName = null;
+        
         public static Task UpdateSwitchWeatherData() {
 
             lock (SYMBOL_LOCK) {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
 
+                string targetName = null;
                 ISequenceItem runningItem = WhenPlugin.GetRunningItem();
                 if (runningItem != null && runningItem.Parent != null) {
                     InputTarget t = DSOTarget.FindTarget(runningItem.Parent);
                     if (t != null) {
-                        AddSymbol(i, "TargetName", t.TargetName);
-                    } else {
-                        //Logger.Warning("Target is null");
+                        targetName = t.TargetName;
+                        LastTargetName = targetName;
                     }
-                } else {
-                    //Logger.Warning("InputTarget is null");
+                }
+                if (targetName == null) {
+                    targetName = LastTargetName;
+                }
+                if (targetName != null) {
+                    AddSymbol(i, "TargetName", targetName);
                 }
 
                 if (Observer == null) {
