@@ -59,7 +59,7 @@ namespace WhenPlugin.When {
                         Logger.Warning("Send via Ground Station, error processing script, " + ex.Error);
                         value = value.Replace("{" + toReplace + "}", ex.Error);
                     } else if (ex.StringValue != null) {
-                        value = value.Replace("{" + toReplace + "}", ex.StringValue);
+                        value = value.Replace("{" + toReplace + "}", ex.StringValue.Substring(1, ex.StringValue.Length - 2));
                     } else {
                         value = value.Replace("{" + toReplace + "}", ex.ValueString);
                     }

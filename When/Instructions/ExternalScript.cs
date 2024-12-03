@@ -104,8 +104,12 @@ namespace WhenPlugin.When {
                             ProcessedScriptError = ex.Error;
                             //Logger.Warning("External Script +, error processing script, " + ex.Error);
                             return "Error";
+                        } else if (ex.StringValue != null) {
+                            value = value.Replace("{" + toReplace + "}", ex.StringValue.Substring(1, ex.StringValue.Length - 2));
+                        } else {
+                            value = value.Replace("{" + toReplace + "}", ex.ValueString);
                         }
-                        value = value.Replace("{" + toReplace + "}", ex.ValueString);
+                        Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                     }
                 }
                 iProcessedScript = value;

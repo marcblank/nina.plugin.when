@@ -704,6 +704,14 @@ namespace WhenPlugin.When {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
 
+                ISequenceItem runningItem = WhenPlugin.GetRunningItem();
+                if (runningItem != null && runningItem.Parent != null) {
+                    InputTarget t = DSOTarget.FindTarget(runningItem.Parent);
+                    if (t != null) {
+                        AddSymbol(i, "TargetName", t.TargetName);
+                    }
+                }
+
                 if (Observer == null) {
                     Observer = new ObserverInfo() {
                         Latitude = ProfileService.ActiveProfile.AstrometrySettings.Latitude,

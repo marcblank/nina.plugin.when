@@ -515,15 +515,24 @@ namespace WhenPlugin.When {
 
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
+        private void AddParameter(string reference, object value) {
+            if (value is string) {
+                Parameters.Add(reference, "'" + value + "'");
+            } else {
+                Parameters.Add(reference, value);
+            }
+        }
+
+
         private void Resolve(string reference, Symbol sym) {
             Parameters.Remove(reference);
             Resolved.Remove(reference);
             if (sym.Expr.Error == null) {
                 Resolved.Add(reference, sym);
                 if (sym.Expr.Value == double.NegativeInfinity) {
-                    Parameters.Add(reference, sym.Expr.StringValue);
+                    AddParameter(reference, sym.Expr.StringValue);
                 } else if (!Double.IsNaN(sym.Expr.Value)) {
-                    Parameters.Add(reference, sym.Expr.Value);
+                    AddParameter(reference, sym.Expr.Value);
                 }
             }
         }
@@ -623,7 +632,7 @@ namespace WhenPlugin.When {
                                     Resolved.Remove(symReference);
                                     Resolved.Add(symReference, null);
                                     Parameters.Remove(symReference);
-                                    Parameters.Add(symReference, Val);
+                                    AddParameter(symReference, Val);
                                     Volatile = true;
                                 }
                                 if (!found && symReference.StartsWith("__ENV_")) {
@@ -636,14 +645,13 @@ namespace WhenPlugin.When {
                                     Resolved.Remove(symReference);
                                     Resolved.Add(symReference, null);
                                     Parameters.Remove(symReference);
-                                    Parameters.Add(symReference, val);
+                                    AddParameter(symReference, val);
                                     Volatile = true;
                                 }
                             }
                         }
                     }
 
-                    // Then evaluate
                     Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
