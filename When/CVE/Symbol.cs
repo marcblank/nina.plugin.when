@@ -709,7 +709,11 @@ namespace WhenPlugin.When {
                     InputTarget t = DSOTarget.FindTarget(runningItem.Parent);
                     if (t != null) {
                         AddSymbol(i, "TargetName", t.TargetName);
+                    } else {
+                        //Logger.Warning("Target is null");
                     }
+                } else {
+                    //Logger.Warning("InputTarget is null");
                 }
 
                 if (Observer == null) {

@@ -92,6 +92,7 @@ namespace WhenPlugin.When {
             if (message == null) {
                 throw new SequenceEntityFailedException("Message is null?");
             }
+            message = message.Replace('\t', ' ');
             var processedMessage = ProcessedScript(message);
             Logger.Info("Sending to Ground Station: " + processedMessage);
             if (processedMessage == null) {

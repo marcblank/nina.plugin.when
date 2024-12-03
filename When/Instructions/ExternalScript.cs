@@ -122,7 +122,7 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError {  get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Symbol.UpdateSwitchWeatherData();
+            await Symbol.UpdateSwitchWeatherData();
             Logger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
