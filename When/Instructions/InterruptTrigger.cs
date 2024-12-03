@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
             try {
                 Target = DSOTarget.FindTarget(Parent);
                 if (Target != null) {
-                    Logger.Info("Found Target: " + Target);
+                    //Logger.Info("Found Target: " + Target);
                     UpdateChildren(Runner);
                 }
             } finally {

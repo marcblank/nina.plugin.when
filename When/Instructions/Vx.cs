@@ -168,6 +168,7 @@ namespace WhenPlugin.When {
                 Logger.Info("Executing Vx");
                 DumpSymbols();
             }
+            Expr.Type = "Any";
             Definition = OriginalDefinition;
             Executed = true;
             Expr.Evaluate();

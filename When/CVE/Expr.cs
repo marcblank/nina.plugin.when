@@ -41,8 +41,9 @@ namespace WhenPlugin.When {
 
         public Expr(ISequenceEntity item, string expression, string type) {
             SequenceEntity = item;
-            Expression = expression;
+            // TYPE MUST BE BEFORE EXPRESSION!!
             Type = type;
+            Expression = expression;
         }
 
         public Expr(ISequenceEntity item, string expression, string type, Action<Expr> setter) {

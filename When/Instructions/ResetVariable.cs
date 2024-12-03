@@ -105,7 +105,13 @@ namespace WhenPlugin.When {
             Expr.Evaluate();
             Logger.Info("ResetVariable: " + Variable + " from " + sym.Definition + " to " + Expr.Value.ToString());
 
-            sym.Definition = Expr.Value.ToString();
+            if (Expr.StringValue != null) {
+                sym.Expr.Error = null;
+                sym.Definition = Expr.Expression;
+       
+            } else {
+                sym.Definition = Expr.Value.ToString();
+            }
             
             // Make sure references are updated
             Symbol.SymbolDirty(sym);

@@ -285,7 +285,9 @@ namespace WhenPlugin.When {
                 SubSambleRectangle = rect
             };
 
-            Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; rect = " + capture.SubSambleRectangle.X + "," + capture.SubSambleRectangle.Y);
+            if (rect != null) {
+                Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; rect = " + capture.SubSambleRectangle.X + "," + capture.SubSambleRectangle.Y);
+            }
 
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
 

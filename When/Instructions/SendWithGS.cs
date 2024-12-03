@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 using Serilog.Debugging;
+using Google.Protobuf.WellKnownTypes;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Send via Ground Station")]
@@ -53,10 +54,12 @@ namespace WhenPlugin.When {
                         break;
                     }
                     if (toReplace.Length == 0) break;
-                    Expr ex = new Expr(this, toReplace);
+                    Expr ex = new Expr(this, toReplace, "Any");
                     if (ex.Error != null) {
                         Logger.Warning("Send via Ground Station, error processing script, " + ex.Error);
                         value = value.Replace("{" + toReplace + "}", ex.Error);
+                    } else if (ex.StringValue != null) {
+                        value = value.Replace("{" + toReplace + "}", ex.StringValue);
                     } else {
                         value = value.Replace("{" + toReplace + "}", ex.ValueString);
                     }
