@@ -98,7 +98,7 @@ namespace WhenPlugin.When {
                     while (true) {
                         string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
                         if (toReplace.Length == 0) break;
-                        Expr ex = new Expr(this, toReplace);
+                        Expr ex = new Expr(this, toReplace, "Any");
                         ProcessedScriptError = null;
                         if (ex.Error != null) {
                             ProcessedScriptError = ex.Error;
