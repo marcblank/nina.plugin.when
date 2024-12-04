@@ -246,12 +246,10 @@ namespace WhenPlugin.When {
             }
 
             var info = cameraMediator.GetInfo();
-            bool useSubsample = info.CanSubSample && Parent is SmartSubframeExposure;
+            bool useSubsample = info.CanSubSample && Parent is SmartSubframeExposure && ((SmartSubframeExposure)Parent).ROIOption != "None";
             ObservableRectangle rect = null;
 
-            Logger.Info("useSubsample = " + useSubsample + "; " + "ROIType = " + ROIType);
-
-            if (useSubsample) {
+            if (useSubsample ) {
                 if (ROIType) {
                     if (ROI < 100) {
                         double r = ROI / 100;
@@ -266,10 +264,8 @@ namespace WhenPlugin.When {
                         useSubsample = false;
                     }
                 } else {
-                    if (Parent is SmartSubframeExposure se) {
-                        rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
-                        Logger.Info(se.XExpr.ValueString + "; " + se.YExpr.ValueString + "; " + se.WExpr.ValueString + "; " + se.HExpr.ValueString);
-                    }
+                    SmartSubframeExposure se = (SmartSubframeExposure)Parent;
+                    rect = new ObservableRectangle(se.XExpr.Value, se.YExpr.Value, se.WExpr.Value, se.HExpr.Value);
                 }
             }
 
@@ -286,7 +282,7 @@ namespace WhenPlugin.When {
             };
 
             if (rect != null) {
-                Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; rect = " + capture.SubSambleRectangle.X + "," + capture.SubSambleRectangle.Y);
+                Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; ROIType = " + ROIType + "; rect = " + capture.SubSambleRectangle.Width + ", " + capture.SubSambleRectangle.Height);
             }
 
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
