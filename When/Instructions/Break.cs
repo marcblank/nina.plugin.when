@@ -45,7 +45,8 @@ namespace WhenPlugin.When {
 
         public override object Clone() {
             return new Break(this) {
-                Time = Time
+                Time = Time,
+                Reason = Reason
             };
         }
 

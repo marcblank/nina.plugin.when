@@ -95,11 +95,11 @@ namespace WhenPlugin.When {
                 string value = Script;
                 RaisePropertyChanged();
                 if (value != null) {
+                    ProcessedScriptError = null;
                     while (true) {
                         string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
                         if (toReplace.Length == 0) break;
                         Expr ex = new Expr(this, toReplace, "Any");
-                        ProcessedScriptError = null;
                         if (ex.Error != null) {
                             ProcessedScriptError = ex.Error;
                             //Logger.Warning("External Script +, error processing script, " + ex.Error);

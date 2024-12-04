@@ -8,14 +8,14 @@ using System.Runtime.InteropServices;
 //Should be incremented for each new release build of a plugin
 
 // Odd minor releases for Beta
-[assembly: AssemblyVersion("3.19.2.1")]
-[assembly: AssemblyFileVersion("3.19.2.1")]
+[assembly: AssemblyVersion("3.20.0.0")]
+[assembly: AssemblyFileVersion("3.20.0.0")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
 // [MANDATORY] A short description of your plugin
-[assembly: AssemblyDescription("*** BETA RELEASE ***")]
-//[assembly: AssemblyDescription("Get the most out of the Advanced Sequencer!")]
+//[assembly: AssemblyDescription("*** BETA RELEASE ***")]
+[assembly: AssemblyDescription("Get the most out of the Advanced Sequencer!")]
 
 // The following attributes are not required for the plugin per se, but are required by the official manifest meta data
 
