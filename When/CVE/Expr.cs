@@ -353,6 +353,22 @@ namespace WhenPlugin.When {
 
         public string StringValue { get; set; }
 
+        public static string ExprValueString (long value) {
+            long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+            long end = start + (2 * ONE_YEAR);
+            if (value > start && value < end) {
+                DateTime dt = ConvertFromUnixTimestamp(value).ToLocalTime();
+                if (dt.Day == DateTime.Now.Day + 1) {
+                    return dt.ToShortTimeString() + " tomorrow";
+                } else if (dt.Day == DateTime.Now.Day - 1) {
+                    return dt.ToShortTimeString() + " yesterday";
+                } else
+                    return dt.ToShortTimeString();
+            } else {
+                return value.ToString();
+            }
+        }
+
         public string ValueString {
             get {
                 if (Error != null) return Error;
