@@ -179,7 +179,7 @@ namespace WhenPlugin.When {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    Expression e = new Expression(value); //, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(value, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
                     e.Parameters = EmptyDictionary;
                     IsSyntaxError = false;
                     try {
@@ -623,7 +623,7 @@ namespace WhenPlugin.When {
                         }
                     }
 
-                    Expression e = new Expression(Expression); //, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(Expression, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
 
