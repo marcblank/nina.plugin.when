@@ -1,13 +1,13 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using NCalc;
 using NCalc.Domain;
+using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer;
-using PanoramicData.NCalcExtensions;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -179,12 +179,12 @@ namespace WhenPlugin.When {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(value); //, EvaluateOptions.IgnoreCase);
                     e.Parameters = EmptyDictionary;
                     IsSyntaxError = false;
                     try {
                         e.Evaluate();
-                    } catch (NCalc.EvaluationException) {
+                    } catch (NCalc.Exceptions.NCalcParserException) {
                         // We should expect this, since we're just trying to find the parameters used
                         Error = "Syntax Error";
                         return;
@@ -193,12 +193,11 @@ namespace WhenPlugin.When {
                     }
 
                     // Find the parameters used
-                    var pe = e.ParsedExpression;
-                    ParameterExtractionVisitor visitor = new ParameterExtractionVisitor();
-                    pe.Accept(visitor);
+                    foreach (var p in e.GetParametersNames()) {
+                        References.Add(p);
+                    }
 
                     // References now holds all of the CV's used in the expression
-                    References = visitor.Parameters;
                     Parameters.Clear();
                     Resolved.Clear();
                     Evaluate();
@@ -410,46 +409,6 @@ namespace WhenPlugin.When {
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
-        class ParameterExtractionVisitor : LogicalExpressionVisitor {
-            public HashSet<string> Parameters = new HashSet<string>();
-
-            public override void Visit(NCalc.Domain.Identifier function) {
-                //Parameter - add to list
-                Parameters.Add(function.Name);
-            }
-
-            public override void Visit(NCalc.Domain.UnaryExpression expression) {
-                expression.Expression.Accept(this);
-            }
-
-            public override void Visit(NCalc.Domain.BinaryExpression expression) {
-                //Visit left and right
-                expression.LeftExpression.Accept(this);
-                expression.RightExpression.Accept(this);
-            }
-
-            public override void Visit(NCalc.Domain.TernaryExpression expression) {
-                //Visit left, right and middle
-                expression.LeftExpression.Accept(this);
-                expression.RightExpression.Accept(this);
-                expression.MiddleExpression.Accept(this);
-            }
-
-            public override void Visit(Function function) {
-                foreach (var expression in function.Expressions) {
-                    expression.Accept(this);
-                }
-            }
-
-            public override void Visit(LogicalExpression expression) {
-
-            }
-
-            public override void Visit(ValueExpression expression) {
-
-            }
-        }
-
         public static DateTime ConvertFromUnixTimestamp(double timestamp) {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return origin.AddSeconds(timestamp);
@@ -532,11 +491,7 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         private void AddParameter(string reference, object value) {
-            if (value is string) {
-                Parameters.Add(reference, "'" + value + "'");
-            } else {
-                Parameters.Add(reference, value);
-            }
+            Parameters.Add(reference, value);
         }
 
 
@@ -668,7 +623,7 @@ namespace WhenPlugin.When {
                         }
                     }
 
-                    Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(Expression); //, EvaluateOptions.IgnoreCase);
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
 
@@ -752,7 +707,7 @@ namespace WhenPlugin.When {
                             }
                         }
                         Error = error;
-                    } catch (NCalc.EvaluationException) {
+                    } catch (NCalc.Exceptions.NCalcEvaluationException) {
                         Error = "Syntax Error";
                         return;
                     } catch (Exception ex) {
