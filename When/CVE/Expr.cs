@@ -421,47 +421,55 @@ namespace WhenPlugin.When {
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
-             if (args.Parameters.Length > 0) {
-                try {
-                    var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
-                    dt = utc.ToLocalTime();
-                } catch (Exception) {
-                    dt = DateTime.MinValue;
+            try {
+                if (args.Parameters.Length > 0) {
+                    try {
+                        var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                        dt = utc.ToLocalTime();
+                    } catch (Exception) {
+                        dt = DateTime.MinValue;
+                    }
+                } else {
+                    dt = DateTime.Now;
                 }
-            } else {
-                dt = DateTime.Now;
-            }
-            if (name == "altitude") {
-                if (args.Parameters.Length < 2) {
-                    throw new ArgumentException();
+                if (name == "altitude") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    double _longitude = WhenPlugin.GetLongitude();
+                    double _latitude = WhenPlugin.GetLatitude();
+                    var siderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, _longitude);
+                    var hourAngle = AstroUtil.GetHourAngle(siderealTime, Convert.ToDouble(args.Parameters[0].Evaluate()));
+                    var degAngle = AstroUtil.HoursToDegrees(hourAngle);
+                    args.Result = AstroUtil.GetAltitude(degAngle, _latitude, Convert.ToDouble(args.Parameters[1].Evaluate()));
+                } else if (name == "now") {
+                    args.Result = UnixTimeNow();
+                } else if (name == "hour") {
+                    args.Result = (int)dt.Hour;
+                } else if (name == "minute") {
+                    args.Result = (int)dt.Minute;
+                } else if (name == "day") {
+                    args.Result = (int)dt.Day;
+                } else if (name == "month") {
+                    args.Result = (int)dt.Month;
+                } else if (name == "year") {
+                    args.Result = (int)dt.Year;
+                } else if (name == "dow") {
+                    args.Result = (int)dt.DayOfWeek;
+                } else if (name == "dateTime") {
+                    args.Result = 0;
+                } else if (name == "dateString") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "startsWith") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    string f = Convert.ToString(args.Parameters[1].Evaluate());
+                    args.Result = str.StartsWith(f);
                 }
-                double _longitude = WhenPlugin.GetLongitude();
-                double _latitude = WhenPlugin.GetLatitude();
-                var siderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, _longitude);
-                var hourAngle = AstroUtil.GetHourAngle(siderealTime, Convert.ToDouble(args.Parameters[0].Evaluate()));
-                var degAngle = AstroUtil.HoursToDegrees(hourAngle);
-                args.Result = AstroUtil.GetAltitude(degAngle, _latitude, Convert.ToDouble(args.Parameters[1].Evaluate()));
-            } else if (name == "now") {
-                args.Result = UnixTimeNow();
-            } else if (name == "hour") {
-                args.Result = (int)dt.Hour;
-            } else if (name == "minute") {
-                args.Result = (int)dt.Minute;
-            } else if (name == "day") {
-                args.Result = (int)dt.Day;
-            } else if (name == "month") {
-                args.Result = (int)dt.Month;
-            } else if (name == "year") {
-                args.Result = (int)dt.Year;
-            } else if (name == "dow") {
-                args.Result = (int)dt.DayOfWeek;
-            } else if (name == "datetime") {
-                args.Result = 0;
-            } else if (name == "datestring") {
-                if (args.Parameters.Length < 2) {
-                    throw new ArgumentException();
-                }
-                args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+            } catch (Exception ex) {
+                Logger.Error("Error evaluating function " + name + ": " + ex.Message);
             }
         }
         public void RemoveParameter(string identifier) {

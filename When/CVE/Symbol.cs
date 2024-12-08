@@ -558,6 +558,16 @@ namespace WhenPlugin.When {
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches { get; set; } = new List<string>();
 
+        public class VariableMessage {
+            public object value;
+            public DateTimeOffset? expiration;
+
+            public VariableMessage(object value, DateTimeOffset? expiration) {
+                this.value = value;
+                this.expiration = expiration;
+            }
+        }
+        
         public class Subscriber : ISubscriber {
             Task ISubscriber.OnMessageReceived(IMessage message) {
                 Logger.Info("Received message from " + message.Sender + " re: " + message.Topic);
@@ -566,19 +576,17 @@ namespace WhenPlugin.When {
                     if (message.Topic == "TargetScheduler-WaitStart") {
                         DateTimeOffset dto = new DateTimeOffset((DateTime)message.Content);
                         MessageKeys.Remove("TS-WaitStart");
-                        MessageKeys.Add("TS-WaitStart", dto.ToUnixTimeSeconds());
-                        // Handle expiration
+                        MessageKeys.Add("TS-WaitStart", new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration));
                     } else if (message.Topic == "TargetScheduler-NewTargetStart" || message.Topic == "TargetScheduler-TargetStart") {
                         MessageKeys.Remove("TS-TargetName");
-                        MessageKeys.Add("TS-TargetName", message.Content);
+                        MessageKeys.Add("TS-TargetName", new VariableMessage(message.Content, message.Expiration));
                         object p;
                         message.CustomHeaders.TryGetValue("ProjectName", out p);
                         if (p != null) {
                             string pn = (string)p;
                             MessageKeys.Remove("TS-ProjectName");
-                            MessageKeys.Add("TS-ProjectName", pn);
+                            MessageKeys.Add("TS-ProjectName", new VariableMessage(pn, message.Expiration));
                         }
-                        // Handle expiration
                     } else {
                         Logger.Info("Message not handled");
                     }
@@ -702,7 +710,7 @@ namespace WhenPlugin.When {
                 } else if (value is long l) {
                     sb.Append(Expr.ExprValueString(l));
                 } else {
-                    sb.Append(value.ToString());
+                    sb.Append("'" + value.ToString() + "'");
                 }
                 //sb.Append(')');
                 i.Add(sb.ToString());
@@ -752,8 +760,18 @@ namespace WhenPlugin.When {
                     AddSymbol(i, "TargetName", targetName);
                 }
 
+                List<string> toDelete = new List<string>();
                 foreach (var kvp in MessageKeys) {
-                    AddSymbol(i, kvp.Key, kvp.Value);
+                    VariableMessage vm = (VariableMessage)kvp.Value;
+                    if (DateTimeOffset.Now >= vm.expiration) {
+                        toDelete.Add(kvp.Key);
+                        continue;
+                    }
+                    AddSymbol(i, kvp.Key, vm.value);
+                }
+                
+                foreach (string td in toDelete) {
+                    MessageKeys.Remove(td);
                 }
 
                 if (Observer == null) {
