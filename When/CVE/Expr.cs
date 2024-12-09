@@ -720,7 +720,7 @@ namespace WhenPlugin.When {
                         Error = "Syntax Error";
                         return;
                     } catch (Exception ex) {
-                        Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
+                        Logger.Warning("Exception evaluating " + Expression + ": " + ex.Message);
                     }
                     Dirty = false;
                 } finally {

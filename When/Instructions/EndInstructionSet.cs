@@ -91,7 +91,11 @@ namespace WhenPlugin.When {
                         return c;
                     }
                 }
-                p = p.Parent;
+                if (p is IfContainer ifc && ifc.PseudoParent != null) {
+                    p = (ISequenceContainer)ifc.PseudoParent;
+                } else {
+                    p = p.Parent;
+                }
             }
             return null;
         }
@@ -101,10 +105,14 @@ namespace WhenPlugin.When {
                 List<string> list = new List<string>();
                 ISequenceContainer p = Parent;
                 while (p != null) {
-                    if (p.Name.Length > 0) {
+                    if (!(p is IfContainer) && p.Name != null && p.Name.Length > 0) {
                         list.Add(p.Name);
                     }
-                    p = p.Parent;
+                    if (p is IfContainer ifc && ifc.PseudoParent != null) {
+                        p =(ISequenceContainer)ifc.PseudoParent;
+                    } else {
+                        p = p.Parent;
+                    }
                 }
                 return list;
             }
