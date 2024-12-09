@@ -136,6 +136,7 @@ namespace WhenPlugin.When {
                     Parameters.Clear();
                     Resolved.Clear();
                     References.Clear();
+                    Error = null;
                     return;
                 }
                 Double result;
