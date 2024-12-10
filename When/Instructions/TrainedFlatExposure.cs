@@ -315,6 +315,10 @@ namespace WhenPlugin.When {
                     }
                 }
 
+                if (!CVFilter) {
+                    FExpr.Expression = "";
+                }
+                
                 SetFInfo();
                 RaisePropertyChanged(nameof(CVFilter));
                 RaisePropertyChanged();

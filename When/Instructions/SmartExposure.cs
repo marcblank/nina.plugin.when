@@ -46,6 +46,7 @@ using NINA.Core.Utility;
 using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 using System.ComponentModel.DataAnnotations;
 using NINA.Equipment.Equipment.MyCamera;
+using System.Threading;
 
 namespace WhenPlugin.When {
 
@@ -237,6 +238,13 @@ namespace WhenPlugin.When {
                 Items[0] = sw;
             }
             return Items[0] as SwitchFilter;
+        }
+
+        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            if (CVFilter) {
+                FilterExpr = FilterExpr;
+            }
+            return base.Execute(progress, token);
         }
 
         public TakeExposure GetTakeExposure() {

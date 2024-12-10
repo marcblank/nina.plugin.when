@@ -1,13 +1,13 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using NCalc;
 using NCalc.Domain;
+using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer;
-using PanoramicData.NCalcExtensions;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -136,6 +136,7 @@ namespace WhenPlugin.When {
                     Parameters.Clear();
                     Resolved.Clear();
                     References.Clear();
+                    Error = null;
                     return;
                 }
                 Double result;
@@ -179,12 +180,12 @@ namespace WhenPlugin.When {
                     IsExpression = true;
 
                     // Evaluate just so that we can parse the expression
-                    Expression e = new Expression(value, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(value, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
                     e.Parameters = EmptyDictionary;
                     IsSyntaxError = false;
                     try {
                         e.Evaluate();
-                    } catch (NCalc.EvaluationException) {
+                    } catch (NCalc.Exceptions.NCalcParserException) {
                         // We should expect this, since we're just trying to find the parameters used
                         Error = "Syntax Error";
                         return;
@@ -193,12 +194,11 @@ namespace WhenPlugin.When {
                     }
 
                     // Find the parameters used
-                    var pe = e.ParsedExpression;
-                    ParameterExtractionVisitor visitor = new ParameterExtractionVisitor();
-                    pe.Accept(visitor);
+                    foreach (var p in e.GetParametersNames()) {
+                        References.Add(p);
+                    }
 
                     // References now holds all of the CV's used in the expression
-                    References = visitor.Parameters;
                     Parameters.Clear();
                     Resolved.Clear();
                     Evaluate();
@@ -353,6 +353,22 @@ namespace WhenPlugin.When {
 
         public string StringValue { get; set; }
 
+        public static string ExprValueString (long value) {
+            long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+            long end = start + (2 * ONE_YEAR);
+            if (value > start && value < end) {
+                DateTime dt = ConvertFromUnixTimestamp(value).ToLocalTime();
+                if (dt.Day == DateTime.Now.Day + 1) {
+                    return dt.ToShortTimeString() + " tomorrow";
+                } else if (dt.Day == DateTime.Now.Day - 1) {
+                    return dt.ToShortTimeString() + " yesterday";
+                } else
+                    return dt.ToShortTimeString();
+            } else {
+                return value.ToString();
+            }
+        }
+
         public string ValueString {
             get {
                 if (Error != null) return Error;
@@ -394,46 +410,6 @@ namespace WhenPlugin.When {
         // Parameters are NCalc Parameters used in the call to NCalc.Evaluate()
         public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
-        class ParameterExtractionVisitor : LogicalExpressionVisitor {
-            public HashSet<string> Parameters = new HashSet<string>();
-
-            public override void Visit(NCalc.Domain.Identifier function) {
-                //Parameter - add to list
-                Parameters.Add(function.Name);
-            }
-
-            public override void Visit(NCalc.Domain.UnaryExpression expression) {
-                expression.Expression.Accept(this);
-            }
-
-            public override void Visit(NCalc.Domain.BinaryExpression expression) {
-                //Visit left and right
-                expression.LeftExpression.Accept(this);
-                expression.RightExpression.Accept(this);
-            }
-
-            public override void Visit(NCalc.Domain.TernaryExpression expression) {
-                //Visit left, right and middle
-                expression.LeftExpression.Accept(this);
-                expression.RightExpression.Accept(this);
-                expression.MiddleExpression.Accept(this);
-            }
-
-            public override void Visit(Function function) {
-                foreach (var expression in function.Expressions) {
-                    expression.Accept(this);
-                }
-            }
-
-            public override void Visit(LogicalExpression expression) {
-
-            }
-
-            public override void Visit(ValueExpression expression) {
-
-            }
-        }
-
         public static DateTime ConvertFromUnixTimestamp(double timestamp) {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return origin.AddSeconds(timestamp);
@@ -446,47 +422,55 @@ namespace WhenPlugin.When {
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
-             if (args.Parameters.Length > 0) {
-                try {
-                    var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
-                    dt = utc.ToLocalTime();
-                } catch (Exception) {
-                    dt = DateTime.MinValue;
+            try {
+                if (args.Parameters.Length > 0) {
+                    try {
+                        var utc = ConvertFromUnixTimestamp(Convert.ToDouble(args.Parameters[0].Evaluate()));
+                        dt = utc.ToLocalTime();
+                    } catch (Exception) {
+                        dt = DateTime.MinValue;
+                    }
+                } else {
+                    dt = DateTime.Now;
                 }
-            } else {
-                dt = DateTime.Now;
-            }
-            if (name == "altitude") {
-                if (args.Parameters.Length < 2) {
-                    throw new ArgumentException();
+                if (name == "altitude") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    double _longitude = WhenPlugin.GetLongitude();
+                    double _latitude = WhenPlugin.GetLatitude();
+                    var siderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, _longitude);
+                    var hourAngle = AstroUtil.GetHourAngle(siderealTime, Convert.ToDouble(args.Parameters[0].Evaluate()));
+                    var degAngle = AstroUtil.HoursToDegrees(hourAngle);
+                    args.Result = AstroUtil.GetAltitude(degAngle, _latitude, Convert.ToDouble(args.Parameters[1].Evaluate()));
+                } else if (name == "now") {
+                    args.Result = UnixTimeNow();
+                } else if (name == "hour") {
+                    args.Result = (int)dt.Hour;
+                } else if (name == "minute") {
+                    args.Result = (int)dt.Minute;
+                } else if (name == "day") {
+                    args.Result = (int)dt.Day;
+                } else if (name == "month") {
+                    args.Result = (int)dt.Month;
+                } else if (name == "year") {
+                    args.Result = (int)dt.Year;
+                } else if (name == "dow") {
+                    args.Result = (int)dt.DayOfWeek;
+                } else if (name == "dateTime") {
+                    args.Result = 0;
+                } else if (name == "dateString") {
+                    if (args.Parameters.Length < 2) {
+                        throw new ArgumentException();
+                    }
+                    args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "startsWith") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    string f = Convert.ToString(args.Parameters[1].Evaluate());
+                    args.Result = str.StartsWith(f);
                 }
-                double _longitude = WhenPlugin.GetLongitude();
-                double _latitude = WhenPlugin.GetLatitude();
-                var siderealTime = AstroUtil.GetLocalSiderealTime(DateTime.Now, _longitude);
-                var hourAngle = AstroUtil.GetHourAngle(siderealTime, Convert.ToDouble(args.Parameters[0].Evaluate()));
-                var degAngle = AstroUtil.HoursToDegrees(hourAngle);
-                args.Result = AstroUtil.GetAltitude(degAngle, _latitude, Convert.ToDouble(args.Parameters[1].Evaluate()));
-            } else if (name == "now") {
-                args.Result = UnixTimeNow();
-            } else if (name == "hour") {
-                args.Result = (int)dt.Hour;
-            } else if (name == "minute") {
-                args.Result = (int)dt.Minute;
-            } else if (name == "day") {
-                args.Result = (int)dt.Day;
-            } else if (name == "month") {
-                args.Result = (int)dt.Month;
-            } else if (name == "year") {
-                args.Result = (int)dt.Year;
-            } else if (name == "dow") {
-                args.Result = (int)dt.DayOfWeek;
-            } else if (name == "datetime") {
-                args.Result = 0;
-            } else if (name == "datestring") {
-                if (args.Parameters.Length < 2) {
-                    throw new ArgumentException();
-                }
-                args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+            } catch (Exception ex) {
+                Logger.Error("Error evaluating function " + name + ": " + ex.Message);
             }
         }
         public void RemoveParameter(string identifier) {
@@ -516,11 +500,7 @@ namespace WhenPlugin.When {
         public static string NOT_DEFINED = "Parameter was not defined (Parameter";
 
         private void AddParameter(string reference, object value) {
-            if (value is string) {
-                Parameters.Add(reference, "'" + value + "'");
-            } else {
-                Parameters.Add(reference, value);
-            }
+            Parameters.Add(reference, value);
         }
 
 
@@ -652,7 +632,7 @@ namespace WhenPlugin.When {
                         }
                     }
 
-                    Expression e = new Expression(Expression, EvaluateOptions.IgnoreCase);
+                    Expression e = new Expression(Expression, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
 
@@ -736,11 +716,11 @@ namespace WhenPlugin.When {
                             }
                         }
                         Error = error;
-                    } catch (NCalc.EvaluationException) {
+                    } catch (NCalc.Exceptions.NCalcEvaluationException) {
                         Error = "Syntax Error";
                         return;
                     } catch (Exception ex) {
-                        Logger.Warning("Exception evaluating" + Expression + ": " + ex.Message);
+                        Logger.Warning("Exception evaluating " + Expression + ": " + ex.Message);
                     }
                     Dirty = false;
                 } finally {
