@@ -850,6 +850,58 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type local:PutArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Array:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding Identifier}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Center" />
+                    <local:ExprControl Label="Index:" Exp="{Binding IExpr}" />
+                    <local:ExprControl Label="Value:" Exp="{Binding VExpr}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:GetArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Array:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding Identifier}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Center" />
+                    <local:ExprControl Label="Index:" Exp="{Binding IExpr}" />
+                    <local:ExprControl Label="Value:" Exp="{Binding VExpr}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:InitializeArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Name:" />
+                    <TextBox
+                      MinWidth="40"
+                      Margin="5,-1,10,-2"
+                      Text="{Binding Identifier}"
+                      VerticalAlignment="Center"
+                      TextAlignment="Center" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:AddImagePattern}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
