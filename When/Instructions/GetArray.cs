@@ -41,7 +41,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             GetArray clone = new GetArray(this);
             clone.Identifier = Identifier;
-            clone.IExpr = new Expr(clone, this.IExpr.Expression, "Integer");
+            clone.IExpr = new Expr(clone, this.IExpr.Expression, "Any");
             clone.VExpr = new Expr(clone, this.VExpr.Expression);
             return clone;
         }
@@ -124,7 +124,7 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("The Array named '" + Identifier + " has not been initialized");
             }
             object value;
-            if (!arr.TryGetValue((int)IExpr.Value, out value)) {
+            if (!arr.TryGetValue(IExpr.ValueString, out value)) {
                 Logger.Warning("There is no value at index " + (int)IExpr.Value + " in Array " + Identifier + "; returning -1");
                 value = -1;
                 //throw new SequenceEntityFailedException("There was no value for index " + IExpr.Value + " in Array " + Identifier);

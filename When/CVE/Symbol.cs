@@ -558,7 +558,7 @@ namespace WhenPlugin.When {
         private static ConditionWatchdog ConditionWatchdog { get; set; }
         private static IList<string> Switches { get; set; } = new List<string>();
 
-        public class Array : Dictionary<int, object>;
+        public class Array : Dictionary<object, object>;
         public static Dictionary<string, Array> Arrays { get; set; } = new Dictionary<string, Array>();
 
 

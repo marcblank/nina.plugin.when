@@ -39,7 +39,7 @@ namespace WhenPlugin.When {
         public override object Clone() {
             PutArray clone = new PutArray(this);
             clone.Identifier = Identifier;
-            clone.IExpr = new Expr(clone, this.IExpr.Expression, "Integer");
+            clone.IExpr = new Expr(clone, this.IExpr.Expression, "Any");
             clone.VExpr = new Expr(clone, this.VExpr.Expression);
             return clone;
         }
@@ -121,7 +121,7 @@ namespace WhenPlugin.When {
             if (!Symbol.Arrays.TryGetValue(Identifier, out arr)) {
                 throw new SequenceEntityFailedException("The Array named '" + Identifier + " has not been initialized");
             }
-            if (!arr.TryAdd((int)IExpr.Value, VExpr.Value)) {
+            if (!arr.TryAdd(IExpr.ValueString, VExpr.Value)) {
                 throw new SequenceEntityFailedException("Adding Array value at index " + IExpr.Value + " failed?");
             }
             return Task.CompletedTask;
