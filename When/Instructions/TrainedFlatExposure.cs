@@ -425,6 +425,7 @@ namespace WhenPlugin.When {
                 }
             }
 
+            SetFInfo();
             if (FilterNames.Count == 0) {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 foreach (var fw in fwi) {
