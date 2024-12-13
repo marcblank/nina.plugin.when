@@ -74,6 +74,8 @@ namespace WhenPlugin.When {
                         return Math.Round(Value * 2.237, 2).ToString() + " mph";
                     } else if (ConversionType.Equals("kph to mph")) {
                         return Math.Round(Value * .621, 2).ToString() + " mph";
+                    } else if (ConversionType.Equals("hPa to inhg")) {
+                        return Math.Round(Value * .0295, 2).ToString() + "\" hg";
                     }
 
                     return Math.Round(Value, 2).ToString();

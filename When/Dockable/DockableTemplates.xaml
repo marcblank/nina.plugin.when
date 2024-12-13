@@ -35,6 +35,7 @@
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">C to F</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">m/s to mph</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">kph to mph</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">hPa to inhg</RadioButton>
                             </StackPanel>
                         </StackPanel>
                     </ContentControl>
