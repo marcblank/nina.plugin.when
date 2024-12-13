@@ -50,6 +50,16 @@ namespace WhenPlugin.When {
             }
         }
 
+        private string conversionType = "None";
+        public string ConversionType {
+            get => conversionType;
+            set {
+                conversionType = value;
+                RaisePropertyChanged("DockableValue");
+                WhenPluginDockable.SaveDockableExprs();
+            }
+        }
+
         public string DockableValue {
             get {
                 Evaluate();
@@ -57,6 +67,15 @@ namespace WhenPlugin.When {
                     return Error;
                 }
                 if (DisplayType.Equals("Numeric")) {
+
+                    if (ConversionType.Equals("C to F")) {
+                        return Math.Round(32 + (Value * 9 / 5), 2).ToString() + "° F";
+                    } else if (ConversionType.Equals("m/s to mph")) {
+                        return Math.Round(Value * 2.237, 2).ToString() + " mph";
+                    } else if (ConversionType.Equals("kph to mph")) {
+                        return Math.Round(Value * .621, 2).ToString() + " mph";
+                    }
+
                     return Math.Round(Value, 2).ToString();
                 } else if (DisplayType.Equals("Boolean")) {
                     return (Value == 0) ? "False" : "True";

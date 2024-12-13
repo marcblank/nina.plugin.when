@@ -60,6 +60,9 @@ namespace WhenPlugin.When {
                         if (parts.Length > 1) {
                             expr.DisplayType = parts[1];
                         }
+                        if (parts.Length > 2) {
+                            expr.ConversionType = parts[2];
+                        }
                         ExpressionList.Add(expr);
                     }
                 }
@@ -99,6 +102,8 @@ namespace WhenPlugin.When {
                 sb.Append(e.Expression);
                 sb.Append(EXPR_INTERNAL_DIVIDER);
                 sb.Append(e.DisplayType);
+                sb.Append(EXPR_INTERNAL_DIVIDER);
+                sb.Append(e.ConversionType);
                 sb.Append(EXPR_DIVIDER);
                 count++;
             }

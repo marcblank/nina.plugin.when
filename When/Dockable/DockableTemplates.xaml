@@ -29,11 +29,12 @@
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Boolean</RadioButton>
                                 <RadioButton VerticalContentAlignment="Center" Checked="CheckDisplay" IsChecked="False" GroupName="displaygrp">Filter</RadioButton>
                             </StackPanel>
-                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}" Margin="0,10,0,10" Text="Alert Type" />
+                            <TextBlock Background="{StaticResource ButtonBackgroundBrush}" Margin="0,10,0,10" Text="Conversion" />
                             <StackPanel Margin="0,0,0,10">
-                                <RadioButton VerticalContentAlignment="Center" IsChecked="True" GroupName="numgrp">None</RadioButton>
-                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">True</RadioButton>
-                                <RadioButton VerticalContentAlignment="Center" IsChecked="False" GroupName="numgrp">False</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="True" GroupName="numgrp">None</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">C to F</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">m/s to mph</RadioButton>
+                                <RadioButton VerticalContentAlignment="Center" Checked="CheckConversion" IsChecked="False" GroupName="numgrp">kph to mph</RadioButton>
                             </StackPanel>
                         </StackPanel>
                     </ContentControl>
@@ -41,13 +42,6 @@
             </Popup>
         </Grid>
     </DataTemplate>
-
-    <!--<StackPanel>
-        <RadioButton GroupName="colorgrp">Red</RadioButton>
-        <RadioButton GroupName="colorgrp">Blue</RadioButton>
-        <RadioButton GroupName="numgrp">1</RadioButton>
-        <RadioButton GroupName="numgrp">2</RadioButton>
-    </StackPanel>-->
 
     <!--https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.radiobutton?view=windowsdesktop-8.0-->
 
