@@ -14,7 +14,7 @@ using System.Data;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
     [ExportMetadata("Description", "Creates a Variable whose numeric value can be used in various instructions")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

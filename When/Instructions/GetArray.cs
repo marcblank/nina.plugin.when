@@ -15,7 +15,7 @@ using NINA.Core.Utility;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Get from Array")]
     [ExportMetadata("Description", "Gets a value from an Array at the specified index into a Variable")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "ArraySVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -134,7 +134,7 @@ namespace WhenPlugin.When {
             if (resultName == null || resultName.Length == 0) {
                 throw new SequenceEntityFailedException("There must be a result Variable specified in order to use the Get from Array instruction");
             }
-            Symbol sym = Symbol.FindSymbol(resultName, Parent);
+            Symbol sym = Symbol.FindSymbol(resultName, Parent, true);
             if (sym != null && sym is SetVariable sv) {
                 sv.Definition = value.ToString();
                 Logger.Info("Setting Variable " + sv + " to " + value);

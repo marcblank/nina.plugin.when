@@ -13,7 +13,7 @@ using System.Reflection;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Put into Array")]
     [ExportMetadata("Description", "Puts a value into an Array at the specified index")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "ArraySVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

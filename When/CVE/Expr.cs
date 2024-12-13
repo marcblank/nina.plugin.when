@@ -19,6 +19,7 @@ using System.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using static WhenPlugin.When.Symbol;
+using Array = WhenPlugin.When.Symbol.Array;
 using Expression = NCalc.Expression;
 
 namespace WhenPlugin.When {
@@ -460,6 +461,10 @@ namespace WhenPlugin.When {
                     args.Result = (int)dt.DayOfWeek;
                 } else if (name == "dateTime") {
                     args.Result = 0;
+                } else if (name == "CtoF") {
+                    args.Result = 32 + (Convert.ToDouble(args.Parameters[0].Evaluate()) * 9 / 4);
+                } else if (name == "MStoMPH") {
+                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * 2.237);
                 } else if (name == "dateString") {
                     if (args.Parameters.Length < 2) {
                         throw new ArgumentException();
@@ -469,6 +474,30 @@ namespace WhenPlugin.When {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     string f = Convert.ToString(args.Parameters[1].Evaluate());
                     args.Result = str.StartsWith(f);
+                } else if (name == "length") {
+                    string arrayName = Convert.ToString(args.Parameters[0].Evaluate());
+                    Array array;
+                    if (Arrays.TryGetValue(arrayName, out array)) {
+                        args.Result = array.Count;
+                    } else {
+                        args.Result = -1;
+                    }
+                } else if (name == "sumOfValues" || name == "averageOfValues") {
+                    string arrayName = Convert.ToString(args.Parameters[0].Evaluate());
+                    Array array;
+                    if (Arrays.TryGetValue(arrayName, out array)) {
+                        double sum = 0;
+                        foreach (var kvp in array) {
+                            sum += (double)kvp.Value;
+                        }
+                        if (name == "sumOfValues") {
+                            args.Result = sum;
+                        } else {
+                            args.Result = sum / array.Count;
+                        }
+                    } else {
+                        args.Result = -1;
+                    }
                 }
             } catch (Exception ex) {
                 Logger.Error("Error evaluating function " + name + ": " + ex.Message);

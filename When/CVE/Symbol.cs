@@ -579,17 +579,17 @@ namespace WhenPlugin.When {
                 if (message.Sender == "Target Scheduler") {
                     if (message.Topic == "TargetScheduler-WaitStart") {
                         DateTimeOffset dto = new DateTimeOffset((DateTime)message.Content);
-                        MessageKeys.Remove("TS-WaitStart");
-                        MessageKeys.Add("TS-WaitStart", new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration));
+                        MessageKeys.Remove("TS_WaitStart");
+                        MessageKeys.Add("TS_WaitStart", new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration));
                     } else if (message.Topic == "TargetScheduler-NewTargetStart" || message.Topic == "TargetScheduler-TargetStart") {
-                        MessageKeys.Remove("TS-TargetName");
-                        MessageKeys.Add("TS-TargetName", new VariableMessage(message.Content, message.Expiration));
+                        MessageKeys.Remove("TS_TargetName");
+                        MessageKeys.Add("TS_TargetName", new VariableMessage(message.Content, message.Expiration));
                         object p;
                         message.CustomHeaders.TryGetValue("ProjectName", out p);
                         if (p != null) {
                             string pn = (string)p;
-                            MessageKeys.Remove("TS-ProjectName");
-                            MessageKeys.Add("TS-ProjectName", new VariableMessage(pn, message.Expiration));
+                            MessageKeys.Remove("TS_ProjectName");
+                            MessageKeys.Add("TS_ProjectName", new VariableMessage(pn, message.Expiration));
                         }
                     } else {
                         Logger.Info("Message not handled");

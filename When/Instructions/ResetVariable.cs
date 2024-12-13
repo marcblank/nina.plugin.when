@@ -21,7 +21,7 @@ using NINA.Profile;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
     [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

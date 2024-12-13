@@ -16,7 +16,7 @@ using NINA.Sequencer;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Timed Out")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate instruction failed.")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "IfSVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

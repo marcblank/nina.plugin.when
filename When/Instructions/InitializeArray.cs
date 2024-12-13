@@ -13,7 +13,7 @@ using System.Reflection;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Initialize Array")]
     [ExportMetadata("Description", "Creates or re-initializes an Array")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "ArraySVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

@@ -13,7 +13,7 @@ using NINA.Core.Utility;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Global Variable")]
     [ExportMetadata("Description", "Creates a global Variable whose numeric value can be used in various instructions")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "VariableSVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]

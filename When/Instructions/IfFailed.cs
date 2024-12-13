@@ -11,7 +11,7 @@ using System.Windows.Input;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "If Fails")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate instruction failed.")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "IfSVG")]
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
