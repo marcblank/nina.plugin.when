@@ -57,6 +57,8 @@ namespace WhenPlugin.When {
                     if (s.Length > 0) {
                         string[] parts = s.Split(EXPR_INTERNAL_DIVIDER);
                         DockableExpr expr = new DockableExpr(parts[0]);
+
+                        // Update radio buttons!
                         if (parts.Length > 1) {
                             expr.DisplayType = parts[1];
                         }

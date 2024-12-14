@@ -462,9 +462,11 @@ namespace WhenPlugin.When {
                 } else if (name == "dateTime") {
                     args.Result = 0;
                 } else if (name == "CtoF") {
-                    args.Result = 32 + (Convert.ToDouble(args.Parameters[0].Evaluate()) * 9 / 4);
+                    args.Result = 32 + (Convert.ToDouble(args.Parameters[0].Evaluate()) * 9 / 5);
                 } else if (name == "MStoMPH") {
                     args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * 2.237);
+                } else if (name == "KPHtoMPH") {
+                    args.Result = (Convert.ToDouble(args.Parameters[0].Evaluate()) * .621);
                 } else if (name == "dateString") {
                     if (args.Parameters.Length < 2) {
                         throw new ArgumentException();
