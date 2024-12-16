@@ -84,7 +84,7 @@ namespace WhenPlugin.When {
         }
 
         public override string ToString() {
-                return $"Initialize Array: {Identifier}";
+            return $"Put Array: {Identifier} at {IExpr.Value}, value {VExpr.Value}";
         }
 
         private IList<string> issues = new List<string>();

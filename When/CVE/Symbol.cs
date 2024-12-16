@@ -201,6 +201,7 @@ namespace WhenPlugin.When {
                     foreach (var consumer in Consumers) {
                         consumer.Key.RemoveParameter(Identifier);
                     }
+
                     // Can we see if the Parent moves?
                     // Parent.AfterParentChanged += ??
                 }
@@ -283,7 +284,7 @@ namespace WhenPlugin.When {
                     }
                 }
                 _definition = value;
-                if (SParent != null) {
+                if (SParent() != null) {
                     if (Expr != null) {
                         if (Debugging) {
                             Logger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);

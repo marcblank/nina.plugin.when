@@ -136,6 +136,9 @@ namespace WhenPlugin.When {
                 if (item.Parent == null) item.AttachNewParent(TriggerRunner);
             }
             TriggerRunner.AttachNewParent(Parent);
+            if (TriggerRunner.Triggers.Count > 0) {
+                TriggerRunner.Triggers[0].AfterParentChanged();
+            }
         }
         public virtual bool Validate() {
             // Validate the Items (this will update their status)

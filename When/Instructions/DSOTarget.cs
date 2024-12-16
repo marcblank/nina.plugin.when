@@ -46,6 +46,11 @@ namespace WhenPlugin.When {
                 var container = parent as IDeepSkyObjectContainer;
                 if (container != null && container.Target != null && container.Target.InputCoordinates != null && container.Target.DeepSkyObject != null) {
                     Logger.Debug("DSOTarget, found above: " + container.Target.TargetName);
+                    Coordinates c = container.Target.InputCoordinates.Coordinates;
+                    if (c != null  && c.RA == 0 && c.Dec == 0) {
+                        Logger.Debug("Found target has 0/0 coordinates; failing search");
+                        return null;
+                    }
                     return container.Target;
                 } else {
                     return RetrieveTarget(parent.Parent);

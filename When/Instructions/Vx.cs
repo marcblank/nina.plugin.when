@@ -187,6 +187,7 @@ namespace WhenPlugin.When {
                     }
 
                     sgv.Expr = Expr;
+                    sgv.Definition = Expr.Expression;
                     sgv.Executed = true;
                 }
             }

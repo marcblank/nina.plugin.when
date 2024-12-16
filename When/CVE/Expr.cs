@@ -604,6 +604,12 @@ namespace WhenPlugin.When {
 
                     StringValue = null;
 
+                    if (Parameters.Count < Resolved.Count) {
+                        Logger.Info("Mismatch in " + this + "; Parameters < Resolved");
+                        Parameters.Clear();
+                        Resolved.Clear();
+                    }
+                    
                     // First, validate References
                     foreach (string sRef in References) {
                         Symbol sym;
