@@ -181,7 +181,16 @@ namespace WhenPlugin.When {
                         if (Debugging) {
                             Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
-                        cached.TryAdd(Identifier, this);
+                        if (!cached.TryAdd(Identifier, this) && sParent == GlobalVariables) {
+                            Symbol gv;
+                            cached.TryGetValue(Identifier, out gv);
+                            if (gv != null) {
+                                Logger.Warning("New Symbol for Global Variable: " + Identifier);
+                                SymbolDirty(gv);
+                                gv.Consumers.Clear();
+                                cached.TryUpdate(Identifier, this, gv);
+                            }
+                        }
                     } catch (ArgumentException ex) {
                         if (sParent != WhenPluginObject.Globals) {
                             IsDuplicate = true;
