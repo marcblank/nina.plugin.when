@@ -71,7 +71,7 @@ namespace WhenPlugin.When {
                             foreach (ISequenceItem item2 in cont.Items) {
                                 if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
                                     if (item2 is IDeepSkyObjectContainer dso2) {
-                                        Logger.Info("DSOTarget, found running target: " + dso2.Target.TargetName);
+                                        Logger.Debug("DSOTarget, found running target: " + dso2.Target.TargetName);
                                         return dso2.Target;
                                     } else if (item2 is ISequenceContainer cont2) {
                                         return FindRunningItem(cont2);
