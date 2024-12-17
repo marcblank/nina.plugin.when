@@ -2,9 +2,112 @@
 
 All .x versions include minor bug fixes
 
+
+
+3.20.0.x
+
+*New instruction Smart Subframe Exposure + adds the ability to use a subframe - either an ROI percentage or specific dimensions (X, Y, Width, Height) - with all of the other features of Smart Exposure +
+*String Variables are now available in Powerups.  These work with the Variable and Set Variable instructions at present. String values are written with single quotes, e.g. 'This is a legal string value'
+*String Variables can only be used with the Send via Ground Station and External Script + instructions
+*Added TargetName Variable, which can be used when a target is currently active
+*Fixed a bug with Trained Dark Flat Exposure + where the wrong filter might get used
+*Fixed a bug that could, in very unusual circumstances, cause When Becomes Unsafe to be triggered inappropriately.
+*Started work on communication with Target Scheduler to introduce data from that plugin (current TargetName variable is taken from the sequencer directly, not TS)
+
+3.19.x.x
+
+*New instruction Smart Subframe Exposure + adds the ability to use a subframe - either an ROI percentage or specific dimensions (X, Y, Width, Height) - with all of the other features of Smart Exposure +
+*Fixed a bug with Trained Dark Flat Exposure +
+*String Variables are now available in Powerups.
+*These work with the Variable and Set Variable instructions at present; Constant and Global Variable do not accept strings.
+*Strings are written with single quotes, e.g. 'This is a legal string value'
+*String Variables can only be used with the Send via Ground Station and External Script + instructions
+
+3.18.0.x
+
+*You can now use Send via Ground Station with the MQTT Broker and UDP
+*Formatting changes for consistency in the  "info" popup
+*Fixed issue with Trained Flat Exposure + and Variables
+
+3.16.1.x
+
+*Added For Each instruction; it's documented in the Powerups docs at https://marcblank.github.io/   The instruction appears to work, but syntax is important - you really should look at the docs...
+
+3.16.0.x
+
+*Significant changes to Powerups UI related to errors and warnings in Expressions.  Instead of showing the actual errors/warnings inline in sequences, they are now indicated by warning icons (orange for warning and red for error) that can be hovered over to see the actual error.  In addition, errors are now always propagated to NINA's error icon so that attempting to run a sequence with an Expression error will cause the standard NINA warning to come up.
+*Added Side of Pier to data Variables (along with PierEast, PierWest, and PierUnknown)
+
+3.14.16.x
+
+*Bug fixes for Global Variables
+*Added MoonIllumination to data variables (values are 0 to 1)
+
+3.14.15.x
+
+*Reverts recent versions that had issues with Variables being renamed with suffixes (like _0).   Changed variables will need to be modified by hand
+
+3.14.8.x
+
+*Significant revamp of DIY Meridian Trigger; please report any issues you find and I'll get on them ASAP.   This should work better with multiple targets, Target Scheduler, and when used globally.
+*There are some new "hidden" Variables:  camera__XSize, camera_YSize, and camera_PixelSize (hidden in that they don't appear in the "info" popup)
+
+3.14.7.x
+
+*Fixed a regression related to Smart Exposure + for folks with OSC cameras
+*More features in the Powerups Panel; better UI for deleting items and the ability to determine, for each, whether the value for an Expression should be displayed as a number, boolean, or filter name
+*Fixed bug in which an instruction requiring rotation (like Slew, Center, and Rotate) would lose the rotation if within a Once Safe instruction
+*Fixed an issue with Image_HFR in the Powerups Panel
+*Fixed bug with retrieving Image_FWHM and Image_Eccentricity in Expressions
+
+3.14.6.x
+
+*Fixed bug related to the new Send via Ground Station and using the $$TARGET_NAME$$ token
+*Preliminary version of a new imaging panel "dockable" - Powerups Panel in which you can add any number of Expressions that will be updated in real time - these can include any of the various data Variables exposed by Powerups as well as Constants and user-defined Variables to the extent they are valid in a running sequence.   This might be a good way to unclutter your imaging panel in some cases.
+*The UI for Powerups Panel is pretty primitive at the moment.  A work in progress.
+
+3.14.5.x
+
+*Image Variables now work with "core" exposure instructions: Image_HFR, Image_StarCount, and Image_Eccentricity / Image_FWHM if using Hocus Focus
+*Newly added Image_Id is a unique (per session) identifier for the image to which these Variables refer.  This id is incremented with each exposure, but has no other meaning; it can be used, for example, to see if there is a new image whose data is available to Powerups.
+*Bug fixes related to Trained Flat Exposure + and Trained Dark Flat Exposure +
+*Cleaned up some logging
+
+3.14.4.x
+
+*When Becomes Unsafe and When triggers will now find and use the current target, i.e. the target active at the time the trigger starts running, when those triggers are placed globally or in an instruction set "above" the currently running target.   This means that it's no longer necessary to save/restore mount position when using Slew and Center or Slew, Center, and Rotate within these triggers.
+
+3.14.2.x
+
+*New instruction: Send via Ground Station allows you to include Expressions in messages that will be sent via Ground Station (Send Email, Send to Pushover, Send to Telegram, and Send to TTS)  This instruction is somewhat experimental and will eventually be replaced with an implementation using the new Pub/Sub feature of NINA.   To add an Expression to your message, surround it with curly brackets, as in the example below.   This is most useful for sending information about Variables, since most other data is already handled in Ground Station.  All regular Ground Station tokens work as usual.
+*Wait for Time Span + now works with zero-length waits.
+
+3.14.0.x
+
+*Added preliminary support for dates/times in Variables and Expressions.
+*New instruction jSet Variable to Time which uses the same UI as "Wait for Time" (so you can specify times relative to various Sunset/Sunrise/Meridian times)
+*New functions (for use in Expressions): now(), hour(), minute(), day(), month(), year(), and dow().   These functions (excepting now) can take a  date/time, so year(now()) would return 2024.
+
+3.13.9.x 
+
+*Added Add Image Pattern instruction.   You provide a name for the pattern (e.g. FOO) and a new image pattern $$FOO$$ becomes available for use when you take images.  The Expression you provide in the instruction is evaluated when an image file is created, and that value is used as the value of the pattern you added.
+*Note: The pattern is added once a name, value (any Expression you like), and a description are added to the instruction.
+*Note: The instruction is self-executing, like Constant.  It does not need to be executed; just adding or loading it is enough.
+*Note:  There's currently no way to change or remove a file pattern token, so if you change the name or description inside the Add Image Pattern instruction, nothing will happen (at least until you start NINA again)
+*Note: This restriction will be removed at some point in the future when NINA supports its
+
+3.13.8.x
+
+*New : Conditional Trigger enables the embedded Trigger when an Expression is true (so you can turn your Triggers on and off)
+
+*Added Variables MoonAltitude, SunAltitude, and AtPark
+
+*Added Variables RightAscension and Declination
+
 3.13.7.x
 
 * New implementation of discovery of available data Variables (hovering over the "i" icon wherever an Expression is allowed).  Comments welcomed.
+
 * Fixed an issue in which, at the end of When Becomes Unsafe, a main sequence instruction would start running for a few seconds in the case that an Unsafe condition was again present.
 
 3.13.6.x
