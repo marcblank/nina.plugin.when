@@ -71,6 +71,9 @@ namespace WhenPlugin.When {
                     SwitchIndex = ssv.SwitchIndex;
                 }
             }
+            if (SwitchIndex != -1 && WritableSwitches[SwitchIndex] != SelectedSwitch) {
+                SelectedSwitch = WritableSwitches[SwitchIndex];
+            }
             expr.Error = null;
             if (expr.Value < SelectedSwitch.Minimum || expr.Value > SelectedSwitch.Maximum) {
                 expr.Error = "Value must be between " + SelectedSwitch.Minimum + " and " + SelectedSwitch.Maximum;
@@ -135,6 +138,9 @@ namespace WhenPlugin.When {
             set {
                 selectedSwitch = value;
                 SwitchIndex = (short)(WritableSwitches?.IndexOf(selectedSwitch) ?? -1);
+                if (ValueExpr != null) {
+                    ValueExpr.Error = null;
+                }
                 RaisePropertyChanged();
             }
         }

@@ -121,6 +121,10 @@ namespace WhenPlugin.When {
             if (!Symbol.Arrays.TryGetValue(Identifier, out arr)) {
                 throw new SequenceEntityFailedException("The Array named '" + Identifier + " has not been initialized");
             }
+            
+            Symbol.UpdateSwitchWeatherData();
+            VExpr.Evaluate();
+            
             if (!arr.TryAdd(IExpr.ValueString, VExpr.Value)) {
                 throw new SequenceEntityFailedException("Adding Array value at index " + IExpr.Value + " failed?");
             }

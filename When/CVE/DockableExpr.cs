@@ -60,6 +60,24 @@ namespace WhenPlugin.When {
             }
         }
 
+
+        private const long ONE_YEAR = 60 * 60 * 24 * 365;
+        public static string ExprValueString(double value) {
+            long start = DateTimeOffset.Now.ToUnixTimeSeconds() - ONE_YEAR;
+            long end = start + (2 * ONE_YEAR);
+            if (value > start && value < end) {
+                DateTime dt = ConvertFromUnixTimestamp(value).ToLocalTime();
+                if (dt.Day == DateTime.Now.Day + 1) {
+                    return dt.ToShortTimeString() + " tomorrow";
+                } else if (dt.Day == DateTime.Now.Day - 1) {
+                    return dt.ToShortTimeString() + " yesterday";
+                } else
+                    return dt.ToShortTimeString();
+            } else {
+                return value.ToString();
+            }
+        }
+
         public string DockableValue {
             get {
                 Evaluate();
@@ -78,7 +96,7 @@ namespace WhenPlugin.When {
                         return Math.Round(Value * .0295, 2).ToString() + "\" hg";
                     }
 
-                    return Math.Round(Value, 2).ToString();
+                    return ExprValueString(Math.Round(Value, 2)); ;
                 } else if (DisplayType.Equals("Boolean")) {
                     return (Value == 0) ? "False" : "True";
                 } else {

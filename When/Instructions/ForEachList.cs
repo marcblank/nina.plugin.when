@@ -23,7 +23,7 @@ using Accord.IO;
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each")]
     [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
-    [ExportMetadata("Icon", "Pen_NoFill_SVG")]
+    [ExportMetadata("Icon", "ArraySVG")]
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]

@@ -129,6 +129,8 @@ namespace WhenPlugin.When {
             return $"Trigger: {nameof(When)} Expression: {IfExpr.Expression} Value: {IfExpr.ValueString}";
         }
 
+        public override bool AllowMultiplePerSet => true;
+
         public IList<string> Switches { get; set; } = null;
         public new bool Validate() {
 

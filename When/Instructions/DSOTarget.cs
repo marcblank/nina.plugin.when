@@ -32,15 +32,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        //public static InputTarget FindTarget() {
-        //    ISequenceContainer sc = ItemUtility.GetRootContainer(parent);
-        //    if (sc != null && sc.Items.Count == 3) {
-        //        return FindRunningItem((ISequenceContainer)sc.Items[1]);
-        //    } else {
-        //        return null;
-        //    }
-        //}
-
         public static InputTarget RetrieveTarget(ISequenceContainer parent) {
             if (parent != null) {
                 var container = parent as IDeepSkyObjectContainer;
@@ -72,6 +63,13 @@ namespace WhenPlugin.When {
                                 if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
                                     if (item2 is IDeepSkyObjectContainer dso2) {
                                         Logger.Debug("DSOTarget, found running target: " + dso2.Target.TargetName);
+                                        if (dso2.Target.InputCoordinates == null) {
+                                            Logger.Debug("DSO Target, running target has no InputCoordinates");
+                                        } else if (dso2.Target.InputCoordinates.Coordinates == null) {
+                                            Logger.Debug("DSO Target, running target InputCoordinates has no Coordinates");
+                                        } else if (dso2.Target.InputCoordinates.Coordinates.RA == 0 && dso2.Target.InputCoordinates.Coordinates.Dec == 0) {
+                                            Logger.Debug("DSO Target, running target Coordinates are 0/0");
+                                        }
                                         return dso2.Target;
                                     } else if (item2 is ISequenceContainer cont2) {
                                         return FindRunningItem(cont2);
