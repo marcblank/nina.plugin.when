@@ -159,7 +159,7 @@ namespace WhenPlugin.When {
 
         public IList<string> Switches { get; set; } = null;
 
-        private bool IsAttachedToRoot() {
+        protected bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
                 if (p is SequenceRootContainer) {
