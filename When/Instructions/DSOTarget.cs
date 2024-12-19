@@ -69,8 +69,15 @@ namespace WhenPlugin.When {
                                             Logger.Debug("DSO Target, running target InputCoordinates has no Coordinates");
                                         } else if (dso2.Target.InputCoordinates.Coordinates.RA == 0 && dso2.Target.InputCoordinates.Coordinates.Dec == 0) {
                                             Logger.Debug("DSO Target, running target Coordinates are 0/0");
+                                        } else {
+                                            return dso2.Target;
                                         }
-                                        return dso2.Target;
+                                        Logger.Debug("DSO Target, looking inside running target...");
+                                        InputTarget rt = FindRunningItem(dso2);
+                                        if (rt != null) {
+                                            Logger.Debug("DSO Target, found by looking deeper");
+                                        }
+                                        return rt;
                                     } else if (item2 is ISequenceContainer cont2) {
                                         return FindRunningItem(cont2);
                                     }

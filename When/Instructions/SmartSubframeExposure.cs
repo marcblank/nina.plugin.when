@@ -449,6 +449,8 @@ namespace WhenPlugin.When {
                 var te = GetTakeExposure();
                 var dither = GetDitherAfterExposures();
 
+                ROIOption = ROIOption;
+
                 bool valid = true;
 
                 valid = te.Validate() && valid;

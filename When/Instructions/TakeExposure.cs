@@ -413,12 +413,18 @@ namespace WhenPlugin.When {
                 if (Double.IsNaN(a.HFR)) {
                     a.HFR = 0;
                 }
+                double rms = 0;
+                RMS recordedRMS = e.RenderedImage.RawImageData.MetaData.Image.RecordedRMS;
+                if (recordedRMS != null) {
+                    rms = recordedRMS.Total;
+                }
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
                     { "Image_StarCount", a.DetectedStars },
                     { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id },
                     { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime }
+                    //, { "Image_RMS", rms }
                 };
 
                 // Add these if they exist

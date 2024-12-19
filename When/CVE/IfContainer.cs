@@ -64,8 +64,15 @@ namespace WhenPlugin.When {
                 IProfileService profileService = WhenPlugin.ProfileService;
                 InputTarget t = new InputTarget(Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude), Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude), profileService.ActiveProfile.AstrometrySettings.Horizon);
 
-                if (Parent != null) {
-                    ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(Parent);
+                ISequenceContainer p = Parent;
+                if (p == null) {
+                    p = PseudoParent as ISequenceContainer;
+                }
+                if (p != null) {
+                    ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(p);
+                    if (cc != null) {
+                        t.InputCoordinates.Coordinates = cc.Coordinates;
+                    }
                 }
                 return t;
             }

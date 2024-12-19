@@ -105,7 +105,7 @@ namespace WhenPlugin.When {
                             //Logger.Warning("External Script +, error processing script, " + ex.Error);
                             return "Error";
                         } else if (ex.StringValue != null) {
-                            value = value.Replace("{" + toReplace + "}", ex.StringValue.Substring(1, ex.StringValue.Length - 2));
+                            value = value.Replace("{" + toReplace + "}", ex.StringValue);
                         } else {
                             value = value.Replace("{" + toReplace + "}", ex.ValueString);
                         }
