@@ -806,7 +806,7 @@ namespace WhenPlugin.When {
         public static void AddExprIssues (IList<string> issues, params Expr[] exprs) {
             foreach (Expr expr in exprs) {
                 expr.Validate();
-                if (expr.Error != null && !Expr.JustWarnings(expr.Error)) {
+                if (expr != null && expr.Error != null && !Expr.JustWarnings(expr.Error)) {
                     issues.Add(expr.Error);
                 }
             }
