@@ -424,7 +424,7 @@ namespace WhenPlugin.When {
                     { "Image_StarCount", a.DetectedStars },
                     { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id },
                     { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime }
-                    //, { "Image_RMS", rms }
+                    , { "Image_RMS", rms }
                 };
 
                 // Add these if they exist

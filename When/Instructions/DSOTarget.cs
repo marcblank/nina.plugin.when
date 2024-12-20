@@ -1,4 +1,5 @@
 ﻿using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
@@ -39,6 +40,12 @@ namespace WhenPlugin.When {
                     Logger.Debug("DSOTarget, found above: " + container.Target.TargetName);
                     Coordinates c = container.Target.InputCoordinates.Coordinates;
                     if (c != null  && c.RA == 0 && c.Dec == 0) {
+                        IDeepSkyObject dso = container.Target.DeepSkyObject;
+                        if (dso != null && dso.Coordinates.RA != 0 && dso.Coordinates.Dec != 0) {
+                            Logger.Debug("DSOTarget, using DSO coordinates instead");
+                            container.Target.InputCoordinates.Coordinates = dso.Coordinates;
+                            return container.Target;
+                        }
                         Logger.Debug("Found target has 0/0 coordinates; failing search");
                         return null;
                     }
@@ -68,6 +75,12 @@ namespace WhenPlugin.When {
                                         } else if (dso2.Target.InputCoordinates.Coordinates == null) {
                                             Logger.Debug("DSO Target, running target InputCoordinates has no Coordinates");
                                         } else if (dso2.Target.InputCoordinates.Coordinates.RA == 0 && dso2.Target.InputCoordinates.Coordinates.Dec == 0) {
+                                            IDeepSkyObject dsot = dso2.Target.DeepSkyObject;
+                                            if (dsot != null && dsot.Coordinates.RA != 0 && dsot.Coordinates.Dec != 0) {
+                                                Logger.Debug("DSO Target, using DSO coordinates instead");
+                                                dso2.Target.InputCoordinates.Coordinates = dsot.Coordinates;
+                                                return dso2.Target;
+                                            }
                                             Logger.Debug("DSO Target, running target Coordinates are 0/0");
                                         } else {
                                             return dso2.Target;

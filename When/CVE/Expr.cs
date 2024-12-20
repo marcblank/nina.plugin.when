@@ -605,7 +605,6 @@ namespace WhenPlugin.When {
                     StringValue = null;
 
                     if (Parameters.Count < Resolved.Count) {
-                        Logger.Info("Mismatch in " + this + "; Parameters < Resolved");
                         Parameters.Clear();
                         Resolved.Clear();
                     }
@@ -731,7 +730,7 @@ namespace WhenPlugin.When {
                                     string str = (string)eval;
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
-                                    if (Type != "Any") {
+                                    if (Type.Equals("Integer")) {
                                         Error = "Syntax error";
                                     }
                                 }

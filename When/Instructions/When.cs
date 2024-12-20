@@ -24,6 +24,9 @@ using NINA.Sequencer.Trigger;
 using Newtonsoft.Json;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
+using NINA.Core.Model;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace WhenPlugin.When {
 
@@ -115,6 +118,16 @@ namespace WhenPlugin.When {
                 return true;
             }
 
+            Symbol.UpdateSwitchWeatherData();
+            if (IfExpr.ImageVolatile) {
+                Logger.Info("ImageVolatile");
+                while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
+                    Logger.Info("Waiting 250ms for processing...");
+                    Task.Delay(250);
+                }
+                // Get latest values
+                Logger.Info("ImageVolatile, new data");
+            }
             IfExpr.Evaluate();
 
             if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {

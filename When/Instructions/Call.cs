@@ -285,12 +285,12 @@ namespace WhenPlugin.When {
                 }
             }
 
-            clone.Arg1Expr = new Expr(clone, this.Arg1Expr.Expression);
-            clone.Arg2Expr = new Expr(clone, this.Arg2Expr.Expression);
-            clone.Arg3Expr = new Expr(clone, this.Arg3Expr.Expression);
-            clone.Arg4Expr = new Expr(clone, this.Arg4Expr.Expression);
-            clone.Arg5Expr = new Expr(clone, this.Arg5Expr.Expression);
-            clone.Arg6Expr = new Expr(clone, this.Arg6Expr.Expression);
+            clone.Arg1Expr = new Expr(clone, this.Arg1Expr.Expression, "Any");
+            clone.Arg2Expr = new Expr(clone, this.Arg2Expr.Expression, "Any");
+            clone.Arg3Expr = new Expr(clone, this.Arg3Expr.Expression, "Any");
+            clone.Arg4Expr = new Expr(clone, this.Arg4Expr.Expression, "Any");
+            clone.Arg5Expr = new Expr(clone, this.Arg5Expr.Expression, "Any");
+            clone.Arg6Expr = new Expr(clone, this.Arg6Expr.Expression, "Any");
             clone.ResultExpr = new Expr(clone, this.ResultExpr.Expression);
 
             return clone;

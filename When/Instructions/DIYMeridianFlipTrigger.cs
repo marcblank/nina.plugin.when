@@ -432,14 +432,6 @@ namespace WhenPlugin.When {
 
         private void CheckTarget() {
 
-            bool Inherited;
-            var contextCoordinates = ItemUtility.RetrieveContextCoordinates(this.Parent);
-            if (contextCoordinates != null) {
-                Inherited = true;
-            } else {
-                Inherited = false;
-            }
-
             InputTarget t = DSOTarget.FindTarget(Parent);
             if (t != null) {
                 Target = t;
