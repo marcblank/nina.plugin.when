@@ -89,10 +89,13 @@ namespace WhenPlugin.When {
                                         InputTarget rt = FindRunningItem(dso2);
                                         if (rt != null) {
                                             Logger.Debug("DSO Target, found by looking deeper");
+                                            return rt;
                                         }
-                                        return rt;
                                     } else if (item2 is ISequenceContainer cont2) {
-                                        return FindRunningItem(cont2);
+                                        InputTarget rt = FindRunningItem(cont2);
+                                        if (rt != null) {
+                                            return rt;
+                                        }
                                     }
                                 }
                             }
