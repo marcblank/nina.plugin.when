@@ -340,7 +340,6 @@ namespace WhenPlugin.When {
                 if (UseSideOfPier && telescopeInfo.SideOfPier != PierSide.pierUnknown) {
                     //The minimum time to flip has not been reached yet. Check if a flip is required based on the estimation of the next instruction
                     var noRemainingTime = maximumTimeRemaining <= TimeSpan.FromSeconds(nextInstructionTime);
-
                     if (noRemainingTime) {
                         // There is no more time remaining. Project the side of pier to that at the time after the flip and check if this flip is required
                         var projectedSiderealTime = Angle.ByHours(AstroUtil.EuclidianModulus(telescopeInfo.SiderealTime + originalMaximumTimeRemaining.TotalHours, 24));

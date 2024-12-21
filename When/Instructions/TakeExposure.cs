@@ -418,6 +418,7 @@ namespace WhenPlugin.When {
                 if (recordedRMS != null) {
                     rms = recordedRMS.Total;
                 }
+
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
@@ -425,6 +426,7 @@ namespace WhenPlugin.When {
                     { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id },
                     { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime }
                     , { "Image_RMS", rms }
+                    , { "Image_Type", e.RenderedImage.RawImageData.MetaData.Image.ImageType }
                 };
 
                 // Add these if they exist
