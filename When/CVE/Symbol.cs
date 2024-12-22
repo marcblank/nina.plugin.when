@@ -795,9 +795,14 @@ namespace WhenPlugin.When {
                     };
                 }
 
+                var sunPos = AstroUtil.GetSunPosition(DateTime.Now, AstroUtil.GetJulianDate(DateTime.Now), Observer);
+                Coordinates sunCoords = new Coordinates(sunPos.RA, sunPos.Dec, Epoch.JNOW, Coordinates.RAType.Hours);
+                var tc = sunCoords.Transform(Angle.ByDegree(Observer.Latitude), Angle.ByDegree(Observer.Longitude));
+
                 AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
                 AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-                AddSymbol(i, "SunAltitude", AstroUtil.GetSunAltitude(DateTime.UtcNow, Observer));
+                AddSymbol(i, "SunAltitude", tc.Altitude);
+                AddSymbol(i, "SunAzimuth", tc.Azimuth);
 
                 double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
                 if (lst < 0) {
