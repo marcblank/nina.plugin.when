@@ -59,7 +59,7 @@ namespace WhenPlugin.When {
         public string Identifier {
             get { return null;  }
             set {
-                NameExpr.Expression = "'" + value + "'";
+                NameExpr.Expression = value;
             }
         }
 
