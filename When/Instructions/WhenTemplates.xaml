@@ -2005,27 +2005,21 @@
                                     <ItemsControl ItemsSource="{Binding Issues}" />
                                 </Border.ToolTip>
                             </Border>
-                            <TextBlock VerticalAlignment="Center" Text="Index Variable:" />
+                            <TextBlock Margin="0,3,0,0" VerticalAlignment="Center" Text="Index Variable:" />
                             <TextBox
                                 MinWidth="40"
                                 Margin="5,2,10,-2"
                                 Text="{Binding IndexVariable}"
                                 VerticalAlignment="Center"
                                 TextAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Value Variable:" />
+                            <TextBlock Margin="0,3,0,0" VerticalAlignment="Center" Text="Value Variable:" />
                             <TextBox
                                 MinWidth="40"
                                 Margin="5,2,10,-2"
                                 Text="{Binding ValueVariable}"
                                 VerticalAlignment="Center"
                                 TextAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Array:" />
-                            <TextBox
-                                MinWidth="40"
-                                Margin="5,2,10,-2"
-                                Text="{Binding Array}"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center" />
+                            <local:ExprControl Label="Name:" Exp="{Binding NameExpr}" />
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter

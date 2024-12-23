@@ -801,8 +801,8 @@ namespace WhenPlugin.When {
 
                 AddSymbol(i, "MoonAltitude", AstroUtil.GetMoonAltitude(DateTime.UtcNow, Observer));
                 AddSymbol(i, "MoonIllumination", AstroUtil.GetMoonIllumination(DateTime.Now));
-                AddSymbol(i, "SunAltitude", tc.Altitude);
-                AddSymbol(i, "SunAzimuth", tc.Azimuth);
+                AddSymbol(i, "SunAltitude", tc.Altitude.Degree);
+                AddSymbol(i, "SunAzimuth", tc.Azimuth.Degree);
 
                 double lst = AstroUtil.GetLocalSiderealTimeNow(ProfileService.ActiveProfile.AstrometrySettings.Longitude);
                 if (lst < 0) {

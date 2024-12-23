@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Accord.IO;
 using System.Text;
+using Antlr.Runtime;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each in Array")]
@@ -34,6 +35,7 @@ namespace WhenPlugin.When {
 
         [ImportingConstructor]
         public ForEachInArray() : base() {
+            NameExpr = new Expr(this);
         }
 
         public ForEachInArray(ForEachInArray copyMe) : this() {
@@ -41,7 +43,6 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 ValueVariable = copyMe.ValueVariable;
                 IndexVariable = copyMe.IndexVariable;
-                Array = copyMe.Array;
             }
         }
 
@@ -51,9 +52,6 @@ namespace WhenPlugin.When {
         public string IndexVariable {
             get => indexVariable;
             set {
-                if (Parent == null) {
-                    //return;
-                }
                 indexVariable = value;
                 RaisePropertyChanged();
             }
@@ -65,27 +63,31 @@ namespace WhenPlugin.When {
         public string ValueVariable {
             get => valueVariable;
             set {
-                if (Parent == null) {
-                    //return;
-                }
                 valueVariable = value;
                 RaisePropertyChanged();
             }
         }
 
-        private string array = "";
+
+        private Expr _NameExpr = null;
 
         [JsonProperty]
-        public string Array {
-            get => array;
+        public Expr NameExpr {
+            get => _NameExpr;
             set {
-                if (Parent == null) {
-                    //return;
-                }
-                array = value;
+                _NameExpr = value;
                 RaisePropertyChanged();
             }
         }
+
+        [JsonProperty]
+        public string Array {
+            get { return null; }
+            set {
+                NameExpr.Expression = value;
+            }
+        }
+
         public override object Clone() {
             ForEachInArray ic = new ForEachInArray(this);
             ic.Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
@@ -96,9 +98,11 @@ namespace WhenPlugin.When {
             if (ic.Conditions.Count == 0) {
                 ic.Add(new LoopCondition());
             }
+            ic.NameExpr = new Expr(ic, this.NameExpr.Expression);
             return ic;
         }
 
+        public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
         public new string ValidateArguments () {
 
@@ -109,27 +113,36 @@ namespace WhenPlugin.When {
                 return "There must be a value variable specified";
             }
 
-            VTokens = new string[] { IndexVariable, ValueVariable };
+            if (NameExpr.StringValue != null) {
+                if (NameExpr.StringValue.Length == 0) {
+                    return "A name for the Array must be specified";
+                } else if (!Regex.IsMatch(NameExpr.StringValue, VALID_SYMBOL)) {
+                    return "The name of an Array must be alphanumeric";
+                 }
+            }
 
             return null;
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ForEachInArray)}, Variable: {Variable}, List Expression: {ListExpression}";
+            return $"Category: {Category}, Item: {nameof(ForEachInArray)}, IndexVariable: {IndexVariable}, ValueVariable: {ValueVariable}, Array: {NameExpr.Expression}";
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            if (Array == null || Array.Length == 0) {
-                throw new SequenceEntityFailedException("An Array must be specified and must have been initialized");
-            }
+            Symbol.Array a = new Symbol.Array();
 
-            if (!Symbol.Arrays.ContainsKey(Array)) {
-                throw new SequenceEntityFailedException("The Array specified does not exist");
-            }
+            if (NameExpr.StringValue != null) {
+                if (NameExpr.StringValue.Length == 0) {
+                    throw new SequenceEntityFailedException("An Array must be specified and must have been initialized");
+                }
 
-            Symbol.Array a;
-            if (!Symbol.Arrays.TryGetValue(Array, out a)) {
-                throw new SequenceEntityFailedException("Huh?  Key exists but not Array??");
+                if (!Symbol.Arrays.ContainsKey(NameExpr.StringValue)) {
+                    throw new SequenceEntityFailedException("The Array specified does not exist");
+                }
+
+                if (!Symbol.Arrays.TryGetValue(NameExpr.StringValue, out a)) {
+                    throw new SequenceEntityFailedException("Huh?  Key exists but not Array??");
+                }
             }
 
             ETokens = new string[a.Count];
@@ -165,6 +178,8 @@ namespace WhenPlugin.When {
             if (e != null) {
                 i.Add(e);
             }
+
+            Expr.AddExprIssues(i, NameExpr);
 
             Issues = i;
             RaisePropertyChanged("Issues");

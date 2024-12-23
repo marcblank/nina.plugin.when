@@ -355,6 +355,9 @@ namespace WhenPlugin.When {
                             } else {
                                 Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                             }
+                            Logger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
+                            Logger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
+                            Logger.Info("Pause: " + PauseTimeBeforeMeridian);
                             FlipStatus = $"Flip sequence start due now through {TimeString(maximumTimeRemaining)}!";
                             RaisePropertyChanged("FlipStatus");
                             Logger.Info(FlipStatus);

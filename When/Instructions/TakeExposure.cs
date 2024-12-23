@@ -427,6 +427,7 @@ namespace WhenPlugin.When {
                     { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime }
                     , { "Image_RMS", rms }
                     , { "Image_Type", e.RenderedImage.RawImageData.MetaData.Image.ImageType }
+                    , { "Image_Gain", e.RenderedImage.RawImageData.MetaData.Camera.Gain}
                 };
 
                 // Add these if they exist
