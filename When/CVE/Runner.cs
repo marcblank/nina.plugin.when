@@ -25,7 +25,6 @@ namespace WhenPlugin.When {
                 AttachNewParent(runner.Parent);
             }
             RunInstructions = runner;
-            RunInstructions.AttachNewParent(this);
             Progress = progress;
             Token = token;
             ShouldRetry = false;

@@ -240,8 +240,10 @@ namespace WhenPlugin.When {
         }
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            ISequenceContainer oldParent = Instructions.Parent;
             Runner runner = new Runner(Instructions, progress, token);
             await runner.RunConditional();
+            Instructions.AttachNewParent(oldParent);
         }
 
         

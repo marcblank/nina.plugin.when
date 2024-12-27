@@ -397,6 +397,9 @@ namespace WhenPlugin.When {
                             if (delayedFlip) {
                                 FlipStatus = $"Flip didn't happen, as Side Of Pier is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now";
                                 RaisePropertyChanged("FlipStatus");
+                                Logger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
+                                Logger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
+                                Logger.Info("Pause: " + PauseTimeBeforeMeridian);
                                 Logger.Info($"Meridian Flip - Flip seems to not happened in time as Side Of Pier is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now");
                             }
                             return delayedFlip;
