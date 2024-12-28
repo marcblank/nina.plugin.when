@@ -37,6 +37,9 @@ using Accord;
 using NINA.Plugin.Messaging;
 using NINA.Plugin.Interfaces;
 using NmeaParser.Messages;
+using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
+using NINA.Equipment.Equipment.MyGuider.PHD2;
+using NINA.WPF.Base.Mediator;
 
 namespace WhenPlugin.When {
 
@@ -541,6 +544,9 @@ namespace WhenPlugin.When {
             "StarFWHM", "Temperature", "WindDirection", "WindGust", "WindSpeed"};
 
         public static string RemoveSpecialCharacters(string str) {
+            if (str == null) {
+                return "__Null__";
+            }
             StringBuilder sb = new StringBuilder();
             foreach (char c in str) {
                 if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_') {
@@ -563,6 +569,7 @@ namespace WhenPlugin.When {
         private static IFocuserMediator FocuserMediator { get; set; }
         private static ITelescopeMediator TelescopeMediator { get; set; }
         private static IMessageBroker MessageBroker { get; set; }
+        private static IGuiderMediator GuiderMediator { get; set; }
 
 
         private static ConditionWatchdog ConditionWatchdog { get; set; }
@@ -617,7 +624,7 @@ namespace WhenPlugin.When {
 
         public static void InitMediators(ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
             IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IProfileService profileService, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
-            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IMessageBroker messageBroker) {
+            IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IMessageBroker messageBroker, IGuiderMediator guiderMediator) {
             SwitchMediator = switchMediator;
             WeatherDataMediator = weatherDataMediator;
             CameraMediator = cameraMediator;
@@ -630,6 +637,7 @@ namespace WhenPlugin.When {
             FocuserMediator = focuserMediator;
             TelescopeMediator = telescopeMediator;
             MessageBroker = messageBroker;
+            GuiderMediator = guiderMediator;
 
             ConditionWatchdog = new ConditionWatchdog(UpdateSwitchWeatherData, TimeSpan.FromSeconds(5));
             ConditionWatchdog.Start();
@@ -639,6 +647,9 @@ namespace WhenPlugin.When {
             MessageBroker.Subscribe("TargetScheduler-WaitStart", PowerupsSubscriber);
             MessageBroker.Subscribe("TargetScheduler-TargetStart", PowerupsSubscriber);
             MessageBroker.Subscribe("TargetScheduler-NewTargetStart", PowerupsSubscriber);
+            
+            GuiderMediator.GuideEvent += GuiderMediator_GuideEvent;
+        
         }
 
         public static Keys SwitchWeatherKeys { get; set; } = new Keys();
@@ -695,6 +706,24 @@ namespace WhenPlugin.When {
             if (SwitchConnected != SwitchMediator.GetInfo().Connected) { return false; }
             if (WeatherConnected != WeatherDataMediator.GetInfo().Connected) { return false; }
             return true;
+        }
+
+        private static double HFD = 0;
+
+        private static double StarMass = 0;
+
+        private static double SNR = 0;
+        
+        private static void GuiderMediator_GuideEvent(object sender, NINA.Core.Interfaces.IGuideStep e) {
+            if (GuiderMediator.GetInfo().Connected) {
+                if (GuiderMediator.GetDevice() is PHD2Guider) {
+                    if (e is PhdEventGuideStep eventGuideStep) {
+                        HFD = eventGuideStep.HFD;
+                        StarMass = eventGuideStep.StarMass;
+                        SNR = eventGuideStep.SNR;
+                    }
+                }
+            }
         }
 
         private static ObserverInfo Observer = null;

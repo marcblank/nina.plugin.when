@@ -57,14 +57,7 @@ namespace WhenPlugin.When {
 
                 Log("IfFailed - Triggered by: " + condition.Name);
 
-                Runner runner = new Runner(Instructions, progress, token);
-                await runner.RunConditional();
-                if (runner.ShouldRetry) {
-                    Log("IfFailed - Retrying failed instruction: " + condition.Name);
-                    runner.ResetProgress();
-                    runner.ShouldRetry = false;
-                    continue;
-                }
+                await Instructions.Run(progress, token);
 
                 return;
             }

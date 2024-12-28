@@ -136,8 +136,7 @@ namespace WhenPlugin.When {
             } catch (Exception ex) {
                 if (TimedOut) {
                     Logger.Info("Timed out; executing instructions...");
-                    Runner runner = new Runner(Instructions, progress, token);
-                    await runner.RunConditional();
+                    await Instructions.Run(progress, token);
                 }
             } finally {
                 this.progress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" }); ;

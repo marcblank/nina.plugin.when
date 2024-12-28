@@ -267,11 +267,11 @@ namespace WhenPlugin.When {
                     Logger.Trace("InterruptWhen: Starting sequence, Triggered -> true");
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
-                        Logger.Trace("InterruptWhen: Parent not in root container?");
+                        Logger.Info("InterruptWhen: Can't run When because Parent isn't in root container, " + Parent.Name);
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
-                        Logger.Trace("InterruptWhen: Parent is not running?");
+                        Logger.Info("InterruptWhen: Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
                     } else {
-                        Logger.Trace("InterruptWhen: Disabled?");
+                        Logger.Info("InterruptWhen: Can't run when for some othe reason: Disabled?");
                     }
                 }
             } else {

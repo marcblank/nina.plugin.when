@@ -68,7 +68,7 @@ namespace WhenPlugin.When {
             bool safe = info.Connected && info.IsSafe;
 
             if (!safe) {
-                Logger.Info("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+                Logger.Debug("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
             }
 
             
@@ -76,7 +76,8 @@ namespace WhenPlugin.When {
             Symbol sym = Symbol.FindSymbol("SAFE", item.Parent);
             if (sym != null) {
                 // If "SAFE" is defined, safe is the value
-                Logger.Info("SAFE is defined with value: " + sym.Expr.Value);
+                Symbol.LogOnce("SAFE is defined with value: " + sym.Expr.Value);
+                Logger.Debug("SAFE is defined with value: " + sym.Expr.Value);
                 safeValue = sym.Expr.Value;
                 return (safeValue != 0);
             }

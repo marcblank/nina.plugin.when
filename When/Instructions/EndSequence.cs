@@ -96,15 +96,6 @@ namespace WhenPlugin.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Logger.Info("EndSequence running...");
-            ISequenceEntity p = Parent;
-            while (p != null) {
-                if (p is Runner r && r.cts != null) {
-                    Logger.Info("Stopping runner cts");
-                    r.cts.Cancel();
-                    break; // return Task.CompletedTask;
-                }
-                p = p.Parent;
-            }
             if (s2vm != null) {
                 _ = SkipToEndOfSequence();
                 //FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);

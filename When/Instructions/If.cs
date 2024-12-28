@@ -79,8 +79,7 @@ namespace WhenPlugin.When {
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("Predicate is true, " + IfExpr);
-                    Runner runner = new Runner(Instructions, progress, token);
-                    await runner.RunConditional();
+                    await Instructions.Run(progress, token);
                 } else {
                     Logger.Info("Predicate is false, " + IfExpr);
                     return;
@@ -88,6 +87,14 @@ namespace WhenPlugin.When {
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
+            }
+        }
+
+
+        public override void ResetProgress() {
+            base.ResetProgress();
+            foreach (ISequenceItem item in Instructions.Items) {
+                item.ResetProgress();
             }
         }
 

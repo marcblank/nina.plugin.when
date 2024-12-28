@@ -349,6 +349,16 @@
         </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type local:SlewDomeAzimuth}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <local:ExprControl Label="Azimuth" Exp="{Binding AzExpr}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:SetSwitchValue}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>

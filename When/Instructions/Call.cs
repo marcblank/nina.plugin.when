@@ -256,11 +256,6 @@ namespace WhenPlugin.When {
                     Instructions.Items.Clear();
                 }
                 TemplateName = selectedTemplate.Container.Name;
-                
-                //Instructions.Items.Add((ISequenceContainer)SelectedTemplate.Container.Clone());
-                //foreach (ISequenceItem item in Instructions.Items) {
-                //    item.AttachNewParent(Instructions);
-                //}
 
                 RaisePropertyChanged("SelectedTemplate");
                 RaisePropertyChanged("TemplateNameIsTrue");
@@ -374,8 +369,7 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Runner runner = new Runner(Instructions, progress, token);
-            await runner.RunConditional();
+            await Instructions.Run(progress, token);
         }
 
         public override void AfterParentChanged() {

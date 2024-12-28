@@ -74,7 +74,6 @@ namespace WhenPlugin.When {
                 return;
             }
 
-            Runner runner;
             try {
                 // Always get latest data...
                 await Symbol.UpdateSwitchWeatherData();
@@ -94,12 +93,11 @@ namespace WhenPlugin.When {
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("Predicate is true; running Then");
-                    runner = new Runner(Instructions, progress, token);
+                    Instructions.Run(progress, token);
                 } else {
                     Logger.Info("Predicate is false; running Else");
-                    runner = new Runner(ElseInstructions, progress, token);
+                    ElseInstructions.Run(progress, token);
                 }
-                await runner.RunConditional();
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;

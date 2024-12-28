@@ -103,8 +103,7 @@ namespace WhenPlugin.When {
             }
 
             // Execute instructions now
-            Runner runner = new Runner(Instructions, progress, token);
-            await runner.RunConditional();
+            await Instructions.Run(progress, token);
         }
 
         public override string ToString() {

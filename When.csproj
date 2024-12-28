@@ -24,6 +24,7 @@
     <Compile Remove="When\CVE\ExpressionConverter.cs" />
     <Compile Remove="When\CVE\GlobalConstantView.xaml.cs" />
     <Compile Remove="When\CVE\ISettable.cs" />
+    <Compile Remove="When\CVE\Runner.cs" />
     <Compile Remove="When\CVE\RunnerInstruction.cs" />
     <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
@@ -41,6 +42,7 @@
     <Compile Remove="When\Obsolete\ConstantHintControl.xaml.cs" />
     <Compile Remove="When\Obsolete\Retry.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
+    <Compile Remove="When\Runner.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
     <Compile Remove="When\UserControl1.xaml.cs" />
   </ItemGroup>
