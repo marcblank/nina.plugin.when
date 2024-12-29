@@ -93,10 +93,10 @@ namespace WhenPlugin.When {
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
                     Logger.Info("Predicate is true; running Then");
-                    Instructions.Run(progress, token);
+                    await Instructions.Run(progress, token);
                 } else {
                     Logger.Info("Predicate is false; running Else");
-                    ElseInstructions.Run(progress, token);
+                    await ElseInstructions.Run(progress, token);
                 }
             } catch (ArgumentException ex) {
                 Logger.Info("If error: " + ex.Message);
