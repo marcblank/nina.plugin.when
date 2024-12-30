@@ -87,7 +87,7 @@ namespace WhenPlugin.When {
             Logger.Warning(str);
         }
 
-        private ISequenceContainer LastSParent { get; set; }
+        protected ISequenceContainer LastSParent { get; set; }
 
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
