@@ -142,6 +142,9 @@ namespace WhenPlugin.When {
             }
             Symbol sym = Symbol.FindSymbol(resultName, Parent, true);
             if (sym != null && sym is SetVariable sv) {
+                if (value is string vs) {
+                    value = "'" + vs + "'";
+                }
                 sv.Definition = value.ToString();
                 Logger.Info("Setting Variable " + sv + " to " + value);
             } else {

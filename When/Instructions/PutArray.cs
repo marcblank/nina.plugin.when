@@ -131,8 +131,9 @@ namespace WhenPlugin.When {
             
             Symbol.UpdateSwitchWeatherData();
             VExpr.Evaluate();
-            
-            if (!arr.TryAdd(IExpr.ValueString, VExpr.Value)) {
+
+            object val = VExpr.Value == double.NegativeInfinity ? VExpr.ValueString : VExpr.Value;
+            if (!arr.TryAdd(IExpr.ValueString, val)) {
                 throw new SequenceEntityFailedException("Adding Array value at index " + IExpr.Value + " failed?");
             }
             return Task.CompletedTask;
