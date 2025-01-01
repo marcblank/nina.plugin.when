@@ -115,6 +115,8 @@ namespace WhenPlugin.When {
             
             // Make sure references are updated
             Symbol.SymbolDirty(sym);
+
+            Expr.Refresh();
  
             return Task.CompletedTask;
         }

@@ -50,8 +50,11 @@ namespace WhenPlugin.When {
 
             try {
                 if (expr != null) {
-                    if (expr.Error != null) return ""; // "{" + expr.Error + "}";
-                    if (!expr.IsExpression) return "";
+                    if (expr.Error != null) {
+                        return "{" + expr.Error + "}";
+                    } else if (!expr.IsExpression) {
+                        return "{Not an Expression}";
+                    }
                     string txt;
                     if (expr.Error == null) {
                         if (expr.SequenceEntity is ITrueFalse) {
@@ -83,6 +86,11 @@ namespace WhenPlugin.When {
                     } else {
                         txt = expr.Error;
                     }
+                    #if DEBUG
+                    if (txt.Length == 0) {
+                        txt = "^emp";
+                    }
+                    #endif
                     return "{" + txt + "}";
 
                 } else {

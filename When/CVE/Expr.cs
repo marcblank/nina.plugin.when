@@ -219,6 +219,7 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("Default");
                 RaisePropertyChanged("Value");
                 RaisePropertyChanged("ValueString");
+                RaisePropertyChanged("StringValue");
             }
         }
 
@@ -239,7 +240,7 @@ namespace WhenPlugin.When {
         public ISequenceEntity SequenceEntity { get; set; } = null;
 
         [JsonProperty]
-        public string Type { get; set; } = null;
+        public string Type { get; set; } = "Any";
 
 
         public Action<Expr> Setter { get; set; }
@@ -327,6 +328,7 @@ namespace WhenPlugin.When {
                     if (Setter != null) {
                         Setter(this);
                     }
+                    RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("DockableValue");
@@ -343,6 +345,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("IsAnnotated");
+                    RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("InfoButtonColor");
                     RaisePropertyChanged("InfoButtonChar");
                     RaisePropertyChanged("InfoButtonSize");
@@ -575,6 +578,7 @@ namespace WhenPlugin.When {
                         IsExpression = false;
                         RaisePropertyChanged("Value");
                         RaisePropertyChanged("ValueString");
+                        RaisePropertyChanged("StringValue");
                         RaisePropertyChanged("IsExpression");
                         return;
                     }
@@ -715,6 +719,7 @@ namespace WhenPlugin.When {
                                 }
                             }
                             RaisePropertyChanged("ValueString");
+                            RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("Value");
                         } else {
                             object eval = e.Evaluate();
@@ -730,11 +735,12 @@ namespace WhenPlugin.When {
                                     string str = (string)eval;
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
-                                    if (Type.Equals("Integer")) {
+                                    if ("Integer".Equals(Type)) {
                                         Error = "Syntax error";
                                     }
                                 }
                             }
+                            RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("ValueString");
                             RaisePropertyChanged("Value");
                         }
