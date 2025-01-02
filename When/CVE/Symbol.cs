@@ -805,8 +805,8 @@ namespace WhenPlugin.When {
                     if (foundTarget != null && foundTarget.InputCoordinates != null) {
                         Coordinates c = foundTarget.InputCoordinates.Coordinates;
                         if (c.RA != 0 && c.Dec != 0) {
-                            AddSymbol(i, "TargetRA", c.RA);
-                            AddSymbol(i, "TargetDec", c.Dec);
+                            //AddSymbol(i, "TargetRA", c.RA);
+                            //AddSymbol(i, "TargetDec", c.Dec);
                         }
                     }
                 }
