@@ -28,7 +28,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Name", "Fail (for testing)")]
     [ExportMetadata("Description", "This instruction always fails; for experimenting with 'If Fails'!")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    //[ExportMetadata("Category", "When (and If)")]
+    //[ExportMetadata("Category", "Powerups (Test)")]
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Fail : SequenceItem {

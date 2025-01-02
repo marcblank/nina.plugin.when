@@ -72,6 +72,7 @@ namespace WhenPlugin.When {
                     ContextCoordinates cc = ItemUtility.RetrieveContextCoordinates(p);
                     if (cc != null) {
                         t.InputCoordinates.Coordinates = cc.Coordinates;
+                        t.PositionAngle = cc.PositionAngle;
                     }
                 }
                 return t;

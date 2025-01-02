@@ -8,6 +8,7 @@ using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Profile;
 using NINA.Sequencer;
+using NINA.Sequencer.SequenceItem;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -475,6 +476,14 @@ namespace WhenPlugin.When {
                         throw new ArgumentException();
                     }
                     args.Result = dt.ToString((string)args.Parameters[1].Evaluate());
+                } else if (name == "defined") {
+                    string str = Convert.ToString(args.Parameters[0].Evaluate());
+                    ISequenceItem runningItem = WhenPlugin.GetRunningItem();
+                    if (runningItem != null) {
+                        args.Result = Symbol.FindSymbol(str, runningItem.Parent, true) != null;
+                    } else {
+                        args.Result = 0;
+                    }
                 } else if (name == "startsWith") {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     string f = Convert.ToString(args.Parameters[1].Evaluate());

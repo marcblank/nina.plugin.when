@@ -789,10 +789,11 @@ namespace WhenPlugin.When {
 
                 string targetName = null;
                 ISequenceItem runningItem = WhenPlugin.GetRunningItem();
+                InputTarget foundTarget = null;
                 if (runningItem != null && runningItem.Parent != null) {
-                    InputTarget t = DSOTarget.FindTarget(runningItem.Parent);
-                    if (t != null) {
-                        targetName = t.TargetName;
+                    foundTarget = DSOTarget.FindTarget(runningItem.Parent);
+                    if (foundTarget != null) {
+                        targetName = foundTarget.TargetName;
                         LastTargetName = targetName;
                     }
                 }
@@ -801,6 +802,13 @@ namespace WhenPlugin.When {
                 }
                 if (targetName != null && targetName.Length > 0) {
                     AddSymbol(i, "TargetName", targetName);
+                    if (foundTarget != null && foundTarget.InputCoordinates != null) {
+                        Coordinates c = foundTarget.InputCoordinates.Coordinates;
+                        if (c.RA != 0 && c.Dec != 0) {
+                            AddSymbol(i, "TargetRA", c.RA);
+                            AddSymbol(i, "TargetDec", c.Dec);
+                        }
+                    }
                 }
 
                 List<string> toDelete = new List<string>();
