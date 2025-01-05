@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
                 if (condition.Status != NINA.Core.Enum.SequenceEntityStatus.FAILED) {
                     return;
                 }
-            } catch (Exception ex) {
+            } catch (Exception) {
                 if (TimedOut) {
                     Logger.Info("Timed out; executing instructions...");
                     await Instructions.Run(progress, token);

@@ -67,7 +67,7 @@ namespace WhenPlugin.When {
         }
 
         [OnDeserialized]
-        public void OnDeserialized(StreamingContext context) {
+        public new void OnDeserialized(StreamingContext context) {
             if (Items.Count == 0 || !(Items[0] is AssignVariables)) {
                 AssignVariables av = new AssignVariables() { Name = "Assign Variables" };
                 Items.Insert(0, av);

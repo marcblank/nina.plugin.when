@@ -107,7 +107,7 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError { get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Symbol.UpdateSwitchWeatherData();
+            await Symbol.UpdateSwitchWeatherData();
             Logger.Warning("User log: " + ProcessedScript);
         }
 

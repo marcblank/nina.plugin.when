@@ -616,34 +616,6 @@
         </nina:SequenceBlockView>
     </DataTemplate>
 
-
-    <DataTemplate DataType="{x:Type local:AutofocusAfterExposures}">
-        <nina:SequenceBlockView>
-            <nina:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAfterExposures}" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Text="{Binding AfterExposures}" />
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemContent>
-            <nina:SequenceBlockView.SequenceItemProgressContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblExposures}" />
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding ProgressExposures}" />
-                    <TextBlock Text="/" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding AfterExposures}" />
-                </StackPanel>
-            </nina:SequenceBlockView.SequenceItemProgressContent>
-        </nina:SequenceBlockView>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type local:InterruptTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>
@@ -1534,7 +1506,7 @@
                                 Foreground="White"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="Send via Ground Station: " />
+                                Text="Send via Ground Station (expand the instruction and add the Ground Station instruction below)" />
 
                             <Border
                               Width="20"
@@ -1561,27 +1533,6 @@
                                 </Border.ToolTip>
                             </Border>
 
-                            <Border
-                               MinHeight="35"
-                               Margin="8,1,0,0"
-                               BorderBrush="{StaticResource BorderBrush}"
-                               BorderThickness="1">
-                                <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
-                                    <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
-                                    <TextBlock
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontStyle="Italic"
-                                       Text="Ground station instruction goes here"
-                                       TextAlignment="Center"
-                                       MinWidth="400"
-                                       Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
-                                </Grid>
-                                <i:Interaction.Behaviors>
-                                    <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
-                                    <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
-                                </i:Interaction.Behaviors>
-                            </Border>
                         </StackPanel>
                         <Border Grid.Column="1" Background="{StaticResource SecondaryBackgroundBrush}">
                             <ContentPresenter
@@ -1600,6 +1551,27 @@
                         </Border>
                     </Grid>
                 </ninactrl:DetachingExpander.Header>
+                <Border
+                    MinHeight="35"
+                    Margin="8,1,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+                    <Grid Background="{StaticResource BackgroundBrush}" DataContext="{Binding Condition}">
+                        <ItemsControl MinHeight="35" ItemsSource="{Binding Items}" />
+                        <TextBlock
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             FontStyle="Italic"
+                             Text="Ground station instruction goes here"
+                             TextAlignment="Center"
+                             MinWidth="400"
+                             Visibility="{Binding Items.Count, Converter={StaticResource InverseZeroToVisibilityConverter}}" />
+                    </Grid>
+                    <i:Interaction.Behaviors>
+                        <behaviors:DragOverBehavior DragAboveSize="0" DragBelowSize="0" />
+                        <behaviors:DropIntoBehavior AllowedDragDropTypesString="NINA.Sequencer.SequenceItem.ISequenceItem" OnDropCommand="DropIntoIfCommand" />
+                    </i:Interaction.Behaviors>
+                </Border>
             </ninactrl:DetachingExpander>
         </Border>
     </DataTemplate>

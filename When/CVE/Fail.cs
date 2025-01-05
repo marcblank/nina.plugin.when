@@ -27,9 +27,9 @@ namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Fail (for testing)")]
     [ExportMetadata("Description", "This instruction always fails; for experimenting with 'If Fails'!")]
-    [ExportMetadata("Icon", "HourglassSVG")]
+    //[ExportMetadata("Icon", "HourglassSVG")]
     //[ExportMetadata("Category", "Powerups (Test)")]
-    //[Export(typeof(ISequenceItem))]
+    [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Fail : SequenceItem {
 
@@ -47,7 +47,7 @@ namespace WhenPlugin.When {
 
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(5), true, token, progress, "");
+            await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(0.5 ), true, token, progress, "");
             throw new SequenceEntityFailedException("Fail exception did its thing!");
         }
 

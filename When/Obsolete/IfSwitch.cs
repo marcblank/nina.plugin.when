@@ -48,7 +48,7 @@ namespace WhenPlugin.When {
             };
         }
 
-        public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             throw new SequenceEntityFailedException("IfSwitch has been replaced by If");
         }
 

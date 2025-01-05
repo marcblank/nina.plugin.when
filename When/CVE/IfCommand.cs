@@ -119,7 +119,7 @@ namespace WhenPlugin.When {
                     }
                 }
             } catch (Exception ex) {
-                Logger.Info("Foo");
+                Logger.Info("Exception in ValidateInstructions: " + ex.Message);
             }
         }
 

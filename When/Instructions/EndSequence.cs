@@ -72,7 +72,7 @@ namespace WhenPlugin.When {
              if (startContainer.Status == SequenceEntityStatus.RUNNING) {
                 try {
                     await startContainer.Interrupt();
-                } catch (Exception ex) {
+                } catch (Exception) {
 
                 }
                 await Task.Delay(500);

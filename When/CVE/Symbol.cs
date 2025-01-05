@@ -40,6 +40,7 @@ using NmeaParser.Messages;
 using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 using NINA.Equipment.Equipment.MyGuider.PHD2;
 using NINA.WPF.Base.Mediator;
+using System.Windows.Media.Imaging;
 
 namespace WhenPlugin.When {
 
@@ -194,7 +195,7 @@ namespace WhenPlugin.When {
                                 cached.TryUpdate(Identifier, this, gv);
                             }
                         }
-                    } catch (ArgumentException ex) {
+                    } catch (ArgumentException) {
                         if (sParent != WhenPluginObject.Globals) {
                             IsDuplicate = true;
                             Identifier = GenId(cached, Identifier);
@@ -263,7 +264,7 @@ namespace WhenPlugin.When {
                             if (Debugging) {
                                 Logger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
-                        } catch (ArgumentException ex) {
+                        } catch (ArgumentException) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
                         }
                     } else {
@@ -588,7 +589,7 @@ namespace WhenPlugin.When {
                 this.expiration = expiration;
             }
         }
-        
+
         public class Subscriber : ISubscriber {
             Task ISubscriber.OnMessageReceived(IMessage message) {
                 Logger.Info("Received message from " + message.Sender + " re: " + message.Topic);
@@ -596,17 +597,25 @@ namespace WhenPlugin.When {
                 if (message.Sender == "Target Scheduler") {
                     if (message.Topic == "TargetScheduler-WaitStart") {
                         DateTimeOffset dto = new DateTimeOffset((DateTime)message.Content);
-                        MessageKeys.Remove("TS_WaitStart");
-                        MessageKeys.Add("TS_WaitStart", new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration));
+                        MessageKeys["TS_WaitStart"] = new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration);
                     } else if (message.Topic == "TargetScheduler-NewTargetStart" || message.Topic == "TargetScheduler-TargetStart") {
-                        MessageKeys.Remove("TS_TargetName");
-                        MessageKeys.Add("TS_TargetName", new VariableMessage(message.Content, message.Expiration));
+                        MessageKeys["TS_TargetName"] = new VariableMessage(message.Content, message.Expiration);
                         object p;
                         message.CustomHeaders.TryGetValue("ProjectName", out p);
                         if (p != null) {
                             string pn = (string)p;
-                            MessageKeys.Remove("TS_ProjectName");
-                            MessageKeys.Add("TS_ProjectName", new VariableMessage(pn, message.Expiration));
+                            MessageKeys["TS_ProjectName"] = new VariableMessage(pn, message.Expiration);
+                        }
+                        message.CustomHeaders.TryGetValue("Rotation", out p);
+                        if (p != null) {
+                            double rotation = (double)p;
+                            MessageKeys["TS_Target_Rotation"] = new VariableMessage(rotation, message.Expiration);
+                        }
+                        message.CustomHeaders.TryGetValue("Coordinates", out p);
+                        if (p != null) {
+                            Coordinates coords = (Coordinates)p;
+                            MessageKeys["TS_Target_RA"] = new VariableMessage(coords.RA, message.Expiration);
+                            MessageKeys["TS_Target_Dec"] = new VariableMessage(coords.Dec, message.Expiration);
                         }
                     } else {
                         Logger.Info("Message not handled");
@@ -738,11 +747,17 @@ namespace WhenPlugin.When {
         }
 
         private static void AddSymbol(List<string> i, string token, object value) {
-            AddSymbol(i, token, value, null);
+            AddSymbol(i, token, value, null, false);
+        }
+        private static void AddSymbol(List<string> i, string token, object value, string[] values) {
+            AddSymbol(i, token, value, values, false);
         }
 
-        private static void AddSymbol(List<string> i, string token, object value, string[] values) {
+        private static void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
             SwitchWeatherKeys.TryAdd(token, value);
+            if (silent) {
+                return;
+            }
             StringBuilder sb = new StringBuilder(token);
             try {
                 sb.Append(": ");
@@ -752,6 +767,8 @@ namespace WhenPlugin.When {
                     sb.Append(Math.Round(d, 2));
                 } else if (value is long l) {
                     sb.Append(Expr.ExprValueString(l));
+                } else if (value is int n) {
+                    sb.Append(n);
                 } else {
                     sb.Append("'" + value.ToString() + "'");
                 }
@@ -780,7 +797,16 @@ namespace WhenPlugin.When {
         private static string[] CoverConstants = new string[] { null, "CoverUnknown", "CoverNeitherOpenNorClosed", "CoverClosed", "CoverOpen", "CoverError", "CoverNotPresent" };
 
         private static string LastTargetName = null;
-        
+        private static InputTarget LastTarget = null;
+
+        private static void NoTarget(List<string> i) {
+            // Always show TargetValid
+            AddSymbol(i, "TargetValid", 0, null, false);
+            AddSymbol(i, "TargetRA", 0, null, true);
+            AddSymbol(i, "TargetDec", 0, null, true);
+            AddSymbol(i, "TargetName", "", null, true);
+        }
+
         public static Task UpdateSwitchWeatherData() {
 
             lock (SYMBOL_LOCK) {
@@ -794,21 +820,31 @@ namespace WhenPlugin.When {
                     foundTarget = DSOTarget.FindTarget(runningItem.Parent);
                     if (foundTarget != null) {
                         targetName = foundTarget.TargetName;
+                        LastTarget = foundTarget;
                         LastTargetName = targetName;
                     }
                 }
                 if (targetName == null) {
                     targetName = LastTargetName;
+                    foundTarget = LastTarget;
                 }
+
                 if (targetName != null && targetName.Length > 0) {
-                    AddSymbol(i, "TargetName", targetName);
                     if (foundTarget != null && foundTarget.InputCoordinates != null) {
                         Coordinates c = foundTarget.InputCoordinates.Coordinates;
                         if (c.RA != 0 && c.Dec != 0) {
-                            //AddSymbol(i, "TargetRA", c.RA);
-                            //AddSymbol(i, "TargetDec", c.Dec);
+                            AddSymbol(i, "TargetRA", c.RA);
+                            AddSymbol(i, "TargetDec", c.Dec);
+                            AddSymbol(i, "TargetValid", 1);
+                            AddSymbol(i, "TargetName", targetName);
+                        } else {
+                            NoTarget(i);
                         }
+                    } else {
+                        NoTarget(i);
                     }
+                } else {
+                    NoTarget(i);
                 }
 
                 List<string> toDelete = new List<string>();
@@ -938,7 +974,7 @@ namespace WhenPlugin.When {
                     foreach (FilterInfo filterInfo in f) {
                         try {
                             SwitchWeatherKeys.Add("Filter_" + RemoveSpecialCharacters(filterInfo.Name), filterInfo.Position);
-                        } catch (Exception ex) {
+                        } catch (Exception) {
                             LogOnce("Exception trying to add filter '" + filterInfo.Name + "' in UpdateSwitchWeatherData");
                         }
                     }

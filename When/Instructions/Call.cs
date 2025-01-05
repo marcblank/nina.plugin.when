@@ -190,15 +190,6 @@ namespace WhenPlugin.When {
 
         public int Id { get; set; }
 
-        public IList<string> issues = new List<string>();
-        public IList<string> Issues {
-            get => issues;
-            set {
-                issues = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private string iTemplateName = null;
         [JsonProperty]
         public string TemplateName {
@@ -261,10 +252,6 @@ namespace WhenPlugin.When {
                 RaisePropertyChanged("TemplateNameIsTrue");
                 Validate();
             }
-        }
-
-        public void Log(string str) {
-            //Debug.WriteLine("Instance #" + Id.ToString() + ": " + str);
         }
 
         public override object Clone() {

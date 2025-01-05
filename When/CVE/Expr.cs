@@ -686,36 +686,14 @@ namespace WhenPlugin.When {
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
 
-                    if (Parameters.Count != References.Count) {
-                        // We have some undefineds...
-                        List<string> orphans = new List<string>();
-                        foreach (string r in References) {
-                            if (!Parameters.ContainsKey(r)) {
-                                // Not defined or evaluated
-                                Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
-                                if (s is SetVariable sv && !sv.Executed) {
-                                    Error = "*" + r;
-                                } else if (s is SetGlobalVariable sgv && !sgv.Executed) {
-                                    Error = "*" + r;
-                                } else if (r.StartsWith("_")) {
-                                    Error = "Reference";
-                                } else {
-                                    Error = "Undefined: " + r;
-                                }
-                            }
-                        }
-                        // Save away our orphans in case they appear later
-                        if (Symbol != null) {
-                            Orphans.TryRemove(Symbol, out _);
-                            Orphans.TryAdd(Symbol, orphans);
-                        }
-                    }
-
                     Error = null;
                     try {
                         if (Parameters.Count != References.Count) {
                             foreach (string r in References) {
-                                if (!Parameters.ContainsKey(r)) {
+                                string symReference = r;
+                                //if (symReference.StartsWith('@')) {
+                                //
+                                if (!Parameters.ContainsKey(symReference)) {
                                     // Not defined or evaluated
                                     Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
                                     if (s is SetVariable sv && !sv.Executed) {
@@ -740,7 +718,7 @@ namespace WhenPlugin.When {
                                 try {
                                     Value = Convert.ToDouble(eval);
                                     Error = null;
-                                } catch (Exception ex) {
+                                } catch (Exception) {
                                     string str = (string)eval;
                                     StringValue = str;
                                     Value = double.NegativeInfinity;
@@ -780,14 +758,14 @@ namespace WhenPlugin.When {
                 }
             } else {
                 Logger.Error("Evaluate could not get SYMBOL_LOCK: " + this);
-                if (!LOCK_ERROR) {
-                    Notification.ShowError("Evaluate could not get SYMBOL_LOCK; see log for info");
-                }
-                LOCK_ERROR = true;
+                //if (!LOCK_ERROR) {
+                //    Notification.ShowError("Evaluate could not get SYMBOL_LOCK; see log for info");
+                //}
+                //LOCK_ERROR = true;
             }
         }
 
-        private bool LOCK_ERROR = false;
+        //private bool LOCK_ERROR = false;
 
         public void Validate(IList<string> issues) {
             if (Error != null || Volatile) {

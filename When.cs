@@ -134,13 +134,13 @@ namespace WhenPlugin.When {
                             if (runningItems.Count > 0) {
                                 return runningItems[0];
                             }
-                        } catch (Exception ex) {
+                        } catch (Exception) {
                             Logger.Error("Can't get running items!");
                         }
                     }
                 }
             } catch (Exception ex) {
-
+                Logger.Warning("Can't get running items: " + ex.Message);
             }
             return null;
         }

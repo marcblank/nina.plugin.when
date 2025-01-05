@@ -133,8 +133,10 @@ namespace WhenPlugin.When {
             VExpr.Evaluate();
 
             object val = VExpr.Value == double.NegativeInfinity ? VExpr.ValueString : VExpr.Value;
-            if (!arr.TryAdd(IExpr.ValueString, val)) {
-                throw new SequenceEntityFailedException("Adding Array value at index " + IExpr.Value + " failed?");
+            try {
+                arr[IExpr.ValueString] = val;
+            } catch (Exception ex) {
+                throw new SequenceEntityFailedException(ex.Message);
             }
             return Task.CompletedTask;
         }

@@ -57,7 +57,8 @@ namespace WhenPlugin.When {
         public ICommand SendInstruction => postInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(AddToLog);
 
 
-        public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+        public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            return Task.CompletedTask;
         }
 
         public override string ToString() {

@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
                             value = value.Replace("{" + toReplace + "}", ex.ValueString);
                         }
                         if (Symbol.IsAttachedToRoot(this)) {
-                            Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
+                            //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                         }
                     }
                 }

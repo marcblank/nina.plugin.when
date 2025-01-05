@@ -102,13 +102,9 @@ namespace WhenPlugin.When {
             }
         }
 
-
-        [JsonProperty]
         public double Value {
             get => 0;
             set {
-                ValueExpr.Value = value;
-                RaisePropertyChanged("ValueExpr");
             }
         }
 

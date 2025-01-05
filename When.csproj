@@ -29,6 +29,7 @@
     <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
+    <Compile Remove="When\Instructions\AutofocusAfterInstructions.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />

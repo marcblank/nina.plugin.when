@@ -60,9 +60,6 @@ namespace WhenPlugin.When {
 
         private IFocuserMediator focuserMediator;
 
-        private int position = 0;
-
-
         [JsonProperty]
         public string RelativePositionExpr {
             get => null;

@@ -59,8 +59,6 @@ namespace WhenPlugin.When {
             }
         }
 
-        private int CloneNum = 0;
-
         public override object Clone() {
             SetVariable clone = new SetVariable(this);
  

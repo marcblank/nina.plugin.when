@@ -42,8 +42,6 @@ namespace WhenPlugin.When {
 
         public ICommand DropIntoIfCommand { get; set; }
 
-        public string ProcessedScriptError = null;
-
         public string ProcessedScript(string message) {
             string value = message;
             if (value != null) {
@@ -137,7 +135,7 @@ namespace WhenPlugin.When {
                 if (messageProperty == null) {
                     messageProperty = c.GetType().GetProperty("Payload");
                     if (messageProperty == null) {
-                        issues.Add("This Ground Station instruction cannot be used with Send via Ground Station");
+                        issues.Add("This instruction cannot be used with Send via Ground Station");
                     }
                 }
              }
