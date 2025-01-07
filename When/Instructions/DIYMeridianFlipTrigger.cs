@@ -296,7 +296,7 @@ namespace WhenPlugin.When {
                 LatestFlipTime = DateTime.MinValue;
                 FlipStatus = "Telescope is not tracking.";
                 RaisePropertyChanged("FlipStatus");
-                Logger.Info("Telescope is not tracking. Skip flip evaluation");
+                SPLogger.Info("Telescope is not tracking. Skip flip evaluation");
                 return false;
             }
 
@@ -307,7 +307,7 @@ namespace WhenPlugin.When {
                 //A flip for the same target is only expected every 12 hours on planet earth and
                 FlipStatus = $"Flip for the current target already happened at {TimeString(lastFlipTime)}.";
                 RaisePropertyChanged("FlipStatus");
-                Logger.Info(FlipStatus);
+                SPLogger.Info(FlipStatus);
                 return false;
             }
 
@@ -328,7 +328,7 @@ namespace WhenPlugin.When {
             if (minimumTimeRemaining <= TimeSpan.Zero && maximumTimeRemaining > TimeSpan.Zero) {
                 FlipStatus = $"Flip due now through {TimeString(maximumTimeRemaining)}.";
                 RaisePropertyChanged("FlipStatus");
-                Logger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
+                SPLogger.Info($"Meridian Flip - Remaining Time is between minimum and maximum flip time. Minimum time remaining {minimumTimeRemaining}, maximum time remaining {maximumTimeRemaining}. Flip should happen now");
                 return true;
             } else {
                 if (UseSideOfPier && telescopeInfo.SideOfPier == PierSide.pierUnknown) {
@@ -347,20 +347,20 @@ namespace WhenPlugin.When {
                             coordinates: telescopeInfo.Coordinates,
                             localSiderealTime: projectedSiderealTime);
                         if (telescopeInfo.SideOfPier == targetSideOfPier) {
-                            Logger.Info($"Meridian Flip - Telescope already reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
+                            SPLogger.Info($"Meridian Flip - Telescope already reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
                             return false;
                         } else {
                             if (nextItem != null) {
-                                Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}. Flip should happen now");
+                                SPLogger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}. Flip should happen now");
                             } else {
-                                Logger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
+                                SPLogger.Info($"Meridian Flip - No more remaining time available before flip. Max remaining time {maximumTimeRemaining}. Flip should happen now");
                             }
-                            Logger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
-                            Logger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
-                            Logger.Info("Pause: " + PauseTimeBeforeMeridian);
+                            SPLogger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
+                            SPLogger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
+                            SPLogger.Info("Pause: " + PauseTimeBeforeMeridian);
                             FlipStatus = $"Flip sequence start due now through {TimeString(maximumTimeRemaining)}!";
                             RaisePropertyChanged("FlipStatus");
-                            Logger.Info(FlipStatus);
+                            SPLogger.Info(FlipStatus);
                             return true;
                         }
                     } else {
@@ -381,7 +381,7 @@ namespace WhenPlugin.When {
 
                             }
                             RaisePropertyChanged("FlipStatus");
-                            Logger.Info($"Meridian Flip - There is still time remaining - max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem} - and the telescope reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
+                            SPLogger.Info($"Meridian Flip - There is still time remaining - max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem} - and the telescope reports expected pier side {telescopeInfo.SideOfPier}. Automated Flip is not necessary.");
                             return false;
                         } else {
                             // When pier side doesn't match the target, but remaining time indicating that a flip happened, the flip seems to have not happened yet and must be done immediately
@@ -397,10 +397,10 @@ namespace WhenPlugin.When {
                             if (delayedFlip) {
                                 FlipStatus = $"Flip didn't happen, as Side Of Pier is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now";
                                 RaisePropertyChanged("FlipStatus");
-                                Logger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
-                                Logger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
-                                Logger.Info("Pause: " + PauseTimeBeforeMeridian);
-                                Logger.Info($"Meridian Flip - Flip seems to not happened in time as Side Of Pier is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now");
+                                SPLogger.Info("TTMF: " + TimeToMeridianFlip + ", Dec: " + telescopeInfo.DeclinationString + ", RA: " + telescopeInfo.RightAscensionString);
+                                SPLogger.Info("MTR: " + maximumTimeRemaining + ", NIT: " + TimeSpan.FromSeconds(nextInstructionTime));
+                                SPLogger.Info("Pause: " + PauseTimeBeforeMeridian);
+                                SPLogger.Info($"Meridian Flip - Flip seems to not happened in time as Side Of Pier is {telescopeInfo.SideOfPier} but expected to be {targetSideOfPier}. Flip should happen now");
                             }
                             return delayedFlip;
                         }
@@ -413,11 +413,11 @@ namespace WhenPlugin.When {
                         if (nextItem != null) {
                             FlipStatus = $"Latest sequence start time is  {TimeString(maximumTimeRemaining)}, {nextItem} due at {nextInstructionTime}. Flip should happen now";
                             RaisePropertyChanged("FlipStatus");
-                            Logger.Info(FlipStatus);
+                            SPLogger.Info(FlipStatus);
                         } else {
                             FlipStatus = $"Latest sequence start time is {TimeString(maximumTimeRemaining)}. Flip should happen now!";
                             RaisePropertyChanged("FlipStatus");
-                            Logger.Info(FlipStatus);
+                            SPLogger.Info(FlipStatus);
                         }
                         return true;
                     } else {
@@ -428,7 +428,7 @@ namespace WhenPlugin.When {
 
                         }
                         RaisePropertyChanged("FlipStatus");
-                        Logger.Info($"Meridian Flip - (Side of Pier usage is disabled) There is still time remaining. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}");
+                        SPLogger.Info($"Meridian Flip - (Side of Pier usage is disabled) There is still time remaining. Max remaining time {maximumTimeRemaining}, next instruction time {nextInstructionTime}, next instruction {nextItem}");
                         return false;
                     }
                 }
@@ -440,11 +440,11 @@ namespace WhenPlugin.When {
             InputTarget t = DSOTarget.FindTarget(Parent);
             if (t != null) {
                 Target = t;
-                Logger.Debug("Found Target: " + Target);
+                SPLogger.Debug("Found Target: " + Target);
                 RaisePropertyChanged("Target");
                 UpdateChildren(TriggerRunner);
             } else {
-                Logger.Debug("Running target not found");
+                SPLogger.Debug("Running target not found");
             }
         }
 

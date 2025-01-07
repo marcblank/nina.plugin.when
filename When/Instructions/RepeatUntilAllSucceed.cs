@@ -99,14 +99,14 @@ namespace WhenPlugin.When {
                         cts.Dispose();
                         if (item.Status == SequenceEntityStatus.FAILED) {
                             // Clear status of all and start over...
-                            Logger.Info(item.Name + ": failed, restarting instructions...");
+                            SPLogger.Info(item.Name + ": failed, restarting instructions...");
                             failedItem = item;
                             Instructions.ResetProgress();
                             attempts++;
                             failed = true;
                             break;
                         } else {
-                            Logger.Info(item.Name + ": ok");
+                            SPLogger.Info(item.Name + ": ok");
                         }
                     } catch (Exception ex) {
                         Logger.Warning("Exception running instruction in RUOS: " + ex);
@@ -121,7 +121,7 @@ namespace WhenPlugin.When {
                 // This happens with a PHD2 calibration, for example.
                 foreach (ISequenceItem item in Instructions.Items) {
                     if (item.Status == SequenceEntityStatus.CREATED) {
-                        Logger.Info(item.Name + ": didn't finish, restarting instructions...");
+                        SPLogger.Info(item.Name + ": didn't finish, restarting instructions...");
                         failedItem = item;
                         Instructions.ResetProgress();
                         attempts++;
@@ -138,7 +138,7 @@ namespace WhenPlugin.When {
                     await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitExpr.Value), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
                 }
             }
-            Logger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
+            SPLogger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
             return;
         }
         

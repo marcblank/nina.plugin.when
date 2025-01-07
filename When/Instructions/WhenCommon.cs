@@ -237,28 +237,28 @@ namespace WhenPlugin.When {
             }
 
             if (ShouldTrigger(null, null) && Parent != null) {
-                Logger.Info("InterruptWhen; shouldTrigger = true");
+                SPLogger.Info("InterruptWhen; shouldTrigger = true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Target = DSOTarget.FindTarget(Parent);
                     if (Target != null) {
-                        Logger.Info("Found Target: " + Target);
+                        SPLogger.Info("Found Target: " + Target);
                         UpdateChildren(Instructions);
                     }
                     Triggered = true;
-                    Logger.Info("InterruptWhen: Interrupting current Instruction Set");
+                    SPLogger.Info("InterruptWhen: Interrupting current Instruction Set");
 
                     Critical = true;
                     try {
 
                         sequenceMediator.CancelAdvancedSequence();
-                        Logger.Info("InterruptWhen: Canceling sequence...");
+                        SPLogger.Info("InterruptWhen: Canceling sequence...");
 
                         await Task.Delay(1000);
                         while (sequenceMediator.IsAdvancedSequenceRunning()) {
-                            Logger.Info("InterruptWhen: Delay 1000");
+                            SPLogger.Info("InterruptWhen: Delay 1000");
                             await Task.Delay(1000);
                         }
-                        Logger.Info("InterruptWhen: Sequence longer running");
+                        SPLogger.Info("InterruptWhen: Sequence longer running");
                     } finally {
                         Critical = false;
                     }
@@ -267,11 +267,11 @@ namespace WhenPlugin.When {
                     Logger.Trace("InterruptWhen: Starting sequence, Triggered -> true");
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
-                        Logger.Info("InterruptWhen: Can't run When because Parent isn't in root container, " + Parent.Name);
+                        SPLogger.Info("InterruptWhen: Can't run When because Parent isn't in root container, " + Parent.Name);
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
-                        Logger.Info("InterruptWhen: Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
+                        SPLogger.Info("InterruptWhen: Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
                     } else {
-                        Logger.Info("InterruptWhen: Can't run when for some othe reason: Disabled?");
+                        SPLogger.Info("InterruptWhen: Can't run when for some othe reason: Disabled?");
                     }
                 }
             } else {
@@ -290,10 +290,10 @@ namespace WhenPlugin.When {
             }
             if (!Check()) {
                 if (previousItem == null && nextItem == null) {
-                    Logger.Info("ShouldTrigger TRUE in InterruptWhen");
+                    SPLogger.Info("ShouldTrigger TRUE in InterruptWhen");
                     return true;
                 }
-                Logger.Info("ShouldTrigger: TRUE, TriggerRunner set");
+                SPLogger.Info("ShouldTrigger: TRUE, TriggerRunner set");
                 TriggerRunner = Instructions;
                 return true;
             }
@@ -302,18 +302,18 @@ namespace WhenPlugin.When {
         }
 
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Logger.Info("Execute");
+            SPLogger.Info("Execute");
             if (Critical) {
-                Logger.Info("When: Execute in critical section; return");
+                SPLogger.Info("When: Execute in critical section; return");
                 return;
             }
             if (InFlight) {
-                Logger.Info("When: InFlight; return");
+                SPLogger.Info("When: InFlight; return");
                 return;
             }
             try {
                 while (true) {
-                    Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
+                    SPLogger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
                     InFlight = true;
                     Triggered = false;
                     token.ThrowIfCancellationRequested();
@@ -330,7 +330,7 @@ namespace WhenPlugin.When {
                 if (this is WhenSwitch w && w.OnceOnly) {
                     w.Disabled = true;
                 }
-                Logger.Info("When: Execute done; InFlight -> false, Triggered false");
+                SPLogger.Info("When: Execute done; InFlight -> false, Triggered false");
             }
         }
 

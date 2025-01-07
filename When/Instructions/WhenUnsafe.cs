@@ -68,7 +68,7 @@ namespace WhenPlugin.When {
             bool safe = info.Connected && info.IsSafe;
 
             if (!safe) {
-                Logger.Debug("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+                SPLogger.Debug("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
             }
 
             
@@ -77,7 +77,7 @@ namespace WhenPlugin.When {
             if (sym != null) {
                 // If "SAFE" is defined, safe is the value
                 Symbol.LogOnce("SAFE is defined with value: " + sym.Expr.Value);
-                Logger.Debug("SAFE is defined with value: " + sym.Expr.Value);
+                SPLogger.Debug("SAFE is defined with value: " + sym.Expr.Value);
                 safeValue = sym.Expr.Value;
                 return (safeValue != 0);
             }
@@ -87,7 +87,7 @@ namespace WhenPlugin.When {
 
         public override bool Check() {
             bool IsSafe = CheckSafe(this, safetyMediator);
-            //Logger.Info("When Unsafe: Check returning " + ((IsSafe && IsActive()) ? "TRUE" : "FALSE"));
+            //SPLogger.Info("When Unsafe: Check returning " + ((IsSafe && IsActive()) ? "TRUE" : "FALSE"));
             return IsSafe; // && IsActive();
         }
     }

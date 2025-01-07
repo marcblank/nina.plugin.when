@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
                             value = value.Replace("{" + toReplace + "}", ex.ValueString);
                         }
                         if (Symbol.IsAttachedToRoot(this)) {
-                            //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
+                            //SPLogger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                         }
                     }
                 }
@@ -125,7 +125,7 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             await Symbol.UpdateSwitchWeatherData();
-            Logger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
+            SPLogger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
             var success = await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, token);
@@ -134,7 +134,7 @@ namespace WhenPlugin.When {
             } else {
                 // Save the value
                 Symbol.LastExitCode = success;
-                Logger.Info("External Script +, exit code = " + success);
+                SPLogger.Info("External Script +, exit code = " + success);
             }
         }
 

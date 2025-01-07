@@ -37,13 +37,13 @@ namespace WhenPlugin.When {
             DockableExpr expr = (DockableExpr)((RadioButton)sender).DataContext;
             String displayType = (string)((RadioButton)sender).Content;
             expr.DisplayType = displayType;
-            Logger.Info("Checked display box: " + displayType);
+            SPLogger.Info("Checked display box: " + displayType);
         }
         public void CheckConversion(object sender, RoutedEventArgs e) {
             DockableExpr expr = (DockableExpr)((RadioButton)sender).DataContext;
             String conversionType = (string)((RadioButton)sender).Content;
             expr.ConversionType = conversionType;
-            Logger.Info("Checked conversion box: " + conversionType);
+            SPLogger.Info("Checked conversion box: " + conversionType);
         }
 
         public void DeleteExpr(object sender, RoutedEventArgs e) {

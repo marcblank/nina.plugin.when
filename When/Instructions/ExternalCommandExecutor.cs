@@ -39,7 +39,7 @@ namespace WhenPlugin.When {
             try {
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
-                Logger.Info($"Running - {executableLocation}");
+                SPLogger.Info($"Running - {executableLocation}");
 
                 // set environment variable to string equiv of int MinValue before calling the batch script
                 SetEnvironmentVariableValue("NINAESRC", int.MinValue.ToString(), EnvironmentVariableTarget.User);
@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
                 process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
                         StatusUpdate("External Command", e.Data);
-                        Logger.Info($"STDOUT: {e.Data}");
+                        SPLogger.Info($"STDOUT: {e.Data}");
                     }
                 };
                 process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
@@ -65,7 +65,7 @@ namespace WhenPlugin.When {
                 if (args != null)
                     process.StartInfo.Arguments = args;
 
-                Logger.Debug($"Starting process '{executableLocation}' with args '{args}'");
+                SPLogger.Debug($"Starting process '{executableLocation}' with args '{args}'");
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
@@ -135,7 +135,7 @@ namespace WhenPlugin.When {
         private static int GetEnvironmentVariableValue(string variableName, EnvironmentVariableTarget target) {
             // Retrieve the value of the environment variable
             string value = Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
-            Logger.Debug($"ES+ environment variable NINAESRC value '{value}'");
+            SPLogger.Debug($"ES+ environment variable NINAESRC value '{value}'");
             // Check if the environment variable is not string equiv of int MinValue then return its int value
             if (value != int.MinValue.ToString()) {
                 return Int32.Parse(value);

@@ -282,7 +282,7 @@ namespace WhenPlugin.When {
             };
 
             if (rect != null) {
-                Logger.Info("EnableSubSample = " + capture.EnableSubSample + "; ROIType = " + ROIType + "; rect = " + capture.SubSambleRectangle.Width + ", " + capture.SubSambleRectangle.Height);
+                SPLogger.Info("EnableSubSample = " + capture.EnableSubSample + "; ROIType = " + ROIType + "; rect = " + capture.SubSambleRectangle.Width + ", " + capture.SubSambleRectangle.Height);
             }
 
             var exposureData = await imagingMediator.CaptureImage(capture, token, progress);
@@ -316,7 +316,7 @@ namespace WhenPlugin.When {
                 var imageData = await exposureData.ToImageData(progress, token);
 
                 if (imageData.Properties != null) {
-                    Logger.Info("Processed image: Width = " + imageData.Properties.Width + ", Height = " + imageData.Properties.Height);
+                    SPLogger.Info("Processed image: Width = " + imageData.Properties.Width + ", Height = " + imageData.Properties.Height);
                 }
                 
                 var prepareTask = imagingMediator.PrepareImage(imageData, imageParams, token);

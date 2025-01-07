@@ -70,7 +70,7 @@ namespace WhenPlugin.When {
             try {
                 Target = DSOTarget.FindTarget(Parent);
                 if (Target != null) {
-                    Logger.Info("Found Target: " + Target);
+                    SPLogger.Info("Found Target: " + Target);
                     UpdateChildren(Runner);
                 }
                 await Runner.Run(progress, token);
@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
             try {
                 Target = DSOTarget.FindTarget(Parent);
                 if (Target != null) {
-                    //Logger.Info("Found Target: " + Target);
+                    //SPLogger.Info("Found Target: " + Target);
                     UpdateChildren(Runner);
                 }
             } finally {

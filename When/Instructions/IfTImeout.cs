@@ -73,7 +73,7 @@ namespace WhenPlugin.When {
                 cts.Cancel();
                 TimedOut = true;
                 Notification.ShowWarning("Timed out!");
-                Logger.Info("Timeout period over; interrupting...");
+                SPLogger.Info("Timeout period over; interrupting...");
             }
             if (progress != null) {
                 string progressStatus;
@@ -135,7 +135,7 @@ namespace WhenPlugin.When {
                 }
             } catch (Exception) {
                 if (TimedOut) {
-                    Logger.Info("Timed out; executing instructions...");
+                    SPLogger.Info("Timed out; executing instructions...");
                     await Instructions.Run(progress, token);
                 }
             } finally {

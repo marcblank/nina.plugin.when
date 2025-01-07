@@ -174,7 +174,17 @@ namespace WhenPlugin.When {
             }
         }
 
- 
+        private bool iLogMode = false;
+        public bool LogMode {
+            get {
+                return iLogMode;
+            }
+            set {
+                iLogMode = value;
+                SPLogger.LogLevel = value ? SPLogger.Level.DEBUG : SPLogger.Level.INFO;
+            }
+        }
+
         public static Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
 

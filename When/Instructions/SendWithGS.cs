@@ -61,7 +61,7 @@ namespace WhenPlugin.When {
                     } else {
                         value = value.Replace("{" + toReplace + "}", ex.ValueString);
                     }
-                    Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
+                    SPLogger.Info("Replacing " + toReplace + " with " + ex.ValueString);
                 }
             }
             return value;
@@ -92,7 +92,7 @@ namespace WhenPlugin.When {
             }
             message = message.Replace('\t', ' ');
             var processedMessage = ProcessedScript(message);
-            Logger.Info("Sending to Ground Station: " + processedMessage);
+            SPLogger.Info("Sending to Ground Station: " + processedMessage);
             if (processedMessage == null) {
                 throw new SequenceEntityFailedException("Processed message is null?");
             }

@@ -67,14 +67,14 @@ namespace WhenPlugin.When {
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblFlippingScope"] });
             Coordinates targetCoordinates = ItemUtility.RetrieveContextCoordinates(Parent).Coordinates; 
-            Logger.Info($"Meridian Flip - Scope will flip to coordinates RA: {targetCoordinates.RAString} Dec: {targetCoordinates.DecString} Epoch: {targetCoordinates.Epoch}");
+            SPLogger.Info($"Meridian Flip - Scope will flip to coordinates RA: {targetCoordinates.RAString} Dec: {targetCoordinates.DecString} Epoch: {targetCoordinates.Epoch}");
             var flipsuccess = await telescopeMediator.MeridianFlip(targetCoordinates, token);
             Logger.Trace($"Meridian Flip - Successful flip: {flipsuccess}");
 
             var domeInfo = domeMediator.GetInfo();
             if (domeInfo.Connected && domeInfo.CanSetAzimuth && !domeFollower.IsFollowing) {
                 progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblSynchronizingDome"] });
-                Logger.Info($"Meridian Flip - Synchronize dome to scope since dome following is not enabled");
+                SPLogger.Info($"Meridian Flip - Synchronize dome to scope since dome following is not enabled");
                 if (!await domeFollower.TriggerTelescopeSync()) {
                     Notification.ShowWarning(Loc.Instance["LblDomeSyncFailureDuringMeridianFlip"]);
                     Logger.Warning("Meridian Flip - Synchronize dome operation didn't complete successfully. Moving on");
@@ -128,15 +128,15 @@ namespace WhenPlugin.When {
             } else {
                 Coordinates target = ItemUtility.RetrieveContextCoordinates(Parent)?.Coordinates;
                 if (target != null) {
-                    //Logger.Info("**Got target from Parent: " + target);
+                    //SPLogger.Info("**Got target from Parent: " + target);
                     if (target.RADegrees == 0 && target.Dec == 0) {
-                        //Logger.Info("**Target is at 0/0; using telescope");
+                        //SPLogger.Info("**Target is at 0/0; using telescope");
                         target = telescopeMediator.GetInfo().Coordinates;
-                        //Logger.Info("** target from telescope: " + target);
+                        //SPLogger.Info("** target from telescope: " + target);
                     }
                 } else {
                     target = telescopeMediator.GetInfo().Coordinates;
-                    //Logger.Info("**Got target from telescope: " + target);
+                    //SPLogger.Info("**Got target from telescope: " + target);
                 }
 
 

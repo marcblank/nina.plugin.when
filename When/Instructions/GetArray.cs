@@ -146,7 +146,7 @@ namespace WhenPlugin.When {
                     value = "'" + vs + "'";
                 }
                 sv.Definition = value.ToString();
-                Logger.Info("Setting Variable " + sv + " to " + value);
+                SPLogger.Info("Setting Variable " + sv + " to " + value);
             } else {
                 throw new SequenceEntityFailedException("Result Variable is not defined: " + VExpr.Expression);
             }

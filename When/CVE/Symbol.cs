@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
         // Must prevent cycles
         public static void SymbolDirty(Symbol sym) {
             if (Debugging) {
-                Logger.Info("SymbolDirty: " + sym);
+                SPLogger.Info("SymbolDirty: " + sym);
             }
             List<Symbol> dirtyList = new List<Symbol>();
             iSymbolDirty(sym, dirtyList);
@@ -183,7 +183,7 @@ namespace WhenPlugin.When {
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
                     try {
                         if (Debugging) {
-                            Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                            SPLogger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
                         if (!cached.TryAdd(Identifier, this) && sParent == GlobalVariables) {
                             Symbol gv;
@@ -207,8 +207,8 @@ namespace WhenPlugin.When {
                     newSymbols.TryAdd(Identifier, this);
                     SymbolCache.TryAdd(sParent, newSymbols);
                     if (Debugging) {
-                        Logger.Info("APC: Added " + sParent.Name + " to SymbolCache");
-                        Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                        SPLogger.Info("APC: Added " + sParent.Name + " to SymbolCache");
+                        SPLogger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                     }
 
                     foreach (var consumer in Consumers) {
@@ -245,7 +245,7 @@ namespace WhenPlugin.When {
                     // If there was an old value, remove it from Parent's dictionary
                     if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
                         if (Debugging) {
-                            Logger.Info("Removing " + _identifier + " from " + sParent.Name);
+                            SPLogger.Info("Removing " + _identifier + " from " + sParent.Name);
                         }
                         cached.TryRemove(_identifier, out _);
                         SymbolDirty(this);
@@ -262,7 +262,7 @@ namespace WhenPlugin.When {
                         try {
                             cached.TryAdd(Identifier, this);
                             if (Debugging) {
-                                Logger.Info("Adding " + Identifier + " to " + sParent.Name);
+                                SPLogger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
                         } catch (ArgumentException) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
@@ -270,7 +270,7 @@ namespace WhenPlugin.When {
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
                         if (Debugging) {
-                            Logger.Info("Creating new SymbolCache entry for " + this.Name);
+                            SPLogger.Info("Creating new SymbolCache entry for " + this.Name);
                         }
                         SymbolCache.TryAdd(sParent, newSymbols);
                         newSymbols.TryAdd(Identifier, this);
@@ -300,7 +300,7 @@ namespace WhenPlugin.When {
                 if (SParent() != null) {
                     if (Expr != null) {
                         if (Debugging) {
-                            Logger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
+                            SPLogger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
                         }
                         Expr.Expression = value;
                     }
@@ -380,7 +380,7 @@ namespace WhenPlugin.When {
                 if (SymbolCache.TryGetValue(context, out cached)) {
                     if (cached.ContainsKey(identifier)) {
                         if (Debugging) {
-                            Logger.Info("FindSymbol '" + identifier + "' returning " + cached[identifier]);
+                            SPLogger.Info("FindSymbol '" + identifier + "' returning " + cached[identifier]);
                         }
                         return cached[identifier];
                     }
@@ -389,20 +389,20 @@ namespace WhenPlugin.When {
             }
             if (includeGlobal) return FindGlobalSymbol(identifier);
             if (Debugging) {
-                Logger.Info("FindSymbol '" + identifier + "' returning null");
+                SPLogger.Info("FindSymbol '" + identifier + "' returning null");
             }
             return null;
         }
 
         public static void DumpSymbols () {
             foreach (var c in SymbolCache) {
-                Logger.Info("\r\nIn SymbolCache for " + c.Key.Name);
+                SPLogger.Info("\r\nIn SymbolCache for " + c.Key.Name);
                 foreach (var d in c.Value) {
-                    Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
+                    SPLogger.Info("  -- " + d.Key + " / " + d.Value.ToString());
                 }
             }
             foreach (var x in Symbol.GetSwitchWeatherKeys()) {
-                Logger.Info(x.Key + ": " + x.Value.ToString());
+                SPLogger.Info(x.Key + ": " + x.Value.ToString());
             }
         }
 
@@ -592,7 +592,7 @@ namespace WhenPlugin.When {
 
         public class Subscriber : ISubscriber {
             Task ISubscriber.OnMessageReceived(IMessage message) {
-                Logger.Info("Received message from " + message.Sender + " re: " + message.Topic);
+                SPLogger.Info("Received message from " + message.Sender + " re: " + message.Topic);
 
                 if (message.Sender == "Target Scheduler") {
                     if (message.Topic == "TargetScheduler-WaitStart") {
@@ -618,7 +618,7 @@ namespace WhenPlugin.When {
                             MessageKeys["TS_Target_Dec"] = new VariableMessage(coords.Dec, message.Expiration);
                         }
                     } else {
-                        Logger.Info("Message not handled");
+                        SPLogger.Info("Message not handled");
                     }
                 }
                 

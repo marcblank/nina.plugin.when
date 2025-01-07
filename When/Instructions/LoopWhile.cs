@@ -86,7 +86,7 @@ namespace WhenPlugin.When {
 
         private void LogInfo(string str) {
             if (Debugging) {
-                Logger.Info(str);
+                SPLogger.Info(str);
             }
         }
 
@@ -109,16 +109,16 @@ namespace WhenPlugin.When {
             } else {
                 try {
                     foreach (var kvp in PredicateExpr.Parameters) {
-                        Logger.Debug(kvp.Key + ": " + kvp.Value);
+                        SPLogger.Debug(kvp.Key + ": " + kvp.Value);
                     }
                 } catch (Exception) {
                     // These could be modified by another thread
                 }
                 if (!string.Equals(PredicateExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
-                    Logger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
+                    SPLogger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
                     return true;
                 } else {
-                    Logger.Info("LoopWhile, Predicate is false, " + PredicateExpr);
+                    SPLogger.Info("LoopWhile, Predicate is false, " + PredicateExpr);
                     return false;
                 }
             }
@@ -150,7 +150,7 @@ namespace WhenPlugin.When {
             if (!Check(null, null)) {
                 if (this.Parent != null) {
                     if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
-                        Logger.Info("Expression returned false - Interrupting current Instruction Set");
+                        SPLogger.Info("Expression returned false - Interrupting current Instruction Set");
                         await this.Parent.Interrupt();
                     }
                 }

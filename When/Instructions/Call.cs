@@ -318,13 +318,13 @@ namespace WhenPlugin.When {
             expr.Refresh();
             if (expr.Expression.StartsWith("_")) {
                 SetVariable.SetVariableReference(name, expr.Expression, Parent);
-                Logger.Info("Call by reference " + name + ", expression = " + expr.Expression.Substring(1));
+                SPLogger.Info("Call by reference " + name + ", expression = " + expr.Expression.Substring(1));
             } else if (expr.Value == double.NegativeInfinity) {
                 SetVariable.SetVariableReference(name, "_" + expr.StringValue, Parent);
-                Logger.Info("Call by reference " + name + ", expression = " + expr.StringValue);
+                SPLogger.Info("Call by reference " + name + ", expression = " + expr.StringValue);
             } else if (!Double.IsNaN(expr.Value)) {
                 new SetVariable(name, expr.ValueString, Parent);
-                Logger.Info("Call by value " + name + ", expression = " + expr.Expression + " evaluated to " + expr.ValueString);
+                SPLogger.Info("Call by value " + name + ", expression = " + expr.Expression + " evaluated to " + expr.ValueString);
             }
         }
 
@@ -352,10 +352,10 @@ namespace WhenPlugin.When {
             IsExpanded = true;
             RaisePropertyChanged("IsExpanded");
 
-            Logger.Info("Call, Execute " + clone.Name + ", Symbols:");
+            SPLogger.Info("Call, Execute " + clone.Name + ", Symbols:");
             if (Symbol.SymbolCache.TryGetValue(Parent, out var symbols)) {
                 foreach (var symbol in symbols) {
-                    Logger.Info(symbol.Value.ToString());
+                    SPLogger.Info(symbol.Value.ToString());
                 }
             }
 

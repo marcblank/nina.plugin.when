@@ -104,6 +104,14 @@
                 <TextBox Margin="10,0,0,0" MinWidth="60"  VerticalAlignment="Center" VerticalContentAlignment="Center" Text="{Binding RoofOpenString}" />
             </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                    <TextBlock VerticalAlignment="Center" Text="Debug Logging: " />
+                    <CheckBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding LogMode, Mode=TwoWay}" />
+            </StackPanel>
 
         </StackPanel>
     </DataTemplate>

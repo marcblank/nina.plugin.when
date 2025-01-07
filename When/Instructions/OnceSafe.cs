@@ -98,7 +98,7 @@ namespace WhenPlugin.When {
 
             Target = DSOTarget.FindTarget(Parent);
             if (Target != null) {
-                Logger.Info("Found Target: " + Target);
+                SPLogger.Info("Found Target: " + Target);
                 UpdateChildren(Instructions);
             }
 
