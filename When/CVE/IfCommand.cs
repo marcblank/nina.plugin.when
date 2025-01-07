@@ -109,7 +109,7 @@ namespace WhenPlugin.When {
                 }
 
                 if (Condition != null) {
-                    if (Condition.Parent == null) {
+                    if (Condition.Parent != Parent) {
                         Condition.AttachNewParent(Parent);
                     }
                     foreach (ISequenceItem item in Condition.Items) {

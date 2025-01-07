@@ -20,14 +20,30 @@ namespace WhenPlugin.When {
         [ImportingConstructor]
         public IfFailed() {
             Condition = new IfContainer();
+            Condition.AttachNewParent(Parent);
+            Condition.PseudoParent = this;
+            Condition.Name = Name;
+            Condition.Icon = Icon;
             Instructions = new IfContainer();
+            Instructions.AttachNewParent(Parent);
+            Instructions.PseudoParent = this;
+            Instructions.Name = Name;
+            Instructions.Icon = Icon;
             DropIntoIfCommand = new GalaSoft.MvvmLight.Command.RelayCommand<DropIntoParameters>(DropIntoCondition);
         }
         public IfFailed(IfFailed copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Condition = (IfContainer)copyMe.Condition.Clone();
+                Condition.AttachNewParent(Parent);
+                Condition.PseudoParent = this;
+                Condition.Name = Name;
+                Condition.Icon = Icon;
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
+                Instructions.AttachNewParent(Parent);
+                Instructions.PseudoParent = this;
+                Instructions.Name = Name;
+                Instructions.Icon = Icon;
             }
         }
 
@@ -83,6 +99,21 @@ namespace WhenPlugin.When {
                 Condition.Items.Clear();
                 Condition.Items.Add(item);
            }
+        }
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (ISequenceItem item in Condition.Items) {
+                item.AfterParentChanged();
+            }
+            foreach (ISequenceItem item in Instructions.Items) {
+                item.AfterParentChanged();
+            }
+        }
+
+        public override bool Validate() {
+            CommonValidate();
+            return true;
         }
 
         public override string ToString() {
