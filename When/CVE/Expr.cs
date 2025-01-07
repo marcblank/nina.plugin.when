@@ -75,7 +75,7 @@ namespace WhenPlugin.When {
             bool red = false;
             bool orange = false;
             foreach (string e in errors) {
-                if (e.Contains("Not evaluated")) {
+                if (e.Contains("Not evaluated") || e.Contains("External")) {
                     orange = true; ;
                 } else {
                     red = true;
@@ -576,6 +576,10 @@ namespace WhenPlugin.When {
         }
 
         public void Evaluate() {
+            Evaluate(false);
+        }
+
+        public void Evaluate(bool validateOnly) {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
                 try {
                     if (!IsExpression) {
@@ -621,6 +625,9 @@ namespace WhenPlugin.When {
                         Parameters.Clear();
                         Resolved.Clear();
                     }
+
+                    // External, don't report error during validation
+                    bool ext = false;
                     
                     // First, validate References
                     foreach (string sRef in References) {
@@ -629,6 +636,9 @@ namespace WhenPlugin.When {
                         string symReference = sRef;
                         if (symReference.StartsWith("_") && !symReference.StartsWith("__")) {
                             symReference = sRef.Substring(1);
+                        } else if (symReference.StartsWith("$")) {
+                            symReference = symReference.Substring(1);
+                            ext = true;
                         }
                         // Remember if we have any image data
                         if (!ImageVolatile && symReference.StartsWith("Image_")) {
@@ -691,17 +701,22 @@ namespace WhenPlugin.When {
                         if (Parameters.Count != References.Count) {
                             foreach (string r in References) {
                                 string symReference = r;
-                                //if (symReference.StartsWith('@')) {
-                                //
+                                if (symReference.StartsWith('_') || symReference.StartsWith('@')) {
+                                    symReference  = symReference.Substring(1);
+                                }
                                 if (!Parameters.ContainsKey(symReference)) {
                                     // Not defined or evaluated
-                                    Symbol s = FindSymbol(r, SequenceEntity.Parent, true);
+                                    Symbol s = FindSymbol(symReference, SequenceEntity.Parent, true);
                                     if (s is SetVariable sv && !sv.Executed) {
                                         AddError("Not evaluated: " + r);
                                     } else if (r.StartsWith("_")) {
                                         AddError("Reference: " + r);
                                     } else {
-                                        AddError("Undefined: " + r);
+                                        if (r.StartsWith('$') && ext && validateOnly) {
+                                            AddError ("External: " + symReference);
+                                        } else {
+                                            AddError("Undefined: " + r);
+                                        }
                                     }
                                 }
                             }
@@ -772,7 +787,7 @@ namespace WhenPlugin.When {
                 if (Expression != null && Expression.Length == 0 && Value == Default) {
                     Error = null;
                 }
-                Evaluate();
+                Evaluate(true);
                 foreach (KeyValuePair<string, Symbol> kvp in Resolved) {
                     if (kvp.Value == null || kvp.Value.Expr.GlobalVolatile) {
                         GlobalVolatile = true;
@@ -782,7 +797,7 @@ namespace WhenPlugin.When {
                 Error = "Not evaluated";
             } else if (Expression.Length != 0 && Value == Default && Error == null) {
                 // This seems very wrong to me; need to figure it out
-                Evaluate();
+                Evaluate(true);
             }
         }
 

@@ -319,6 +319,9 @@ namespace WhenPlugin.When {
             if (expr.Expression.StartsWith("_")) {
                 SetVariable.SetVariableReference(name, expr.Expression, Parent);
                 Logger.Info("Call by reference " + name + ", expression = " + expr.Expression.Substring(1));
+            } else if (expr.Value == double.NegativeInfinity) {
+                SetVariable.SetVariableReference(name, "_" + expr.StringValue, Parent);
+                Logger.Info("Call by reference " + name + ", expression = " + expr.StringValue);
             } else if (!Double.IsNaN(expr.Value)) {
                 new SetVariable(name, expr.ValueString, Parent);
                 Logger.Info("Call by value " + name + ", expression = " + expr.Expression + " evaluated to " + expr.ValueString);
