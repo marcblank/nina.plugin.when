@@ -59,7 +59,7 @@ namespace WhenPlugin.When {
 
         public DateTime StartTime {  get; set; }
 
-        public bool TimedOut = false;
+        public volatile bool TimedOut = false;
 
         private CancellationTokenSource cts;
         private CancellationTokenSource linkedCts;
@@ -69,11 +69,13 @@ namespace WhenPlugin.When {
 
         private Task CheckTimer() {
             TimeSpan elapsed = DateTime.Now - StartTime;
+            if (TimedOut) return Task.CompletedTask;
             if (elapsed > TimeSpan.FromSeconds(Time)) {
-                cts.Cancel();
                 TimedOut = true;
-                Notification.ShowWarning("Timed out!");
                 SPLogger.Info("Timeout period over; interrupting...");
+                cts.Cancel();
+                linkedCts.Cancel();
+                Notification.ShowWarning("Timed out!");
             }
             if (progress != null) {
                 string progressStatus;
@@ -129,17 +131,17 @@ namespace WhenPlugin.When {
                 // Execute the conditional
                 condition.Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
                 await condition.Run(progress, linkedCts.Token);
-
-                if (condition.Status != NINA.Core.Enum.SequenceEntityStatus.FAILED) {
-                    return;
-                }
-            } catch (Exception) {
+            } catch (Exception ex) {
+                watch.Cancel();
                 if (TimedOut) {
                     SPLogger.Info("Timed out; executing instructions...");
                     await Instructions.Run(progress, token);
+                } else {
+                    SPLogger.Info("Exception: " + ex.Message);
                 }
             } finally {
-                this.progress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" }); ;
+                this.progress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" });
+                SPLogger.Info("Execution terminated");
                 watch.Cancel();
                 cts.Dispose();
                 linkedCts.Dispose();
