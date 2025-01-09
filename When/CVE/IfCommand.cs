@@ -84,6 +84,11 @@ namespace WhenPlugin.When {
             foreach (var item in Instructions.Items) {
                 item.AfterParentChanged();
             }
+            if (Condition != null) {
+                foreach (ISequenceItem item in Condition.Items) {
+                    item.AfterParentChanged();
+                }
+            }
         }
 
         protected void CommonValidate() {
