@@ -807,8 +807,8 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SetConstant}">
-        <nina:SequenceBlockView DataContext="{Binding}">
-            <nina:SequenceBlockView.SequenceItemContent>
+        <local:SequenceBlockView DataContext="{Binding}">
+            <local:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
@@ -828,8 +828,8 @@
                        TextAlignment="Center" />
                     <local:SymControl Exp="{Binding Expr}"/>
                 </StackPanel>
-            </nina:SequenceBlockView.SequenceItemContent>
-        </nina:SequenceBlockView>
+            </local:SequenceBlockView.SequenceItemContent>
+        </local:SequenceBlockView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:PutArray}">

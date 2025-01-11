@@ -47,10 +47,18 @@ namespace WhenPlugin.When {
             SetVariable sv = new SetVariable();
             sv.AttachNewParent(parent);
             sv.Identifier = id;
+
+            if (def.StartsWith('@')) {
+                sv.Definition = "'" + def.Substring(1) + "'";
+                sv.Executed = true;
+                return;
+            }
+
             sv.Definition = def;
             sv.Executed = true;
 
-            Symbol sym = Symbol.FindSymbol(def.Substring(1), parent);
+             
+            Symbol sym = Symbol.FindSymbol(def.Substring(1), parent, true);
             if (sym != null) {
                 sv.Expr = sym.Expr;
                 sv.IsReference = true;

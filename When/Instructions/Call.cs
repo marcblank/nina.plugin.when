@@ -320,7 +320,7 @@ namespace WhenPlugin.When {
                 SetVariable.SetVariableReference(name, expr.Expression, Parent);
                 SPLogger.Info("Call by reference " + name + ", expression = " + expr.Expression.Substring(1));
             } else if (expr.Value == double.NegativeInfinity) {
-                SetVariable.SetVariableReference(name, "_" + expr.StringValue, Parent);
+                SetVariable.SetVariableReference(name, "@" + expr.StringValue, Parent);
                 SPLogger.Info("Call by reference " + name + ", expression = " + expr.StringValue);
             } else if (!Double.IsNaN(expr.Value)) {
                 new SetVariable(name, expr.ValueString, Parent);
