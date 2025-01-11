@@ -480,7 +480,7 @@ namespace WhenPlugin.When {
                     string str = Convert.ToString(args.Parameters[0].Evaluate());
                     ISequenceItem runningItem = WhenPlugin.GetRunningItem();
                     if (runningItem != null) {
-                        args.Result = Symbol.FindSymbol(str, runningItem.Parent, true) != null;
+                        args.Result = Symbol.FindSymbol(str, runningItem.Parent) != null;
                     } else {
                         args.Result = 0;
                     }
@@ -648,7 +648,7 @@ namespace WhenPlugin.When {
                         if (!found || sym == null) {
                             // !found -> couldn't find it; sym == null -> it's a DataSymbol
                             if (!found) {
-                                sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent, true);
+                                sym = Symbol.FindSymbol(symReference, SequenceEntity.Parent);
                             }
                             if (sym != null) {
                                 // Link Expression to the Symbol
@@ -706,7 +706,7 @@ namespace WhenPlugin.When {
                                 }
                                 if (!Parameters.ContainsKey(symReference)) {
                                     // Not defined or evaluated
-                                    Symbol s = FindSymbol(symReference, SequenceEntity.Parent, true);
+                                    Symbol s = FindSymbol(symReference, SequenceEntity.Parent);
                                     if (s is SetVariable sv && !sv.Executed) {
                                         AddError("Not evaluated: " + r);
                                     } else if (r.StartsWith("_")) {

@@ -107,7 +107,7 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("The instruction is invalid");
             }
             // Find Symbol, make sure it's valid
-            Symbol sym = Symbol.FindSymbol(Variable, Parent, true);
+            Symbol sym = Symbol.FindSymbol(Variable, Parent);
             if (sym == null || !(sym is SetVariable)) {
                 throw new SequenceEntityFailedException("The symbol isn't found or isn't a Variable");
             } else if (Expr.Error != null) {
@@ -247,7 +247,7 @@ namespace WhenPlugin.When {
             } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, Symbol.VALID_SYMBOL)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
             } else {
-                Symbol sym = Symbol.FindSymbol(Variable, Parent, true);
+                Symbol sym = Symbol.FindSymbol(Variable, Parent);
                 if (sym == null) {
                     i.Add("The Variable '" + Variable + "' is not in scope.");
                 } else if (sym is SetConstant) {

@@ -62,15 +62,20 @@ namespace WhenPlugin.When {
             return $"Trigger: {nameof(WhenUnsafe)}";
         }
 
+        public static bool WasSafe = true;
 
         public static bool CheckSafe(ISequenceEntity item, ISafetyMonitorMediator safetyMediator) {
             var info = safetyMediator.GetInfo();
+
             bool safe = info.Connected && info.IsSafe;
 
-            if (!safe) {
-                SPLogger.Debug("IsSafe is FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+            if (!safe && WasSafe) {
+                SPLogger.Info("IsSafe is now FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+            } else if (safe && !WasSafe) {
+                SPLogger.Info("IsSafe is TRUE");
             }
 
+            WasSafe = safe;
             
             double safeValue = Double.NaN;
             Symbol sym = Symbol.FindSymbol("SAFE", item.Parent);

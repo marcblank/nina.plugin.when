@@ -140,7 +140,7 @@ namespace WhenPlugin.When {
             if (resultName == null || resultName.Length == 0) {
                 throw new SequenceEntityFailedException("There must be a result Variable specified in order to use the Get from Array instruction");
             }
-            Symbol sym = Symbol.FindSymbol(resultName, Parent, true);
+            Symbol sym = Symbol.FindSymbol(resultName, Parent);
             if (sym != null && sym is SetVariable sv) {
                 if (value is string vs) {
                     value = "'" + vs + "'";

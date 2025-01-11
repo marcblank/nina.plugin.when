@@ -371,10 +371,6 @@ namespace WhenPlugin.When {
         }
 
         public static Symbol FindSymbol(string identifier, ISequenceContainer context) {
-            return FindSymbol(identifier, context, false);
-        }
-
-        public static Symbol FindSymbol(string identifier, ISequenceContainer context, bool includeGlobal) {
             while (context != null) {
                 SymbolDictionary cached;
                 if (SymbolCache.TryGetValue(context, out cached)) {
@@ -387,11 +383,7 @@ namespace WhenPlugin.When {
                 }
                 context = context.Parent;
             }
-            if (includeGlobal) return FindGlobalSymbol(identifier);
-            if (Debugging) {
-                SPLogger.Info("FindSymbol '" + identifier + "' returning null");
-            }
-            return null;
+            return FindGlobalSymbol(identifier);
         }
 
         public static void DumpSymbols () {
