@@ -110,7 +110,7 @@ namespace WhenPlugin.When {
         // Must prevent cycles
         public static void SymbolDirty(Symbol sym) {
             if (Debugging) {
-                SPLogger.Info("SymbolDirty: " + sym);
+                Logger.Info("SymbolDirty: " + sym);
             }
             List<Symbol> dirtyList = new List<Symbol>();
             iSymbolDirty(sym, dirtyList);
@@ -183,7 +183,7 @@ namespace WhenPlugin.When {
                 if (SymbolCache.TryGetValue(sParent, out cached)) {
                     try {
                         if (Debugging) {
-                            SPLogger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                            Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
                         if (!cached.TryAdd(Identifier, this) && sParent == GlobalVariables) {
                             Symbol gv;
@@ -207,8 +207,8 @@ namespace WhenPlugin.When {
                     newSymbols.TryAdd(Identifier, this);
                     SymbolCache.TryAdd(sParent, newSymbols);
                     if (Debugging) {
-                        SPLogger.Info("APC: Added " + sParent.Name + " to SymbolCache");
-                        SPLogger.Info("APC: Added " + Identifier + " to " + sParent.Name);
+                        Logger.Info("APC: Added " + sParent.Name + " to SymbolCache");
+                        Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                     }
 
                     foreach (var consumer in Consumers) {
@@ -245,7 +245,7 @@ namespace WhenPlugin.When {
                     // If there was an old value, remove it from Parent's dictionary
                     if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
                         if (Debugging) {
-                            SPLogger.Info("Removing " + _identifier + " from " + sParent.Name);
+                            Logger.Info("Removing " + _identifier + " from " + sParent.Name);
                         }
                         cached.TryRemove(_identifier, out _);
                         SymbolDirty(this);
@@ -262,7 +262,7 @@ namespace WhenPlugin.When {
                         try {
                             cached.TryAdd(Identifier, this);
                             if (Debugging) {
-                                SPLogger.Info("Adding " + Identifier + " to " + sParent.Name);
+                                Logger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
                         } catch (ArgumentException) {
                             Logger.Warning("Attempt to add duplicate Symbol at same level in sequence: " + Identifier);
@@ -270,7 +270,7 @@ namespace WhenPlugin.When {
                     } else {
                         SymbolDictionary newSymbols = new SymbolDictionary();
                         if (Debugging) {
-                            SPLogger.Info("Creating new SymbolCache entry for " + this.Name);
+                            Logger.Info("Creating new SymbolCache entry for " + this.Name);
                         }
                         SymbolCache.TryAdd(sParent, newSymbols);
                         newSymbols.TryAdd(Identifier, this);
@@ -300,7 +300,7 @@ namespace WhenPlugin.When {
                 if (SParent() != null) {
                     if (Expr != null) {
                         if (Debugging) {
-                            SPLogger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
+                            Logger.Info("Setting Definition for " + Identifier + " in " + SParent().Name + ": " + value);
                         }
                         Expr.Expression = value;
                     }
@@ -376,7 +376,7 @@ namespace WhenPlugin.When {
                 if (SymbolCache.TryGetValue(context, out cached)) {
                     if (cached.ContainsKey(identifier)) {
                         if (Debugging) {
-                            SPLogger.Info("FindSymbol '" + identifier + "' returning " + cached[identifier]);
+                            Logger.Info("FindSymbol '" + identifier + "' returning " + cached[identifier]);
                         }
                         return cached[identifier];
                     }
@@ -388,13 +388,13 @@ namespace WhenPlugin.When {
 
         public static void DumpSymbols () {
             foreach (var c in SymbolCache) {
-                SPLogger.Info("\r\nIn SymbolCache for " + c.Key.Name);
+                Logger.Info("\r\nIn SymbolCache for " + c.Key.Name);
                 foreach (var d in c.Value) {
-                    SPLogger.Info("  -- " + d.Key + " / " + d.Value.ToString());
+                    Logger.Info("  -- " + d.Key + " / " + d.Value.ToString());
                 }
             }
             foreach (var x in Symbol.GetSwitchWeatherKeys()) {
-                SPLogger.Info(x.Key + ": " + x.Value.ToString());
+                Logger.Info(x.Key + ": " + x.Value.ToString());
             }
         }
 
@@ -584,7 +584,7 @@ namespace WhenPlugin.When {
 
         public class Subscriber : ISubscriber {
             Task ISubscriber.OnMessageReceived(IMessage message) {
-                SPLogger.Info("Received message from " + message.Sender + " re: " + message.Topic);
+                Logger.Info("Received message from " + message.Sender + " re: " + message.Topic);
 
                 if (message.Sender == "Target Scheduler") {
                     if (message.Topic == "TargetScheduler-WaitStart") {
@@ -610,7 +610,7 @@ namespace WhenPlugin.When {
                             MessageKeys["TS_Target_Dec"] = new VariableMessage(coords.Dec, message.Expiration);
                         }
                     } else {
-                        SPLogger.Info("Message not handled");
+                        Logger.Info("Message not handled");
                     }
                 }
                 

@@ -72,7 +72,7 @@ namespace WhenPlugin.When {
             if (TimedOut) return Task.CompletedTask;
             if (elapsed > TimeSpan.FromSeconds(Time)) {
                 TimedOut = true;
-                SPLogger.Info("Timeout period over; interrupting...");
+                Logger.Info("Timeout period over; interrupting...");
                 cts.Cancel();
                 linkedCts.Cancel();
                 Notification.ShowWarning("Timed out!");
@@ -134,14 +134,14 @@ namespace WhenPlugin.When {
             } catch (Exception ex) {
                 watch.Cancel();
                 if (TimedOut) {
-                    SPLogger.Info("Timed out; executing instructions...");
+                    Logger.Info("Timed out; executing instructions...");
                     await Instructions.Run(progress, token);
                 } else {
-                    SPLogger.Info("Exception: " + ex.Message);
+                    Logger.Info("Exception: " + ex.Message);
                 }
             } finally {
                 this.progress.Report(new ApplicationStatus() { ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue, Status = "" });
-                SPLogger.Info("Execution terminated");
+                Logger.Info("Execution terminated");
                 watch.Cancel();
                 cts.Dispose();
                 linkedCts.Dispose();

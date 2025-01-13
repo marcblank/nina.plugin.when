@@ -39,7 +39,7 @@ namespace WhenPlugin.When {
             try {
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
                 string args = GetArgumentsFromString(sequenceCompleteCommand);
-                SPLogger.Info($"Running - {executableLocation}");
+                Logger.Info($"Running - {executableLocation}");
 
                 // set environment variable to string equiv of int MinValue before calling the batch script
                 SetEnvironmentVariableValue("NINAESRC", int.MinValue.ToString(), EnvironmentVariableTarget.User);
@@ -53,7 +53,7 @@ namespace WhenPlugin.When {
                 process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
                         StatusUpdate("External Command", e.Data);
-                        SPLogger.Info($"STDOUT: {e.Data}");
+                        Logger.Info($"STDOUT: {e.Data}");
                     }
                 };
                 process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {

@@ -23,13 +23,6 @@ namespace WhenPlugin.When
 
         public static Level LogLevel = Level.DEBUG;
 
-        public static void Info(string message,
-                [CallerMemberName] string memberName = "",
-                [CallerFilePath] string sourceFilePath = "",
-                [CallerLineNumber] int lineNumber = 0) {
-            NINA.Core.Utility.Logger.Info(message + " from " + memberName + " [" + Path.GetFileName(sourceFilePath) + ":" + lineNumber + "]");
-        }
-
         private const string MessageTemplate = "{source}|{member}|{line}|{message}";
         private static FieldInfo LevelSwitchField = null;
 

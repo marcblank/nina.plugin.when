@@ -158,7 +158,7 @@ namespace WhenPlugin.When {
 
             if (Definition != Expr.Expression) {
                 Definition = Expr.Expression;
-                SPLogger.Info("Validate: Definition diverges from Expr; fixing");
+                Logger.Info("Validate: Definition diverges from Expr; fixing");
             }
 
             Issues = i;
@@ -180,7 +180,7 @@ namespace WhenPlugin.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             if (Debugging) {
-                SPLogger.Info("Executing Vx");
+                Logger.Info("Executing Vx");
                 DumpSymbols();
             }
             Expr.Type = "Any";

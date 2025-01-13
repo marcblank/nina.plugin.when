@@ -70,9 +70,9 @@ namespace WhenPlugin.When {
             bool safe = info.Connected && info.IsSafe;
 
             if (!safe && WasSafe) {
-                SPLogger.Info("IsSafe is now FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
+                Logger.Info("IsSafe is now FALSE; connected = " + info.Connected + ", IsSafe = " + info.IsSafe);
             } else if (safe && !WasSafe) {
-                SPLogger.Info("IsSafe is TRUE");
+                Logger.Info("IsSafe is TRUE");
             }
 
             WasSafe = safe;
@@ -92,7 +92,7 @@ namespace WhenPlugin.When {
 
         public override bool Check() {
             bool IsSafe = CheckSafe(this, safetyMediator);
-            //SPLogger.Info("When Unsafe: Check returning " + ((IsSafe && IsActive()) ? "TRUE" : "FALSE"));
+            //Logger.Info("When Unsafe: Check returning " + ((IsSafe && IsActive()) ? "TRUE" : "FALSE"));
             return IsSafe; // && IsActive();
         }
     }

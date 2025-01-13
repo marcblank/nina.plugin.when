@@ -92,7 +92,7 @@ namespace WhenPlugin.When {
             TriggerRunner.AttachNewParent(context);
 
             try {
-                SPLogger.Info("DIY Trigger executing...");
+                Logger.Info("DIY Trigger executing...");
                 await TriggerRunner.Run(progress, token);
             } finally {
                 InFlight = false;
@@ -106,7 +106,7 @@ namespace WhenPlugin.When {
             var trigger = TriggerRunner.Triggers.FirstOrDefault();
             var result = trigger.ShouldTrigger(previousItem, nextItem);
             if (result) {
-                SPLogger.Info("DIY Trigger " + trigger.Name + " ShouldTrigger returning true");
+                Logger.Info("DIY Trigger " + trigger.Name + " ShouldTrigger returning true");
             }
             return result;
         }
@@ -117,7 +117,7 @@ namespace WhenPlugin.When {
             var trigger = TriggerRunner.Triggers.FirstOrDefault();
             var result = trigger.ShouldTriggerAfter(previousItem, nextItem);
             if (result) {
-                SPLogger.Info("DIY Trigger " + trigger.Name + " ShouldTriggerAfter returning true");
+                Logger.Info("DIY Trigger " + trigger.Name + " ShouldTriggerAfter returning true");
             }
             return result;
         }

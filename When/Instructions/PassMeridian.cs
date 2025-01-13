@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
 
             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblStopTracking"] });
 
-            SPLogger.Info("Meridian Flip - Stopping tracking to pass meridian; time remaining = " + remainingTime);
+            Logger.Info("Meridian Flip - Stopping tracking to pass meridian; time remaining = " + remainingTime);
             Waiting = true;
             telescopeMediator.SetTrackingEnabled(false);
             do {
@@ -153,7 +153,7 @@ namespace WhenPlugin.When {
             progress.Report(new ApplicationStatus() { Status = Loc.Instance["LblResumeTracking"] });
 
             Waiting = false;
-            SPLogger.Info("Meridian Flip - Resuming tracking after passing meridian");
+            Logger.Info("Meridian Flip - Resuming tracking after passing meridian");
             telescopeMediator.SetTrackingEnabled(true);
          }
 

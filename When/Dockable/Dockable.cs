@@ -109,7 +109,7 @@ namespace WhenPlugin.When {
                 sb.Append(EXPR_DIVIDER);
                 count++;
             }
-            SPLogger.Info("SaveDockableExprs saving " + count + " Exprs");
+            Logger.Info("SaveDockableExprs saving " + count + " Exprs");
             Symbol.WhenPluginObject.DockableExprs = sb.ToString();
         }
 

@@ -91,7 +91,7 @@ namespace WhenPlugin.When {
                     rv.AttachNewParent(Parent);
                     rv.Variable = var;
                     rv.Expr.Expression = expr;
-                    SPLogger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
+                    Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
                     sb.Append(var + " = " + expr + "  ");
                     await rv.Execute(progress, token);
                 }

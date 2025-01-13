@@ -95,13 +95,13 @@ namespace WhenPlugin.When {
 
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            SPLogger.Info("EndSequence running...");
+            Logger.Info("EndSequence running...");
             if (s2vm != null) {
                 _ = SkipToEndOfSequence();
                 //FieldInfo fi = s2vm.GetType().GetField("cts", BindingFlags.Instance | BindingFlags.NonPublic);
                 //if (fi != null) {
                     // CancellationTokenSource cts = (CancellationTokenSource)fi.GetValue(s2vm);
-                    //SPLogger.Info("Stopping sequencer");
+                    //Logger.Info("Stopping sequencer");
                     //cts?.Cancel();
                 //}
             }

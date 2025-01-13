@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            SPLogger.Info("Predicate: " + IfExpr.Expression);
+            Logger.Info("Predicate: " + IfExpr.Expression);
             if (string.IsNullOrEmpty(IfExpr.Expression)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
@@ -65,27 +65,27 @@ namespace WhenPlugin.When {
                 await Symbol.UpdateSwitchWeatherData();
                 
                 if (IfExpr.ImageVolatile) {
-                    SPLogger.Info("ImageVolatile");
+                    Logger.Info("ImageVolatile");
                     while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                        SPLogger.Info("Waiting 250ms for processing...");
+                        Logger.Info("Waiting 250ms for processing...");
                         progress?.Report(new ApplicationStatus() { Status = "" });
                         await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
                     }
                     // Get latest values
-                    SPLogger.Info("ImageVolatile, new data");
+                    Logger.Info("ImageVolatile, new data");
                 }
 
                 IfExpr.Evaluate();
 
                 if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    SPLogger.Info("Predicate is true, " + IfExpr);
+                    Logger.Info("Predicate is true, " + IfExpr);
                     await Instructions.Run(progress, token);
                 } else {
-                    SPLogger.Info("Predicate is false, " + IfExpr);
+                    Logger.Info("Predicate is false, " + IfExpr);
                     return;
                 }
             } catch (ArgumentException ex) {
-                SPLogger.Info("If error: " + ex.Message);
+                Logger.Info("If error: " + ex.Message);
                 Status = SequenceEntityStatus.FAILED;
             }
         }

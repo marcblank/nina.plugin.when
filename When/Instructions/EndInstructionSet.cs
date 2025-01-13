@@ -60,7 +60,7 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            SPLogger.Info("EndInstructionSet running...");
+            Logger.Info("EndInstructionSet running...");
             ISequenceContainer c = FindInstructionSet();
             if (c != null) {
                 c.Interrupt();

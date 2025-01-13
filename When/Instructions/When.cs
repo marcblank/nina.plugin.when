@@ -120,13 +120,13 @@ namespace WhenPlugin.When {
 
             Symbol.UpdateSwitchWeatherData();
             if (IfExpr.ImageVolatile) {
-                SPLogger.Info("ImageVolatile");
+                Logger.Info("ImageVolatile");
                 while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                    SPLogger.Info("Waiting 250ms for processing...");
+                    Logger.Info("Waiting 250ms for processing...");
                     Task.Delay(250);
                 }
                 // Get latest values
-                SPLogger.Info("ImageVolatile, new data");
+                Logger.Info("ImageVolatile, new data");
             }
             IfExpr.Evaluate();
 

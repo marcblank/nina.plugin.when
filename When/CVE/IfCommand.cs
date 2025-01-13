@@ -70,7 +70,7 @@ namespace WhenPlugin.When {
         }
         
         public void Log(string str, bool success) {
-            SPLogger.Info(str);
+            Logger.Info(str);
             // Notification for debugging...
             //if (success) {
             //    Notification.ShowSuccess(str);
@@ -124,7 +124,7 @@ namespace WhenPlugin.When {
                     }
                 }
             } catch (Exception ex) {
-                SPLogger.Info("Exception in ValidateInstructions: " + ex.Message);
+                Logger.Info("Exception in ValidateInstructions: " + ex.Message);
             }
         }
 
