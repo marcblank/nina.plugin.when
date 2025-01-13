@@ -51,7 +51,7 @@ namespace WhenPlugin.When {
             try {
                 if (expr != null) {
                     if (expr.Error != null) {
-                        return "{" + expr.Error + "}";
+                        return ""; // "{" + expr.Error + "}";
                     } else if (!expr.IsExpression) {
                         return "{Not an Expression}";
                     }

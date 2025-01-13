@@ -720,6 +720,7 @@ namespace WhenPlugin.When {
                                     }
                                 }
                             }
+                            RaisePropertyChanged("Error");
                             RaisePropertyChanged("ValueString");
                             RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("Value");
@@ -742,6 +743,7 @@ namespace WhenPlugin.When {
                                     }
                                 }
                             }
+                            RaisePropertyChanged("Error");
                             RaisePropertyChanged("StringValue");
                             RaisePropertyChanged("ValueString");
                             RaisePropertyChanged("Value");
@@ -761,11 +763,14 @@ namespace WhenPlugin.When {
                             }
                         }
                         Error = error;
-                    } catch (NCalc.Exceptions.NCalcEvaluationException) {
-                        Error = "Syntax Error";
-                        return;
                     } catch (Exception ex) {
-                        Logger.Warning("Exception evaluating " + Expression + ": " + ex.Message);
+                        if (ex is NCalc.Exceptions.NCalcEvaluationException || ex is NCalc.Exceptions.NCalcParserException) {
+                            Error = "Syntax Error";
+                            return;
+                        } else {
+                            Error = "Unknown Error; see log";
+                            Logger.Warning("Exception evaluating " + Expression + ": " + ex.Message);
+                        }
                     }
                     Dirty = false;
                 } finally {

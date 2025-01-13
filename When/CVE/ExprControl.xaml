@@ -13,6 +13,7 @@
         <TextBlock Margin="{Binding Exp.InfoButtonMargin}" 
                    Text="{Binding Exp.InfoButtonChar}" 
                    Foreground="{Binding Exp.InfoButtonColor}"
+                   Visibility="{Binding Exp.Error, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                    FontSize="{Binding Exp.InfoButtonSize}">
             <TextBlock.ToolTip>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
