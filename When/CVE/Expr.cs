@@ -346,6 +346,7 @@ namespace WhenPlugin.When {
                     RaisePropertyChanged("ValueString");
                     RaisePropertyChanged("IsExpression");
                     RaisePropertyChanged("IsAnnotated");
+                    RaisePropertyChanged("Error");
                     RaisePropertyChanged("StringValue");
                     RaisePropertyChanged("InfoButtonColor");
                     RaisePropertyChanged("InfoButtonChar");
@@ -695,6 +696,11 @@ namespace WhenPlugin.When {
                     Expression e = new Expression(Expression, ExpressionOptions.IgnoreCaseAtBuiltInFunctions);
                     e.EvaluateFunction += ExtensionFunction;
                     e.Parameters = Parameters;
+
+                    if (e.HasErrors()) {
+                        Error = "Syntax Error";
+                        return;
+                    }
 
                     Error = null;
                     try {
