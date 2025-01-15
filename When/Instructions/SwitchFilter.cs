@@ -147,20 +147,24 @@ namespace WhenPlugin.When {
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 Filter = -1;
                 CVFilter = false;
- 
-                foreach (var fw in fwi) {
-                    if (fw.Name.Equals(value)) {
-                        Filter = fw.Position;
-                        FExpr.Value = Filter;
-                        FExpr.Error = null;
-                        break;
+
+                if (fwi != null) {
+                    foreach (var fw in fwi) {
+                        if (fw.Name.Equals(value)) {
+                            Filter = fw.Position;
+                            FExpr.Value = Filter;
+                            FExpr.Error = null;
+                            break;
+                        }
                     }
-               }
+                } else {
+                    Logger.Warning("FilterExpr, fwi is null!");
+                }
 
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
                     CVFilter = true;
-                    if (FExpr.Error == null && FExpr.Value < fwi.Count) {
+                    if (FExpr.Error == null && FExpr.Value < ((fwi == null) ? 10000 : fwi.Count)) {
                         Filter = (int)FExpr.Value;
                     }
                 }

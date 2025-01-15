@@ -41,6 +41,15 @@ using NINA.Equipment.Equipment.MyGuider.PHD2.PhdEvents;
 using NINA.Equipment.Equipment.MyGuider.PHD2;
 using NINA.WPF.Base.Mediator;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json.Linq;
+using NINA.Core.Locale;
+using NINA.Core.Utility.Notification;
+using NINA.Profile;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Threading;
+using System.Net;
+using NINA.Core.Interfaces;
 
 namespace WhenPlugin.When {
 
@@ -649,10 +658,11 @@ namespace WhenPlugin.When {
             MessageBroker.Subscribe("TargetScheduler-TargetStart", PowerupsSubscriber);
             MessageBroker.Subscribe("TargetScheduler-NewTargetStart", PowerupsSubscriber);
             
-            GuiderMediator.GuideEvent += GuiderMediator_GuideEvent;
+            //GuiderMediator.GuideEvent += GuiderMediator_GuideEvent;
         
         }
 
+ 
         public static Keys SwitchWeatherKeys { get; set; } = new Keys();
 
         public static Keys GetSwitchWeatherKeys() {
