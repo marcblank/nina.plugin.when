@@ -811,6 +811,8 @@ namespace WhenPlugin.When {
 
         public static Task UpdateSwitchWeatherData() {
 
+            //var watch = System.Diagnostics.Stopwatch.StartNew();
+
             lock (SYMBOL_LOCK) {
                 var i = new List<string>();
                 SwitchWeatherKeys = new Keys();
@@ -1039,6 +1041,9 @@ namespace WhenPlugin.When {
                 Switches = i;
 
                 WhenPluginDockable.UpdateData();
+
+                //watch.Stop();
+                //Logger.Info("Update time: " + watch.ElapsedTicks/10000.0 + "ms, Keys: " + SwitchWeatherKeys.Count());
 
                 return Task.CompletedTask;
             }

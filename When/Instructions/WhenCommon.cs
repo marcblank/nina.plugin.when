@@ -271,7 +271,7 @@ namespace WhenPlugin.When {
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
                         Logger.Info("InterruptWhen: Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
                     } else {
-                        Logger.Info("InterruptWhen: Can't run when for some othe reason: Disabled?");
+                        Logger.Info("InterruptWhen: Can't run when for some other reason: Disabled?");
                     }
                 }
             } else {

@@ -21,7 +21,7 @@ namespace WhenPlugin.When
             ERROR
         }
 
-        public static Level LogLevel = Level.DEBUG;
+        public static Level LogLevel = Level.INFO;
 
         private const string MessageTemplate = "{source}|{member}|{line}|{message}";
         private static FieldInfo LevelSwitchField = null;
