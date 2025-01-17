@@ -107,7 +107,7 @@ namespace WhenPlugin.When {
 
             if (Expr.StringValue != null) {
                 sym.Expr.Error = null;
-                sym.Definition = Expr.Expression;
+                sym.Definition = "'" + Expr.StringValue + "'";
        
             } else {
                 sym.Definition = Expr.Value.ToString();

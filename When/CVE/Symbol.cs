@@ -601,6 +601,8 @@ namespace WhenPlugin.When {
                         MessageKeys["TS_WaitStart"] = new VariableMessage(dto.ToUnixTimeSeconds(), message.Expiration);
                     } else if (message.Topic == "TargetScheduler-NewTargetStart" || message.Topic == "TargetScheduler-TargetStart") {
                         MessageKeys["TS_TargetName"] = new VariableMessage(message.Content, message.Expiration);
+                        Logger.Info("TS_TargetName = " + message.Content);
+                        Logger.Info("Expires at " + message.Expiration);
                         object p;
                         message.CustomHeaders.TryGetValue("ProjectName", out p);
                         if (p != null) {
@@ -855,6 +857,7 @@ namespace WhenPlugin.When {
                 foreach (var kvp in MessageKeys) {
                     VariableMessage vm = (VariableMessage)kvp.Value;
                     if (DateTimeOffset.Now >= vm.expiration) {
+                        Logger.Info("TS message expired: " + vm.value);
                         toDelete.Add(kvp.Key);
                         continue;
                     }
