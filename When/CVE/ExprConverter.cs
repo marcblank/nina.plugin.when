@@ -86,11 +86,6 @@ namespace WhenPlugin.When {
                     } else {
                         txt = expr.Error;
                     }
-                    #if DEBUG
-                    if (txt.Length == 0) {
-                        txt = "^emp";
-                    }
-                    #endif
                     return "{" + txt + "}";
 
                 } else {
