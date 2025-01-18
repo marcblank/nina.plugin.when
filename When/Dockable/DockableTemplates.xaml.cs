@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
 
 namespace WhenPlugin.When {
     /// <summary>
@@ -50,6 +52,9 @@ namespace WhenPlugin.When {
         public void DeleteExpr(object sender, RoutedEventArgs e) {
             DockableExpr expr = (DockableExpr)((Button)sender).DataContext;
             WhenPluginDockable.RemoveExpr(expr);
+        }
+
+        public void DragFeedback(object sender, GiveFeedbackEventArgs e) {
         }
 
         public void DropExpr(object sender, DragEventArgs e) {
@@ -106,8 +111,68 @@ namespace WhenPlugin.When {
 
             Logger.Info("Dragging item #" + i);
 
+            CreateDragDropWindow(g);
+            System.Windows.DragDrop.AddQueryContinueDragHandler(g, DragContinueHandler);
+
+ 
             // Initiate the drag-and-drop operation.
             DragDrop.DoDragDrop(g, data, DragDropEffects.Move);
+            Logger.Info("Done");
+        }
+
+        private Window _dragdropWindow;
+
+        private void CreateDragDropWindow(Visual dragElement) {
+            _dragdropWindow = new Window {
+                WindowStyle = WindowStyle.None,
+                Opacity=.5,
+                AllowsTransparency = true,
+                AllowDrop = false,
+                Background = null,
+                IsHitTestVisible = false,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                Topmost = true,
+                ShowInTaskbar = false
+            };
+
+            Rectangle r = new Rectangle {
+                Width = ((FrameworkElement)dragElement).ActualWidth,
+                Height = ((FrameworkElement)dragElement).ActualHeight,
+                Fill = new VisualBrush(dragElement)
+            };
+            _dragdropWindow.Content = r;
+
+
+            Win32Point w32Mouse = new Win32Point();
+            GetCursorPos(ref w32Mouse);
+
+
+            _dragdropWindow.Left = w32Mouse.X;
+            _dragdropWindow.Top = w32Mouse.Y;
+            _dragdropWindow.Show();
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Win32Point {
+            public Int32 X;
+            public Int32 Y;
+        };
+        
+        public void DragContinueHandler(object sender, QueryContinueDragEventArgs e) {
+            if (e.Action == DragAction.Continue && e.KeyStates != DragDropKeyStates.LeftMouseButton) {
+                _dragdropWindow.Close();
+            } else {
+                Win32Point w32Mouse = new Win32Point();
+                GetCursorPos(ref w32Mouse);
+                _dragdropWindow.Left = w32Mouse.X + 10;
+                _dragdropWindow.Top = w32Mouse.Y + 10;
+                //_dragdropWindow.Show();
+
+            }
         }
 
     }

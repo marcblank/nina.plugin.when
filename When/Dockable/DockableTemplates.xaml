@@ -12,6 +12,7 @@
     <DataTemplate DataType="{x:Type local:DockableExpr}">
         <Grid Background="{StaticResource BackgroundBrush}" 
               VerticalAlignment="Center" 
+              PreviewGiveFeedback="DragFeedback"
               >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20" />
