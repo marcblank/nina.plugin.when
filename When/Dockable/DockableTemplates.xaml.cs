@@ -185,7 +185,6 @@ namespace WhenPlugin.When {
 
             // Initiate the drag-and-drop operation.
             DragDrop.DoDragDrop(g, data, DragDropEffects.Move);
-            Logger.Info("Done");
         }
 
         private Window _dragdropWindow;
@@ -196,7 +195,7 @@ namespace WhenPlugin.When {
                 Opacity=.7,
                 AllowsTransparency = true,
                 AllowDrop = false,
-                Background = null,
+                Background = Brushes.Transparent,
                 IsHitTestVisible = false,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 Topmost = true,
