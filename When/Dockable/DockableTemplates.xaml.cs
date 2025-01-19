@@ -63,6 +63,7 @@ namespace WhenPlugin.When {
                 Grid gg = tb.Parent as Grid;
                 if (gg != null) {
                     gg.Opacity = 1;
+                    gg.Background = OldBackground;
                 }
             }
 
@@ -103,7 +104,9 @@ namespace WhenPlugin.When {
             if (e.Source is TextBlock tb && tb.DataContext is DockableExpr de) {
                 Grid gg = tb.Parent as Grid;
                 if (gg != null) {
-                    gg.Opacity = .4;
+                    OldBackground = gg.Background;
+                    gg.Background = new SolidColorBrush(Colors.LightBlue);
+                    gg.Opacity = .75;
                 }
             }
            
@@ -111,11 +114,14 @@ namespace WhenPlugin.When {
 
         }
 
+        public Brush OldBackground { get; private set; }
+
         public void DragLeave(object sender, DragEventArgs e) {
             if (e.Source is TextBlock tb && tb.DataContext is DockableExpr de) {
                 Grid gg = tb.Parent as Grid;
                 if (gg != null) {
                     gg.Opacity = 1;
+                    gg.Background = OldBackground;
                 }
             }
             Logger.Info("Leave");
