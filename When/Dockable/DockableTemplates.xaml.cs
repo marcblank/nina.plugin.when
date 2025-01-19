@@ -145,7 +145,15 @@ namespace WhenPlugin.When {
 
             Logger.Info("Dragging item #" + i);
 
-            CreateDragDropWindow(g);
+            TextBox tb = null;
+            foreach (UIElement item in g.Children) {
+                if (item is TextBox) {
+                    tb = (TextBox)item;
+                    break;
+                }
+            }
+
+            CreateDragDropWindow(tb);
             System.Windows.DragDrop.AddQueryContinueDragHandler(g, DragContinueHandler);
 
  
@@ -159,7 +167,7 @@ namespace WhenPlugin.When {
         private void CreateDragDropWindow(Visual dragElement) {
             _dragdropWindow = new Window {
                 WindowStyle = WindowStyle.None,
-                Opacity=.5,
+                Opacity=.7,
                 AllowsTransparency = true,
                 AllowDrop = false,
                 Background = null,
