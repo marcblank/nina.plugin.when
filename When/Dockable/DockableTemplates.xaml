@@ -10,15 +10,36 @@
     <!--  The datatemplate for the dockable is indicated by the fully qualified class name and the postfix _Dockable  -->
 
     <DataTemplate DataType="{x:Type local:DockableExpr}">
-        <Grid Background="{StaticResource BackgroundBrush}" VerticalAlignment="Center">
+        <Grid Background="{StaticResource BackgroundBrush}" 
+              VerticalAlignment="Center" 
+              PreviewGiveFeedback="DragFeedback"
+              >
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="7*" />
                 <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Text="{Binding Expression}" />
-            <TextBlock Grid.Column="1" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"/>
-            <Button Grid.Column="2" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
+            <TextBlock 
+                    Grid.Column="0" 
+                    HorizontalAlignment="Right"  
+                    Margin="0,0,8,0" 
+                    Text="&#x2b0d;"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    MouseMove="MouseMove"
+                    AllowDrop="True"
+                    Drop="DropExpr"
+                    DragEnter="DragEnter"
+                    DragLeave="DragLeave">
+                <TextBlock.RenderTransform>
+                    <ScaleTransform ScaleX="2" ScaleY="1" />
+                </TextBlock.RenderTransform>
+            </TextBlock>
+
+            <TextBox Grid.Column="1" Text="{Binding Expression}" AllowDrop="False"/>
+            <TextBlock Grid.Column="2" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"  AllowDrop="True" Drop="DropExpr"/>
+            <Button Grid.Column="3" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
             <Popup Width="100" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="False" StaysOpen="False" IsOpen="{Binding IsOpen}" >
                 <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource ButtonBackgroundBrush}" CornerRadius="3" BorderThickness="3">
                     <ContentControl Background="{StaticResource ButtonBackgroundBrush}"  FontSize="12" Margin="5,5,5,5">
@@ -114,17 +135,11 @@
                        BorderBrush="{StaticResource BorderBrush}"
                        BorderThickness="1">
                         <Grid Background="{StaticResource BackgroundBrush}">
-                            <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}" />
+                            <ItemsControl MinHeight="35" ItemsSource="{Binding ExpressionList}"/>
                         </Grid>
                     </Border>
                 </Grid>
             </ScrollViewer>
         </Grid>
     </DataTemplate>
-
-    <!--  This geometrygroup defines a custom SVG to be used with the plugin dockable  -->
-    <GeometryGroup x:Key="WhenPlugin.When_AltitudeSVG">
-        <PathGeometry Figures="M 1.01725e-005,0.349426L 1.01725e-005,421.333L 625.953,421.333L 625.953,0.349426M 15.12,15.4694L 610.839,15.4694L 610.839,406.213L 15.12,406.213" />
-        <PathGeometry Figures="M 312.276,113.647C 296.183,113.224 280.485,120.109 265.011,132.781C 249.537,145.453 233.833,164.005 216.543,188.573C 181.953,237.709 141.089,311.073 86.8653,409.609L 101.464,417.641C 155.667,319.141 196.527,245.964 230.167,198.172C 246.991,174.276 262.027,156.771 275.568,145.677C 289.109,134.589 300.709,130.011 311.833,130.303C 322.959,130.595 334.657,135.844 348.131,147.563C 361.604,159.276 376.453,177.308 393.005,201.5C 426.104,249.891 466.1,322.781 519.157,419.229L 533.751,411.199C 480.704,314.761 440.724,241.745 406.756,192.095C 389.776,167.271 374.313,148.251 359.063,134.989C 343.813,121.729 328.371,114.073 312.276,113.647 Z " />
-    </GeometryGroup>
 </ResourceDictionary>

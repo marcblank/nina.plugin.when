@@ -68,8 +68,6 @@ namespace WhenPlugin.When {
                         fi = ninaTemplateController.GetType().GetField("sequenceJsonConverter", BindingFlags.Instance | BindingFlags.NonPublic);
                         sequenceJsonConverter = (SequenceJsonConverter)fi.GetValue(ninaTemplateController);
                         templateController = new TemplateControllerLite(sequenceJsonConverter, profileService);
-                        Debug.WriteLine("Foo");
-
                     }
                 }
             }
@@ -173,10 +171,11 @@ namespace WhenPlugin.When {
         }
 
         public override object Clone() {
+
             if (TemplateName != null && cycleStack.Contains(TemplateName)) {
                 Notification.ShowError("The template '" + TemplateName + "' is recursive.  Please don't do that.");
                 TemplateName = "{Error}";
-                throw new Exception("Recursive template");
+                throw new Exception("Recursive Template");
             }
             if (TemplateName != null) {
                 cycleStack.Push(TemplateName);
