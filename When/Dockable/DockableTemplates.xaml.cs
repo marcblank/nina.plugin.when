@@ -3,6 +3,7 @@ using AvalonDock.Controls;
 using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -58,6 +59,36 @@ namespace WhenPlugin.When {
         }
 
         public void DropExpr(object sender, DragEventArgs e) {
+            Expr target = ((FrameworkElement)sender).DataContext as Expr;
+            ObservableCollection<DockableExpr> exprs = WhenPluginDockable.ExpressionList;
+            if (target == null) return;
+            int targetIndex = -1;
+
+            for (int i = 0; i < exprs.Count; i++) {
+                if (exprs[i] == target) {
+                    targetIndex = i;
+                }
+            }
+
+            if (targetIndex < 0) return;
+
+            string data = (string)e.Data.GetData(DataFormats.StringFormat);
+            Int32 sourceIndex = Int32.Parse(data);
+
+            if (targetIndex == sourceIndex) return;
+
+            DockableExpr source = exprs[sourceIndex];
+            if (targetIndex > sourceIndex) {
+                for (int i = sourceIndex + 1; i <= targetIndex; i++) {
+                    exprs[i - 1] = exprs[i];
+                }
+            } else {
+                for (int i = sourceIndex - 1; i >= targetIndex; i--) {
+                    exprs[i + 1] = exprs[i];
+                }
+            }
+            exprs[targetIndex] = source;
+            WhenPluginDockable.SaveDockableExprs();
             Logger.Info("Item " + e.Data.GetData(DataFormats.StringFormat) + " dropped at " + ((FrameworkElement)sender).DataContext);
         }
 
@@ -71,6 +102,9 @@ namespace WhenPlugin.When {
 
         }
 
+        private void PreviewDragOver(object sender, DragEventArgs e) {
+            e.Handled = true;
+        }
 
         private void MouseMove(object sender, MouseEventArgs e) {
             // If the mousebutton isn't pressed, return immediately;
