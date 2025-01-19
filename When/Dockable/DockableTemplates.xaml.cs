@@ -59,6 +59,13 @@ namespace WhenPlugin.When {
         }
 
         public void DropExpr(object sender, DragEventArgs e) {
+            if (e.Source is TextBlock tb && tb.DataContext is DockableExpr de) {
+                Grid gg = tb.Parent as Grid;
+                if (gg != null) {
+                    gg.Opacity = 1;
+                }
+            }
+
             Expr target = ((FrameworkElement)sender).DataContext as Expr;
             ObservableCollection<DockableExpr> exprs = WhenPluginDockable.ExpressionList;
             if (target == null) return;
@@ -93,11 +100,24 @@ namespace WhenPlugin.When {
         }
 
         public void DragEnter(object sender, DragEventArgs e) {
+            if (e.Source is TextBlock tb && tb.DataContext is DockableExpr de) {
+                Grid gg = tb.Parent as Grid;
+                if (gg != null) {
+                    gg.Opacity = .4;
+                }
+            }
+           
             Logger.Info("Enter");
 
         }
 
         public void DragLeave(object sender, DragEventArgs e) {
+            if (e.Source is TextBlock tb && tb.DataContext is DockableExpr de) {
+                Grid gg = tb.Parent as Grid;
+                if (gg != null) {
+                    gg.Opacity = 1;
+                }
+            }
             Logger.Info("Leave");
 
         }
@@ -155,8 +175,8 @@ namespace WhenPlugin.When {
 
             CreateDragDropWindow(tb);
             System.Windows.DragDrop.AddQueryContinueDragHandler(g, DragContinueHandler);
+            System.Windows.DragDrop.AddGiveFeedbackHandler(g, DragFeedbackHandler);
 
- 
             // Initiate the drag-and-drop operation.
             DragDrop.DoDragDrop(g, data, DragDropEffects.Move);
             Logger.Info("Done");
@@ -184,7 +204,6 @@ namespace WhenPlugin.When {
             };
             _dragdropWindow.Content = r;
 
-
             Win32Point w32Mouse = new Win32Point();
             GetCursorPos(ref w32Mouse);
 
@@ -203,6 +222,11 @@ namespace WhenPlugin.When {
             public Int32 X;
             public Int32 Y;
         };
+
+        public void DragFeedbackHandler(object sender, GiveFeedbackEventArgs e) {
+            Mouse.SetCursor(Cursors.Hand);
+            e.Handled = true;
+        }
         
         public void DragContinueHandler(object sender, QueryContinueDragEventArgs e) {
             if (e.Action == DragAction.Continue && e.KeyStates != DragDropKeyStates.LeftMouseButton) {
@@ -213,7 +237,6 @@ namespace WhenPlugin.When {
                 _dragdropWindow.Left = w32Mouse.X + 10;
                 _dragdropWindow.Top = w32Mouse.Y + 10;
                 //_dragdropWindow.Show();
-
             }
         }
 
