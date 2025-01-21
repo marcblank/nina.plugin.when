@@ -107,12 +107,7 @@ namespace WhenPlugin.When {
 
             if (Expr.StringValue != null) {
                 sym.Expr.Error = null;
-<<<<<<< HEAD
                 sym.Definition = "'" + Expr.StringValue + "'";
-=======
-                sym.Definition = Expr.StringValue;
->>>>>>> drag
-       
             } else {
                 sym.Definition = Expr.Value.ToString();
             }

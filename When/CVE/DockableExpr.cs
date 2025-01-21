@@ -85,8 +85,9 @@ namespace WhenPlugin.When {
                     return Error;
                 }
                 if (DisplayType.Equals("Numeric")) {
-
-                    if (ConversionType.Equals("C to F")) {
+                    if (Value == Double.NegativeInfinity) {
+                        return StringValue;
+                    } else if (ConversionType.Equals("C to F")) {
                         return Math.Round(32 + (Value * 9 / 5), 2).ToString() + "° F";
                     } else if (ConversionType.Equals("m/s to mph")) {
                         return Math.Round(Value * 2.237, 2).ToString() + " mph";
