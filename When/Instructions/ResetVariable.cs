@@ -103,7 +103,7 @@ namespace WhenPlugin.When {
             // Whew!
             Symbol.UpdateSwitchWeatherData();
             Expr.Evaluate();
-            Logger.Info("ResetVariable: " + Variable + " from " + sym.Definition + " to " + Expr.Value.ToString());
+            string oldDefinition = sym.Definition;
 
             if (Expr.StringValue != null) {
                 sym.Expr.Error = null;
@@ -111,7 +111,9 @@ namespace WhenPlugin.When {
             } else {
                 sym.Definition = Expr.Value.ToString();
             }
-            
+
+            Logger.Info("ResetVariable: " + Variable + " from " + oldDefinition + " to " + sym.Definition);
+
             // Make sure references are updated
             Symbol.SymbolDirty(sym);
 
