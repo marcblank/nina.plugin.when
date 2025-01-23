@@ -807,8 +807,8 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SetConstant}">
-        <local:SequenceBlockView DataContext="{Binding}">
-            <local:SequenceBlockView.SequenceItemContent>
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
@@ -828,8 +828,8 @@
                        TextAlignment="Center" />
                     <local:SymControl Exp="{Binding Expr}"/>
                 </StackPanel>
-            </local:SequenceBlockView.SequenceItemContent>
-        </local:SequenceBlockView>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:PutArray}">
@@ -891,8 +891,8 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SetVariable}">
-        <local:SequenceBlockView DataContext="{Binding}">
-            <local:SequenceBlockView.SequenceItemContent>
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
@@ -903,13 +903,13 @@
                     <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
                     <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 </StackPanel>
-            </local:SequenceBlockView.SequenceItemContent>
-        </local:SequenceBlockView>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SetGlobalVariable}">
-        <local:SequenceBlockView DataContext="{Binding}">
-            <local:SequenceBlockView.SequenceItemContent>
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Name:" />
                     <TextBox
@@ -920,8 +920,8 @@
                     <local:ExprControl Label="Initially:" Exp="{Binding OriginalExpr, Mode=TwoWay}"/>
                     <local:ExprControlVariable Label="Currently:" Exp="{Binding Expr, Mode=TwoWay}" Visibility="{Binding Executed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 </StackPanel>
-            </local:SequenceBlockView.SequenceItemContent>
-        </local:SequenceBlockView>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
     </DataTemplate>
 
     <!--

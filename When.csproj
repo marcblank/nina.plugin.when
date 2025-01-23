@@ -34,6 +34,7 @@
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />
     <Compile Remove="When\Instructions\RunAutofocus.cs" />
+    <Compile Remove="When\Instructions\SequenceBlockView.xaml.cs" />
     <Compile Remove="When\Instructions\SetVariable.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />
@@ -55,6 +56,7 @@
     <Page Remove="When\ConstantsTemplates.xaml" />
     <Page Remove="When\CVE\CVC.xaml" />
     <Page Remove="When\CVE\GlobalConstantView.xaml" />
+    <Page Remove="When\Instructions\SequenceBlockView.xaml" />
     <Page Remove="When\Obsolete\ConstantComboControl.xaml" />
     <Page Remove="When\Obsolete\ConstantControl.xaml" />
     <Page Remove="When\Obsolete\ConstantControlVariable.xaml" />

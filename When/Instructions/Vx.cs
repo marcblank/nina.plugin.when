@@ -151,7 +151,7 @@ namespace WhenPlugin.When {
                 }
             }
             if (Expr.Error != null) {
-                Expr.AddExprIssues(i, Expr);
+                Expr.AddExprIssues(i, Expr, OriginalExpr);
             }
 
 

@@ -159,7 +159,7 @@ namespace WhenPlugin.When {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent)) { //} && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
+            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -194,7 +194,9 @@ namespace WhenPlugin.When {
                         if (Debugging) {
                             Logger.Info("APC: Added " + Identifier + " to " + sParent.Name);
                         }
-                        if (!cached.TryAdd(Identifier, this) && sParent == GlobalVariables) {
+                        bool added = cached.TryAdd(Identifier, this);
+
+                        if (!added && sParent == GlobalVariables) {
                             Symbol gv;
                             cached.TryGetValue(Identifier, out gv);
                             if (gv != null) {
@@ -203,6 +205,9 @@ namespace WhenPlugin.When {
                                 gv.Consumers.Clear();
                                 cached.TryUpdate(Identifier, this, gv);
                             }
+                        } else if (!added) {
+                            Identifier = GenId(cached, Identifier);
+                            return;
                         }
                     } catch (ArgumentException) {
                         if (sParent != WhenPluginObject.Globals) {
@@ -269,7 +274,9 @@ namespace WhenPlugin.When {
                 if (Parent != null) {
                     if (cached != null || SymbolCache.TryGetValue(sParent, out cached)) {
                         try {
-                            cached.TryAdd(Identifier, this);
+                            if (!cached.TryAdd(Identifier, this)) {
+                                _identifier = GenId(cached, Identifier);
+                            }
                             if (Debugging) {
                                 Logger.Info("Adding " + Identifier + " to " + sParent.Name);
                             }
