@@ -144,12 +144,8 @@ namespace WhenPlugin.When {
         }
 
         private string GenId(SymbolDictionary dict, string id) {
-            for (int i = 0; ; i++) {
-                string newId = id + "_" + i.ToString();
-                if (!dict.ContainsKey(newId)) {
-                    return newId;
-                }
-            }
+            Notification.ShowWarning("The Constant/Variable " + id + " is already defined");
+            return "";
         }
 
         public override void AfterParentChanged() {
