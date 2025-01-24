@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ToastNotifications.Utilities;
 
 
 namespace WhenPlugin.When {
@@ -53,6 +54,16 @@ namespace WhenPlugin.When {
         public void DeleteExpr(object sender, RoutedEventArgs e) {
             DockableExpr expr = (DockableExpr)((Button)sender).DataContext;
             WhenPluginDockable.RemoveExpr(expr);
+        }
+
+        public void EditExpr(object sender, RoutedEventArgs e) {
+            Grid fe = ((FrameworkElement)sender).Parent as Grid;
+            Popup popup = fe.FindName("popup") as Popup;
+            popup.IsOpen = true;
+        }
+
+        public void PopupMouseLeave(object sender, MouseEventArgs e) {
+            ((Popup)sender).IsOpen = false;
         }
 
         public void DragFeedback(object sender, GiveFeedbackEventArgs e) {

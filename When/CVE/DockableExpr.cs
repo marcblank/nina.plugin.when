@@ -28,7 +28,36 @@ namespace WhenPlugin.When {
                     WhenPluginDockable.RemoveExpr(this);
                 }
                 WhenPluginDockable.SaveDockableExprs();
+                RaisePropertyChanged("IsEditable");
             }
+        }
+
+        public override double Value {
+            get {
+                return base.Value;
+            }
+            set {
+                base.Value = value;
+                RaisePropertyChanged("IsEditable");
+            }
+        }
+
+        public override string Error {
+            get {
+                return base.Error;
+            }
+            set {
+                base.Error = value;
+                RaisePropertyChanged("IsEditable");
+            }
+        }
+
+        public bool IsEditable {
+            get {
+                Symbol s = Symbol.FindSymbol(Expression, SequenceEntity.Parent);
+                return (s != null);
+            }
+            set { }
         }
 
         private bool isOpen = false;

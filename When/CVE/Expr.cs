@@ -310,7 +310,7 @@ namespace WhenPlugin.When {
         private static Dictionary<string, object> EmptyDictionary = new Dictionary<string, object>();
 
         private double _value = Double.NaN;
-        public double Value {
+        public virtual double Value {
             get {
                 if (double.IsNaN(_value) && !double.IsNaN(Default)) {
                     return Default;
@@ -338,7 +338,7 @@ namespace WhenPlugin.When {
         }
 
         private string _error;
-        public string Error {
+        public virtual string Error {
             get => _error;
             set {
                 if (value != _error) {

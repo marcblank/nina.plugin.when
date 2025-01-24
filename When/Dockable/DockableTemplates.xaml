@@ -19,11 +19,12 @@
                 <ColumnDefinition Width="7*" />
                 <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
             <TextBlock 
                     Grid.Column="0" 
-                    HorizontalAlignment="Right"  
-                    Margin="0,0,8,0" 
+                    HorizontalAlignment="Left"  
+                    Margin="0,-2,5,0" 
                     Text="&#x2b0d;"
                     FontSize="16"
                     FontWeight="Bold"
@@ -37,9 +38,18 @@
                 </TextBlock.RenderTransform>
             </TextBlock>
 
-            <TextBox Grid.Column="1" Text="{Binding Expression}" AllowDrop="False" BorderThickness="0"/>
-            <TextBlock Grid.Column="2" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"  AllowDrop="True" Drop="DropExpr"/>
-            <Button Grid.Column="3" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
+            <TextBox Grid.Column="1" Text="{Binding Expression}" AllowDrop="False" BorderThickness="0" />
+            <TextBlock x:Name="val" Grid.Column="2" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"  AllowDrop="True" Drop="DropExpr" />
+            <Popup x:Name="popup"  PlacementTarget="{Binding ElementName=val}" Placement="Bottom"  Width="200" Height="25" Margin="0,20,0,0" MouseLeave="PopupMouseLeave">
+                <Border BorderBrush="Black" BorderThickness="0" Background="{StaticResource ButtonBackgroundBrush}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" Text="{Binding Expression}" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                        <TextBox Width="100" Foreground="White" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
+            <Button Grid.Column="3" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#x270D;"  Click="EditExpr" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+            <Button Grid.Column="4" HorizontalAlignment="Right"  Margin="0,0,0,0" Content="&#10006;"  Click="DeleteExpr"/>
             <Popup Width="100" PopupAnimation="Fade" Placement="Mouse" AllowsTransparency="False" StaysOpen="False" IsOpen="{Binding IsOpen}" >
                 <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource ButtonBackgroundBrush}" CornerRadius="3" BorderThickness="3">
                     <ContentControl Background="{StaticResource ButtonBackgroundBrush}"  FontSize="12" Margin="5,5,5,5">

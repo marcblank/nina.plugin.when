@@ -1034,7 +1034,9 @@ namespace WhenPlugin.When {
                         if (v is double d) {
                             v = Math.Round(d, 2);
                         }
-                        i.Add(kvp.Key + ": " + v);
+                        if (!kvp.Key.Contains("__")) {
+                            i.Add(kvp.Key + ": " + v);
+                        }
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);

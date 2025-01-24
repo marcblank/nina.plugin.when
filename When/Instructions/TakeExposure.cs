@@ -428,6 +428,7 @@ namespace WhenPlugin.When {
                     , { "Image_RMS", rms }
                     , { "Image_Type", e.RenderedImage.RawImageData.MetaData.Image.ImageType }
                     , { "Image_Gain", e.RenderedImage.RawImageData.MetaData.Camera.Gain}
+                    , { "image__Offset", e.RenderedImage.RawImageData.MetaData.Camera.Offset}
                 };
 
                 // Add these if they exist
