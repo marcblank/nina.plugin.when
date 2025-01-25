@@ -582,9 +582,13 @@ namespace WhenPlugin.When {
 
         public void Evaluate(bool validateOnly) {
             if (Monitor.TryEnter(SYMBOL_LOCK, 1000)) {
+
                 try {
+                    if (SequenceEntity == null || !Symbol.IsAttachedToRoot(SequenceEntity)) {
+                        return;
+                    }
+
                     if (!IsExpression) {
-                        //Error = null;
                         return;
                     }
                     if (Expression.Length == 0) {
@@ -596,11 +600,7 @@ namespace WhenPlugin.When {
                         RaisePropertyChanged("IsExpression");
                         return;
                     }
-                    if (SequenceEntity == null) return;
-                    if (!Symbol.IsAttachedToRoot(SequenceEntity)) {
-                        return;
-                    }
-                    //Debug.WriteLine("Evaluate " + this);
+
                     Dictionary<string, object> DataSymbols = Symbol.GetSwitchWeatherKeys();
 
                     if (Volatile || GlobalVolatile) {

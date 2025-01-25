@@ -50,6 +50,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using NINA.Core.Interfaces;
+using Parlot.Fluent;
 
 namespace WhenPlugin.When {
 
@@ -102,7 +103,9 @@ namespace WhenPlugin.When {
         static private bool IsAttachedToRoot(ISequenceContainer container) {
             ISequenceEntity p = container;
             while (p != null) {
-                if (p is SequenceRootContainer || p == WhenPluginObject.Globals) {
+                if (p is SequenceRootContainer root) {
+                    return root.Items.Count > 0;
+                } else if (p == WhenPluginObject.Globals) {
                     return true;
                 } else {
                     p = p.Parent;
@@ -158,6 +161,7 @@ namespace WhenPlugin.When {
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+
             ISequenceContainer sParent = SParent();
             if (sParent == LastSParent) {
                 return;
