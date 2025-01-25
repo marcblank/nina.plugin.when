@@ -135,15 +135,6 @@ namespace WhenPlugin.When {
                 i.Add("The name of a Constant must be alphanumeric");
             }
 
-            //SymbolDictionary dict;
-            //if (SymbolCache.TryGetValue(Parent, out dict)) {
-            //        if (!dict.ContainsKey(Identifier)) {
-            //        // Somehow, we're orphaned and that's not good
-            //        LastSParent = null;
-            //        AfterParentChanged();
-            //    }
-            //}
-
             if (!Executed) {
                 OriginalExpr.Validate();
                 if (OriginalExpr.Error != null) {
