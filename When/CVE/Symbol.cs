@@ -144,6 +144,14 @@ namespace WhenPlugin.When {
         }
 
         private string GenId(SymbolDictionary dict, string id) {
+
+            Symbol sym;
+            _ = dict.TryGetValue(id, out sym);
+            if (sym is SetGlobalVariable && !IsAttachedToRoot(sym.Parent)) {
+                // This is an orphaned definition; allow it to be redefined
+                dict[id] = this;
+                return id;
+            }
             Notification.ShowWarning("The Constant/Variable " + id + " is already defined");
             return "";
         }
@@ -253,7 +261,7 @@ namespace WhenPlugin.When {
                     return;
                 } else if (_identifier.Length != 0) {
                     // If there was an old value, remove it from Parent's dictionary
-                    if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) {
+                    if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) { 
                         if (Debugging) {
                             Logger.Info("Removing " + _identifier + " from " + sParent.Name);
                         }
@@ -416,6 +424,10 @@ namespace WhenPlugin.When {
             if (SymbolCache.TryGetValue(GlobalVariables, out cached)) {
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
+                    // Don't find symbols that aren't part of the current sequence
+                    if (!IsAttachedToRoot(global)) {
+                        return null;
+                    }
                 }
             }
             if (global is SetGlobalVariable) return global;
@@ -1034,7 +1046,9 @@ namespace WhenPlugin.When {
                         if (v is double d) {
                             v = Math.Round(d, 2);
                         }
-                        i.Add(kvp.Key + ": " + v);
+                        if (!kvp.Key.Contains("__")) {
+                            i.Add(kvp.Key + ": " + v);
+                        }
                     }
                 } else {
                     SwitchWeatherKeys.TryAdd("HFR", Double.NaN);
