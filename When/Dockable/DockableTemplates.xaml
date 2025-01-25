@@ -43,8 +43,9 @@
             <Popup x:Name="popup"  PlacementTarget="{Binding ElementName=val}" Placement="Bottom"  Width="200" Height="25" Margin="0,20,0,0" MouseLeave="PopupMouseLeave">
                 <Border BorderBrush="Black" BorderThickness="0" Background="{StaticResource ButtonBackgroundBrush}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Foreground="White" Text="{Binding Expression}" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                        <TextBox Width="100" Foreground="White" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                        <TextBlock Foreground="White" Text="{Binding Expression}" VerticalAlignment="Center" Margin="5,0,0,0" />
+                        <TextBlock Foreground="White" Text=": " VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <TextBox x:Name="newvalue" Width="100" Foreground="White" VerticalAlignment="Center" Margin="0,0,15,0" KeyDown="PopupKeyDown"/>
                     </StackPanel>
                 </Border>
             </Popup>

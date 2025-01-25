@@ -1,6 +1,7 @@
 ﻿using Accord.Math;
 using AvalonDock.Controls;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,12 +59,41 @@ namespace WhenPlugin.When {
 
         public void EditExpr(object sender, RoutedEventArgs e) {
             Grid fe = ((FrameworkElement)sender).Parent as Grid;
+            Expr expr = fe.DataContext as Expr;
+            if (expr == null) return;
+
             Popup popup = fe.FindName("popup") as Popup;
+            TextBox v = popup.FindName("newvalue") as TextBox;
+            if (v != null) {
+                v.Text = expr.Value.ToString();
+            }
             popup.IsOpen = true;
         }
 
         public void PopupMouseLeave(object sender, MouseEventArgs e) {
             ((Popup)sender).IsOpen = false;
+        }
+
+        public void PopupKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                StackPanel sp = ((FrameworkElement)sender).Parent as StackPanel;
+                Border b = sp.Parent as Border;
+                Popup popup = b.Parent as Popup;
+                if (popup != null) {
+                    popup.IsOpen = false;
+                }
+                Grid g = popup.Parent as Grid;
+                if (g == null) return;
+                Expr expr = g.DataContext as Expr;
+                if (expr == null) return;
+                string text = ((TextBox)sender).Text;
+                Symbol sym = Symbol.FindSymbol(expr.Expression, expr.SequenceEntity.Parent);
+                if (sym != null) {
+                    sym.Definition = text;
+                    sym.Expr.Evaluate();
+                    Logger.Info("Setting " + expr.Expression + " to " + text + " in Powerups Panel");
+                }
+            }
         }
 
         public void DragFeedback(object sender, GiveFeedbackEventArgs e) {

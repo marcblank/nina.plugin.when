@@ -1,5 +1,6 @@
 ﻿using NINA.Equipment.Equipment.MyFilterWheel;
 using NINA.Profile;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,12 @@ namespace WhenPlugin.When {
 
         public bool IsEditable {
             get {
+
+                ISequenceEntity runningItem = WhenPlugin.GetRunningItem();
+                if (runningItem != null) {
+                    SequenceEntity = runningItem;
+                }
+
                 Symbol s = Symbol.FindSymbol(Expression, SequenceEntity.Parent);
                 return (s != null);
             }
