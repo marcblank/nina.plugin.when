@@ -80,7 +80,8 @@ namespace WhenPlugin.When {
             double safeValue = Double.NaN;
             Symbol sym = Symbol.FindSymbol("SAFE", item.Parent);
             if (sym != null && (sym is not SetVariable sv || sv.Executed)) {
-                // If "SAFE" is defined, safe is the value
+                // If "SAFE" is defined, and it's either not a Variable (i.e. a Constant) or it's an executed variable,
+                // SAFE is the value
                 Symbol.LogOnce("SAFE is defined with value: " + sym.Expr.Value);
                 SPLogger.Debug("SAFE is defined with value: " + sym.Expr.Value);
                 safeValue = sym.Expr.Value;
