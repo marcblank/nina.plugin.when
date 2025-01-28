@@ -426,6 +426,8 @@ namespace WhenPlugin.When {
             return (long)timeSpan.TotalSeconds;
         }
 
+        public static Random RNG = new Random();
+
 
         public void ExtensionFunction(string name, FunctionArgs args) {
             DateTime dt;
@@ -513,6 +515,8 @@ namespace WhenPlugin.When {
                     } else {
                         args.Result = -1;
                     }
+                } else if (name == "random") {
+                    args.Result = RNG.NextDouble();
                 }
             } catch (Exception ex) {
                 Logger.Error("Error evaluating function " + name + ": " + ex.Message);

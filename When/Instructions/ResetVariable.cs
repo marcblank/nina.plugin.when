@@ -17,6 +17,8 @@ using System.Text.RegularExpressions;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Profile;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -146,12 +148,14 @@ namespace WhenPlugin.When {
             if (!IsAttachedToRoot()) return true;
 
             var i = new List<string>();
+            Symbol sym = null;
+
             if (Expr.Expression.Length == 0 || (Variable == null || Variable.Length == 0)) {
                 i.Add("The variable and new value expression must both be specified");
             } else if (Variable.Length > 0 && !Regex.IsMatch(Variable, Symbol.VALID_SYMBOL)) {
                 i.Add("'" + Variable + "' is not a legal Variable name");
             } else {
-                Symbol sym = Symbol.FindSymbol(Variable, Parent);
+                sym = Symbol.FindSymbol(Variable, Parent);
                 if (sym == null) {
                     i.Add("The Variable '" + Variable + "' is not in scope.");
                 } else if (sym is SetConstant) {
@@ -159,7 +163,13 @@ namespace WhenPlugin.When {
                 }
             }
 
-            Expr.Evaluate();
+            if (sym is SetVariable sv) {
+                if (!sv.Executed) {
+                    Expr.Evaluate();
+                }
+            } else {
+                Expr.Evaluate();
+            }
             
             Issues = i;
             return Issues.Count == 0;

@@ -263,9 +263,9 @@ namespace WhenPlugin.When {
                     // If there was an old value, remove it from Parent's dictionary
                     if (!IsDuplicate && SymbolCache.TryGetValue(sParent, out cached)) { 
                         if (Debugging) {
-                            Logger.Info("Removing " + _identifier + " from " + sParent.Name);
+                            Logger.Info("Removing " + value + " from " + sParent.Name);
                         }
-                        cached.TryRemove(_identifier, out _);
+                        cached.TryRemove(value, out _);
                         SymbolDirty(this);
                     }
                 }
