@@ -156,8 +156,15 @@ namespace WhenPlugin.When {
             return "";
         }
 
+        private ISequenceContainer LastParent;
+
         public override void AfterParentChanged() {
             base.AfterParentChanged();
+
+            if (Parent == null) {
+                Logger.Info("Null");
+            }
+
             ISequenceContainer sParent = SParent();
             if (sParent == LastSParent) {
                 return;
@@ -239,6 +246,8 @@ namespace WhenPlugin.When {
             } catch (Exception ex) {
                 Logger.Error("Exception in Symbol evaluation: " + ex.Message);
             }
+
+            LastParent = Parent;
         }
 
         protected static bool Debugging = false;

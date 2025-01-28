@@ -499,6 +499,21 @@ namespace WhenPlugin.When {
                     } else {
                         args.Result = -1;
                     }
+                } else if (name == "strLength") {
+                    var e = args.Parameters[0].Evaluate();
+                    if (e is string es) {
+                        args.Result = es.Length;
+                    } else {
+                        args.Result = -1;
+                    }
+                } else if (name == "strAtPos") {
+                    var e = args.Parameters[0].Evaluate();
+                    var i = args.Parameters[1].Evaluate();
+                    if (e is string es && i is int iint && iint >= 0 && iint < es.Length) {
+                        args.Result = Convert.ToString(es[iint]) ;
+                    } else {
+                        args.Result = "";
+                    }
                 } else if (name == "sumOfValues" || name == "averageOfValues") {
                     string arrayName = Convert.ToString(args.Parameters[0].Evaluate());
                     Array array;
