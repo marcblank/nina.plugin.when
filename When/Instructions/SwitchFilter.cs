@@ -164,7 +164,10 @@ namespace WhenPlugin.When {
 
                 if (Filter == -1 && !value.Equals("(Current)")) {
                     CVFilter = true;
-                    if (FExpr.Error == null && FExpr.Value < ((fwi == null) ? 10000 : fwi.Count)) {
+                    if (FExpr.Value == Double.NegativeInfinity && FExpr.Error == "Syntax error" && FExpr.StringValue.StartsWith("Filter_")) {
+                        FilterExpr = FExpr.StringValue.Substring(7);
+                        return;
+                    } else if (FExpr.Error == null && FExpr.Value < ((fwi == null) ? 10000 : fwi.Count)) {
                         Filter = (int)FExpr.Value;
                     }
                 }
@@ -185,6 +188,12 @@ namespace WhenPlugin.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            if (Parent is SmartExposure se) {
+                FExpr = se.FExpr;
+                if (FExpr.Value == Double.NegativeInfinity) {
+                    FilterExpr = FExpr.StringValue;
+                }
+            }
             return FInfo == null
                 ? throw new SequenceItemSkippedException("Skipping SwitchFilter - No Filter was selected")
                 : FilterWheelMediator.ChangeFilter(FInfo, token, progress);
