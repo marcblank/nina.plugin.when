@@ -787,7 +787,7 @@
                     </StackPanel.Resources>
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperature}" />
 
-                    <local:ExprHintControl Exp="{Binding TempExpr, Mode=TwoWay}"/>
+                    <local:ExprControl Exp="{Binding TempExpr, Mode=TwoWay}"/>
 
                     <TextBlock
                         Margin="4,2,7.5,2 "
@@ -795,7 +795,7 @@
                         VerticalAlignment="Center"
                         Text="°C   |" />
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                    <local:ExprHintControl Exp="{Binding DurExpr}"/>
+                    <local:ExprControl Exp="{Binding DurExpr}"/>
                     <TextBlock
                        Margin="2.5,0,7.5,2 "
                        HorizontalAlignment="Center"
