@@ -248,7 +248,7 @@ namespace WhenPlugin.When {
 
         private async Task InterruptWhen() {
             Logger.Trace("*When Interrupt*");
-            if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
+            if (!sequenceMediator.Initialized || !sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (!Interrupt) return;
             if (InFlight || Triggered) {
 
