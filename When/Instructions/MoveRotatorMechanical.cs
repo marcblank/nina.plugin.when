@@ -25,7 +25,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
-using Antlr.Runtime;
 using System.Linq.Expressions;
 
 namespace WhenPlugin.When {

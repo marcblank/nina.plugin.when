@@ -38,10 +38,6 @@ using NINA.Image.Interfaces;
 using NINA.Image.ImageData;
 using Namotion.Reflection;
 using System.Diagnostics;
-using Antlr.Runtime;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Windows.Media.Converters;
-using NINA.Sequencer.SequenceItem.Imaging;
 
 namespace WhenPlugin.When {
 

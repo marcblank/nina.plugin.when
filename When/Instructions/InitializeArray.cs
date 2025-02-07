@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Validations;
 using System.Collections.Generic;
-using System.Reflection;
-using Antlr.Runtime;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Initialize Array")]

@@ -18,16 +18,11 @@ using NINA.Sequencer.Validations;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
-using Antlr.Runtime;
-
 namespace WhenPlugin.When {
 
     [ExportMetadata("Name", "Move Focuser Absolute +")]

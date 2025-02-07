@@ -12,26 +12,19 @@
 
 #endregion "copyright"
 
-using Antlr.Runtime;
 using Newtonsoft.Json;
-using NINA.Core.Locale;
 using NINA.Core.Model;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Notification;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
-using NINA.ViewModel.Sequencer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace WhenPlugin.When {
 

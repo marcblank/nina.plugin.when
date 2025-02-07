@@ -1,23 +1,15 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using NCalc;
-using NCalc.Domain;
+﻿using NCalc;
 using NCalc.Handlers;
 using Newtonsoft.Json;
 using NINA.Astrometry;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Notification;
-using NINA.Profile;
 using NINA.Sequencer;
 using NINA.Sequencer.SequenceItem;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using static WhenPlugin.When.Symbol;
 using Array = WhenPlugin.When.Symbol.Array;
@@ -197,7 +189,7 @@ namespace WhenPlugin.When {
 
                     // Find the parameters used
                     References.Clear();
-                    foreach (var p in e.GetParametersNames()) {
+                    foreach (var p in e.GetParameterNames()) {
                         References.Add(p);
                     }
 
