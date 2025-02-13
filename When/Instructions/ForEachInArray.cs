@@ -7,20 +7,12 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Core.Enum;
-using NINA.Core.Utility;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Container;
-using NINA.Core.Utility.Converters;
-using System.Diagnostics;
 using NINA.Sequencer.Conditions;
-using System.Runtime.Serialization;
-using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Accord.IO;
 using System.Text;
-using Antlr.Runtime;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "For Each in Array")]

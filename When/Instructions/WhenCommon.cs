@@ -227,11 +227,42 @@ namespace WhenPlugin.When {
             }
         }
 
+        ISequenceItem RunningItem = null;
+
+        private bool CanContinue(ISequenceContainer container, ISequenceItem previousItem, ISequenceItem nextItem) {
+            var conditionable = container as IConditionable;
+            var canContinue = false;
+            var conditions = conditionable?.GetConditionsSnapshot()?.Where(x => x.Status != SequenceEntityStatus.DISABLED).ToList();
+            if (conditions != null && conditions.Count > 0) {
+                canContinue = conditionable.CheckConditions(previousItem, nextItem);
+            } else {
+                canContinue = container.Iterations < 1;
+            }
+
+            if (container.Parent != null) {
+                canContinue = canContinue && CanContinue(container.Parent, previousItem, nextItem);
+            }
+
+            return canContinue;
+        }
+
         private async Task InterruptWhen() {
             Logger.Trace("*When Interrupt*");
-            if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
+            if (!sequenceMediator.Initialized || !sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (!Interrupt) return;
             if (InFlight || Triggered) {
+
+                if (RunningItem != null) {
+                    ISequenceContainer p = RunningItem.Parent;
+                    if (p != null) {
+                        if (!CanContinue(p, PreviousItem, NextItem)) {
+                            Logger.Info("Interrupted instruction's loop has terminated.  Stopping When/WBU");
+                            await Parent.Interrupt();
+                            return;
+                        }
+                    }
+                }
+
                 Logger.Trace("When: InFlight or Triggered, return");
                 return;
             }
@@ -249,6 +280,7 @@ namespace WhenPlugin.When {
 
                     Critical = true;
                     try {
+                        RunningItem = WhenPlugin.GetRunningItem();
 
                         sequenceMediator.CancelAdvancedSequence();
                         Logger.Info("InterruptWhen: Canceling sequence...");
@@ -283,6 +315,9 @@ namespace WhenPlugin.When {
             return $"Trigger: {nameof(When)}";
         }
 
+        ISequenceItem NextItem;
+        ISequenceItem PreviousItem;
+
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (InFlight) {
                 Logger.Trace("ShouldTrigger: FALSE (InFlight) ");
@@ -293,8 +328,13 @@ namespace WhenPlugin.When {
                     Logger.Info("ShouldTrigger TRUE in InterruptWhen");
                     return true;
                 }
+
                 Logger.Info("ShouldTrigger: TRUE, TriggerRunner set");
                 TriggerRunner = Instructions;
+
+                NextItem = nextItem;
+                PreviousItem = previousItem;
+
                 return true;
             }
             Logger.Trace("ShouldTrigger: FALSE");

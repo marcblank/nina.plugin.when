@@ -121,10 +121,10 @@ namespace WhenPlugin.When {
             Symbol.UpdateSwitchWeatherData();
             if (IfExpr.ImageVolatile) {
                 Logger.Info("ImageVolatile");
-                while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                    Logger.Info("Waiting 250ms for processing...");
-                    Task.Delay(250);
-                }
+                //while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
+                //    Logger.Info("Waiting 250ms for processing...");
+                //    Task.Delay(250);
+                //}
                 // Get latest values
                 Logger.Info("ImageVolatile, new data");
             }

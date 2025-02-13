@@ -341,7 +341,13 @@ namespace WhenPlugin.When {
             AssignArgument(Arg5Expr, "Arg5");
             AssignArgument(Arg6Expr, "Arg6");
 
-            ISequenceContainer clone = (ISequenceContainer)SelectedTemplate.Container.Clone();
+            var templateName = tc.Container.Name;
+            TemplatedSequenceContainer tsc = FindTemplate(templateName);
+            if (tsc == null) {
+                throw new SequenceEntityFailedException("Can't find template with name: " + templateName);
+            }
+
+            ISequenceContainer clone = (ISequenceContainer)tsc.Container.Clone();
             clone.Name += (++CallID).ToString();
             Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Clear(); }));
             Application.Current.Dispatcher.Invoke(new Action(() => { Instructions.Items.Add(clone); }));
