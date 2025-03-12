@@ -46,9 +46,9 @@ namespace WhenPlugin.When {
 
                 Process process = new Process();
                 process.StartInfo.FileName = executableLocation;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.RedirectStandardOutput = false;
+                process.StartInfo.RedirectStandardError = false;
                 process.EnableRaisingEvents = true;
                 process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
@@ -67,8 +67,6 @@ namespace WhenPlugin.When {
 
                 SPLogger.Debug($"Starting process '{executableLocation}' with args '{args}'");
                 process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
 
                 int ninaesrc = GetEnvironmentVariableValue("NINAESRC", EnvironmentVariableTarget.User);

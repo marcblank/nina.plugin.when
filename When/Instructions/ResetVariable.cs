@@ -19,6 +19,7 @@ using NINA.Profile.Interfaces;
 using NINA.Profile;
 using System.Windows.Input;
 using System.Windows.Media;
+using Antlr.Runtime;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Set Variable")]
@@ -90,6 +91,10 @@ namespace WhenPlugin.When {
             if (Issues.Count != 0) {
                 throw new SequenceEntityFailedException("The instruction is invalid");
             }
+            
+            Symbol.UpdateSwitchWeatherData();
+            Expr.Evaluate();
+
             // Find Symbol, make sure it's valid
             Symbol sym = Symbol.FindSymbol(Variable, Parent);
             if (sym == null || !(sym is SetVariable)) {
@@ -102,9 +107,6 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("The Variable definition has not been executed");
             }
 
-            // Whew!
-            Symbol.UpdateSwitchWeatherData();
-            Expr.Evaluate();
             string oldDefinition = sym.Definition;
 
             if (Expr.StringValue != null) {
@@ -120,10 +122,8 @@ namespace WhenPlugin.When {
             Symbol.SymbolDirty(sym);
 
             Expr.Refresh();
- 
             return Task.CompletedTask;
         }
-
         private bool IsAttachedToRoot() {
             ISequenceContainer p = Parent;
             while (p != null) {
@@ -167,10 +167,9 @@ namespace WhenPlugin.When {
                 if (!sv.Executed) {
                     Expr.Evaluate();
                 }
-            } else {
-                Expr.Evaluate();
             }
-            
+            Expr.AddExprIssues(i, Expr);
+
             Issues = i;
             return Issues.Count == 0;
         }

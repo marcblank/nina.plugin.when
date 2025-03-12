@@ -77,12 +77,6 @@ namespace WhenPlugin.When {
                 }
             }
         }
-
-        public void Exex(object foo, EventArgs args) {
-            Logger.Trace("Foo");
-
-        }
-
         protected When(When cloneMe) : this(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);

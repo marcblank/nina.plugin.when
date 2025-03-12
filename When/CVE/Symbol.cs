@@ -170,7 +170,7 @@ namespace WhenPlugin.When {
                 return;
             }
             Debug.WriteLine("APC: " + this + ", New Parent = " + ((sParent == null) ? "null" : sParent.Name));
-            if (!IsAttachedToRoot(Parent) && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
+            if (!IsAttachedToRoot(Parent)) {  //} && (Parent != WhenPluginObject.Globals) && !(this is SetGlobalVariable)) {
                 if (Expr != null) {
                     // Clear out orphans of this Symbol
                     Orphans.TryRemove(this, out _);
@@ -427,10 +427,20 @@ namespace WhenPlugin.When {
             }
         }
 
-        public static Symbol FindGlobalSymbol(string identifier) {
+         public static Symbol FindGlobalSymbol(string identifier) {
             SymbolDictionary cached;
             Symbol global = null;
             if (SymbolCache.TryGetValue(GlobalVariables, out cached)) {
+
+                // Prune orphaned global symbolsf
+                foreach (var kvp in cached) {
+                    Symbol sym = kvp.Value;
+                    ISequenceEntity context = sym.Expr.SequenceEntity;
+                    if (context == null || !IsAttachedToRoot(context)) {
+                        cached.TryRemove(kvp.Key, out _);
+                    }
+                }
+
                 if (cached.ContainsKey(identifier)) {
                     global = cached[identifier];
                     // Don't find symbols that aren't part of the current sequence
@@ -782,7 +792,12 @@ namespace WhenPlugin.When {
         }
 
         private static void AddSymbol(List<string> i, string token, object value, string[] values, bool silent) {
-            SwitchWeatherKeys.TryAdd(token, value);
+            try {
+                SwitchWeatherKeys.TryAdd(token, value);
+                Logger.Trace("Adding key " + token + " with value " + value);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
             if (silent) {
                 return;
             }
@@ -867,6 +882,7 @@ namespace WhenPlugin.When {
                             AddSymbol(i, "TargetDec", c.Dec);
                             AddSymbol(i, "TargetValid", 1);
                             AddSymbol(i, "TargetName", targetName);
+                            AddSymbol(i, "TargetRotation", foundTarget.PositionAngle);
                         } else {
                             NoTarget(i);
                         }
@@ -889,7 +905,7 @@ namespace WhenPlugin.When {
                 }
                 
                 foreach (string td in toDelete) {
-                    MessageKeys.Remove(td);
+                    //MessageKeys.Remove(td);
                 }
 
                 if (Observer == null) {
@@ -938,6 +954,8 @@ namespace WhenPlugin.When {
                 SafetyConnected = safetyInfo.Connected;
                 if (SafetyConnected) {
                     AddSymbol(i, "IsSafe", safetyInfo.IsSafe);
+                } else {
+                    AddSymbol(i, "IsSafe", false);
                 }
 
                 string roofStatus = WhenPluginObject.RoofStatus;
