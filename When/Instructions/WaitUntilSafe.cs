@@ -31,7 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Wait Until Safe +")]
     [ExportMetadata("Description", "Waits until the Safety Monitor reports safe; delete this instruction to end the current sequence.")]
@@ -85,10 +85,10 @@ namespace WhenPlugin.When {
             var info = safetyMonitorMediator.GetInfo();
 
             if (!info.Connected) {
-                Symbol sym = Symbol.FindSymbol("SAFE", Parent);
-                if (sym == null) {
-                    i.Add(Loc.Instance["Safety Monitor not connected and SAFE not defined"]);
-                }
+                //Symbol sym = Symbol.FindSymbol("SAFE", Parent);
+                ///if (sym == null) {
+                //    i.Add(Loc.Instance["Safety Monitor not connected and SAFE not defined"]);
+                //}
             }
 
             Issues = i;

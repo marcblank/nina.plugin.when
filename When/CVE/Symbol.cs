@@ -51,7 +51,7 @@ using System.Threading;
 using System.Net;
 using NINA.Core.Interfaces;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [JsonObject(MemberSerialization.OptIn)]
 

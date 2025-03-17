@@ -32,7 +32,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Slew to Alt/Az +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Telescope_SlewScopeToAltAz_Description")]

@@ -38,7 +38,7 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model;
 using NINA.Astrometry;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "When Becomes Unsafe")]
     [ExportMetadata("Description", "Runs a customizable set of instructions within seconds of an 'Unsafe' condition being recognized.")]
@@ -242,7 +242,8 @@ namespace WhenPlugin.When {
 
         private async Task InterruptWhen() {
             Logger.Trace("*When Interrupt*");
-            if (!sequenceMediator.Initialized || !sequenceMediator.IsAdvancedSequenceRunning()) return;
+            if (!sequenceMediator.Initialized) return;
+            if (!sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (!Interrupt) return;
             if (InFlight || Triggered) {
 
@@ -280,7 +281,7 @@ namespace WhenPlugin.When {
                         Logger.Info("InterruptWhen: Canceling sequence...");
 
                         await Task.Delay(1000);
-                        while (sequenceMediator.IsAdvancedSequenceRunning()) {
+                        while (sequenceMediator.Initialized && sequenceMediator.IsAdvancedSequenceRunning()) {
                             Logger.Info("InterruptWhen: Delay 1000");
                             await Task.Delay(1000);
                         }
@@ -361,9 +362,6 @@ namespace WhenPlugin.When {
             } finally {
                 InFlight = false;
                 Triggered = false;
-                if (this is WhenSwitch w && w.OnceOnly) {
-                    w.Disabled = true;
-                }
                 Logger.Info("When: Execute done; InFlight -> false, Triggered false");
             }
         }

@@ -19,11 +19,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using static WhenPlugin.When.Symbol;
-using Array = WhenPlugin.When.Symbol.Array;
+using static PowerupsLite.When.Symbol;
+using Array = PowerupsLite.When.Symbol.Array;
 using Expression = NCalc.Expression;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [JsonObject(MemberSerialization.OptIn)]
     public class Expr : BaseINPC {
 
@@ -197,7 +197,7 @@ namespace WhenPlugin.When {
 
                     // Find the parameters used
                     References.Clear();
-                    foreach (var p in e.GetParametersNames()) {
+                    foreach (var p in e.GetParameterNames()) {
                         References.Add(p);
                     }
 

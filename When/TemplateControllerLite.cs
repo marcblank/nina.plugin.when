@@ -36,7 +36,7 @@ using NINA.Sequencer;
 using System.Data.Entity.Migrations.Model;
 using System.Diagnostics;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public class TemplateControllerLite {
         private readonly SequenceJsonConverter sequenceJsonConverter;

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Single Step Trigger")]
     [ExportMetadata("Description", "This trigger will stop before every instruction is executed.")]

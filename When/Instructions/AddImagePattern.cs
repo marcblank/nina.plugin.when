@@ -12,15 +12,16 @@ using System.Reflection;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Core.Utility.Notification;
 using NINA.Core.Utility;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Add Image Pattern")]
     [ExportMetadata("Description", "Add an image pattern for file naming")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-
 
     public class AddImagePattern : SequenceItem, IValidatable {
 
@@ -30,20 +31,31 @@ namespace WhenPlugin.When {
         public AddImagePattern(IOptionsVM options) : base() {
             Name = Name;
             Icon = Icon;
-            Expr = new Expr(this);
             OptionsVM = options;
         }
 
         public AddImagePattern(AddImagePattern copyMe) : this(OptionsVM) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                Expr = new Expr(this, copyMe.Expr.Expression);
                 Identifier = copyMe.Identifier;
+                Expr = new Expression(Expr);
             }
         }
 
+        private Expression expr = new Expression(null, null);
         [JsonProperty]
-        public Expr Expr { get; set; }
+        public Expression Expr {
+            get => expr;
+            set {
+                expr = value;
+                if (value == null) return;
+                Expr.Context = this;
+                Expr.Type = "String";
+                Expr.SymbolBroker = SymbolBroker;
+                Expr.Default = 0;
+                RaisePropertyChanged();
+            }
+        }
 
         [JsonProperty]
         public string Identifier {  get; set; } = string.Empty;
@@ -68,13 +80,13 @@ namespace WhenPlugin.When {
 
         public class ImagePatternExpr {
 
-            public ImagePatternExpr (ImagePattern p, Expr e) {
+            public ImagePatternExpr (ImagePattern p, Expression e) {
                 Pattern = p;
                 Expr = e;
             }
             
             public ImagePattern Pattern;
-            public Expr Expr;
+            public Expression Expr;
         }
 
         public static IList<ImagePatternExpr> ImagePatterns = new List<ImagePatternExpr>();
@@ -84,7 +96,7 @@ namespace WhenPlugin.When {
 
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || Expr?.Expression.Length == 0 || Description.Length == 0) {
+            if (Identifier.Length == 0 || Expr?.Definition.Length == 0 || Description.Length == 0) {
                 i.Add("A name, value, and description must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of an image pattern token must be all uppercase alphabetic characters");

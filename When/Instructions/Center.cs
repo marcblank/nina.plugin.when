@@ -42,7 +42,7 @@ using NINA.Equipment.Interfaces;
 using NINA.Sequencer.SequenceItem;
 using static NINA.Equipment.Equipment.MyGPS.PegasusAstro.UnityApi.DriverUranusReport;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Slew to RA/Dec and Center +")]
     [ExportMetadata("Description", "Slew to the decimal RA and Dec coordinates and center on them")]

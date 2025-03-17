@@ -22,7 +22,7 @@ using System.Windows.Shapes;
 using ToastNotifications.Utilities;
 
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     /// <summary>
     /// Interaction logic for DockableTemplates.xaml
     ///

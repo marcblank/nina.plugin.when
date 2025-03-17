@@ -29,7 +29,7 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.SequenceItem;
 
-namespace WhenPlugin.When { 
+namespace PowerupsLite.When { 
 
     [ExportMetadata("Name", "Take Many Exposures +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeManyExposures_Description")]

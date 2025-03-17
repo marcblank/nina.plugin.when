@@ -47,7 +47,7 @@ using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
 using System.ComponentModel.DataAnnotations;
 using NINA.Equipment.Equipment.MyCamera;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Smart Subframe Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartSubframeExposure_Description")]

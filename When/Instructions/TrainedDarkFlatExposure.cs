@@ -36,7 +36,7 @@ using NINA.Sequencer.SequenceItem.FlatDevice;
 using NINA.Sequencer.SequenceItem;
 using NINA.Equipment.Equipment.MyFilterWheel;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Trained Dark Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_FlatDevice_TrainedDarkFlatExposure_Description")]

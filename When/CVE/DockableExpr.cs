@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     public class DockableExpr : Expr {
 
         public DockableExpr (string expression) : base(new SetVariable(), expression) {

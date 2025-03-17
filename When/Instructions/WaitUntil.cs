@@ -33,7 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Wait Until")]
     [ExportMetadata("Description", "Waits until the expression is true.")]

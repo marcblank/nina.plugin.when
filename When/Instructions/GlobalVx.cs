@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Global Variable")]
     [ExportMetadata("Description", "Creates a global Variable whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "VariableSVG")]

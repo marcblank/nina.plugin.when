@@ -48,7 +48,7 @@ using System.ComponentModel.DataAnnotations;
 using NINA.Equipment.Equipment.MyCamera;
 using System.Threading;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Smart Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_SmartExposure_Description")]

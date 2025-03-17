@@ -24,8 +24,9 @@ using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using System.Text.RegularExpressions;
 using NINA.Core.Utility;
+using NINA.Sequencer.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "External Script +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Utility_ExternalScript_Description")]
@@ -99,19 +100,19 @@ namespace WhenPlugin.When {
                     while (true) {
                         string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
                         if (toReplace.Length == 0) break;
-                        Expr ex = new Expr(this, toReplace, "Any");
-                        if (ex.Error != null) {
-                            ProcessedScriptError = ex.Error;
-                            //Logger.Warning("External Script +, error processing script, " + ex.Error);
-                            return "Error";
-                        } else if (ex.StringValue != null) {
-                            value = value.Replace("{" + toReplace + "}", ex.StringValue);
-                        } else {
-                            value = value.Replace("{" + toReplace + "}", ex.ValueString);
-                        }
-                        if (Symbol.IsAttachedToRoot(this)) {
-                            //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
-                        }
+                        //Expr ex = new Expr(this, toReplace, "Any");
+                        //if (ex.Error != null) {
+                        //    ProcessedScriptError = ex.Error;
+                        //    //Logger.Warning("External Script +, error processing script, " + ex.Error);
+                        //    return "Error";
+                        //} else if (ex.StringValue != null) {
+                        //    value = value.Replace("{" + toReplace + "}", ex.StringValue);
+                        //} else {
+                        //    value = value.Replace("{" + toReplace + "}", ex.ValueString);
+                        //}
+                        //if (ItemUtility.IsInRootContainer(Parent)) {
+                        //    //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
+                        //}
                     }
                 }
                 iProcessedScript = value;
@@ -124,7 +125,6 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError {  get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            await Symbol.UpdateSwitchWeatherData();
             Logger.Info("External Script +, script = " + Script + ", processed script = " + ProcessedScript);
             string sequenceCompleteCommand = ProcessedScript;
             ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(progress);
@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
                 throw new SequenceEntityFailedException("External script was unable to run successfully");
             } else {
                 // Save the value
-                Symbol.LastExitCode = success;
+                //Symbol.LastExitCode = success;
                 Logger.Info("External Script +, exit code = " + success);
             }
         }

@@ -25,7 +25,7 @@ using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using NINA.Equipment.Equipment.MyRotator;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "FlipRotator")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Description")]

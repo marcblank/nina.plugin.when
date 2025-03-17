@@ -25,7 +25,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Return")]
     [ExportMetadata("Description", "Return a value from a Function")]

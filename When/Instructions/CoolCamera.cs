@@ -31,7 +31,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Cool Camera +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Camera_CoolCamera_Description")]

@@ -12,7 +12,7 @@ using NINA.Sequencer.Utility;
 using System.Windows.Controls;
 using NINA.Core.Model;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Loop While")]
     [ExportMetadata("Description", "Loops while the specified expression is not false.")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]

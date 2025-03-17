@@ -25,7 +25,7 @@ using NINA.Sequencer.SequenceItem;
 using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Annotation +")]
     [ExportMetadata("Description", "Add the specified text to the log, expanding any expressions within {}'s")]
@@ -107,7 +107,6 @@ namespace WhenPlugin.When {
         public string ProcessedScriptError { get; set; } = null;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            await Symbol.UpdateSwitchWeatherData();
             Logger.Warning("User log: " + ProcessedScript);
         }
 

@@ -15,7 +15,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public class WhenTextBox : TextBox {
 

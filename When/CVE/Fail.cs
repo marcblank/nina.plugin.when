@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Fail (for testing)")]
     [ExportMetadata("Description", "This instruction always fails; for experimenting with 'If Fails'!")]

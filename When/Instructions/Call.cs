@@ -21,7 +21,7 @@ using NINA.Sequencer.Serialization;
 using System.Runtime.Serialization;
 using System.Windows;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Call")]
     [ExportMetadata("Description", "Call a Function (Template).")]
     [ExportMetadata("Icon", "BoxClosedSVG")]

@@ -28,7 +28,7 @@ using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using Antlr.Runtime;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Move Focuser Absolute +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Focuser_MoveFocuserAbsolute_Description")]

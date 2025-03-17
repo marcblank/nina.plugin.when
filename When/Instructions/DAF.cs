@@ -36,7 +36,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Interfaces;
 using NINA.Sequencer.Trigger;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Dither After Exposures +")]
     [ExportMetadata("Description", "Lbl_SequenceTrigger_Guider_DitherAfterExposures_Description")]

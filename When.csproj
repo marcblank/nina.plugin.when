@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows8.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>WhenPlugin.When</RootNamespace>
-    <AssemblyName>WhenPlugin</AssemblyName>
+    <RootNamespace>PowerupsLite.When</RootNamespace>
+    <AssemblyName>PowerupsLite</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -12,30 +12,91 @@
   <ItemGroup>
     <Compile Remove="localappdata\**" />
     <Compile Remove="When\CVE - Copy\**" />
+    <Compile Remove="When\Dockable\**" />
     <EmbeddedResource Remove="localappdata\**" />
     <EmbeddedResource Remove="When\CVE - Copy\**" />
+    <EmbeddedResource Remove="When\Dockable\**" />
     <None Remove="localappdata\**" />
     <None Remove="When\CVE - Copy\**" />
+    <None Remove="When\Dockable\**" />
     <Page Remove="localappdata\**" />
     <Page Remove="When\CVE - Copy\**" />
+    <Page Remove="When\Dockable\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
+    <Compile Remove="When\CVE\CVContainer.cs" />
+    <Compile Remove="When\CVE\DockableExpr.cs" />
+    <Compile Remove="When\CVE\Expr.cs" />
+    <Compile Remove="When\CVE\ExprComboControl.xaml.cs" />
+    <Compile Remove="When\CVE\ExprControl.xaml.cs" />
+    <Compile Remove="When\CVE\ExprControlVariable.xaml.cs" />
+    <Compile Remove="When\CVE\ExprConverter.cs" />
     <Compile Remove="When\CVE\ExpressionConverter.cs" />
+    <Compile Remove="When\CVE\ExprHintControl.xaml.cs" />
     <Compile Remove="When\CVE\GlobalConstantView.xaml.cs" />
+    <Compile Remove="When\CVE\HintTextBox.cs" />
     <Compile Remove="When\CVE\ISettable.cs" />
     <Compile Remove="When\CVE\Runner.cs" />
     <Compile Remove="When\CVE\RunnerInstruction.cs" />
+    <Compile Remove="When\CVE\Symbol.cs" />
+    <Compile Remove="When\CVE\SymControl.xaml.cs" />
+    <Compile Remove="When\CVE\ValConverter.cs" />
     <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
+    <Compile Remove="When\Instructions\AssignVariables.cs" />
     <Compile Remove="When\Instructions\AutofocusAfterInstructions.cs" />
+    <Compile Remove="When\Instructions\Call.cs" />
+    <Compile Remove="When\Instructions\CameraTemperatureConverter.cs" />
+    <Compile Remove="When\Instructions\Center.cs" />
+    <Compile Remove="When\Instructions\ConditionalTrigger.cs" />
+    <Compile Remove="When\Instructions\CoolCamera.cs" />
+    <Compile Remove="When\Instructions\Cx.cs" />
+    <Compile Remove="When\Instructions\DAF.cs" />
+    <Compile Remove="When\Instructions\ForEachInArray.cs" />
+    <Compile Remove="When\Instructions\ForEachList.cs" />
+    <Compile Remove="When\Instructions\GetArray.cs" />
+    <Compile Remove="When\Instructions\GlobalVx.cs" />
+    <Compile Remove="When\Instructions\If.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
+    <Compile Remove="When\Instructions\IfThenElse.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />
+    <Compile Remove="When\Instructions\InitializeArray.cs" />
+    <Compile Remove="When\Instructions\Log.cs" />
+    <Compile Remove="When\Instructions\LoopWhile.cs" />
+    <Compile Remove="When\Instructions\MoveFocuserAbsolute.cs" />
+    <Compile Remove="When\Instructions\MoveFocuserRelative.cs" />
+    <Compile Remove="When\Instructions\MoveRotatorMechanical.cs" />
+    <Compile Remove="When\Instructions\NewIf.cs" />
+    <Compile Remove="When\Instructions\PutArray.cs" />
+    <Compile Remove="When\Instructions\RepeatUntilAllSucceed.cs" />
+    <Compile Remove="When\Instructions\ResetVariable.cs" />
+    <Compile Remove="When\Instructions\ResetVariableToDate.cs" />
+    <Compile Remove="When\Instructions\Return.cs" />
     <Compile Remove="When\Instructions\RunAutofocus.cs" />
+    <Compile Remove="When\Instructions\SendWithGNS.cs" />
     <Compile Remove="When\Instructions\SequenceBlockView.xaml.cs" />
+    <Compile Remove="When\Instructions\SetSwitchValue.cs" />
     <Compile Remove="When\Instructions\SetVariable.cs" />
+    <Compile Remove="When\Instructions\SlewDomeAzimuth.cs" />
+    <Compile Remove="When\Instructions\SlewToAltAz.cs" />
+    <Compile Remove="When\Instructions\SlewToRADec.cs" />
+    <Compile Remove="When\Instructions\SmartExposure.cs" />
+    <Compile Remove="When\Instructions\SmartSubframeExposure.cs" />
+    <Compile Remove="When\Instructions\SPLogger.cs" />
+    <Compile Remove="When\Instructions\Step.cs" />
+    <Compile Remove="When\Instructions\SwitchFilter.cs" />
+    <Compile Remove="When\Instructions\TakeExposure.cs" />
+    <Compile Remove="When\Instructions\TakeManyExposures.cs" />
+    <Compile Remove="When\Instructions\TemplateByReference.cs" />
+    <Compile Remove="When\Instructions\TrainedDarkFlatExposure.cs" />
+    <Compile Remove="When\Instructions\TrainedFlatExposure.cs" />
+    <Compile Remove="When\Instructions\Vx.cs" />
+    <Compile Remove="When\Instructions\WaitForTimeSpan.cs" />
+    <Compile Remove="When\Instructions\WaitUntil.cs" />
+    <Compile Remove="When\Instructions\When.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />
     <Compile Remove="When\Obsolete\ConstantControl.xaml.cs" />
@@ -55,7 +116,12 @@
   <ItemGroup>
     <Page Remove="When\ConstantsTemplates.xaml" />
     <Page Remove="When\CVE\CVC.xaml" />
+    <Page Remove="When\CVE\ExprComboControl.xaml" />
+    <Page Remove="When\CVE\ExprControl.xaml" />
+    <Page Remove="When\CVE\ExprControlVariable.xaml" />
+    <Page Remove="When\CVE\ExprHintControl.xaml" />
     <Page Remove="When\CVE\GlobalConstantView.xaml" />
+    <Page Remove="When\CVE\SymControl.xaml" />
     <Page Remove="When\Instructions\SequenceBlockView.xaml" />
     <Page Remove="When\Obsolete\ConstantComboControl.xaml" />
     <Page Remove="When\Obsolete\ConstantControl.xaml" />
@@ -73,9 +139,22 @@
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.60.0" />
-    <PackageReference Include="NCalcSync" Version="5.0.0" />
-    <PackageReference Include="NINA.Plugin" Version="3.1.2.9001" />
-    <PackageReference Include="Parlot" Version="1.0.0" />
+    <PackageReference Include="Namotion.Reflection" Version="3.3.0" />
+    <PackageReference Include="NCalcSync" Version="5.2.11" />
+    <PackageReference Include="NINA.Accord.Imaging" Version="3.5.3" />
+    <PackageReference Include="NINA.Astrometry" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Core" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.CustomControlLibrary" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Equipment" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Image" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.MGEN" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.PlateSolving" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Plugin" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Profile" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Sequencer" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.Sequencer.Generators" Version="1.0.0" />
+    <PackageReference Include="NINA.WPF.Base" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="Parlot" Version="1.3.3" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">

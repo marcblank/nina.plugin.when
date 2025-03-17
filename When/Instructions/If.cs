@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "If")]
     [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
     [ExportMetadata("Icon", "IfSVG")]

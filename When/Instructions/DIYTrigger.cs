@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "DIY Trigger")]
     [ExportMetadata("Description", "This trigger will run the specified instructions when the underlying trigger is activated.")]
     [ExportMetadata("Icon", "WandSVG")]

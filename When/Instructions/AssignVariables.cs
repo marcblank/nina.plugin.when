@@ -26,7 +26,7 @@ using NINA.Sequencer.Conditions;
 using System.Text;
 using Accord;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Assign Variables")]
     [ExportMetadata("Description", "Assign Variables in For Each loop")]
@@ -34,6 +34,7 @@ namespace WhenPlugin.When {
     [ExportMetadata("Category", "Powerups (Fun-ctions)")]
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+
     public class AssignVariables : SequenceItem {
 
         [ImportingConstructor]

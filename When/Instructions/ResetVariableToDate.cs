@@ -22,7 +22,7 @@ using NINA.Core.Locale;
 using NINA.Sequencer.Utility.DateTimeProvider;
 using System.Linq;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Set Variable to Time")]
     [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
     [ExportMetadata("Icon", "VariableSVG")]

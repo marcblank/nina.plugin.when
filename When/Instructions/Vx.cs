@@ -11,7 +11,7 @@ using NINA.Sequencer.Container;
 using NINA.Core.Utility;
 using System.Data;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Variable")]
     [ExportMetadata("Description", "Creates a Variable whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "VariableSVG")]
