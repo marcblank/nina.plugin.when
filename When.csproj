@@ -15,18 +15,22 @@
     <Compile Remove="NINA.Sequencer.Generators\**" />
     <Compile Remove="When\CVE - Copy\**" />
     <Compile Remove="When\Dockable\**" />
+    <Compile Remove="When\Obsolete\**" />
     <EmbeddedResource Remove="localappdata\**" />
     <EmbeddedResource Remove="NINA.Sequencer.Generators\**" />
     <EmbeddedResource Remove="When\CVE - Copy\**" />
     <EmbeddedResource Remove="When\Dockable\**" />
+    <EmbeddedResource Remove="When\Obsolete\**" />
     <None Remove="localappdata\**" />
     <None Remove="NINA.Sequencer.Generators\**" />
     <None Remove="When\CVE - Copy\**" />
     <None Remove="When\Dockable\**" />
+    <None Remove="When\Obsolete\**" />
     <Page Remove="localappdata\**" />
     <Page Remove="NINA.Sequencer.Generators\**" />
     <Page Remove="When\CVE - Copy\**" />
     <Page Remove="When\Dockable\**" />
+    <Page Remove="When\Obsolete\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="When\ConstantsTemplates.xaml.cs" />
@@ -103,12 +107,6 @@
     <Compile Remove="When\Instructions\WaitUntil.cs" />
     <Compile Remove="When\Instructions\When.cs" />
     <Compile Remove="When\InterruptWait.cs" />
-    <Compile Remove="When\Obsolete\ConstantComboControl.xaml.cs" />
-    <Compile Remove="When\Obsolete\ConstantControl.xaml.cs" />
-    <Compile Remove="When\Obsolete\ConstantControlVariable.xaml.cs" />
-    <Compile Remove="When\Obsolete\ConstantExpression.cs" />
-    <Compile Remove="When\Obsolete\ConstantHintControl.xaml.cs" />
-    <Compile Remove="When\Obsolete\Retry.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\Runner.cs" />
     <Compile Remove="When\SetConstantView.xaml.cs" />
@@ -128,10 +126,6 @@
     <Page Remove="When\CVE\GlobalConstantView.xaml" />
     <Page Remove="When\CVE\SymControl.xaml" />
     <Page Remove="When\Instructions\SequenceBlockView.xaml" />
-    <Page Remove="When\Obsolete\ConstantComboControl.xaml" />
-    <Page Remove="When\Obsolete\ConstantControl.xaml" />
-    <Page Remove="When\Obsolete\ConstantControlVariable.xaml" />
-    <Page Remove="When\Obsolete\ConstantHintControl.xaml" />
     <Page Remove="When\SetConstantView.xaml" />
     <Page Remove="When\UserControl1.xaml" />
   </ItemGroup>
