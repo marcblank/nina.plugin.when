@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using NINA.Sequencer.Validations;
 using System.Collections.Generic;
-using System.Reflection;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Core.Utility.Notification;
-using NINA.Core.Utility;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.Generators;
 
@@ -22,8 +20,9 @@ namespace PowerupsLite.When {
     [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class AddImagePattern : SequenceItem, IValidatable {
+    public partial class AddImagePattern : SequenceItem, IValidatable {
 
         public static IOptionsVM OptionsVM;
 
@@ -34,35 +33,18 @@ namespace PowerupsLite.When {
             OptionsVM = options;
         }
 
+        [IsExpression]
+        private string expr;
+
         public AddImagePattern(AddImagePattern copyMe) : this(OptionsVM) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Identifier = copyMe.Identifier;
-                Expr = new Expression(Expr);
-            }
-        }
-
-        private Expression expr = new Expression(null, null);
-        [JsonProperty]
-        public Expression Expr {
-            get => expr;
-            set {
-                expr = value;
-                if (value == null) return;
-                Expr.Context = this;
-                Expr.Type = "String";
-                Expr.SymbolBroker = SymbolBroker;
-                Expr.Default = 0;
-                RaisePropertyChanged();
             }
         }
 
         [JsonProperty]
         public string Identifier {  get; set; } = string.Empty;
-
-        public override object Clone() {
-            return new AddImagePattern(this);
-        }
 
         public override string ToString() {
             return $"AddImagePattern: {Identifier}, Expr: {Expr}";
@@ -96,7 +78,7 @@ namespace PowerupsLite.When {
 
             IList<string> i = new List<string>();
 
-            if (Identifier.Length == 0 || Expr?.Definition.Length == 0 || Description.Length == 0) {
+            if (Identifier.Length == 0 || ExprExpression.Definition.Length == 0 || Description.Length == 0) {
                 i.Add("A name, value, and description must be specified");
             } else if (!Regex.IsMatch(Identifier, VALID_SYMBOL)) {
                 i.Add("The name of an image pattern token must be all uppercase alphabetic characters");
@@ -104,14 +86,14 @@ namespace PowerupsLite.When {
                 // Create it
                 if (ImagePatternAdded.Length == 0) {
                     string desc = PatternDescription;
-                    ImagePatterns.Add(new ImagePatternExpr(new ImagePattern("$$" + Identifier + "$$", desc, "Sequencer Powerups"), Expr));
+                    ImagePatterns.Add(new ImagePatternExpr(new ImagePattern("$$" + Identifier + "$$", desc, "Sequencer Powerups"), ExprExpression));
                     OptionsVM.AddImagePattern(new ImagePattern("$$" + Identifier + "$$", desc, "Sequencer Powerups") { Value = "6.66" });
                     ImagePatternAdded = Identifier;
                     Notification.ShowInformation("Image pattern '" + Identifier + "' added");
                 }
             }
 
-            Expr.Validate();
+            Expression.ValidateExpressions(i, ExprExpression);
 
             Issues = i;
             RaisePropertyChanged("Issues");

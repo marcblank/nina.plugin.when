@@ -1,11 +1,5 @@
 ﻿using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When
 {
