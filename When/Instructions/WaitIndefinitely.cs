@@ -69,7 +69,7 @@ namespace PowerupsLite.When {
             }
         }
 
-        private CancellationTokenSource cts;
+        private CancellationTokenSource? cts;
 
         public async override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             InFlight = true;
@@ -96,7 +96,7 @@ namespace PowerupsLite.When {
             return $"Category: {Category}, Item: {nameof(WaitIndefinitely)}, Time: 12 hours";
         }
         
-        private GalaSoft.MvvmLight.Command.RelayCommand stopInstructions;
+        private GalaSoft.MvvmLight.Command.RelayCommand? stopInstructions;
 
         public ICommand StopInstructions => stopInstructions ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformStopInstructions);
 
