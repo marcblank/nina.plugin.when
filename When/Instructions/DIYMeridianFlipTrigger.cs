@@ -51,7 +51,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "DIY Meridian Flip Trigger")]
     [ExportMetadata("Description", "Trigger for DYI Meridian Flip")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
-    [ExportMetadata("Category", "Powerups (Meridian Flip)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 

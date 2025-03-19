@@ -74,7 +74,7 @@ namespace PowerupsLite.When {
         public static IList<ImagePatternExpr> ImagePatterns = new List<ImagePatternExpr>();
 
         public bool Validate() {
-            if (!Symbol.IsAttachedToRoot(this)) return true;
+            if (!UserSymbol.IsAttachedToRoot(this)) return true;
 
             IList<string> i = new List<string>();
 

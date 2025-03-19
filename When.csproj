@@ -147,6 +147,7 @@
     <PackageReference Include="NINA.Equipment" Version="3.2.0.1018-nightly" />
     <PackageReference Include="NINA.Image" Version="3.2.0.1018-nightly" />
     <PackageReference Include="NINA.MGEN" Version="3.2.0.1018-nightly" />
+    <PackageReference Include="NINA.nikoncswrapper" Version="3.2.0.1018-nightly" />
     <PackageReference Include="NINA.PlateSolving" Version="3.2.0.1018-nightly" />
     <PackageReference Include="NINA.Plugin" Version="3.2.0.1018-nightly" />
     <PackageReference Include="NINA.Profile" Version="3.2.0.1018-nightly" />

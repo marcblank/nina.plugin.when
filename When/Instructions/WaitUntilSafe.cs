@@ -36,7 +36,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Wait Until Safe +")]
     [ExportMetadata("Description", "Waits until the Safety Monitor reports safe; delete this instruction to end the current sequence.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Powerups (Safety)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     public class WaitUntilSafe : SequenceItem, IValidatable {
         private ISafetyMonitorMediator safetyMonitorMediator;

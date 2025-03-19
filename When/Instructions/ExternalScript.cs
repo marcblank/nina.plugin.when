@@ -31,7 +31,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "External Script +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Utility_ExternalScript_Description")]
     [ExportMetadata("Icon", "ScriptSVG")]
-    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ExternalScript : SequenceItem, IValidatable {

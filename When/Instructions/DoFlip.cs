@@ -21,7 +21,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Flip Scope")]
     [ExportMetadata("Description", "Performs the actual meridian flip. Stops tracking, flips the scope by slewing, and restarts tracking.")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
-    [ExportMetadata("Category", "Powerups (Meridian Flip)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceItem))]
 
     [JsonObject(MemberSerialization.OptIn)]

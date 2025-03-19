@@ -24,7 +24,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Interrupt Trigger")]
     [ExportMetadata("Description", "This trigger will stop execution after the currently running instruction, allowing you to add whatever instructions you want before proceeding.")]
     [ExportMetadata("Icon", "SequenceSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]

@@ -20,7 +20,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Reset Sequence")]
     [ExportMetadata("Description", "Resets the running sequence")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     //[Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class ResetSequence : SequenceItem {

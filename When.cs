@@ -1,7 +1,4 @@
-﻿using PowerupsLite.When.Properties;
-using NINA.Core.Model;
-using NINA.Core.Utility;
-using NINA.Image.ImageData;
+﻿using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile;
@@ -12,28 +9,20 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Settings = PowerupsLite.When.Properties.Settings;
-using System.Reflection.Metadata;
-using PowerupsLite.When;
 using NINA.Sequencer.Container;
-using Namotion.Reflection;
 using System.Reflection;
-using System.Drawing;
 using System.Windows.Media;
 using System.Windows;
 using NINA.Equipment.Interfaces.Mediator;
 using System.Windows.Input;
 using System.IO;
 using NINA.Sequencer.Interfaces.Mediator;
-using Accord.Collections;
 using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Mediator;
 using NINA.ViewModel.Sequencer;
-using NINA.Equipment.Model;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
     /// <summary>
@@ -51,6 +40,7 @@ namespace PowerupsLite.When {
         public static IFilterWheelMediator FilterWheelMediator;
         static protected ISequenceNavigationVM sequenceNavigationVM;
         private static protected ISequence2VM s2vm;
+        private static ISymbolBrokerVM SymbolBrokerVM;
 
         // Implementing a file pattern
         private GeometryGroup ConstantsIcon = (GeometryGroup)Application.Current.Resources["Pen_NoFill_SVG"];
@@ -60,7 +50,7 @@ namespace PowerupsLite.When {
             ISwitchMediator switchMediator, IWeatherDataMediator weatherDataMediator, ICameraMediator cameraMediator, IDomeMediator domeMediator,
                 IFlatDeviceMediator flatMediator, IFilterWheelMediator filterWheelMediator, IRotatorMediator rotatorMediator, ISafetyMonitorMediator safetyMonitorMediator,
                 IFocuserMediator focuserMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, ISequenceMediator sequenceMediator, IMessageBroker messageBroker,
-                IGuiderMediator guiderMediator) {
+                IGuiderMediator guiderMediator, ISymbolBrokerVM symbolBroker) {
             if (Settings.Default.UpdateSettings) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpdateSettings = false;
@@ -75,8 +65,16 @@ namespace PowerupsLite.When {
             
             SequenceMediator = sequenceMediator;
             FilterWheelMediator = filterWheelMediator;
+            SymbolBrokerVM = symbolBroker;
             
             OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
+
+            ISymbolProvider sp = symbolBroker.RegisterSymbolProvider("Powerups Lite", "PL");
+            sp.AddSymbol("Foo", 10);
+            sp.AddSymbol("Bar", 20);
+            sp.AddSymbol("Bletch", "Fooble");
+
+            sp.RemoveSymbol("Foo");
 
         }
 

@@ -29,7 +29,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Wait Indefinitely")]
     [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class WaitIndefinitely : SequenceItem {

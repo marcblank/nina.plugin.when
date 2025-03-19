@@ -24,7 +24,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "End Instruction Set")]
     [ExportMetadata("Description", "Ends the currenty running sequence; the End Sequence instructions will run")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class EndInstructionSet : SequenceItem, IValidatable {
