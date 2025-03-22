@@ -65,21 +65,18 @@
     <Compile Remove="When\Instructions\DAF.cs" />
     <Compile Remove="When\Instructions\ForEachInArray.cs" />
     <Compile Remove="When\Instructions\ForEachList.cs" />
-    <Compile Remove="When\Instructions\GetArray.cs" />
     <Compile Remove="When\Instructions\GlobalVx.cs" />
     <Compile Remove="When\Instructions\If.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
     <Compile Remove="When\Instructions\IfThenElse.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />
-    <Compile Remove="When\Instructions\InitializeArray.cs" />
     <Compile Remove="When\Instructions\Log.cs" />
     <Compile Remove="When\Instructions\LoopWhile.cs" />
     <Compile Remove="When\Instructions\MoveFocuserAbsolute.cs" />
     <Compile Remove="When\Instructions\MoveFocuserRelative.cs" />
     <Compile Remove="When\Instructions\MoveRotatorMechanical.cs" />
     <Compile Remove="When\Instructions\NewIf.cs" />
-    <Compile Remove="When\Instructions\PutArray.cs" />
     <Compile Remove="When\Instructions\RepeatUntilAllSucceed.cs" />
     <Compile Remove="When\Instructions\ResetVariable.cs" />
     <Compile Remove="When\Instructions\ResetVariableToDate.cs" />
@@ -182,6 +179,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugins\3.0.0&quot; (&#xD;&#xA;  echo &quot;Creating $(PlatformName) Plugins folder&quot;&#xD;&#xA;  mkdir &quot;%25localappdata%25\NINA\Plugins\3.0.0&quot;&#xD;&#xA;)&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot; (&#xD;&#xA;  echo &quot;Creating $(PlatformName) Plugins $(TargetName) folder&quot;&#xD;&#xA;  mkdir &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;echo &quot;Copying $(PlatformName) $(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NCalc.Sync.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\WhenPlugin&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NCalc.Core.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\WhenPlugin&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)Parlot.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\WhenPlugin&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)ExtendedNumerics.BigDecimal.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\WhenPlugin&quot; /h/k/r/y&#xD;&#xA;" />
+    <Exec Command="&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugins\3.0.0&quot; (&#xD;&#xA;  echo &quot;Creating $(PlatformName) Plugins folder&quot;&#xD;&#xA;  mkdir &quot;%25localappdata%25\NINA\Plugins\3.0.0&quot;&#xD;&#xA;)&#xD;&#xA;if not exist &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot; (&#xD;&#xA;  echo &quot;Creating $(PlatformName) Plugins $(TargetName) folder&quot;&#xD;&#xA;  mkdir &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;echo &quot;Copying $(PlatformName) $(TargetFileName)&quot;&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\$(TargetName)&quot; /h/i/c/k/e/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NCalc.Sync.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\PowerupsLite&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)NCalc.Core.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\PowerupsLite&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)Parlot.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\PowerupsLite&quot; /h/k/r/y&#xD;&#xA;xcopy &quot;$(TargetDir)ExtendedNumerics.BigDecimal.dll&quot; &quot;%25localappdata%25\NINA\Plugins\3.0.0\PowerupsLite&quot; /h/k/r/y&#xD;&#xA;" />
   </Target>
 </Project>

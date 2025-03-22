@@ -297,6 +297,40 @@
         </Setter>
     </Style>
 
+    <DataTemplate DataType="{x:Type local:PutArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <logic:ExprControl Label="Name:" Exp="{Binding NameExprExpression}" />
+                    <logic:ExprControl Margin="8" Label="Index:" Exp="{Binding IExprExpression}" />
+                    <logic:ExprControl Label="Value:" Exp="{Binding VExprExpression}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:GetArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <logic:ExprControl Label="Name:" Exp="{Binding NameExprExpression}" />
+                    <logic:ExprControl Margin="8" Label="Index:" Exp="{Binding IExprExpression}" />
+                    <logic:ExprControl Label="Variable:" Exp="{Binding VExprExpression}"/>
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:InitializeArray}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <logic:ExprControl Label="Name:" Exp="{Binding NameExprExpression}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type local:DIYTrigger}">
         <nina:SequenceBlockView DataContext="{Binding}">
             <nina:SequenceBlockView.SequenceItemContent>

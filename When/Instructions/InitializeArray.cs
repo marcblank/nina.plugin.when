@@ -10,61 +10,41 @@ using NINA.Sequencer.Validations;
 using System.Collections.Generic;
 using System.Reflection;
 using Antlr.Runtime;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
     [ExportMetadata("Name", "Initialize Array")]
     [ExportMetadata("Description", "Creates or re-initializes an Array")]
     [ExportMetadata("Icon", "ArraySVG")]
-    [ExportMetadata("Category", "Powerups (Fun-ctions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class InitializeArray : SequenceItem, IValidatable {
+    public partial class InitializeArray : SequenceItem, IValidatable {
 
         [ImportingConstructor]
         public InitializeArray() : base() {
             Name = Name;
             Icon = Icon;
-            NameExpr = new Expr(this);
         }
         public InitializeArray(InitializeArray copyMe) : base(copyMe) {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
-                NameExpr = new Expr(this, copyMe.NameExpr.Expression);
             }
-        }
-
-        public override object Clone() {
-            InitializeArray clone = new InitializeArray(this);
-            return clone;
         }
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
 
 
-        private Expr _NameExpr = null;
-
-        [JsonProperty]
-        public Expr NameExpr {
-            get => _NameExpr;
-            set {
-                _NameExpr = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public string Identifier {
-            get { return null;  }
-            set {
-                NameExpr.Expression = value;
-            }
-        }
+        [IsExpression]
+        private string nameExpr;
 
         public override string ToString() {
-                return $"Initialize Array: {NameExpr.StringValue}";
+                return $"Initialize Array: {NameExprExpression.StringValue}";
         }
 
         private IList<string> issues = new List<string>();
@@ -79,15 +59,15 @@ namespace PowerupsLite.When {
         public bool Validate() {
             IList<string> i = new List<string>();
 
-            if (NameExpr.StringValue != null) {
-                if (NameExpr.StringValue.Length == 0) {
+            if (NameExprExpression.StringValue != null) {
+                if (NameExprExpression.StringValue.Length == 0) {
                     i.Add("A name for the Array must be specified");
-                } else if (!Regex.IsMatch(NameExpr.StringValue, VALID_SYMBOL)) {
+                } else if (!Regex.IsMatch(NameExprExpression.StringValue, VALID_SYMBOL)) {
                     i.Add("The name of an Array must be alphanumeric");
                 }
             }
 
-            Expr.AddExprIssues(i, NameExpr);
+            Expression.ValidateExpressions(i, NameExprExpression);
 
             Issues = i;
             RaisePropertyChanged("Issues");
@@ -95,11 +75,11 @@ namespace PowerupsLite.When {
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Symbol.Array arr;
-            if (Symbol.Arrays.TryGetValue(NameExpr.StringValue, out arr)) {
+            Array arr;
+            if (Array.Arrays.TryGetValue(NameExprExpression.StringValue, out arr)) {
                 arr.Clear();
             } else {
-                Symbol.Arrays.TryAdd(NameExpr.StringValue, new Symbol.Array());
+                Array.Arrays.TryAdd(NameExprExpression.StringValue, new Array());
             }
             return Task.CompletedTask;
         }
