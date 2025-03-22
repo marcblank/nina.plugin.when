@@ -191,9 +191,6 @@ namespace PowerupsLite.When {
                 }
             }
 
-            Switches = Symbol.GetSwitches();
-            RaisePropertyChanged("Switches");
-
             Issues = i;
             RaisePropertyChanged("Issues");
             return i.Count == 0;

@@ -54,7 +54,6 @@
     <Compile Remove="When\CVE\ValidityConverter.cs" />
     <Compile Remove="When\Expression.cs" />
     <Compile Remove="When\IfResults.cs" />
-    <Compile Remove="When\Instructions\AssignVariables.cs" />
     <Compile Remove="When\Instructions\AutofocusAfterInstructions.cs" />
     <Compile Remove="When\Instructions\Call.cs" />
     <Compile Remove="When\Instructions\CameraTemperatureConverter.cs" />
@@ -64,7 +63,6 @@
     <Compile Remove="When\Instructions\Cx.cs" />
     <Compile Remove="When\Instructions\DAF.cs" />
     <Compile Remove="When\Instructions\ForEachInArray.cs" />
-    <Compile Remove="When\Instructions\ForEachList.cs" />
     <Compile Remove="When\Instructions\GlobalVx.cs" />
     <Compile Remove="When\Instructions\If.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />

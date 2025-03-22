@@ -25,6 +25,7 @@ using System.Windows.Input;
 using NINA.Sequencer.Conditions;
 using System.Text;
 using Accord;
+using NINA.Sequencer.SequenceItem.Expressions;
 
 namespace PowerupsLite.When {
 
@@ -91,7 +92,7 @@ namespace PowerupsLite.When {
                     ResetVariable rv = new ResetVariable();
                     rv.AttachNewParent(Parent);
                     rv.Variable = var;
-                    rv.Expr.Expression = expr;
+                    rv.Expr.Definition = expr;
                     Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
                     sb.Append(var + " = " + expr + "  ");
                     await rv.Execute(progress, token);
