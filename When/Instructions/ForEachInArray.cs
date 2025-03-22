@@ -21,6 +21,8 @@ using System.Linq;
 using Accord.IO;
 using System.Text;
 using Antlr.Runtime;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
     [ExportMetadata("Name", "For Each in Array")]
@@ -30,12 +32,12 @@ namespace PowerupsLite.When {
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class ForEachInArray : ForEachList, IValidatable {
+    public partial class ForEachInArray : ForEachList, IValidatable {
 
         [ImportingConstructor]
         public ForEachInArray() : base() {
-            NameExpr = new Expr(this);
         }
 
         public ForEachInArray(ForEachInArray copyMe) : this() {
@@ -69,37 +71,26 @@ namespace PowerupsLite.When {
         }
 
 
-        private Expr _NameExpr = null;
-
-        [JsonProperty]
-        public Expr NameExpr {
-            get => _NameExpr;
-            set {
-                _NameExpr = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression]
+        private string nameExpr;
 
         [JsonProperty]
         public string Array {
             get { return null; }
             set {
-                NameExpr.Expression = value;
+                NameExprExpression.Definition = value;
             }
         }
 
-        public override object Clone() {
-            ForEachInArray ic = new ForEachInArray(this);
-            ic.Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
-            foreach (var item in ic.Items) {
-                item.AttachNewParent(ic);
+        partial void AfterClone(ForEachInArray clone) {
+            clone.Items = new ObservableCollection<ISequenceItem>(Items.Select(i => i.Clone() as ISequenceItem));
+            foreach (var item in clone.Items) {
+                item.AttachNewParent(clone);
             }
             AttachNewParent(Parent);
-            if (ic.Conditions.Count == 0) {
-                ic.Add(new LoopCondition());
+            if (clone.Conditions.Count == 0) {
+                clone.Add(new LoopCondition());
             }
-            ic.NameExpr = new Expr(ic, this.NameExpr.Expression);
-            return ic;
         }
 
         public static readonly String VALID_SYMBOL = "^[a-zA-Z][a-zA-Z0-9-+_]*$";
@@ -113,10 +104,10 @@ namespace PowerupsLite.When {
                 return "There must be a value variable specified";
             }
 
-            if (NameExpr.StringValue != null) {
-                if (NameExpr.StringValue.Length == 0) {
+            if (NameExprExpression.StringValue != null) {
+                if (NameExprExpression.StringValue.Length == 0) {
                     return "A name for the Array must be specified";
-                } else if (!Regex.IsMatch(NameExpr.StringValue, VALID_SYMBOL)) {
+                } else if (!Regex.IsMatch(NameExprExpression.StringValue, VALID_SYMBOL)) {
                     return "The name of an Array must be alphanumeric";
                  }
             }
@@ -125,22 +116,22 @@ namespace PowerupsLite.When {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(ForEachInArray)}, IndexVariable: {IndexVariable}, ValueVariable: {ValueVariable}, Array: {NameExpr.Expression}";
+            return $"Category: {Category}, Item: {nameof(ForEachInArray)}, IndexVariable: {IndexVariable}, ValueVariable: {ValueVariable}, Array: {NameExprExpression.Definition}";
         }
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Symbol.Array a = new Symbol.Array();
+            Array a = new Array();
 
-            if (NameExpr.StringValue != null) {
-                if (NameExpr.StringValue.Length == 0) {
+            if (NameExprExpression.StringValue != null) {
+                if (NameExprExpression.StringValue.Length == 0) {
                     throw new SequenceEntityFailedException("An Array must be specified and must have been initialized");
                 }
 
-                if (!Symbol.Arrays.ContainsKey(NameExpr.StringValue)) {
+                if (!PowerupsLite.When.Array.Arrays.ContainsKey(NameExprExpression.StringValue)) {
                     throw new SequenceEntityFailedException("The Array specified does not exist");
                 }
 
-                if (!Symbol.Arrays.TryGetValue(NameExpr.StringValue, out a)) {
+                if (!PowerupsLite.When.Array.Arrays.TryGetValue(NameExprExpression.StringValue, out a)) {
                     throw new SequenceEntityFailedException("Huh?  Key exists but not Array??");
                 }
             }
@@ -179,7 +170,7 @@ namespace PowerupsLite.When {
                 i.Add(e);
             }
 
-            Expr.AddExprIssues(i, NameExpr);
+            Expression.ValidateExpressions(i, NameExprExpression);
 
             Issues = i;
             RaisePropertyChanged("Issues");

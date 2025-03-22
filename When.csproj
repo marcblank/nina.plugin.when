@@ -62,7 +62,6 @@
     <Compile Remove="When\Instructions\CoolCamera.cs" />
     <Compile Remove="When\Instructions\Cx.cs" />
     <Compile Remove="When\Instructions\DAF.cs" />
-    <Compile Remove="When\Instructions\ForEachInArray.cs" />
     <Compile Remove="When\Instructions\GlobalVx.cs" />
     <Compile Remove="When\Instructions\If.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />
