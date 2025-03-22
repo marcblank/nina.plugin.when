@@ -96,7 +96,6 @@
     <Compile Remove="When\Instructions\SwitchFilter.cs" />
     <Compile Remove="When\Instructions\TakeExposure.cs" />
     <Compile Remove="When\Instructions\TakeManyExposures.cs" />
-    <Compile Remove="When\Instructions\TemplateByReference.cs" />
     <Compile Remove="When\Instructions\TrainedDarkFlatExposure.cs" />
     <Compile Remove="When\Instructions\TrainedFlatExposure.cs" />
     <Compile Remove="When\Instructions\Vx.cs" />

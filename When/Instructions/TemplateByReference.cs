@@ -28,7 +28,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Template by Reference")]
     [ExportMetadata("Description", "Incorporate a template by reference.  Please read the description on the plugin page.")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class TemplateByReference : IfCommand, IValidatable {
