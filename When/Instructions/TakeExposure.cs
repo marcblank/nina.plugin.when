@@ -419,13 +419,16 @@ namespace WhenPlugin.When {
                     rms = recordedRMS.Total;
                 }
 
+                var stats = e.RenderedImage.RawImageData.Statistics.Task.Result;
+
                 Symbol.Keys results = new Symbol.Keys {
                     // These are from AF or HocusFocus
                     { "Image_HFR", Math.Round(a.HFR, 3) },
                     { "Image_StarCount", a.DetectedStars },
                     { "Image_Id", e.RenderedImage.RawImageData.MetaData.Image.Id },
-                    { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime }
-                    , { "Image_RMS", rms }
+                    { "Image_ExposureTime", e.RenderedImage.RawImageData.MetaData.Image.ExposureTime },
+                    { "Image_MeanADU", stats.Mean }
+                   , { "Image_RMS", rms }
                     , { "Image_Type", e.RenderedImage.RawImageData.MetaData.Image.ImageType }
                     , { "Image_Gain", e.RenderedImage.RawImageData.MetaData.Camera.Gain}
                     , { "image__Offset", e.RenderedImage.RawImageData.MetaData.Camera.Offset}
