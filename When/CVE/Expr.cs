@@ -197,7 +197,7 @@ namespace WhenPlugin.When {
 
                     // Find the parameters used
                     References.Clear();
-                    foreach (var p in e.GetParametersNames()) {
+                    foreach (var p in e.GetParameterNames()) {
                         References.Add(p);
                     }
 

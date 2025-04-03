@@ -16,36 +16,19 @@ using Newtonsoft.Json;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem.FilterWheel;
-using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Trigger.Guider;
 using NINA.Equipment.Interfaces.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.SequenceItem;
-using System.Windows.Media;
-using NINA.Core.Utility.ColorSchema;
-using System.Windows;
-using NINA.Profile;
-using NINA.WPF.Base.Mediator;
 using NINA.Equipment.Equipment.MyFilterWheel;
-using Google.Protobuf.WellKnownTypes;
 using NINA.Core.Model;
-using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
-using static NINA.Image.FileFormat.XISF.XISFImageProperty.Instrument;
-using System.ComponentModel.DataAnnotations;
-using NINA.Equipment.Equipment.MyCamera;
 using System.Threading;
 
 namespace WhenPlugin.When {
@@ -107,7 +90,7 @@ namespace WhenPlugin.When {
         /// </summary>
         public SmartExposure(
                 SmartExposure cloneMe,
-                SwitchFilter switchFilter,
+                ISequenceItem switchFilter,
                 TakeExposure takeExposure,
                 LoopCondition loopCondition,
                 DitherAfterExposures ditherAfterExposures
@@ -226,9 +209,13 @@ namespace WhenPlugin.When {
             }
         }
 
-        public SwitchFilter GetSwitchFilter() {
+        public ISequenceItem GetSwitchFilter() {
             SwitchFilter sw = Items[0] as SwitchFilter;
             if (sw == null) {
+                // For upgrading SmartExposure to NINA
+                if (Items[0] is ISequenceItem ninaSF) {
+                    return ninaSF;
+                }
                 sw = new SwitchFilter(ProfileService, FilterWheelMediator);
                 if (Items[0] is NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter oldSw) {
                     if (oldSw.Filter != null) {
@@ -305,7 +292,7 @@ namespace WhenPlugin.When {
 
         public bool CVFilter { get; set; } = false;
         private void SetFInfo() {
-            SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter();
+            SwitchFilter sw = Items.Count == 0 ? null : GetSwitchFilter() as SwitchFilter;
             if (sw != null) {
                 FilterWheelInfo filterWheelInfo = FilterWheelMediator.GetInfo();
                 var fwi = ProfileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
@@ -462,9 +449,9 @@ namespace WhenPlugin.When {
                 valid = te.Validate() && valid;
                 i.AddRange(te.Issues);
 
-                if (sw != null && sw.FInfo != null) {
-                    valid = sw.Validate() && valid;
-                    i.AddRange(sw.Issues);
+                if (sw is SwitchFilter spsw && spsw.FInfo != null) {
+                    valid = spsw.Validate() && valid;
+                    i.AddRange(spsw.Issues);
                 }
 
                 if (dither.AfterExposures > 0) {
@@ -499,7 +486,7 @@ namespace WhenPlugin.When {
                 Items[0] = new SwitchFilter(ProfileService, FilterWheelMediator);
 
             }
-            SwitchFilter sf = (SwitchFilter)this.GetSwitchFilter().Clone();
+            ISequenceItem sf = (ISequenceItem)this.GetSwitchFilter().Clone();
             TakeExposure te = (TakeExposure)this.GetTakeExposure().Clone();
             LoopCondition lc = (LoopCondition)this.GetLoopCondition().Clone();
             DitherAfterExposures dae = (DitherAfterExposures)this.GetDitherAfterExposures();
