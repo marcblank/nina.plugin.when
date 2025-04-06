@@ -25,6 +25,7 @@ using NINA.Sequencer.SequenceItem;
 using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
 
@@ -100,19 +101,19 @@ namespace PowerupsLite.When {
                     while (true) {
                         string toReplace = Regex.Match(value, @"\{([^\}]+)\}").Groups[1].Value;
                         if (toReplace.Length == 0) break;
-                        //Expr ex = new Expr(this, toReplace, "Any");
-                        //if (ex.Error != null) {
-                        //    ProcessedScriptError = ex.Error;
-                        //    //Logger.Warning("External Script +, error processing script, " + ex.Error);
-                        //    return "Error";
-                        //} else if (ex.StringValue != null) {
-                        //    value = value.Replace("{" + toReplace + "}", ex.StringValue);
-                        //} else {
-                        //    value = value.Replace("{" + toReplace + "}", ex.ValueString);
-                        //}
-                        //if (ItemUtility.IsInRootContainer(Parent)) {
-                        //    //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
-                        //}
+                        Expression ex = new Expression(toReplace, Parent);
+                        if (ex.Error != null) {
+                            ProcessedScriptError = ex.Error;
+                            //Logger.Warning("External Script +, error processing script, " + ex.Error);
+                            return "Error";
+                        } else if (ex.StringValue != null) {
+                            value = value.Replace("{" + toReplace + "}", ex.StringValue);
+                        } else {
+                            value = value.Replace("{" + toReplace + "}", ex.ValueString);
+                        }
+                        if (ItemUtility.IsInRootContainer(Parent)) {
+                            //Logger.Info("Replacing " + toReplace + " with " + ex.ValueString);
+                        }
                     }
                 }
                 iProcessedScript = value;

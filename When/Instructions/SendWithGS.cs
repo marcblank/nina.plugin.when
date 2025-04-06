@@ -21,7 +21,6 @@ namespace PowerupsLite.When {
     [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    [UsesExpressions]
 
     public class GSSend : IfCommand {
 

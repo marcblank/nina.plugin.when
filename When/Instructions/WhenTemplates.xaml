@@ -1634,7 +1634,7 @@
                                    Margin="10,10,20,0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Text="DIY Meridian Flip Trigger" />
+                                   Text="{Binding Name}" />
                                 <Border
                                    Width="20"
                                    Height="20"
