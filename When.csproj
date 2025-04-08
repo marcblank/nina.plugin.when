@@ -95,7 +95,6 @@
     <Compile Remove="When\Instructions\Vx.cs" />
     <Compile Remove="When\Instructions\WaitForTimeSpan.cs" />
     <Compile Remove="When\Instructions\WaitUntil.cs" />
-    <Compile Remove="When\Instructions\When.cs" />
     <Compile Remove="When\InterruptWait.cs" />
     <Compile Remove="When\PrependToLastImage.cs" />
     <Compile Remove="When\Runner.cs" />

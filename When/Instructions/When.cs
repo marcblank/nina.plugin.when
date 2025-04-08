@@ -27,23 +27,26 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Core.Model;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NINA.Sequencer.SequenceItem.Expressions;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "When")]
     [ExportMetadata("Description", "Runs a customizable set of instructions when the specified Expression is true.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class WhenSwitch : When, IValidatable, ITrueFalse {
+    public partial class WhenSwitch : When, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public WhenSwitch(ISafetyMonitorMediator safetyMediator, ISequenceMediator sequenceMediator, IApplicationStatusMediator applicationStatusMediator, ISwitchMediator switchMediator,
                 IWeatherDataMediator weatherMediator, ICameraMediator cameraMediator)
             : base(safetyMediator, sequenceMediator, applicationStatusMediator, switchMediator, weatherMediator, cameraMediator) {
-            IfExpr = new Expr(this);
         }
 
         public ICameraConsumer cameraConsumer {  get; set; } 
@@ -51,13 +54,11 @@ namespace PowerupsLite.When {
         protected WhenSwitch(WhenSwitch cloneMe) : base(cloneMe.safetyMediator, cloneMe.sequenceMediator, cloneMe.applicationStatusMediator, cloneMe.switchMediator, cloneMe.weatherMediator, cloneMe.cameraMediator) {
             if (cloneMe != null) {
                 CopyMetaData(cloneMe);
-                IfExpr = new Expr(this, cloneMe.IfExpr.Expression);
                 Instructions = (IfContainer)cloneMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
                 Instructions.Name = cloneMe.Name;
                 Instructions.Icon = cloneMe.Icon;
-                Predicate = cloneMe.Predicate;
                 OnceOnly = cloneMe.OnceOnly;
                 Interrupt = cloneMe.Interrupt;
             }
@@ -76,25 +77,8 @@ namespace PowerupsLite.When {
             }
         }
 
-        [JsonProperty]
-        public string Predicate {
-            get => null;
-            set {
-                IfExpr.Expression = value;
-                RaisePropertyChanged("IfExpr");
-
-            }
-        }
-
-        private Expr _IfExpr;
-        [JsonProperty]
-        public Expr IfExpr {
-            get => _IfExpr;
-            set {
-                _IfExpr = value;
-                RaisePropertyChanged();
-            }
-        }
+        [IsExpression]
+        private string predicate;
 
         public string ValidateConstant(double temp) {
             if ((int)temp == 0) {
@@ -103,9 +87,6 @@ namespace PowerupsLite.When {
                 return "True";
             }
             return string.Empty;
-        }
-        public override object Clone() {
-            return new WhenSwitch(this);
         }
 
         protected bool IsActive() {
@@ -118,19 +99,9 @@ namespace PowerupsLite.When {
                 return true;
             }
 
-            Symbol.UpdateSwitchWeatherData();
-            if (IfExpr.ImageVolatile) {
-                Logger.Info("ImageVolatile");
-                while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                    Logger.Info("Waiting 250ms for processing...");
-                    Task.Delay(250);
-                }
-                // Get latest values
-                Logger.Info("ImageVolatile, new data");
-            }
-            IfExpr.Evaluate();
+            PredicateExpression.Evaluate();
 
-            if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
+            if (!string.Equals(PredicateExpression.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (PredicateExpression.Error == null)) {
                 Logger.Trace("Check = FALSE");
                 return false;
             }
@@ -139,7 +110,7 @@ namespace PowerupsLite.When {
         }
 
         public override string ToString() {
-            return $"Trigger: {nameof(When)} Expression: {IfExpr.Expression} Value: {IfExpr.ValueString}";
+            return $"Trigger: {nameof(When)} Expression: {PredicateExpression.Definition} Value: {PredicateExpression.ValueString}";
         }
 
         public override bool AllowMultiplePerSet => true;
@@ -150,10 +121,7 @@ namespace PowerupsLite.When {
             CommonValidate();
 
             var i = new List<string>();
-            Expr.AddExprIssues(i, IfExpr);
-
-            Switches = Symbol.GetSwitches();
-            RaisePropertyChanged("Switches");
+            Expression.ValidateExpressions(i, PredicateExpression);
 
             Issues = i;
             return i.Count == 0;
