@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Sequencer.Generators;
+using NINA.Sequencer.Logic;
 
 namespace PowerupsLite.When {
     [ExportMetadata("Name", "If")]
@@ -17,12 +19,12 @@ namespace PowerupsLite.When {
     [ExportMetadata("Category", "Powerups (Expressions)")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
 
-    public class IfConstant : IfCommand, IValidatable, ITrueFalse {
+    public partial class IfConstant : IfCommand, IValidatable, ITrueFalse {
 
         [ImportingConstructor]
         public IfConstant() {
-            IfExpr = new Expr(this);
             Instructions = new IfContainer();
             Instructions.AttachNewParent(Parent);
             Instructions.PseudoParent = this;
@@ -33,7 +35,6 @@ namespace PowerupsLite.When {
         public IfConstant(IfConstant copyMe) : this() {
             if (copyMe != null) {
                 CopyMetaData(copyMe);
-                IfExpr = new Expr(this, copyMe.IfExpr.Expression);
                 Instructions = (IfContainer)copyMe.Instructions.Clone();
                 Instructions.AttachNewParent(Parent);
                 Instructions.PseudoParent = this;
@@ -42,46 +43,25 @@ namespace PowerupsLite.When {
             }
         }
 
-        public override object Clone() {
-            return new IfConstant(this) {
-            };
-        }
-
-        public bool Check() {
-
-             return false;
-        }
+        [IsExpression]
+        private string predicate;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
-            Logger.Info("Predicate: " + IfExpr.Expression);
-            if (string.IsNullOrEmpty(IfExpr.Expression)) {
+            Logger.Info("Predicate: " + PredicateExpression.Definition);
+            if (string.IsNullOrEmpty(PredicateExpression.Definition)) {
                 Status = SequenceEntityStatus.FAILED;
                 return;
             }
 
             try {
-                // Always get latest data...
-                await Symbol.UpdateSwitchWeatherData();
-                
-                if (IfExpr.ImageVolatile) {
-                    Logger.Info("ImageVolatile");
-                    while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
-                        Logger.Info("Waiting 250ms for processing...");
-                        progress?.Report(new ApplicationStatus() { Status = "" });
-                        await CoreUtil.Wait(TimeSpan.FromMilliseconds(250), token, default);
-                    }
-                    // Get latest values
-                    Logger.Info("ImageVolatile, new data");
-                }
+                PredicateExpression.Evaluate();
 
-                IfExpr.Evaluate();
-
-                if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                    Logger.Info("Predicate is true, " + IfExpr);
+                if (!string.Equals(PredicateExpression.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (PredicateExpression.Error == null)) {
+                    Logger.Info("Predicate is true, " + PredicateExpression);
                     await Instructions.Run(progress, token);
                 } else {
-                    Logger.Info("Predicate is false, " + IfExpr);
+                    Logger.Info("Predicate is false, " + PredicateExpression);
                     return;
                 }
             } catch (ArgumentException ex) {
@@ -98,35 +78,15 @@ namespace PowerupsLite.When {
             }
         }
 
-        [JsonProperty]
-        public string Predicate {
-            get => null;
-            set {
-                IfExpr.Expression = value;
-                RaisePropertyChanged("IfExpr");
-
-            }
-        }
-
-        private Expr _IfExpr;
-        [JsonProperty]
-        public Expr IfExpr {
-            get => _IfExpr;
-            set {
-                _IfExpr = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(IfConstant)}, Expr: {IfExpr}";
+            return $"Category: {Category}, Item: {nameof(IfConstant)}, Expr: {PredicateExpression}";
         }
 
         public IList<string> Switches { get; set; } = null;
 
         public override void AfterParentChanged() {
             base.AfterParentChanged();
-            IfExpr.Evaluate();
+            PredicateExpression.Evaluate();
         }
 
         public new bool Validate() {
@@ -135,10 +95,7 @@ namespace PowerupsLite.When {
 
             var i = new List<string>();
 
-            Switches = Symbol.GetSwitches();
-            RaisePropertyChanged("Switches");
-
-            Expr.AddExprIssues(i, IfExpr);
+            Expression.ValidateExpressions(i, PredicateExpression);
  
             Issues = i;
             return i.Count == 0;

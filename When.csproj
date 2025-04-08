@@ -63,10 +63,8 @@
     <Compile Remove="When\Instructions\Cx.cs" />
     <Compile Remove="When\Instructions\DAF.cs" />
     <Compile Remove="When\Instructions\GlobalVx.cs" />
-    <Compile Remove="When\Instructions\If.cs" />
     <Compile Remove="When\Instructions\IfSafe.cs" />
     <Compile Remove="When\Instructions\IfSafeUnsafe.cs" />
-    <Compile Remove="When\Instructions\IfThenElse.cs" />
     <Compile Remove="When\Instructions\IfUnsafe.cs" />
     <Compile Remove="When\Instructions\LoopWhile.cs" />
     <Compile Remove="When\Instructions\MoveFocuserAbsolute.cs" />
