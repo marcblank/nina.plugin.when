@@ -35,9 +35,9 @@ namespace PowerupsLite.When {
 
         [ImportingConstructor]
         public WhenPluginDockable(IProfileService profileService) : base(profileService) {
-            Title = "Powerups Panel";
+            Title = "Powerups Lite Panel";
 
-            ExpressionString = Symbol.WhenPluginObject.DockableExprs;
+            ExpressionString = WhenPlugin.DockableExprs;
             BuildExprList();
         }
 
@@ -80,14 +80,14 @@ namespace PowerupsLite.When {
                 runningItem = WhenPlugin.GetRunningItem();
             }
             foreach (DockableExpr e in ExpressionList) {
-                ISequenceEntity se = e.SequenceEntity;
+                ISequenceEntity se = e.Context;
                 if (runningItem != null) {
-                    e.SequenceEntity = runningItem;
+                    e.Context = runningItem;
                 }
 
                 e.Refresh();
                 if (runningItem != null) {
-                    e.SequenceEntity = se;
+                    e.Context = se;
                 }
             }
             return Task.CompletedTask;
@@ -101,7 +101,7 @@ namespace PowerupsLite.When {
             int count = 0;
             StringBuilder sb = new StringBuilder();
             foreach (DockableExpr e in ExpressionList) {
-                sb.Append(e.Expression);
+                sb.Append(e.Definition);
                 sb.Append(EXPR_INTERNAL_DIVIDER);
                 sb.Append(e.DisplayType);
                 sb.Append(EXPR_INTERNAL_DIVIDER);
@@ -110,7 +110,7 @@ namespace PowerupsLite.When {
                 count++;
             }
             Logger.Info("SaveDockableExprs saving " + count + " Exprs");
-            Symbol.WhenPluginObject.DockableExprs = sb.ToString();
+            WhenPlugin.DockableExprs = sb.ToString();
         }
 
         public string ExpressionString { get; private set; }

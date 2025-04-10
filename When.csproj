@@ -14,22 +14,18 @@
     <Compile Remove="localappdata\**" />
     <Compile Remove="NINA.Sequencer.Generators\**" />
     <Compile Remove="When\CVE - Copy\**" />
-    <Compile Remove="When\Dockable\**" />
     <Compile Remove="When\Obsolete\**" />
     <EmbeddedResource Remove="localappdata\**" />
     <EmbeddedResource Remove="NINA.Sequencer.Generators\**" />
     <EmbeddedResource Remove="When\CVE - Copy\**" />
-    <EmbeddedResource Remove="When\Dockable\**" />
     <EmbeddedResource Remove="When\Obsolete\**" />
     <None Remove="localappdata\**" />
     <None Remove="NINA.Sequencer.Generators\**" />
     <None Remove="When\CVE - Copy\**" />
-    <None Remove="When\Dockable\**" />
     <None Remove="When\Obsolete\**" />
     <Page Remove="localappdata\**" />
     <Page Remove="NINA.Sequencer.Generators\**" />
     <Page Remove="When\CVE - Copy\**" />
-    <Page Remove="When\Dockable\**" />
     <Page Remove="When\Obsolete\**" />
   </ItemGroup>
   <ItemGroup>

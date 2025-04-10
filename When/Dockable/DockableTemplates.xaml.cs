@@ -1,25 +1,15 @@
 ﻿using Accord.Math;
-using AvalonDock.Controls;
 using NINA.Core.Utility;
-using NINA.Core.Utility.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ToastNotifications.Utilities;
 
 
 namespace PowerupsLite.When {
@@ -59,7 +49,7 @@ namespace PowerupsLite.When {
 
         public void EditExpr(object sender, RoutedEventArgs e) {
             Grid fe = ((FrameworkElement)sender).Parent as Grid;
-            Expr expr = fe.DataContext as Expr;
+            NINA.Sequencer.Logic.Expression expr = fe.DataContext as NINA.Sequencer.Logic.Expression;
             if (expr == null) return;
 
             Popup popup = fe.FindName("popup") as Popup;
@@ -84,15 +74,15 @@ namespace PowerupsLite.When {
                 }
                 Grid g = popup.Parent as Grid;
                 if (g == null) return;
-                Expr expr = g.DataContext as Expr;
+                NINA.Sequencer.Logic.Expression expr = g.DataContext as NINA.Sequencer.Logic.Expression;
                 if (expr == null) return;
                 string text = ((TextBox)sender).Text;
-                Symbol sym = Symbol.FindSymbol(expr.Expression, expr.SequenceEntity.Parent);
-                if (sym != null) {
-                    sym.Definition = text;
-                    sym.Expr.Evaluate();
-                    Logger.Info("Setting " + expr.Expression + " to " + text + " in Powerups Panel");
-                }
+                //Symbol sym = Symbol.FindSymbol(expr.Definition, expr.Context.Parent);
+                //if (sym != null) {
+                //    sym.Definition = text;
+                //    sym.Expr.Evaluate();
+                //    Logger.Info("Setting " + expr.Definition + " to " + text + " in Powerups Panel");
+                //}
             }
         }
 
@@ -108,7 +98,7 @@ namespace PowerupsLite.When {
                 }
             }
 
-            Expr target = ((FrameworkElement)sender).DataContext as Expr;
+            DockableExpr target = ((FrameworkElement)sender).DataContext as DockableExpr;
             ObservableCollection<DockableExpr> exprs = WhenPluginDockable.ExpressionList;
             if (target == null) return;
             int targetIndex = -1;

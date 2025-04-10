@@ -69,12 +69,12 @@ namespace PowerupsLite.When {
             
             OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
 
-            ISymbolProvider sp = symbolBroker.RegisterSymbolProvider("Powerups Lite", "PL");
-            sp.AddSymbol("Foo", 10);
-            sp.AddSymbol("Bar", 20);
-            sp.AddSymbol("Bletch", "Fooble");
+            //ISymbolProvider sp = symbolBroker.RegisterSymbolProvider("Powerups Lite", "PL");
+            //sp.AddSymbol("Foo", 10);
+            //sp.AddSymbol("Bar", 20);
+            //sp.AddSymbol("Bletch", "Fooble");
 
-            sp.RemoveSymbol("Foo");
+            //sp.RemoveSymbol("Foo");
 
         }
 
@@ -148,7 +148,7 @@ namespace PowerupsLite.When {
             return dialog;
         }
 
-          public string DockableExprs {
+          public static string DockableExprs {
             get {
                 return PluginSettings.GetValueString(nameof(DockableExprs), Settings.Default.DockableExprs);
             }
