@@ -38,7 +38,7 @@
                 </TextBlock.RenderTransform>
             </TextBlock>
 
-            <TextBox Grid.Column="1" Text="{Binding Expression}" AllowDrop="False" BorderThickness="0" />
+            <TextBox Grid.Column="1" Text="{Binding Definition}" AllowDrop="False" BorderThickness="0" />
             <TextBlock x:Name="val" Grid.Column="2" Text="{Binding DockableValue}" ToolTip="" ToolTipOpening="OpenTooltip"  AllowDrop="True" Drop="DropExpr" />
             <Popup x:Name="popup"  PlacementTarget="{Binding ElementName=val}" Placement="Bottom"  Width="200" Height="25" Margin="0,20,0,0" MouseLeave="PopupMouseLeave">
                 <Border BorderBrush="Black" BorderThickness="0" Background="{StaticResource ButtonBackgroundBrush}">
@@ -93,46 +93,6 @@
                          FontSize="12"
                          TextWrapping="Wrap" />
                 </Button>
-                <TextBlock 
-                   Margin="5,-2,0,0" 
-                   Text="&#x1F6C8;" 
-                   FontSize="18">
-                    <TextBlock.ToolTip>
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
-                                <Grid.Resources >
-                                    <Style TargetType="ItemsControl" >
-                                        <Setter Property="Padding" Value="5,0,5,0" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="210" />
-                                    <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="140" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Device Data" TextAlignment="Left"  HorizontalAlignment="Left" TextDecorations="Underline" />
-                                <TextBlock Grid.Column="1" Text="Switch Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
-                                <TextBlock Grid.Column="2" Text="Weather Data" TextAlignment="Left" HorizontalAlignment="Left" TextDecorations="Underline" />
-                            </Grid>
-                            <Grid Background="{StaticResource ButtonBackgroundBrush}">
-                                <Grid.Resources >
-                                    <Style TargetType="ItemsControl" >
-                                        <Setter Property="Padding" Value="0,0,0,0" />
-                                        <Setter Property="TextBlock.TextAlignment" Value="Left" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="210"/>
-                                    <ColumnDefinition Width="140" />
-                                    <ColumnDefinition Width="140" />
-                                </Grid.ColumnDefinitions>
-                                <ItemsControl Grid.Column="0" ItemsSource="{Binding Exp.GenericData}" />
-                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Exp.GaugeSwitchData}" />
-                                <ItemsControl Grid.Column="2" ItemsSource="{Binding Exp.WeatherData}" />
-                            </Grid>
-                        </StackPanel>
-                    </TextBlock.ToolTip>
-                </TextBlock>
             </StackPanel>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0,20,0,0">

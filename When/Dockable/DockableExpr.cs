@@ -13,8 +13,9 @@ using System.Threading.Tasks;
 namespace PowerupsLite.When {
     public class DockableExpr : Expression {
 
-        public DockableExpr (string definition) : base(definition, (DefineVariable)new DefineVariable().Clone()) {
+        public DockableExpr (string definition, ISymbolBrokerVM symbolBroker) : base(definition, (DefineVariable)new DefineVariable().Clone()) {
             Context.AttachNewParent(PseudoRoot);
+            SymbolBroker = symbolBroker;
         }
 
         public static SequenceRootContainer PseudoRoot = new SequenceRootContainer();

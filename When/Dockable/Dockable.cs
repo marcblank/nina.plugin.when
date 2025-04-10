@@ -9,6 +9,7 @@ using NINA.Profile.Interfaces;
 using NINA.Sequencer;
 using NINA.Sequencer.Conditions;
 using NINA.Sequencer.Container;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.WPF.Base.Mediator;
@@ -34,12 +35,21 @@ namespace PowerupsLite.When {
     public class WhenPluginDockable : DockableVM {
 
         [ImportingConstructor]
-        public WhenPluginDockable(IProfileService profileService) : base(profileService) {
+        public WhenPluginDockable(IProfileService profileService, ISymbolBrokerVM symbolBroker) : base(profileService) {
             Title = "Powerups Lite Panel";
+
+            SymbolBroker = symbolBroker;
 
             ExpressionString = WhenPlugin.DockableExprs;
             BuildExprList();
+
+            ConditionWatchdog = new ConditionWatchdog(UpdateData, TimeSpan.FromSeconds(5));
+            ConditionWatchdog.Start();
         }
+
+        private static ISymbolBrokerVM SymbolBroker;
+        
+        private static ConditionWatchdog ConditionWatchdog;
 
         private static bool InhibitSave { get; set; } = false;
 
@@ -48,7 +58,7 @@ namespace PowerupsLite.When {
         private void BuildExprList() {
             InhibitSave = true;
             if (Exp == null) {
-                Exp = new DockableExpr("foo");
+                Exp = new DockableExpr("foo", SymbolBroker);
                 Exp.Evaluate();
             }
             try {
@@ -56,7 +66,7 @@ namespace PowerupsLite.When {
                 foreach (string s in l) {
                     if (s.Length > 0) {
                         string[] parts = s.Split(EXPR_INTERNAL_DIVIDER);
-                        DockableExpr expr = new DockableExpr(parts[0]);
+                        DockableExpr expr = new DockableExpr(parts[0], SymbolBroker);
 
                         // Update radio buttons!
                         if (parts.Length > 1) {
@@ -127,7 +137,7 @@ namespace PowerupsLite.When {
         public ICommand AddInstruction => addInstruction ??= new GalaSoft.MvvmLight.Command.RelayCommand(PerformAddInstruction);
 
         private void PerformAddInstruction() {
-            ExpressionList.Add(new DockableExpr("New"));
+            ExpressionList.Add(new DockableExpr("New", SymbolBroker));
             SaveDockableExprs();
         }
     }
