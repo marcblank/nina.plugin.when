@@ -110,7 +110,7 @@ namespace PowerupsLite.When {
                 throw new SequenceEntityFailedException("There must be a result Variable specified in order to use the Get from Array instruction");
             }
             UserSymbol sym = UserSymbol.FindSymbol(resultName, Parent);
-            if (sym != null && sym is DefineVariable sv) {
+            if (sym != null && sym is Variable sv) {
                 if (value is string vs) {
                     value = "'" + vs + "'";
                 }
