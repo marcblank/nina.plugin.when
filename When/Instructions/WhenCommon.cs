@@ -250,8 +250,8 @@ namespace WhenPlugin.When {
                     ISequenceContainer p = RunningItem.Parent;
                     if (p != null) {
                         if (!CanContinue(p, PreviousItem, NextItem)) {
-                            Logger.Info("Interrupted instruction's loop has terminated.  Stopping When/WBU");
-                            await Parent.Interrupt();
+                            Logger.Info("Interrupted instruction's loop has terminated.  Stopping parent's loop");
+                            await p.Interrupt();
                             return;
                         }
                     }

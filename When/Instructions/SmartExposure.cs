@@ -446,6 +446,8 @@ namespace WhenPlugin.When {
 
                 bool valid = true;
 
+                if (te != null) return true;
+
                 valid = te.Validate() && valid;
                 i.AddRange(te.Issues);
 
