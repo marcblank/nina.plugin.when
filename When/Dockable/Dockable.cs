@@ -12,6 +12,7 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.WPF.Base.Mediator;
 using NINA.WPF.Base.ViewModel;
 using Nito.Mvvm;
@@ -21,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -93,6 +95,11 @@ namespace PowerupsLite.When {
                 ISequenceEntity se = e.Context;
                 if (runningItem != null) {
                     e.Context = runningItem;
+                }
+
+                ISequenceContainer c = e.Context as ISequenceContainer;
+                if (c != null && !ItemUtility.IsInRootContainer(c)) {
+                    continue;
                 }
 
                 e.Refresh();

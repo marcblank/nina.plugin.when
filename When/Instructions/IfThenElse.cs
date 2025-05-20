@@ -96,6 +96,13 @@ namespace PowerupsLite.When {
             }
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (ISequenceItem item in ElseInstructions.Items) {
+                item.AfterParentChanged();
+            }
+        }
+
         public override void ResetAll() {
             base.ResetAll();
             ElseInstructions.ResetAll();

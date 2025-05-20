@@ -67,7 +67,6 @@
     <Compile Remove="When\Instructions\MoveFocuserRelative.cs" />
     <Compile Remove="When\Instructions\MoveRotatorMechanical.cs" />
     <Compile Remove="When\Instructions\NewIf.cs" />
-    <Compile Remove="When\Instructions\RepeatUntilAllSucceed.cs" />
     <Compile Remove="When\Instructions\ResetVariable.cs" />
     <Compile Remove="When\Instructions\ResetVariableToDate.cs" />
     <Compile Remove="When\Instructions\Return.cs" />

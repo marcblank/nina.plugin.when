@@ -251,8 +251,8 @@ namespace PowerupsLite.When {
                     ISequenceContainer p = RunningItem.Parent;
                     if (p != null) {
                         if (!CanContinue(p, PreviousItem, NextItem)) {
-                            Logger.Info("Interrupted instruction's loop has terminated.  Stopping When/WBU");
-                            await Parent.Interrupt();
+                            Logger.Info("Interrupted instruction's loop has terminated.  Stopping loop parent.");
+                            await p.Interrupt();
                             return;
                         }
                     }
@@ -276,6 +276,9 @@ namespace PowerupsLite.When {
                     Critical = true;
                     try {
                         RunningItem = WhenPlugin.GetRunningItem();
+                        if (this is WhenUnsafe wbu) {
+                            WhenUnsafe.RunningItem = RunningItem;
+                        }
 
                         sequenceMediator.CancelAdvancedSequence();
                         Logger.Info("InterruptWhen: Canceling sequence...");

@@ -29,16 +29,20 @@ using System.Threading;
 using NINA.Core.Enum;
 using NINA.Sequencer.Validations;
 using System.Runtime.CompilerServices;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
 namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Repeat Until All Succeed")]
     [ExportMetadata("Description", "Retry the included instructions until all of them have finished successfully.")]
     [ExportMetadata("Icon", "LoopSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class RepeatUntilAllSucceed : IfCommand, IValidatable {
+    [UsesExpressions]
+
+    public partial class RepeatUntilAllSucceed : IfCommand, IValidatable {
 
         [ImportingConstructor]
         public RepeatUntilAllSucceed() : base() {
@@ -47,7 +51,6 @@ namespace PowerupsLite.When {
             Instructions.PseudoParent = this;
             Instructions.Name = Name;
             Instructions.Icon = Icon;
-            WaitExpr = new Expr(this, "60");
            
         }
 
@@ -59,17 +62,11 @@ namespace PowerupsLite.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = Name;
                 Instructions.Icon = Icon;
-                WaitExpr = new Expr(this, cloneMe.WaitExpr.Expression);
             }
         }
 
-        public override object Clone() {
-            return new RepeatUntilAllSucceed(this) {
-            };
-        }
-
-        [JsonProperty]
-        public Expr WaitExpr { get; set; }
+        [IsExpression (Default = 60)]
+        private int wait;
 
         public override void ResetProgress() {
             Status = NINA.Core.Enum.SequenceEntityStatus.CREATED;
@@ -134,8 +131,8 @@ namespace PowerupsLite.When {
                     break;
                 }
 
-                if (WaitExpr.Value > 0) {
-                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitExpr.Value), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
+                if (WaitExpression.Value > 0) {
+                    await NINA.Core.Utility.CoreUtil.Wait(TimeSpan.FromSeconds(WaitExpression.Value), true, token, progress, failedItem.Name + " instruction failed; waiting to repeat");
                 }
             }
             Logger.Info("RetryUntilAllSucceed finished after " + attempts + " attempt" + (attempts == 1 ? "." : "s."));
@@ -156,12 +153,12 @@ namespace PowerupsLite.When {
 
             var i = new List<string>();
 
-            string val = ValidateTime(WaitExpr.Value);
+            string val = ValidateTime(WaitExpression.Value);
             if (val != String.Empty) {
                 i.Add(val);
             }
 
-            WaitExpr.Validate();
+            Expression.ValidateExpressions(i, WaitExpression);
 
             Issues = i;
             return (i.Count == 0);

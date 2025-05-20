@@ -22,6 +22,7 @@ using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
 using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
 
 namespace PowerupsLite.When {
 
@@ -61,6 +62,8 @@ namespace PowerupsLite.When {
         public override string ToString() {
             return $"Trigger: {nameof(WhenUnsafe)}";
         }
+
+        public static ISequenceItem RunningItem = null;
 
         public static bool WasSafe = true;
 

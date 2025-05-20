@@ -12,6 +12,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Generators;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem.Expressions;
+using NINA.Sequencer.Container;
 
 namespace PowerupsLite.When {
     [ExportMetadata("Name", "If")]
@@ -46,6 +47,10 @@ namespace PowerupsLite.When {
 
         [IsExpression]
         private string predicate;
+
+        private void CheckItems (ISequenceContainer c) {
+
+        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
 
