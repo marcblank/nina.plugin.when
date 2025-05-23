@@ -139,7 +139,12 @@ namespace PowerupsLite.When {
             ETokens = new string[a.Count];
             int i = 0;
             foreach (var kvp in a) {
-                ETokens[i++] = kvp.Key + "," + kvp.Value;
+                double d;
+                object v = kvp.Value;
+                if (!Double.TryParse((string)v, out d)) {
+                    v = "'" + v + "'";
+                }
+                ETokens[i++] = kvp.Key + "," + v;
             }
 
             if (Conditions.Count > 0) {

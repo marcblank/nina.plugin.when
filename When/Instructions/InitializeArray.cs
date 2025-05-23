@@ -76,6 +76,7 @@ namespace PowerupsLite.When {
 
         public override Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
             Array arr;
+            NameExprExpression.Evaluate();
             if (Array.Arrays.TryGetValue(NameExprExpression.StringValue, out arr)) {
                 arr.Clear();
             } else {
