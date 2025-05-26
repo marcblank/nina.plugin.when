@@ -92,6 +92,9 @@ namespace PowerupsLite.When {
             Logger.Warning(message);
             LoggedOnce.Add(message);
         }
+
+        private static Symbol[] RoofConstants = new Symbol[] { new Symbol("RoofNotOpen", 0), new Symbol("RoofOpen", 1), new Symbol("RoofCannotOpenOrRead", 2) };
+
         public static Task UpdateData() {
 
             // Handle RoofStatus here
@@ -109,10 +112,10 @@ namespace PowerupsLite.When {
                     LogOnce("Roof status, error: " + e.Message);
                     status = 2;
                 }
-                WhenPlugin.SymbolProvider.AddSymbol("RoofStatus", status);
-                WhenPlugin.SymbolProvider.AddSymbol("RoofOpen", 1);
-                WhenPlugin.SymbolProvider.AddSymbol("RoofClosed", 0);
-                WhenPlugin.SymbolProvider.AddSymbol("RoofError", 2);
+                WhenPlugin.SymbolProvider.AddSymbol("RoofStatus", status, RoofConstants);
+                //WhenPlugin.SymbolProvider.AddSymbol("RoofOpen", 1);
+                //WhenPlugin.SymbolProvider.AddSymbol("RoofClosed", 0);
+                //WhenPlugin.SymbolProvider.AddSymbol("RoofError", 2);
             }
 
 
