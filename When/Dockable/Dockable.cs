@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -85,7 +86,36 @@ namespace PowerupsLite.When {
             }
         }
 
+        private static HashSet<string> LoggedOnce = new HashSet<string>();
+        public static void LogOnce(string message) {
+            if (LoggedOnce.Contains(message)) return;
+            Logger.Warning(message);
+            LoggedOnce.Add(message);
+        }
         public static Task UpdateData() {
+
+            // Handle RoofStatus here
+            string roofStatus = WhenPlugin.Plugin.RoofStatus;
+            string roofOpenString = WhenPlugin.Plugin.RoofOpenString;
+            if (roofStatus?.Length > 0 && roofOpenString?.Length > 0) {
+                // It's actually a file name..
+                int status = 0;
+                try {
+                    var lastLine = File.ReadLines(roofStatus).Last();
+                    if (lastLine.ToLower().Contains(roofOpenString.ToLower())) {
+                        status = 1;
+                    }
+                } catch (Exception e) {
+                    LogOnce("Roof status, error: " + e.Message);
+                    status = 2;
+                }
+                WhenPlugin.SymbolProvider.AddSymbol("RoofStatus", status);
+                WhenPlugin.SymbolProvider.AddSymbol("RoofOpen", 1);
+                WhenPlugin.SymbolProvider.AddSymbol("RoofClosed", 0);
+                WhenPlugin.SymbolProvider.AddSymbol("RoofError", 2);
+            }
+
+
             ISequenceItem runningItem = null;
 
             if (ExpressionList.Count > 0) {

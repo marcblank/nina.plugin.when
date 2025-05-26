@@ -9,7 +9,7 @@
     <!--  In order for this datatemplate to be picked correctly, the key has to follow the naming convention of <IPlugin.Name>_Options -->
     <!--  Furthermore the Resource Dictionary has to be exported via code behind export attributes  -->
 
-    <DataTemplate x:Key="Sequencer Powerups_Options">
+    <DataTemplate x:Key="Powerups Lite_Options">
         <StackPanel Orientation="Vertical">
 
             <StackPanel Orientation="Horizontal" Margin="0,12,0,0">

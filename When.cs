@@ -62,14 +62,15 @@ namespace PowerupsLite.When {
             ProfileService = profileService;
             // React on a changed profile
             profileService.ProfileChanged += ProfileService_ProfileChanged;
-            
+
             SequenceMediator = sequenceMediator;
             FilterWheelMediator = filterWheelMediator;
             SymbolBrokerVM = symbolBroker;
-            
+
             OpenRoofFilePathDiagCommand = new RelayCommand(OpenRoofFilePathDiag);
 
-            //ISymbolProvider sp = symbolBroker.RegisterSymbolProvider("Powerups Lite", "PL");
+            Plugin = this;
+            SymbolProvider = symbolBroker.RegisterSymbolProvider("Powerups Lite", "PL");
             //sp.AddSymbol("Foo", 10);
             //sp.AddSymbol("Bar", 20);
             //sp.AddSymbol("Bletch", "Fooble");
@@ -77,6 +78,10 @@ namespace PowerupsLite.When {
             //sp.RemoveSymbol("Foo");
 
         }
+
+        public static WhenPlugin Plugin { get; private set; }
+
+        public static ISymbolProvider SymbolProvider { get; private set; }
 
         public override Task Teardown() {
             // Make sure to unregister an event when the object is no longer in use. Otherwise garbage collection will be prevented.
@@ -133,7 +138,7 @@ namespace PowerupsLite.When {
         private void OpenRoofFilePathDiag(object obj) {
             var dialog = GetFilteredFileDialog(string.Empty, string.Empty, "Text File (*.txt)|*.txt");
             if (dialog.ShowDialog() == true) {
-                //RoofStatus = dialog.FileName;
+                RoofStatus = dialog.FileName;
             }
         }
 
@@ -148,12 +153,33 @@ namespace PowerupsLite.When {
             return dialog;
         }
 
-          public static string DockableExprs {
+        public static string DockableExprs {
             get {
                 return PluginSettings.GetValueString(nameof(DockableExprs), Settings.Default.DockableExprs);
             }
             set {
                 PluginSettings.SetValueString(nameof(DockableExprs), value);
+            }
+        }
+
+        public string RoofStatus {
+            get {
+                return Settings.Default.RoofStatus;
+            }
+            set {
+                Settings.Default.RoofStatus = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+        public string RoofOpenString {
+            get {
+                return Settings.Default.RoofOpenString;
+            }
+            set {
+                Settings.Default.RoofOpenString = value;
+                CoreUtil.SaveSettings(Settings.Default);
+                RaisePropertyChanged();
             }
         }
 
