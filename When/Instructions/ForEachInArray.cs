@@ -28,7 +28,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "For Each in Array")]
     [ExportMetadata("Description", "Iterates over the elements of an Array, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "ArraySVG")]
-    [ExportMetadata("Category", "Powerups (Fun-ctions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [Export(typeof(ISequenceContainer))]
     [JsonObject(MemberSerialization.OptIn)]

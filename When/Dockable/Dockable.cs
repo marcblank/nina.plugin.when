@@ -113,13 +113,10 @@ namespace PowerupsLite.When {
                     status = 2;
                 }
                 WhenPlugin.SymbolProvider.AddSymbol("RoofStatus", status, RoofConstants);
-                //WhenPlugin.SymbolProvider.AddSymbol("RoofOpen", 1);
-                //WhenPlugin.SymbolProvider.AddSymbol("RoofClosed", 0);
-                //WhenPlugin.SymbolProvider.AddSymbol("RoofError", 2);
             }
 
 
-            ISequenceItem runningItem = null;
+            ISequenceItem? runningItem = null;
 
             if (ExpressionList.Count > 0) {
                 runningItem = WhenPlugin.GetRunningItem();
@@ -130,8 +127,7 @@ namespace PowerupsLite.When {
                     e.Context = runningItem;
                 }
 
-                ISequenceContainer c = e.Context as ISequenceContainer;
-                if (c != null && !ItemUtility.IsInRootContainer(c)) {
+                if (e.Context is ISequenceContainer c && !ItemUtility.IsInRootContainer(c)) {
                     continue;
                 }
 
