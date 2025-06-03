@@ -31,7 +31,7 @@ namespace PowerupsLite.When {
     [ExportMetadata("Name", "Annotation +")]
     [ExportMetadata("Description", "Add the specified text to the log, expanding any expressions within {}'s")]
     [ExportMetadata("Icon", "ScriptSVG")]
-    [ExportMetadata("Category", "Powerups (Enhanced Instructions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Log : SequenceItem, IValidatable {
