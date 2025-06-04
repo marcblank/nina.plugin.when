@@ -142,6 +142,13 @@ namespace WhenPlugin.When {
             ElseInstructions.ResetAll();
         }
 
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (ISequenceItem item in ElseInstructions.Items) {
+                item.AfterParentChanged();
+            }
+        }
+
         public new bool Validate() {
 
             var i = new List<string>();

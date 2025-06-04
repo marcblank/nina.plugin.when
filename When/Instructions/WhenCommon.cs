@@ -275,6 +275,16 @@ namespace WhenPlugin.When {
                     Critical = true;
                     try {
                         RunningItem = WhenPlugin.GetRunningItem();
+                        if (this is WhenUnsafe wbu) {
+                            Logger.Info("WBU: Saving running item, " + RunningItem);
+                            if (RunningItem != null && RunningItem.Parent != null) {
+                                var t = DSOTarget.FindTarget(RunningItem.Parent);
+                                if (t != null) {
+                                    Logger.Info("Target = " + t);
+                                }
+                            }
+                            WhenUnsafe.RunningItem = RunningItem;
+                        }
 
                         sequenceMediator.CancelAdvancedSequence();
                         Logger.Info("InterruptWhen: Canceling sequence...");

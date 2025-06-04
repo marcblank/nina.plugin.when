@@ -96,7 +96,13 @@ namespace WhenPlugin.When {
                 IsSafe = WhenUnsafe.CheckSafe(this, safetyMonitorMediator);
             }
 
-            Target = DSOTarget.FindTarget(Parent);
+            // Need RunningItem from WhenUnsafe (When)
+            ISequenceItem runningItem = WhenUnsafe.RunningItem;
+            if (runningItem != null && runningItem.Parent != null) {
+                Target = DSOTarget.FindTarget(runningItem.Parent);
+            } else {
+                Target = DSOTarget.FindTarget(Parent);
+            }
             if (Target != null) {
                 Logger.Info("Found Target: " + Target);
                 UpdateChildren(Instructions);
