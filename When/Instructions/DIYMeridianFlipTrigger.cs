@@ -44,13 +44,14 @@ using NINA.WPF.Base.Interfaces.ViewModel;
 using NINA.Equipment.Interfaces;
 using NINA.PlateSolving.Interfaces;
 using NINA.Core.Utility.WindowService;
+using NINA.Sequencer.SequenceItem.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "DIY Meridian Flip Trigger")]
     [ExportMetadata("Description", "Trigger for DYI Meridian Flip")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
-    [ExportMetadata("Category", "Powerups (Meridian Flip)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
 
@@ -440,11 +441,11 @@ namespace WhenPlugin.When {
             InputTarget t = DSOTarget.FindTarget(Parent);
             if (t != null) {
                 Target = t;
-                SPLogger.Debug("Found Target: " + Target);
+                Logger.Debug("Found Target: " + Target);
                 RaisePropertyChanged("Target");
                 UpdateChildren(TriggerRunner);
             } else {
-                SPLogger.Debug("Running target not found");
+                Logger.Debug("Running target not found");
             }
         }
 

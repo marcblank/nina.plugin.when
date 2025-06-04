@@ -10,7 +10,7 @@ using NINA.Sequencer.Validations;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Constant")]
     [ExportMetadata("Description", "Creates a Constant whose numeric value can be used in various instructions")]
     [ExportMetadata("Icon", "ConstantSVG")]

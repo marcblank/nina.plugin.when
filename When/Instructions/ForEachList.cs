@@ -20,7 +20,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Accord.IO;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "For Each")]
     [ExportMetadata("Description", "Iterates over a list of Variables and Expressions, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "ArraySVG")]

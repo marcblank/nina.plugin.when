@@ -21,7 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Antlr.Runtime;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Set Variable")]
     [ExportMetadata("Description", "If the variable has been previously defined, its value will become the result of the specified expression")]
     [ExportMetadata("Icon", "VariableSVG")]

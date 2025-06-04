@@ -23,12 +23,12 @@ using System.ComponentModel.Composition;
 using NINA.Core.Utility;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Log On Click")]
     [ExportMetadata("Description", "Add your own entry into NINA's log")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class LogThis : SequenceItem {

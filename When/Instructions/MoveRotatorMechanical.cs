@@ -28,7 +28,7 @@ using NINA.Sequencer.SequenceItem;
 using Antlr.Runtime;
 using System.Linq.Expressions;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Rotate by Mechanical Angle +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Description")]

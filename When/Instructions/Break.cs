@@ -25,12 +25,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Breakpoint")]
     [ExportMetadata("Description", "Wait indefinitely (until instruction is stopped or deleted)")]
     [ExportMetadata("Icon", "HourglassSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class Break : SequenceItem {

@@ -43,7 +43,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Windows.Media.Converters;
 using NINA.Sequencer.SequenceItem.Imaging;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Take Exposure +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Imaging_TakeExposure_Description")]

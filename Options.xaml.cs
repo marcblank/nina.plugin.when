@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [Export(typeof(ResourceDictionary))]
     partial class Options : ResourceDictionary {
@@ -19,10 +19,5 @@ namespace WhenPlugin.When {
         public Options() {
             InitializeComponent();
         }
-
-        public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(sender);
-        }
-
     }
 }

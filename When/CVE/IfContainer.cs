@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate, based on the results of the previous instruction, is true")]
@@ -82,12 +82,6 @@ namespace WhenPlugin.When {
         }
 
         public NighttimeData NighttimeData => throw new NotImplementedException();
-        public override void ResetProgress() {
-            base.ResetProgress();
-            if (PseudoParent != null && PseudoParent is WhenSwitch pp) {
-                pp.Disabled = false;
-            }
-        }
 
         public override void Initialize() {
             base.Initialize();

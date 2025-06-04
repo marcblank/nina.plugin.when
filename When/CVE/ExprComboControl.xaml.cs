@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public partial class ExprComboControl : UserControl {
         public ExprComboControl() {

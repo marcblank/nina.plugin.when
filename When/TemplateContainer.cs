@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Foo")]
     [ExportMetadata("Description", "")]
@@ -64,7 +64,7 @@ namespace WhenPlugin.When {
             lock (lockObj) {
                 TemplatedSequenceContainer tsc = parameters.Source as TemplatedSequenceContainer;
                 TemplateContainer tc = parameters.Target as TemplateContainer;
-                ((TemplateByReference)tc.PseudoParent).SelectedTemplate = tsc;
+                //((TemplateByReference)tc.PseudoParent).SelectedTemplate = tsc;
             }
         }
 

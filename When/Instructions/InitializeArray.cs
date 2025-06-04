@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Antlr.Runtime;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Initialize Array")]
     [ExportMetadata("Description", "Creates or re-initializes an Array")]
     [ExportMetadata("Icon", "ArraySVG")]

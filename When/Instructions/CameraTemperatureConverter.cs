@@ -17,7 +17,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public class CameraTemperatureConverter : IValueConverter {
 

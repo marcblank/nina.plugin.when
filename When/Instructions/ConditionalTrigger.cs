@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Conditional Trigger")]
     [ExportMetadata("Description", "The specified trigger will only be active when the Expression is true.")]
     [ExportMetadata("Icon", "WandSVG")]

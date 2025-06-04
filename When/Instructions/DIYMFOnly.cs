@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NINA.Sequencer.Trigger;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     public abstract class DIYMFOnly : SequenceItem, IValidatable {
         public abstract IList<string> Issues { get; set; }
 

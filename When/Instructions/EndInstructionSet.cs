@@ -18,12 +18,13 @@ using System.Reflection;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Core.Enum;
+using NINA.Sequencer.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "End Instruction Set")]
     [ExportMetadata("Description", "Ends the currenty running sequence; the End Sequence instructions will run")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class EndInstructionSet : SequenceItem, IValidatable {
@@ -122,7 +123,7 @@ namespace WhenPlugin.When {
         public bool Validate() {
             var i = new List<string>();
 
-            if (Symbol.IsAttachedToRoot(this)) {
+            if (ItemUtility.IsInRootContainer(Parent)) {
                 if (InstructionSetName == null || InstructionSetName.Length == 0) {
                     InstructionSetName = InstructionSetNames[0];
                 } else if (FindInstructionSet() == null) {

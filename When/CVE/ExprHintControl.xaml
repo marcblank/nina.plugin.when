@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="WhenPlugin.When.ExprHintControl"
+﻿<UserControl x:Class="PowerupsLite.When.ExprHintControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
-        xmlns:local="clr-namespace:WhenPlugin.When">
+        xmlns:local="clr-namespace:PowerupsLite.When">
         <UserControl.Resources>
             <local:ExprConverter x:Key="ec" />
             <local:ValConverter x:Key="vc" />

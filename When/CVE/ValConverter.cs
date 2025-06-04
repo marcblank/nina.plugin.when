@@ -24,7 +24,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public class ValConverter : IMultiValueConverter {
 

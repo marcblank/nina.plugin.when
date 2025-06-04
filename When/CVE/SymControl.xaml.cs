@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public partial class SymControl : UserControl {
         public SymControl() {

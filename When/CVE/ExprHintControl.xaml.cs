@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public partial class ExprHintControl : UserControl {
         public ExprHintControl() {

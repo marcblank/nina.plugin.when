@@ -12,7 +12,7 @@ using System.Reflection;
 using Antlr.Runtime;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Get from Array")]
     [ExportMetadata("Description", "Gets a value from an Array at the specified index into a Variable")]
     [ExportMetadata("Icon", "ArraySVG")]

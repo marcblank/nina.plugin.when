@@ -33,7 +33,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem;
 using NINA.Equipment.Equipment.MyFilterWheel;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Switch Filter +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_FilterWheel_SwitchFilter_Description")]

@@ -25,12 +25,12 @@ using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using NINA.Equipment.Equipment.MyRotator;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "FlipRotator")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Rotator_MoveRotatorMechanical_Description")]
     [ExportMetadata("Icon", "RotatorSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FlipRotator : SequenceItem, IValidatable {

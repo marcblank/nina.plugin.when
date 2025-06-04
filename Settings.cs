@@ -1,4 +1,4 @@
-﻿namespace WhenPlugin.When.Properties {
+﻿namespace PowerupsLite.When.Properties {
     
     
     // This class allows you to handle specific events on the settings class:

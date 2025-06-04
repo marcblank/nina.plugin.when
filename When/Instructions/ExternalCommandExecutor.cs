@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using NINA.Core.Utility.Extensions;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     public class ExternalCommandExecutor {
         private IProgress<ApplicationStatus> progress;
@@ -65,7 +65,7 @@ namespace WhenPlugin.When {
                 if (args != null)
                     process.StartInfo.Arguments = args;
 
-                SPLogger.Debug($"Starting process '{executableLocation}' with args '{args}'");
+                Logger.Debug($"Starting process '{executableLocation}' with args '{args}'");
                 process.Start();
                 await process.WaitForExitAsync(ct);
 
@@ -133,7 +133,7 @@ namespace WhenPlugin.When {
         private static int GetEnvironmentVariableValue(string variableName, EnvironmentVariableTarget target) {
             // Retrieve the value of the environment variable
             string value = Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
-            SPLogger.Debug($"ES+ environment variable NINAESRC value '{value}'");
+            Logger.Debug($"ES+ environment variable NINAESRC value '{value}'");
             // Check if the environment variable is not string equiv of int MinValue then return its int value
             if (value != int.MinValue.ToString()) {
                 return Int32.Parse(value);

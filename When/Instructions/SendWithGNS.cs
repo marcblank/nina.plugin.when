@@ -12,7 +12,7 @@ using NINA.Core.Utility;
 using Serilog.Debugging;
 using Google.Protobuf.WellKnownTypes;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Send via GNS")]
     [ExportMetadata("Description", "Send a message via GNS, including Powerups Expressions.")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]

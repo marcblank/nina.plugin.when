@@ -31,7 +31,7 @@ using NINA.Core.Utility.Notification;
 using NINA.Sequencer.SequenceItem;
 using ASCOM.Common.Alpaca;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Slew to RA/Dec +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Telescope_SlewScopeToRaDec_Description")]

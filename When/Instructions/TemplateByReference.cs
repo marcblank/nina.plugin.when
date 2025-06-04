@@ -24,7 +24,7 @@ using NINA.Core.MyMessageBox;
 using System.Runtime.Serialization;
 using System.Windows.Navigation;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Template by Reference")]
     [ExportMetadata("Description", "Incorporate a template by reference.  Please read the description on the plugin page.")]
     [ExportMetadata("Icon", "BoxClosedSVG")]
@@ -156,24 +156,6 @@ namespace WhenPlugin.When {
                     }
                 }
 
-                // If we're replacing a Template, make sure to detach any symbols in a CVC that's contained in it
-                foreach (ISequenceItem item in Instructions.Items) {
-                    if (item is CVContainer cvc) {
-                        foreach (ISequenceItem cvcItem in cvc.Items) {
-                            if (cvcItem is SetVariable sv) {
-                                ISequenceContainer cacheKey = sv.SParent();
-                                if (cacheKey != null) {
-                                    Symbol.SymbolDictionary dict = null;
-                                    Symbol.SymbolCache.TryGetValue(cacheKey, out dict);
-                                    if (dict != null) {
-                                        dict.Remove(sv.Identifier, out _);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
                 selectedTemplate = value;
                 if (Instructions.Items.Count > 0) {
                     Instructions.Items.Clear();
@@ -293,7 +275,7 @@ namespace WhenPlugin.When {
 
             if (templateController == null) return true;
 
-            if (!Symbol.IsAttachedToRoot(this)) return true;
+            //if (!Symbol.IsAttachedToRoot(this)) return true;
 
             var i = new List<string>();
 

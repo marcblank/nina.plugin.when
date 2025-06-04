@@ -32,7 +32,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.CustomControlLibrary;
 using NCalc.Domain;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Set Switch Value +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Switch_SetSwitchValue_Description")]

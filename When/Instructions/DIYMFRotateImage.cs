@@ -9,11 +9,11 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Rotate Image")]
     [ExportMetadata("Description", "Rotates the image in the Imaging pane by 180 degrees")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
-    [ExportMetadata("Category", "Powerups (Meridian Flip)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceItem))]
 
     [JsonObject(MemberSerialization.OptIn)]

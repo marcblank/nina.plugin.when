@@ -22,7 +22,7 @@ using Accord.IO;
 using System.Text;
 using Antlr.Runtime;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "For Each in Array")]
     [ExportMetadata("Description", "Iterates over the elements of an Array, executing the embedded instructions for each")]
     [ExportMetadata("Icon", "ArraySVG")]

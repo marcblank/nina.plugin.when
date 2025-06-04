@@ -13,11 +13,11 @@ using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Sequencer;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "If Timed Out")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate instruction failed.")]
     [ExportMetadata("Icon", "IfSVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfTimeout : IfCommand, IValidatable {

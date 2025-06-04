@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using NINA.Sequencer.DragDrop;
 using System.Windows.Input;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "If Fails")]
     [ExportMetadata("Description", "Executes an instruction set if the predicate instruction failed.")]
     [ExportMetadata("Icon", "IfSVG")]
-    [ExportMetadata("Category", "Powerups (Expressions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class IfFailed : IfCommand {

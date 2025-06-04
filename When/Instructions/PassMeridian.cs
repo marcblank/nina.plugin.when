@@ -19,11 +19,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Wait to Pass Meridian")]
     [ExportMetadata("Description", "Waits until the scope has passed the meridian by the amount specified as 'Minutes after Meridian' in the Meridian Flip Settings (in Options -> Imaging).")]
     [ExportMetadata("Icon", "MeridianFlipSVG")]
-    [ExportMetadata("Category", "Powerups (Meridian Flip)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceItem))]
 
     [JsonObject(MemberSerialization.OptIn)]

@@ -11,7 +11,7 @@ using NINA.Core.Enum;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Core.Utility;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "If Switch/Weather (Deprecated; use If)")]
     [ExportMetadata("Description", "Executes an instruction set if the expression, based on current switch and/or weather values, is true")]
     [ExportMetadata("Icon", "SwitchesSVG")]

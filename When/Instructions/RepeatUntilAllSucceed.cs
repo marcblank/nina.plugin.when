@@ -30,7 +30,7 @@ using NINA.Core.Enum;
 using NINA.Sequencer.Validations;
 using System.Runtime.CompilerServices;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Repeat Until All Succeed")]
     [ExportMetadata("Description", "Retry the included instructions until all of them have finished successfully.")]

@@ -18,12 +18,12 @@ using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Core.Enum;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
  
     [ExportMetadata("Name", "Safe Trigger")]
     [ExportMetadata("Description", "The specified trigger will run ONLY if the safety monitor reports 'Safe' conditions.")]
     [ExportMetadata("Icon", "ShieldSVG")]
-    [ExportMetadata("Category", "Powerups (Safety)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SafeTrigger : SequenceTrigger, IValidatable {

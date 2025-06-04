@@ -28,7 +28,7 @@ using NINA.Core.Locale;
 using NINA.Sequencer.SequenceItem;
 using CsvHelper;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Move Focuser Relative +")]
     [ExportMetadata("Description", "Lbl_SequenceItem_Focuser_MoveFocuserRelative_Description")]

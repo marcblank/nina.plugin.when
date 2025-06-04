@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     public abstract class IfCommand : SequenceItem, ISequenceContainer, IValidatable {
 
         [JsonProperty]

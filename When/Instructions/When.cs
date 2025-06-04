@@ -28,7 +28,7 @@ using NINA.Core.Model;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "When")]
     [ExportMetadata("Description", "Runs a customizable set of instructions when the specified Expression is true.")]

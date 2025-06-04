@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [Export(typeof(ResourceDictionary))]
     public partial class WhenTemplates : ResourceDictionary {
@@ -29,10 +29,6 @@ namespace WhenPlugin.When {
                 startStopText.ToolTip = "Pauses the execution of the When Becomes Unsafe instructions.";
             }
 
-        }
-
-        public void ShowConstants(object sender, ToolTipEventArgs e) {
-            Symbol.ShowSymbols(sender);
         }
     }
 }

@@ -23,12 +23,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
 
     [ExportMetadata("Name", "Autofocus Trigger")]
     [ExportMetadata("Description", "This trigger will run an Autofocus operation after the currently running instruction finishes.")]
     [ExportMetadata("Icon", "AutoFocusSVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite (Triggers)")]
     [Export(typeof(ISequenceTrigger))]
     
     [JsonObject(MemberSerialization.OptIn)]

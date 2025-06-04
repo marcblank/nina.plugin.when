@@ -11,7 +11,7 @@ using NINA.Core.Enum;
 using NINA.Core.Utility;
 using System.Text;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "If/Then/Else")]
     [ExportMetadata("Description", "Executes an instruction set if the Expression is True (or 1)")]
     [ExportMetadata("Icon", "IfSVG")]

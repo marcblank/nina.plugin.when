@@ -11,14 +11,18 @@ using System.Text.RegularExpressions;
 using NINA.Core.Utility;
 using Serilog.Debugging;
 using Google.Protobuf.WellKnownTypes;
+using NINA.Sequencer.Logic;
+using NINA.Sequencer.Generators;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "Send via Ground Station")]
     [ExportMetadata("Description", "Send a message via Ground Station, including Powerups Expressions.")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Fun-ctions)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
+    [UsesExpressions]
+
     public class GSSend : IfCommand {
 
         [ImportingConstructor]
@@ -52,7 +56,7 @@ namespace WhenPlugin.When {
                         break;
                     }
                     if (toReplace.Length == 0) break;
-                    Expr ex = new Expr(this, toReplace, "Any");
+                    Expression ex = ExpressionHelper.Expr(toReplace, Parent, SymbolBroker, null);
                     if (ex.Error != null) {
                         Logger.Warning("Send via Ground Station, error processing script, " + ex.Error);
                         value = value.Replace("{" + toReplace + "}", ex.Error);

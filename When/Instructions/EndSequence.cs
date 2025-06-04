@@ -16,11 +16,11 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Core.Enum;
 
-namespace WhenPlugin.When {
+namespace PowerupsLite.When {
     [ExportMetadata("Name", "End Sequence")]
     [ExportMetadata("Description", "Ends the currenty running sequence; the End Sequence instructions will run")]
     [ExportMetadata("Icon", "Pen_NoFill_SVG")]
-    [ExportMetadata("Category", "Powerups (Misc)")]
+    [ExportMetadata("Category", "Powerups Lite")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class EndSequence : SequenceItem, IValidatable {
