@@ -251,7 +251,7 @@ namespace WhenPlugin.When {
                     if (p != null) {
                         if (!CanContinue(p, PreviousItem, NextItem)) {
                             Logger.Info("Interrupted instruction's loop has terminated.  Stopping When/WBU");
-                            await Parent.Interrupt();
+                            await p.Interrupt();
                             return;
                         }
                     }
@@ -275,6 +275,9 @@ namespace WhenPlugin.When {
                     Critical = true;
                     try {
                         RunningItem = WhenPlugin.GetRunningItem();
+                        if (this is WhenUnsafe wbu) {
+                            WhenUnsafe.RunningItem = RunningItem;
+                        }
 
                         sequenceMediator.CancelAdvancedSequence();
                         Logger.Info("InterruptWhen: Canceling sequence...");

@@ -22,6 +22,7 @@ using NINA.Sequencer.Interfaces.Mediator;
 using NINA.WPF.Base.Interfaces.Mediator;
 using NINA.Sequencer;
 using NINA.Core.Utility;
+using NINA.Sequencer.SequenceItem;
 
 namespace WhenPlugin.When {
 
@@ -63,6 +64,8 @@ namespace WhenPlugin.When {
         }
 
         public static bool WasSafe = true;
+
+        public static ISequenceItem RunningItem = null;
 
         public static bool CheckSafe(ISequenceEntity item, ISafetyMonitorMediator safetyMediator) {
             var info = safetyMediator.GetInfo();

@@ -63,7 +63,7 @@ namespace WhenPlugin.When {
 
         public bool Check() {
 
-             return false;
+            return false;
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
@@ -140,6 +140,14 @@ namespace WhenPlugin.When {
         public override void ResetAll() {
             base.ResetAll();
             ElseInstructions.ResetAll();
+        }
+
+
+        public override void AfterParentChanged() {
+            base.AfterParentChanged();
+            foreach (ISequenceItem item in ElseInstructions.Items) {
+                item.AfterParentChanged();
+            }
         }
 
         public new bool Validate() {
