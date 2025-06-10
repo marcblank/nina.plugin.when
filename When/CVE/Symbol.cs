@@ -893,20 +893,20 @@ namespace WhenPlugin.When {
                     NoTarget(i);
                 }
 
-                List<string> toDelete = new List<string>();
-                foreach (var kvp in MessageKeys) {
-                    VariableMessage vm = (VariableMessage)kvp.Value;
-                    if (DateTimeOffset.Now >= vm.expiration) {
-                        Logger.Info("TS message expired: " + vm.value);
-                        toDelete.Add(kvp.Key);
-                        continue;
-                    }
-                    AddSymbol(i, kvp.Key, vm.value);
-                }
+                //List<string> toDelete = new List<string>();
+                //foreach (var kvp in MessageKeys) {
+                //    VariableMessage vm = (VariableMessage)kvp.Value;
+                //    if (DateTimeOffset.Now >= vm.expiration) {
+                //        Logger.Info("TS message expired: " + vm.value);
+                //        toDelete.Add(kvp.Key);
+                //        continue;
+                //    }
+                //    AddSymbol(i, kvp.Key, vm.value);
+                //}
                 
-                foreach (string td in toDelete) {
-                    //MessageKeys.Remove(td);
-                }
+                //foreach (string td in toDelete) {
+                //    //MessageKeys.Remove(td);
+                //}
 
                 if (Observer == null) {
                     Observer = new ObserverInfo() {
