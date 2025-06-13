@@ -79,7 +79,7 @@ jobs:
 
       - name: Clone manifest
         run: |
-          git clone https://x-access-token:${{ secrets.PAT }}@github.com/isbeorn/nina.plugin.manifests.git
+          git clone https://x-access-token:${{ secrets.PAT }}@github.com/marcblank/nina.plugin.manifests.git
           cd nina.plugin.manifests
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
