@@ -93,7 +93,7 @@ namespace WhenPlugin.When {
         public override bool Check(ISequenceItem previousItem, ISequenceItem nextItem) {
 
             if (string.IsNullOrEmpty(PredicateExpr.Expression)) {
-                Logger.Warning("LoopWhile: Check, Predicate Expression is null or empty, " + PredicateExpr + " (Expression = " + PredicateExpr.Expression + ")");
+                //Logger.Warning("LoopWhile: Check, Predicate Expression is null or empty, " + PredicateExpr + " (Expression = " + PredicateExpr.Expression + ")");
                 throw new SequenceEntityFailedException("LoopWhile, PredicateExpr is null or empty");
             }
 
@@ -104,21 +104,21 @@ namespace WhenPlugin.When {
             PredicateExpr.Evaluate();
            
             if (PredicateExpr.Error != null) {
-                Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
+                //Logger.Warning("LoopWhile: Check, error in PredicateExpr: " + PredicateExpr.Error);
                 throw new SequenceEntityFailedException(PredicateExpr.Error);
             } else {
                 try {
                     foreach (var kvp in PredicateExpr.Parameters) {
-                        SPLogger.Debug(kvp.Key + ": " + kvp.Value);
+                        //SPLogger.Debug(kvp.Key + ": " + kvp.Value);
                     }
                 } catch (Exception) {
                     // These could be modified by another thread
                 }
                 if (!string.Equals(PredicateExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase)) {
-                    SPLogger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
+                    //SPLogger.Debug("LoopWhile, Predicate is true, " + PredicateExpr);
                     return true;
                 } else {
-                    Logger.Info("LoopWhile, Predicate is false, " + PredicateExpr);
+                    //Logger.Info("LoopWhile, Predicate is false, " + PredicateExpr);
                     return false;
                 }
             }

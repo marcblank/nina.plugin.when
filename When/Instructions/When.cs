@@ -113,8 +113,9 @@ namespace WhenPlugin.When {
         }
 
         public override bool Check() {
+            Logger.Info("When Check " + whenId + ", Expr = " + IfExpr);
             if (Disabled) {
-                Logger.Trace("Check = TRUE (Disabled)");
+                Logger.Info("Check = TRUE (Disabled)");
                 return true;
             }
 
@@ -131,10 +132,10 @@ namespace WhenPlugin.When {
             IfExpr.Evaluate();
 
             if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                Logger.Trace("Check = FALSE");
+                Logger.Info("Check = FALSE");
                 return false;
             }
-            Logger.Trace("Check = TRUE");
+            Logger.Info("Check = TRUE");
             return true;
         }
 

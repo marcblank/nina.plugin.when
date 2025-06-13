@@ -85,8 +85,13 @@ namespace WhenPlugin.When {
                 Instructions.PseudoParent = this;
                 Instructions.Name = cloneMe.Name;
                 Instructions.Icon = cloneMe.Icon;
+                whenId = ++WhenCounter;
             }
         }
+
+        protected int whenId = 0;
+
+        private static int WhenCounter = 0;
 
         public static bool inFlight = false;
 
@@ -241,7 +246,16 @@ namespace WhenPlugin.When {
         }
 
         private async Task InterruptWhen() {
+<<<<<<< Updated upstream
             Logger.Trace("*When Interrupt*");
+=======
+            if (this is WhenSwitch w) {
+               Logger.Info("When Interrupt " + whenId + " (" + w.IfExpr.Expression + "): Interrupt = " + Interrupt + ", InFlight = " + InFlight + ", Triggered = " + Triggered);
+            } else {
+                Logger.Info("When Interrupt (WBU): Interrupt = " + Interrupt + ", InFlight = " + InFlight + ", Triggered = " + Triggered);
+            }
+
+>>>>>>> Stashed changes
             if (!sequenceMediator.Initialized || !sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (!Interrupt) return;
             if (InFlight || Triggered) {
@@ -257,7 +271,11 @@ namespace WhenPlugin.When {
                     }
                 }
 
+<<<<<<< Updated upstream
                 Logger.Trace("When: InFlight or Triggered, return");
+=======
+                Logger.Info("When: InFlight or Triggered, return");
+>>>>>>> Stashed changes
                 return;
             }
 
@@ -269,6 +287,8 @@ namespace WhenPlugin.When {
                         Logger.Info("Found Target: " + Target);
                         UpdateChildren(Instructions);
                     }
+                    
+                    // This is the only place Triggered is set TRUE
                     Triggered = true;
                     Logger.Info("InterruptWhen: Interrupting current Instruction Set");
 
@@ -293,7 +313,11 @@ namespace WhenPlugin.When {
                     }
 
                     await sequenceMediator.StartAdvancedSequence(true);
+<<<<<<< Updated upstream
                     Logger.Trace("InterruptWhen: Starting sequence, Triggered -> true");
+=======
+                    Logger.Info("InterruptWhen: Starting sequence, Triggered -> true");
+>>>>>>> Stashed changes
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
                         Logger.Info("InterruptWhen: Can't run When because Parent isn't in root container, " + Parent.Name);
@@ -304,7 +328,11 @@ namespace WhenPlugin.When {
                     }
                 }
             } else {
+<<<<<<< Updated upstream
                 Logger.Trace("InterruptWhen: Should trigger = false");
+=======
+                Logger.Info("InterruptWhen: Should trigger = false");
+>>>>>>> Stashed changes
             }
         }
 
@@ -316,8 +344,13 @@ namespace WhenPlugin.When {
         ISequenceItem PreviousItem;
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            Logger.Info("Id = " + whenId);
             if (InFlight) {
+<<<<<<< Updated upstream
                 Logger.Trace("ShouldTrigger: FALSE (InFlight) ");
+=======
+                Logger.Info("ShouldTrigger: FALSE (InFlight) ");
+>>>>>>> Stashed changes
                 return false;
             }
             if (!Check()) {
@@ -334,12 +367,16 @@ namespace WhenPlugin.When {
 
                 return true;
             }
+<<<<<<< Updated upstream
             Logger.Trace("ShouldTrigger: FALSE");
+=======
+            Logger.Info("ShouldTrigger: FALSE");
+>>>>>>> Stashed changes
             return false;
         }
 
         public async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken token) {
-            Logger.Info("Execute");
+            Logger.Info("Execute " + whenId);
             if (Critical) {
                 Logger.Info("When: Execute in critical section; return");
                 return;

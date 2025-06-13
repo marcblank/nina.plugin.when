@@ -850,6 +850,9 @@ namespace WhenPlugin.When {
             AddSymbol(i, "TargetName", "", null, true);
         }
 
+        private static int lastValidRoofStatus = -1;
+        private static int invalidRoofStatusCount = 0;
+
         public static Task UpdateSwitchWeatherData() {
 
             //var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -968,14 +971,25 @@ namespace WhenPlugin.When {
                         if (lastLine.ToLower().Contains(roofOpenString.ToLower())) {
                             status = 1;
                         }
+                        lastValidRoofStatus = status;
+                        invalidRoofStatusCount = 0;
                     } catch (Exception e) {
-                        LogOnce("Roof status, error: " + e.Message);
-                        status = 2;
+                        Logger.Warning("Roof status, error: " + e.Message);
+                        if (++invalidRoofStatusCount > 4) {
+                            Logger.Warning("Four consecutive roof status errors, reporting status 2");
+                            status = 2;
+                        } else {
+                            Logger.Warning("Roof status error #" + invalidRoofStatusCount + ", reporting status " + lastValidRoofStatus + " for now");
+                            status = lastValidRoofStatus;
+                        }
                     }
                     AddSymbol(i, "RoofStatus", status, RoofConstants);
+                    Logger.Info("RoofStatus: " + status);
+                } else {
+                    Logger.Info("RoofStatus UNKNOWN");
                 }
 
-                FocuserInfo fInfo = FocuserMediator.GetInfo();
+                    FocuserInfo fInfo = FocuserMediator.GetInfo();
                 FocuserConnected = fInfo.Connected;
                 if (fInfo != null && FocuserConnected) {
                     AddSymbol(i, "FocuserPosition", fInfo.Position);

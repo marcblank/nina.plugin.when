@@ -37,16 +37,16 @@ namespace WhenPlugin.When {
             if (parent != null) {
                 var container = parent as IDeepSkyObjectContainer;
                 if (container != null && container.Target != null && container.Target.InputCoordinates != null && container.Target.DeepSkyObject != null) {
-                    SPLogger.Debug("DSOTarget, found above: " + container.Target.TargetName);
+                    //SPLogger.Debug("DSOTarget, found above: " + container.Target.TargetName);
                     Coordinates c = container.Target.InputCoordinates.Coordinates;
                     if (c != null  && c.RA == 0 && c.Dec == 0) {
                         IDeepSkyObject dso = container.Target.DeepSkyObject;
                         if (dso != null && dso.Coordinates.RA != 0 && dso.Coordinates.Dec != 0) {
-                            SPLogger.Debug("DSOTarget, using DSO coordinates instead");
+                            //SPLogger.Debug("DSOTarget, using DSO coordinates instead");
                             container.Target.InputCoordinates.Coordinates = dso.Coordinates;
                             return container.Target;
                         }
-                        SPLogger.Debug("Found target has 0/0 coordinates; failing search");
+                        //SPLogger.Debug("Found target has 0/0 coordinates; failing search");
                         return null;
                     }
                     return container.Target;
@@ -54,7 +54,7 @@ namespace WhenPlugin.When {
                     return RetrieveTarget(parent.Parent);
                 }
             } else {
-                SPLogger.Debug("DSOTarget, Not found");
+                //SPLogger.Debug("DSOTarget, Not found");
                 return null;
             }
         }
@@ -69,26 +69,26 @@ namespace WhenPlugin.When {
                             foreach (ISequenceItem item2 in cont.Items) {
                                 if (item2.Status == SequenceEntityStatus.RUNNING || item2.Status == SequenceEntityStatus.CREATED) {
                                     if (item2 is IDeepSkyObjectContainer dso2) {
-                                        SPLogger.Debug("DSOTarget, found running target: " + dso2.Target.TargetName);
+                                        //SPLogger.Debug("DSOTarget, found running target: " + dso2.Target.TargetName);
                                         if (dso2.Target.InputCoordinates == null) {
-                                            SPLogger.Debug("DSO Target, running target has no InputCoordinates");
+                                            //SPLogger.Debug("DSO Target, running target has no InputCoordinates");
                                         } else if (dso2.Target.InputCoordinates.Coordinates == null) {
-                                            SPLogger.Debug("DSO Target, running target InputCoordinates has no Coordinates");
+                                            //SPLogger.Debug("DSO Target, running target InputCoordinates has no Coordinates");
                                         } else if (dso2.Target.InputCoordinates.Coordinates.RA == 0 && dso2.Target.InputCoordinates.Coordinates.Dec == 0) {
                                             IDeepSkyObject dsot = dso2.Target.DeepSkyObject;
                                             if (dsot != null && dsot.Coordinates.RA != 0 && dsot.Coordinates.Dec != 0) {
-                                                SPLogger.Debug("DSO Target, using DSO coordinates instead");
+                                                //SPLogger.Debug("DSO Target, using DSO coordinates instead");
                                                 dso2.Target.InputCoordinates.Coordinates = dsot.Coordinates;
                                                 return dso2.Target;
                                             }
-                                            SPLogger.Debug("DSO Target, running target Coordinates are 0/0");
+                                            //SPLogger.Debug("DSO Target, running target Coordinates are 0/0");
                                         } else {
                                             return dso2.Target;
                                         }
-                                        SPLogger.Debug("DSO Target, looking inside running target...");
+                                        //SPLogger.Debug("DSO Target, looking inside running target...");
                                         InputTarget rt = FindRunningItem(dso2);
                                         if (rt != null) {
-                                            SPLogger.Debug("DSO Target, found by looking deeper");
+                                            //SPLogger.Debug("DSO Target, found by looking deeper");
                                             return rt;
                                         }
                                     } else if (item2 is ISequenceContainer cont2) {
