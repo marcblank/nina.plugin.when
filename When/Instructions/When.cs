@@ -113,29 +113,29 @@ namespace WhenPlugin.When {
         }
 
         public override bool Check() {
-            Logger.Info("When Check " + whenId + ", Expr = " + IfExpr);
+            Logger.Trace("When Check " + whenId + ", Expr = " + IfExpr);
             if (Disabled) {
-                Logger.Info("Check = TRUE (Disabled)");
+                Logger.Trace("Check = TRUE (Disabled)");
                 return true;
             }
 
             Symbol.UpdateSwitchWeatherData();
             if (IfExpr.ImageVolatile) {
-                Logger.Info("ImageVolatile");
+                Logger.Trace("ImageVolatile");
                 while (TakeExposure.LastImageProcessTime < TakeExposure.LastExposureTIme) {
                     Logger.Info("Waiting 250ms for processing...");
                     Task.Delay(250);
                 }
                 // Get latest values
-                Logger.Info("ImageVolatile, new data");
+                Logger.Trace("ImageVolatile, new data");
             }
             IfExpr.Evaluate();
 
             if (!string.Equals(IfExpr.ValueString, "0", StringComparison.OrdinalIgnoreCase) && (IfExpr.Error == null)) {
-                Logger.Info("Check = FALSE");
+                Logger.Trace("Check = FALSE");
                 return false;
             }
-            Logger.Info("Check = TRUE");
+            Logger.Trace("Check = TRUE");
             return true;
         }
 

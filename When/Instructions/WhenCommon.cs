@@ -246,16 +246,7 @@ namespace WhenPlugin.When {
         }
 
         private async Task InterruptWhen() {
-<<<<<<< Updated upstream
             Logger.Trace("*When Interrupt*");
-=======
-            if (this is WhenSwitch w) {
-               Logger.Info("When Interrupt " + whenId + " (" + w.IfExpr.Expression + "): Interrupt = " + Interrupt + ", InFlight = " + InFlight + ", Triggered = " + Triggered);
-            } else {
-                Logger.Info("When Interrupt (WBU): Interrupt = " + Interrupt + ", InFlight = " + InFlight + ", Triggered = " + Triggered);
-            }
-
->>>>>>> Stashed changes
             if (!sequenceMediator.Initialized || !sequenceMediator.IsAdvancedSequenceRunning()) return;
             if (!Interrupt) return;
             if (InFlight || Triggered) {
@@ -271,26 +262,21 @@ namespace WhenPlugin.When {
                     }
                 }
 
-<<<<<<< Updated upstream
-                Logger.Trace("When: InFlight or Triggered, return");
-=======
-                Logger.Info("When: InFlight or Triggered, return");
->>>>>>> Stashed changes
+                Logger.Trace("InFlight or Triggered, return");
                 return;
             }
 
             if (ShouldTrigger(null, null) && Parent != null) {
-                Logger.Info("InterruptWhen; shouldTrigger = true");
+                Logger.Trace("ShouldTrigger returned true");
                 if (ItemUtility.IsInRootContainer(Parent) && this.Parent.Status == SequenceEntityStatus.RUNNING && this.Status != SequenceEntityStatus.DISABLED) {
                     Target = DSOTarget.FindTarget(Parent);
                     if (Target != null) {
-                        Logger.Info("Found Target: " + Target);
                         UpdateChildren(Instructions);
                     }
                     
                     // This is the only place Triggered is set TRUE
                     Triggered = true;
-                    Logger.Info("InterruptWhen: Interrupting current Instruction Set");
+                    Logger.Info("Interrupting current Instruction Set");
 
                     Critical = true;
                     try {
@@ -300,39 +286,31 @@ namespace WhenPlugin.When {
                         }
 
                         sequenceMediator.CancelAdvancedSequence();
-                        Logger.Info("InterruptWhen: Canceling sequence...");
+                        Logger.Info("Canceling sequence...");
 
                         await Task.Delay(1000);
                         while (sequenceMediator.IsAdvancedSequenceRunning()) {
-                            Logger.Info("InterruptWhen: Delay 1000");
+                            Logger.Info("Delay 1000");
                             await Task.Delay(1000);
                         }
-                        Logger.Info("InterruptWhen: Sequence longer running");
+                        Logger.Info("Sequence longer running");
                     } finally {
                         Critical = false;
                     }
 
                     await sequenceMediator.StartAdvancedSequence(true);
-<<<<<<< Updated upstream
-                    Logger.Trace("InterruptWhen: Starting sequence, Triggered -> true");
-=======
-                    Logger.Info("InterruptWhen: Starting sequence, Triggered -> true");
->>>>>>> Stashed changes
+                    Logger.Info("Restarting sequence, Triggered -> true");
                 } else {
                     if (!ItemUtility.IsInRootContainer(Parent)) {
-                        Logger.Info("InterruptWhen: Can't run When because Parent isn't in root container, " + Parent.Name);
+                        Logger.Info("Can't run When because Parent isn't in root container, " + Parent.Name);
                     } else if (Parent.Status != SequenceEntityStatus.RUNNING) {
-                        Logger.Info("InterruptWhen: Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
+                        Logger.Info("Can't run When because Parent is not running, " + Parent.Name + ": " + Parent.Status);
                     } else {
-                        Logger.Info("InterruptWhen: Can't run when for some other reason: Disabled?");
+                        Logger.Info("Can't run when for some other reason: Disabled?");
                     }
                 }
             } else {
-<<<<<<< Updated upstream
-                Logger.Trace("InterruptWhen: Should trigger = false");
-=======
-                Logger.Info("InterruptWhen: Should trigger = false");
->>>>>>> Stashed changes
+                Logger.Trace("ShouldTrigger returned false");
             }
         }
 
@@ -344,22 +322,18 @@ namespace WhenPlugin.When {
         ISequenceItem PreviousItem;
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
-            Logger.Info("Id = " + whenId);
+            Logger.Trace("Id = " + whenId);
             if (InFlight) {
-<<<<<<< Updated upstream
                 Logger.Trace("ShouldTrigger: FALSE (InFlight) ");
-=======
-                Logger.Info("ShouldTrigger: FALSE (InFlight) ");
->>>>>>> Stashed changes
                 return false;
             }
             if (!Check()) {
                 if (previousItem == null && nextItem == null) {
-                    Logger.Info("ShouldTrigger TRUE in InterruptWhen");
+                    Logger.Info("ShouldTrigger TRUE from InterruptWhen, setting TriggerRunner");
                     return true;
                 }
 
-                Logger.Info("ShouldTrigger: TRUE, TriggerRunner set");
+                Logger.Info("ShouldTrigger TRUE, setting TriggerRunner");
                 TriggerRunner = Instructions;
 
                 NextItem = nextItem;
@@ -367,11 +341,7 @@ namespace WhenPlugin.When {
 
                 return true;
             }
-<<<<<<< Updated upstream
             Logger.Trace("ShouldTrigger: FALSE");
-=======
-            Logger.Info("ShouldTrigger: FALSE");
->>>>>>> Stashed changes
             return false;
         }
 
@@ -387,10 +357,10 @@ namespace WhenPlugin.When {
             }
             try {
                 while (true) {
-                    Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
                     InFlight = true;
                     Triggered = false;
                     token.ThrowIfCancellationRequested();
+                    Logger.Info("When: running TriggerRunner, InFlight -> true, Triggered -> false");
                     await TriggerRunner.Run(progress, token);
                     token.ThrowIfCancellationRequested();
                     if (!(this is WhenUnsafe) || Check()) {
@@ -402,6 +372,7 @@ namespace WhenPlugin.When {
                 InFlight = false;
                 Triggered = false;
                 if (this is WhenSwitch w && w.OnceOnly) {
+                    Logger.Info("When: Execute done; InFlight -> false, Triggered false, DISABLED");
                     w.Disabled = true;
                 }
                 Logger.Info("When: Execute done; InFlight -> false, Triggered false");
