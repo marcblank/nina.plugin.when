@@ -15,7 +15,7 @@ permissions:
 
 env:
   # Adjust this to your plugin title
-  PLUGIN_NAME: "Sequencer Powerups"
+  PLUGIN_NAME: "When"
   PLUGIN_SLN_NAME: "When"
   PLUGIN_DLL_NAME: "WhenPlugin"
   PLUGIN_MANIFEST_PATH: "w/When/3.0.0/manifest.${{ github.ref_name }}.json"
