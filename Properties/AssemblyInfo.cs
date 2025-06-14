@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 //Should be incremented for each new release build of a plugin
 
 // Odd minor releases for Beta
-[assembly: AssemblyVersion("3.28.1.0")]
-[assembly: AssemblyFileVersion("3.28.1.0")]
+[assembly: AssemblyVersion("3.28.1.1")]
+[assembly: AssemblyFileVersion("3.28.1.1")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 // The url to the license
 [assembly: AssemblyMetadata("LicenseURL", "https://www.mozilla.org/en-US/MPL/2.0/")]
 // The repository where your pluggin is hosted
-[assembly: AssemblyMetadata("Repository", "https://bitbucket.org/zorkmid/nina.plugin.when")]
+[assembly: AssemblyMetadata("Repository", "https://github.com/marcblank/nina.plugin.when")]
 
 // The following attributes are optional for the official manifest meta data
 
@@ -41,12 +41,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Variables,Expressions,Safety,Interrupt,If,When")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
-[assembly: AssemblyMetadata("FeaturedImageURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/Powerups.png")]
+[assembly: AssemblyMetadata("FeaturedImageURL", "https://github.com/marcblank/nina.plugin.when/blob/newdevelop/images/Powerups.png")]
 [assembly: AssemblyMetadata("ScreenshotURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/LoopWhile.png")]
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
 //[Optional] An in-depth description of your plugin
-[assembly: AssemblyMetadata("LongDescription", @"## This plugin contains a variety of potentially useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.
+[assembly: AssemblyMetadata("LongDescription", @"## This plugin contains a variety of useful instructions that enhance the power of the Advanced Sequencer.  The set of these instructions is expected to increase over time; consider them 'utility' instructions.  Many of these instructions allow you to take arbitrary sets of actions when specific circumstances arise; you specify these actions by dragging instructions into place, just as you would to create any instruction set or template.
 
 ## Among the more powerful Powerups are those related to Constants, Variables, and Expressions, and the Template by Reference instruction.
 
