@@ -39,15 +39,6 @@ jobs:
           dotnet restore
           dotnet build "${{ env.PLUGIN_SLN_NAME }}.sln" -c Release -p:PostBuildEvent= -p:Version=${{ github.ref_name }}
 
-      # If you have mkdocs documentation you want to include, you can uncomment and build it like this
-      # - name: Build Documentation
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install mkdocs
-      #     pip install mkdocs-material
-      #     mkdocs build -f ${{ env.PLUGIN_NAME }}\docs\mkdocs.yml
-
-
       # Add all necessary files that the plugin needs to the packages folder - basically all items that are normally in your post build event on your local builds
       - name: Prepare package
         run: |
