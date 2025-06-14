@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 //Should be incremented for each new release build of a plugin
 
 // Odd minor releases for Beta
-[assembly: AssemblyVersion("3.28.1.2")]
-[assembly: AssemblyFileVersion("3.28.1.2")]
+[assembly: AssemblyVersion("3.28.1.3")]
+[assembly: AssemblyFileVersion("3.28.1.3")]
 
 // [MANDATORY] The name of your plugingit st
 [assembly: AssemblyTitle("Sequencer Powerups")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Tags", "Sequencer,Utility,Powerups,Constants,Variables,Expressions,Safety,Interrupt,If,When")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
-[assembly: AssemblyMetadata("FeaturedImageURL", "https://github.com/marcblank/nina.plugin.when/blob/newdevelop/images/Powerups.png")]
+[assembly: AssemblyMetadata("FeaturedImageURL", "https://github.com/marcblank/nina.plugin.when/blob/newdevelop/images/Powerups.png?raw=true")]
 [assembly: AssemblyMetadata("ScreenshotURL", "https://bitbucket.org/zorkmid/nina.plugin.when/downloads/LoopWhile.png")]
 //[Optional] An additional url to an example example screenshot of your plugin in action
 [assembly: AssemblyMetadata("AltScreenshotURL", "https://1drv.ms/u/s!AjBSqKNCEWOTgfIGHf3eIXv2hZfYAw?e=LLHMJF")]
