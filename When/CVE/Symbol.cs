@@ -984,9 +984,6 @@ namespace WhenPlugin.When {
                         }
                     }
                     AddSymbol(i, "RoofStatus", status, RoofConstants);
-                    Logger.Info("RoofStatus: " + status);
-                } else {
-                    Logger.Info("RoofStatus UNKNOWN");
                 }
 
                     FocuserInfo fInfo = FocuserMediator.GetInfo();
