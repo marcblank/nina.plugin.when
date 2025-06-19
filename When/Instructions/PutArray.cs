@@ -132,7 +132,7 @@ namespace WhenPlugin.When {
             Symbol.UpdateSwitchWeatherData();
             VExpr.Evaluate();
 
-            object val = VExpr.Value == double.NegativeInfinity ? VExpr.ValueString : VExpr.Value;
+            object val = VExpr.Value == double.NegativeInfinity ? "'" + VExpr.ValueString + "'" : VExpr.Value;
             try {
                 arr[IExpr.ValueString] = val;
             } catch (Exception ex) {
