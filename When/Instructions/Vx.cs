@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using NINA.Sequencer.Container;
 using NINA.Core.Utility;
 using System.Data;
+using System.Runtime.Serialization;
 
 namespace WhenPlugin.When {
     [ExportMetadata("Name", "Variable")]
@@ -32,6 +33,13 @@ namespace WhenPlugin.When {
                 CopyMetaData(copyMe);
                 Name = copyMe.Name;
                 Icon = copyMe.Icon;
+            }
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext c) {
+            if (Definition != null) {
+                Definition = "";
             }
         }
 

@@ -90,6 +90,11 @@ namespace WhenPlugin.When {
                     ResetVariable rv = new ResetVariable();
                     rv.AttachNewParent(Parent);
                     rv.Variable = var;
+                    double d;
+                    if (!Double.TryParse(expr, out d)) {
+                        expr = "'" + expr + "'";
+                    }
+
                     rv.Expr.Expression = expr;
                     Logger.Info("ForEach iteration: Variable = " + var + ", Expression: " + expr);
                     sb.Append(var + " = " + expr + "  ");
